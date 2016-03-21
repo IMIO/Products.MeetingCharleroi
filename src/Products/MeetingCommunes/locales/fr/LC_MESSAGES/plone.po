@@ -1,0 +1,184 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2007-08-29 07:12-100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: plone\n"
+"Language-code: fr\n"
+"Language-name: French\n"
+"Preferred-encodings: utf-8 latin1\n"
+"X-is-fallback-for: fr-be fr-ca fr-lu fr-mc fr-ch fr-fr\n"
+
+#. Default: "MeetingCA"
+msgid "MeetingCA"
+msgstr "Séance du CA"
+
+#. Default: "MeetingCOGES"
+msgid "MeetingCOGES"
+msgstr "Séance du Comité de Gestion"
+
+#. Default: "MeetingBourgmestre"
+msgid "MeetingBourgmestre"
+msgstr "Séance du Bourgmestre"
+
+#. Default: "MeetingCoDir"
+msgid "MeetingCoDir"
+msgstr "Séance du Comité de Direction"
+
+#. Default: "MeetingCollege"
+msgid "MeetingCollege"
+msgstr "Séance du Collège Communal"
+
+#. Default: "MeetincCouncil"
+msgid "MeetingCouncil"
+msgstr "Séance du Conseil Communal"
+
+#. Default: "MeetingItemCA"
+msgid "MeetingItemCA"
+msgstr "Point CA"
+
+#. Default: "MeetingItemCOGES"
+msgid "MeetingItemCOGES"
+msgstr "Point Comité de Gestion"
+
+#. Default: "MeetingItemBourgmestre"
+msgid "MeetingItemBourgmestre"
+msgstr "Point Bourgmestre"
+
+#. Default: "MeetingItemCoDir"
+msgid "MeetingItemCoDir"
+msgstr "Point Comité de Direction"
+
+#. Default: "MeetingItemCollege"
+msgid "MeetingItemCollege"
+msgstr "Point Collège Communal"
+
+#. Default: "MeetingItemCouncil"
+msgid "MeetingItemCouncil"
+msgstr "Point Conseil Communal"
+
+#. Default: "MeetingItemRecurringCA"
+msgid "MeetingItemRecurringCA"
+msgstr "Point récurrent CA"
+
+#. Default: "MeetingItemRecurringCOGES"
+msgid "MeetingItemRecurringCOGES"
+msgstr "Point récurrent Comité de Gestion"
+
+#. Default: "MeetingItemRecurringBourgmestre"
+msgid "MeetingItemRecurringBourgmestre"
+msgstr "Point récurrent Bourgmestre"
+
+#. Default: "MeetingItemRecurringCoDir"
+msgid "MeetingItemRecurringCoDir"
+msgstr "Point récurrent Comité de Direction"
+
+#. Default: "MeetingItemRecurringCollege"
+msgid "MeetingItemRecurringCollege"
+msgstr "Point récurrent Collège Communal"
+
+#. Default: "MeetingItemRecurringCouncil"
+msgid "MeetingItemRecurringCouncil"
+msgstr "Point récurrent Conseil Communal"
+
+#. Default: "Meeting item recurring BP"
+msgid "MeetingItemRecurringbp"
+msgstr "Point récurrent Bureau Permanent"
+
+#. Default: "Meeting item recurring CAS"
+msgid "MeetingItemRecurringcas"
+msgstr "Point récurrent Conseil de l'Action Sociale"
+
+#. Default: "Meeting item recurring Comitee"
+msgid "MeetingItemRecurringcomitee"
+msgstr "Point récurrent Comité de Concertation"
+
+#. Default: "MeetingItemTemplateCA"
+msgid "MeetingItemTemplateCA"
+msgstr "Modèle de point CA"
+
+#. Default: "MeetingItemTemplateCOGES"
+msgid "MeetingItemTemplateCOGES"
+msgstr "Modèle de point Comité de Gestion"
+
+#. Default: "MeetingItemTemplateBourgmestre"
+msgid "MeetingItemTemplateBourgmestre"
+msgstr "Modèle de point Bourgmestre"
+
+#. Default: "MeetingItemTemplateCoDir"
+msgid "MeetingItemTemplateCoDir"
+msgstr "Modèle de point Comité de Direction"
+
+#. Default: "MeetingItemTemplateCollege"
+msgid "MeetingItemTemplateCollege"
+msgstr "Modèle de point Collège Communal"
+
+#. Default: "MeetingItemTemplateCouncil"
+msgid "MeetingItemTemplateCouncil"
+msgstr "Modèle de point Conseil Communal"
+
+#. Default: "Meeting item template BP"
+msgid "MeetingItemTemplatebp"
+msgstr "Modèle de point Bureau Permanent"
+
+#. Default: "Meeting item template CAS"
+msgid "MeetingItemTemplatecas"
+msgstr "Modèle de point Conseil de l'Action Sociale"
+
+#. Default: "Meeting item template Comitee"
+msgid "MeetingItemTemplatecomitee"
+msgstr "Modèle de point Comité de Concertation"
+
+#. Default: "Meeting item BP"
+msgid "MeetingItembp"
+msgstr "Point Bureau Permanent"
+
+#. Default: "Meeting item CAS"
+msgid "MeetingItemcas"
+msgstr "Point Conseil de l'Action Sociale"
+
+#. Default: "Meeting item Comitee"
+msgid "MeetingItemcomitee"
+msgstr "Point Comité de Concertation"
+
+#. Default: "Meeting BP"
+msgid "Meetingbp"
+msgstr "Séance du Bureau Permanent"
+
+#. Default: "Meeting CAS"
+msgid "Meetingcas"
+msgstr "Séance du Conseil de l'Action Sociale"
+
+#. Default: "Meeting Comitee"
+msgid "Meetingcomitee"
+msgstr "Séance du Comité de Concertation"
+
+#. Default: "Create an item CAS from an item BP"
+msgid "create_to_meeting-config-cas_from_meeting-config-bp"
+msgstr "Envoyer vers CAS"
+
+#. Default: "Create an item college from an item council"
+msgid "create_to_meeting-config-college_from_meeting-config-council"
+msgstr "Envoyer vers Collège Communal"
+
+#. Default: "Create an item council from an item college"
+msgid "create_to_meeting-config-council_from_meeting-config-college"
+msgstr "Envoyer vers Conseil Communal"
+
+#. Default: "Frozen"
+msgid "frozen"
+msgstr "Gelée"
+
+#. Default: "Itemfrozen"
+msgid "itemfrozen"
+msgstr "Gelé"
+

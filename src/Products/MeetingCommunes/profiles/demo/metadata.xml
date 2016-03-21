@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<metadata>
+  <version>0.1</version>
+  <dependencies>
+    <dependency>profile-Products.MeetingCommunes:examples_fr</dependency>
+  </dependencies>
+</metadata>

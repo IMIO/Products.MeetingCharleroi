@@ -1,0 +1,54 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2005-05-17 15:00-100\n"
+"PO-Revision-Date: 2009-04-06 13:00+0100\n"
+"Last-Translator: ???\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: nl\n"
+"Language-Name: Nederlands\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: PloneMeeting\n"
+"X-is-fallback-for: nl-be\n"
+
+#. Default: "The item has been accepted with modifications."
+msgid "accept_but_modify_done_descr"
+msgstr ""
+
+#. Default: "The meeting has been set back to 'created'."
+msgid "backToCreated_done_descr"
+msgstr ""
+
+#. Default: "The meeting has been set back to 'decided', it can be edited again."
+msgid "backToDecided_done_descr"
+msgstr ""
+
+#. Default: "The meeting has been set back to 'decisions published'."
+msgid "backToDecisionsPublished_done_descr"
+msgstr ""
+
+#. Default: "The meeting has been set back to 'frozen'."
+msgid "backToFrozen_done_descr"
+msgstr ""
+
+#. Default: "The meeting is now closed, every items for wich no decisions had been taken, have been automatically accepted."
+#, fuzzy
+msgid "close_done_descr"
+msgstr "Sluit klaar scherm"
+
+#. Default: "You can now decide the items and write reports."
+msgid "decide_done_descr"
+msgstr ""
+
+#. Default: "The item has been pre accepted."
+msgid "pre_accept_done_descr"
+msgstr ""
+
+#. Default: "Decisions have been published and are now visible to relevant proposing groups."
+msgid "publish_decisions_done_descr"
+msgstr ""
+

@@ -1,0 +1,170 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2007-08-29 07:12-100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: plone\n"
+"Language-code: en\n"
+"Language-name: English\n"
+"Preferred-encodings: utf-8 latin1\n"
+"X-is-fallback-for: en-us en-ca\n"
+
+#. Default: "MeetingCA"
+msgid "MeetingCA"
+msgstr ""
+
+#. Default: "MeetingCOGES"
+msgid "MeetingCOGES"
+msgstr ""
+
+#. Default: "MeetingCoDir"
+msgid "MeetingCoDir"
+msgstr ""
+
+#. Default: "MeetingCollege"
+msgid "MeetingCollege"
+msgstr "City college meeting"
+
+#. Default: "MeetincCouncil"
+msgid "MeetingCouncil"
+msgstr "City council meeting"
+
+#. Default: "MeetingItemCA"
+msgid "MeetingItemCA"
+msgstr ""
+
+#. Default: "MeetingItemCOGES"
+msgid "MeetingItemCOGES"
+msgstr ""
+
+#. Default: "MeetingItemCoDir"
+msgid "MeetingItemCoDir"
+msgstr ""
+
+#. Default: "MeetingItemCollege"
+msgid "MeetingItemCollege"
+msgstr "College item"
+
+#. Default: "MeetingItemCouncil"
+msgid "MeetingItemCouncil"
+msgstr "Council item"
+
+#. Default: "MeetingItemRecurringCA"
+msgid "MeetingItemRecurringCA"
+msgstr ""
+
+#. Default: "MeetingItemRecurringCOGES"
+msgid "MeetingItemRecurringCOGES"
+msgstr ""
+
+#. Default: "MeetingItemRecurringCoDir"
+msgid "MeetingItemRecurringCoDir"
+msgstr ""
+
+#. Default: "MeetingItemRecurringCollege"
+msgid "MeetingItemRecurringCollege"
+msgstr ""
+
+#. Default: "MeetingItemRecurringCouncil"
+msgid "MeetingItemRecurringCouncil"
+msgstr ""
+
+#. Default: "Meeting item recurring BP"
+msgid "MeetingItemRecurringbp"
+msgstr ""
+
+#. Default: "Meeting item recurring CAS"
+msgid "MeetingItemRecurringcas"
+msgstr ""
+
+#. Default: "Meeting item recurring Comitee"
+msgid "MeetingItemRecurringcomitee"
+msgstr ""
+
+#. Default: "MeetingItemTemplateCA"
+msgid "MeetingItemTemplateCA"
+msgstr ""
+
+#. Default: "MeetingItemTemplateCOGES"
+msgid "MeetingItemTemplateCOGES"
+msgstr ""
+
+#. Default: "MeetingItemTemplateCoDir"
+msgid "MeetingItemTemplateCoDir"
+msgstr ""
+
+#. Default: "MeetingItemTemplateCollege"
+msgid "MeetingItemTemplateCollege"
+msgstr ""
+
+#. Default: "MeetingItemTemplateCouncil"
+msgid "MeetingItemTemplateCouncil"
+msgstr ""
+
+#. Default: "Meeting item template BP"
+msgid "MeetingItemTemplatebp"
+msgstr ""
+
+#. Default: "Meeting item template CAS"
+msgid "MeetingItemTemplatecas"
+msgstr ""
+
+#. Default: "Meeting item template Comitee"
+msgid "MeetingItemTemplatecomitee"
+msgstr ""
+
+#. Default: "Meeting item BP"
+msgid "MeetingItembp"
+msgstr ""
+
+#. Default: "Meeting item CAS"
+msgid "MeetingItemcas"
+msgstr ""
+
+#. Default: "Meeting item Comitee"
+msgid "MeetingItemcomitee"
+msgstr ""
+
+#. Default: "Meeting BP"
+msgid "Meetingbp"
+msgstr ""
+
+#. Default: "Meeting CAS"
+msgid "Meetingcas"
+msgstr ""
+
+#. Default: "Meeting Comitee"
+msgid "Meetingcomitee"
+msgstr ""
+
+#. Default: "Create an item CAS from an item BP"
+msgid "create_to_meeting-config-cas_from_meeting-config-bp"
+msgstr ""
+
+#. Default: "Create an item college from an item council"
+msgid "create_to_meeting-config-college_from_meeting-config-council"
+msgstr ""
+
+#. Default: "Create an item council from an item college"
+msgid "create_to_meeting-config-council_from_meeting-config-college"
+msgstr ""
+
+#. Default: "Frozen"
+#, fuzzy
+msgid "frozen"
+msgstr "Frozen"
+
+#. Default: "Itemfrozen"
+#, fuzzy
+msgid "itemfrozen"
+msgstr "frozen"
+

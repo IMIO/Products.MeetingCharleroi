@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<object name="portal_skins"
+        meta_type="Plone Skins Tool"
+        allow_any="False"
+        cookie_persistence="False"
+        request_varname="plone_skin">
+
+ <object name="meetingcommunes_images"
+         meta_type="Filesystem Directory View"
+         directory="MeetingCommunes/skins/meetingcommunes_images"/>
+ <object name="meetingcommunes_styles"
+         meta_type="Filesystem Directory View"
+         directory="MeetingCommunes/skins/meetingcommunes_styles"/>
+ <object name="meetingcommunes_templates"
+         meta_type="Filesystem Directory View"
+         directory="MeetingCommunes/skins/meetingcommunes_templates"/>
+ 
+ <skin-path name="*">
+  <layer insert-after="custom" 
+         name="meetingcommunes_images"/>
+  <layer insert-after="custom" 
+         name="meetingcommunes_styles"/>
+  <layer insert-after="custom" 
+         name="meetingcommunes_templates"/>
+ </skin-path>
+
+</object>

@@ -1,0 +1,56 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2005-05-17 15:00-100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: PloneMeeting\n"
+"Language-code: fr\n"
+"Language-name: French\n"
+"Preferred-encodings: utf-8 latin1\n"
+"X-is-fallback-for: fr-be fr-ca fr-lu fr-mc fr-ch fr-fr\n"
+
+#. Default: "The item has been accepted with modifications."
+msgid "accept_but_modify_done_descr"
+msgstr "Le point a été accepté avec modifications."
+
+#. Default: "The meeting has been set back to 'created'."
+msgid "backToCreated_done_descr"
+msgstr "Vous venez d'annuler le gel de l'ordre du jour."
+
+#. Default: "The meeting has been set back to 'decided', it can be edited again."
+msgid "backToDecided_done_descr"
+msgstr "Vous pouvez à nouveau modifier le procès-verbal."
+
+#. Default: "The meeting has been set back to 'decisions published'."
+msgid "backToDecisionsPublished_done_descr"
+msgstr "La séance a été remise en \"Décisions publiées\""
+
+#. Default: "The meeting has been set back to 'frozen'."
+msgid "backToFrozen_done_descr"
+msgstr "Vous ne pouvez plus rédiger le Procès-verbal pour l'instant."
+
+#. Default: "The meeting is now closed, every items for wich no decisions had been taken, have been automatically accepted."
+msgid "close_done_descr"
+msgstr "Le procès-verbal est maintenant clôturé, tous les points pour lesquels aucune décision n'avait été prise ont été automatiquement acceptés."
+
+#. Default: "You can now decide the items and write reports."
+msgid "decide_done_descr"
+msgstr "Vous pouvez maintenant rédiger le Procès-verbal de cette séance."
+
+#. Default: "The item has been pre accepted."
+msgid "pre_accept_done_descr"
+msgstr "Le point a été accepté provisoirement."
+
+#. Default: "Decisions have been published and are now visible to relevant proposing groups."
+msgid "publish_decisions_done_descr"
+msgstr "Les décisions ont été publiées et sont maintenant visibles par les personnes pouvant voir le point."
+

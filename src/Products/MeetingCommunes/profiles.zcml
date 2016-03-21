@@ -1,0 +1,96 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="MeetingCommunes">
+
+  <include package="Products.GenericSetup" file="meta.zcml" />
+
+  <!-- ##code-section profiles.zcml-top #fill in your manual code here -->
+  <!-- ##/code-section profiles.zcml-top -->
+
+  <genericsetup:registerProfile
+      name="default"
+      title="MeetingCommunes"
+      directory="profiles/default"
+      description="Extension profile for MeetingCommunes."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+  
+  <!-- ##code-section profiles.zcml-bottom #fill in your manual code here -->
+  <genericsetup:registerProfile
+   name="demo"
+   title="PloneMeeting / Demo profile for Communes with french examples"
+   description="Demo profile for Communes with french examples"
+   provides="Products.GenericSetup.interfaces.EXTENSION"
+   for="Products.CMFPlone.interfaces.IPloneSiteRoot"/>
+
+  <genericsetup:registerProfile
+   name="examples_fr"
+   title="PloneMeeting / Communes with french examples"
+   directory="profiles/examples_fr"
+   description="PloneMeeting for City College and Council (Belgium)"
+   provides="Products.GenericSetup.interfaces.EXTENSION"
+   for="Products.CMFPlone.interfaces.IPloneSiteRoot"/>
+
+  <genericsetup:registerProfile
+   name="zca"
+   title="PloneMeeting / CA"
+   description="PloneMeeting for CA (Belgium)"
+   provides="Products.GenericSetup.interfaces.EXTENSION"
+   for="Products.CMFPlone.interfaces.IPloneSiteRoot"/>
+
+  <genericsetup:registerProfile
+   name="zbourgmestre"
+   title="PloneMeeting / Bourgmestre"
+   description="PloneMeeting for Bourgmestre (Belgium)"
+   provides="Products.GenericSetup.interfaces.EXTENSION"
+   for="Products.CMFPlone.interfaces.IPloneSiteRoot"/>
+
+  <genericsetup:registerProfile
+   name="zcodir"
+   title="PloneMeeting / CoDir"
+   description="PloneMeeting for CoDir (Belgium)"
+   provides="Products.GenericSetup.interfaces.EXTENSION"
+   for="Products.CMFPlone.interfaces.IPloneSiteRoot"/>
+
+  <genericsetup:registerProfile
+   name="zcoges"
+   title="PloneMeeting / CoGes"
+   description="PloneMeeting for CoGes (Belgium)"
+   provides="Products.GenericSetup.interfaces.EXTENSION"
+   for="Products.CMFPlone.interfaces.IPloneSiteRoot"/>
+
+  <genericsetup:registerProfile
+   name="zcpas"
+   title="PloneMeeting / CPAS"
+   description="PloneMeeting for CPAS (Belgium)"
+   provides="Products.GenericSetup.interfaces.EXTENSION"
+   for="Products.CMFPlone.interfaces.IPloneSiteRoot"/>
+
+  <genericsetup:upgradeStep
+      title="Go to MeetingCommunes 3.2.0"
+      description=""
+      source="3.1.0"
+      destination="3.2.0"
+      handler="Products.MeetingCommunes.migrations.migrate_to_3_2_0.migrate"
+      profile="Products.MeetingCommunes:default" />
+
+  <genericsetup:upgradeStep
+      title="Go to MeetingCommunes 3.3"
+      description=""
+      source="3.2.0.1"
+      destination="3.3"
+      handler="Products.MeetingCommunes.migrations.migrate_to_3_3.migrate"
+      profile="Products.MeetingCommunes:default" />
+
+  <genericsetup:upgradeStep
+      title="Go to MeetingCommunes 3.4"
+      description=""
+      source="3.3"
+      destination="3.4"
+      handler="Products.MeetingCommunes.migrations.migrate_to_3_4.migrate"
+      profile="Products.MeetingCommunes:default" />
+
+  <!-- ##/code-section profiles.zcml-bottom -->
+
+</configure>
