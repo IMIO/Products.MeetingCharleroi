@@ -44,6 +44,11 @@ DEPENDENCIES = []
 PRODUCT_DEPENDENCIES = []
 
 ##code-section config-bottom #fill in your manual code here
+from Products.PloneMeeting import config as PMconfig
+CHARLEROIROLES = {}
+CHARLEROIROLES['serviceheads'] = 'MeetingServiceHead'
+PMconfig.MEETINGROLES.update(CHARLEROIROLES)
+PMconfig.MEETING_GROUP_SUFFIXES = PMconfig.MEETINGROLES.keys()
 # Define PloneMeeting-specific permissions
 AddAnnex = 'PloneMeeting: Add annex'
 setDefaultRoles(AddAnnex, ('Manager', 'Owner'))
