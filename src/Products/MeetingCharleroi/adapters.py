@@ -46,8 +46,7 @@ from Products.MeetingCharleroi.interfaces import \
 from Products.PloneMeeting.utils import checkPermission
 from Products.CMFCore.permissions import ReviewPortalContent
 from Products.PloneMeeting.model import adaptations
-from Products.PloneMeeting.model.adaptations import WF_DOES_NOT_EXIST_WARNING, \
-    WF_APPLIED, grantPermission
+from Products.PloneMeeting.model.adaptations import WF_APPLIED, grantPermission
 from Products.PloneMeeting.interfaces import IAnnexable
 
 # Names of available workflow adaptations.
@@ -59,7 +58,7 @@ if 'creator_initiated_decisions' in customwfAdaptations:
 if 'archiving' in customwfAdaptations:
     customwfAdaptations.remove('archiving')
 
-customwfAdaptations.append('charleroi_adaptation')
+customwfAdaptations.append('charleroi_add_servicehead')
 
 MeetingConfig.wfAdaptations = customwfAdaptations
 originalPerformWorkflowAdaptations = adaptations.performWorkflowAdaptations
@@ -75,123 +74,6 @@ adaptations.WF_NOT_CREATOR_EDITS_UNLESS_CLOSED = ('delayed', 'refused', 'accepte
 
 RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = {'meetingitemcommunes_workflow': 'meetingitemcommunes_workflow.itemcreated'}
 adaptations.RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE
-
-
-def customPerformWorkflowAdaptations(site, meetingConfig, logger, specificAdaptation=None):
-    '''This function applies workflow changes as specified by the
-       p_meetingConfig.'''
-
-    wfAdaptations = specificAdaptation and [specificAdaptation, ] or meetingConfig.getWorkflowAdaptations()
-
-    #while reinstalling a separate profile, the workflow could not exist
-    wfTool = getToolByName(site, 'portal_workflow')
-    meetingWorkflow = getattr(wfTool, meetingConfig.getMeetingWorkflow(), None)
-    if not meetingWorkflow:
-        logger.warning(WF_DOES_NOT_EXIST_WARNING % meetingConfig.getMeetingWorkflow())
-        return
-    itemWorkflow = getattr(wfTool, meetingConfig.getItemWorkflow(), None)
-    if not itemWorkflow:
-        logger.warning(WF_DOES_NOT_EXIST_WARNING % meetingConfig.getItemWorkflow())
-        return
-
-    error = meetingConfig.validate_workflowAdaptations(wfAdaptations)
-    if error:
-        raise Exception(error)
-
-    for wfAdaptation in wfAdaptations:
-        if not wfAdaptation in ['charleroi_adaptation', ]:
-            # call original perform of PloneMeeting
-            originalPerformWorkflowAdaptations(site, meetingConfig, logger, specificAdaptation=wfAdaptation)
-        # when an item is linked to a meeting, most of times, creators lose modify rights on it
-        # with this, the item can be 'returned_to_proposing_group' when in a meeting then the creators
-        # can modify it if necessary and send it back to the MeetingManagers when done
-        elif wfAdaptation == 'charleroi_adaptation':
-            # add the 'proposed_to_servicehead' state after proposed state and before prevalidated state
-            itemStates = itemWorkflow.states
-            if 'proposed_to_servicehead' not in itemStates and 'prevalidated' in itemStates:
-                #create proposed_to_servicehead state
-                wf = itemWorkflow
-                if 'proposed_to_servicehead' not in wf.states:
-                    wf.states.addState('proposed_to_servicehead')
-                for tr in ('proposeToServiceHead', 'backToProposedToServiceHead'):
-                    if tr not in wf.transitions:
-                        wf.transitions.addTransition(tr)
-                transition = wf.transitions['proposeToServiceHead']
-                transition.setProperties(
-                    title='proposeToServiceHead',
-                    new_state_id='proposed_to_servicehead', trigger_type=1, script_name='',
-                    actbox_name='proposeToServiceHead', actbox_url='',
-                    actbox_icon='%(portal_url)s/proposeToServiceHead.png', actbox_category='workflow',
-                    props={'guard_expr': 'python:here.wfConditions().mayProposeToServiceHead()'})
-                transition = wf.transitions['backToProposedToServiceHead']
-                transition.setProperties(
-                    title='backToProposedToServiceHead',
-                    new_state_id='proposed_to_servicehead', trigger_type=1, script_name='',
-                    actbox_name='backToProposedToServiceHead', actbox_url='',
-                    actbox_icon='%(portal_url)s/backToProposedToServiceHead.png', actbox_category='workflow',
-                    props={'guard_expr': 'python:here.wfConditions().mayCorrect()'})
-                # Update connections between states and transitions
-                wf.states['proposed'].setProperties(
-                    title='proposed', description='',
-                    transitions=['backToItemCreated', 'proposeToServiceHead'])
-                wf.states['proposed_to_servicehead'].setProperties(
-                    title='proposed_to_servicehead', description='',
-                    transitions=['backToProposed', 'prevalidate'])
-                wf.states['prevalidated'].setProperties(
-                    title='prevalidated', description='',
-                    transitions=['backToProposedToServiceHead', 'validate'])
-                # Initialize permission->roles mapping for new state "proposed_to_servicehead",
-                # which is the same as state "proposed" in the previous setting.
-                proposed = wf.states['proposed']
-                proposed_to_servicehead = wf.states['prevalidated']
-                for permission, roles in proposed.permission_roles.iteritems():
-                    proposed_to_servicehead.setPermission(permission, 0, roles)
-                # Update permission->roles mappings for states 'proposed' and
-                # 'proposed_to_servicehead': 'proposed' is 'mainly managed' by
-                # 'MeetingServiceHead', while 'proposed_to_servicehead' is "mainly managed" by
-                # 'MeetingPreReviewer'.
-                for permission in proposed.permission_roles.iterkeys():
-                    roles = list(proposed.permission_roles[permission])
-                    if 'MeetingPreReviewer' not in roles:
-                        continue
-                    roles.remove('MeetingPreReviewer')
-                    roles.append('MeetingServiceHead')
-                    proposed.setPermission(permission, 0, roles)
-                for permission in proposed_to_servicehead.permission_roles.iterkeys():
-                    roles = list(proposed_to_servicehead.permission_roles[permission])
-                    if 'MeetingServiceHead' not in roles:
-                        continue
-                    roles.remove('MeetingServiceHead')
-                    roles.append('MeetingPreReviewer')
-                    proposed_to_servicehead.setPermission(permission, 0, roles)
-                # The previous update on state 'proposed_to_servicehead' was a bit too restrictive:
-                # it prevents the MeetingServiceHead from consulting the item once it has been
-                # proposed_to_servicehead. So here we grant him back this right.
-                for viewPerm in ('View', 'Access contents information'):
-                    grantPermission(proposed_to_servicehead, viewPerm, 'MeetingServiceHead')
-                # Update permission->role mappings for every other state, taking into
-                # account new role 'MeetingPreReviewer'. The idea is: later in the
-                # workflow, MeetingReviewer and MeetingPreReviewer are granted exactly
-                # the same rights.
-                for stateName in wf.states.keys():
-                    if stateName in ('itemcreated', 'proposed', 'prevalidated'):
-                        continue
-                    state = wf.states[stateName]
-                    for permission in state.permission_roles.iterkeys():
-                        roles = state.permission_roles[permission]
-                        if ('MeetingReviewer' in roles) and \
-                           ('MeetingPreReviewer' not in roles):
-                            grantPermission(state, permission, 'MeetingPreReviewer')
-                # Transition "backToProposedToServiceHead" must be protected by a popup, like
-                # any other "correct"-like transition.
-                toConfirm = meetingConfig.getTransitionsToConfirm()
-                if 'MeetingItem.backToProposedToServiceHead' not in toConfirm:
-                    toConfirm = list(toConfirm)
-                    toConfirm.append('MeetingItem.backToProposedToServiceHead')
-                    meetingConfig.setTransitionsToConfirm(toConfirm)
-            logger.info(WF_APPLIED % ("charleroi_adaptation", meetingConfig.getId()))
-
-adaptations.performWorkflowAdaptations = customPerformWorkflowAdaptations
 
 
 def formatedAssembly(assembly, focus):
@@ -987,6 +869,13 @@ class MeetingItemCollegeWorkflowConditions(MeetingItemWorkflowConditions):
             res = True
         return res
 
+    security.declarePublic('mayDecide')
+
+    def mayProposeToServiceHead(self):
+        res = False
+        if checkPermission(ReviewPortalContent, self.context):
+            res = True
+        return res
 
 class MeetingCouncilWorkflowActions(MeetingCollegeWorkflowActions):
     '''Adapter that adapts a meeting item implementing IMeetingItem to the
@@ -1073,6 +962,17 @@ class MeetingItemCouncilWorkflowConditions(MeetingItemCollegeWorkflowConditions)
             res = True
         return res
 
+    security.declarePublic('mayDecide')
+
+    def mayProposeToServiceHead(self):
+        """
+          Check that the user has the 'Review portal content'
+        """
+        res = False
+        if checkPermission(ReviewPortalContent, self.context):
+            res = True
+        return res
+
 
 class CustomToolPloneMeeting(ToolPloneMeeting):
     '''Adapter that adapts a tool implementing ToolPloneMeeting to the
@@ -1082,45 +982,93 @@ class CustomToolPloneMeeting(ToolPloneMeeting):
     security = ClassSecurityInfo()
 
     def performCustomWFAdaptations(self, meetingConfig, wfAdaptation, logger, itemWorkflow, meetingWorkflow):
-        """ """
-        if wfAdaptation == 'no_publication':
-            # we override the PloneMeeting's 'no_publication' wfAdaptation
-            # First, update the meeting workflow
-            wf = meetingWorkflow
-            # Delete transitions 'publish' and 'backToPublished'
-            for tr in ('publish', 'backToPublished'):
-                if tr in wf.transitions:
-                    wf.transitions.deleteTransitions([tr])
-            # Update connections between states and transitions
-            wf.states['frozen'].setProperties(
-                title='frozen', description='',
-                transitions=['backToCreated', 'decide'])
-            wf.states['decided'].setProperties(
-                title='decided', description='', transitions=['backToFrozen', 'close'])
-            # Delete state 'published'
-            if 'published' in wf.states:
-                wf.states.deleteStates(['published'])
-            # Then, update the item workflow.
-            wf = itemWorkflow
-            # Delete transitions 'itempublish' and 'backToItemPublished'
-            for tr in ('itempublish', 'backToItemPublished'):
-                if tr in wf.transitions:
-                    wf.transitions.deleteTransitions([tr])
-            # Update connections between states and transitions
-            wf.states['itemfrozen'].setProperties(
-                title='itemfrozen', description='',
-                transitions=['accept', 'accept_but_modify', 'refuse', 'delay', 'pre_accept', 'backToPresented'])
-            for decidedState in ['accepted', 'refused', 'delayed', 'accepted_but_modified']:
-                wf.states[decidedState].setProperties(
-                    title=decidedState, description='',
-                    transitions=['backToItemFrozen', ])
-            wf.states['pre_accepted'].setProperties(
-                title='pre_accepted', description='',
-                transitions=['accept', 'accept_but_modify', 'backToItemFrozen'])
-            # Delete state 'published'
-            if 'itempublished' in wf.states:
-                wf.states.deleteStates(['itempublished'])
-            logger.info(WF_APPLIED % ("no_publication", meetingConfig.getId()))
+        '''This function applies workflow changes as specified by the
+           p_meetingConfig.'''
+        if wfAdaptation == 'charleroi_add_servicehead':
+            # add the 'proposed_to_servicehead' state after proposed state and before prevalidated state
+            itemStates = itemWorkflow.states
+            if 'proposed_to_servicehead' not in itemStates and 'prevalidated' in itemStates:
+                #create proposed_to_servicehead state
+                wf = itemWorkflow
+                if 'proposed_to_servicehead' not in wf.states:
+                    wf.states.addState('proposed_to_servicehead')
+                for tr in ('proposeToServiceHead', 'backToProposedToServiceHead'):
+                    if tr not in wf.transitions:
+                        wf.transitions.addTransition(tr)
+                transition = wf.transitions['proposeToServiceHead']
+                transition.setProperties(
+                    title='proposeToServiceHead',
+                    new_state_id='proposed_to_servicehead', trigger_type=1, script_name='',
+                    actbox_name='proposeToServiceHead', actbox_url='',
+                    actbox_icon='%(portal_url)s/proposeToServiceHead.png', actbox_category='workflow',
+                    props={'guard_expr': 'python:here.wfConditions().mayProposeToServiceHead()'})
+                transition = wf.transitions['backToProposedToServiceHead']
+                transition.setProperties(
+                    title='backToProposedToServiceHead',
+                    new_state_id='proposed_to_servicehead', trigger_type=1, script_name='',
+                    actbox_name='backToProposedToServiceHead', actbox_url='',
+                    actbox_icon='%(portal_url)s/backToProposedToServiceHead.png', actbox_category='workflow',
+                    props={'guard_expr': 'python:here.wfConditions().mayCorrect()'})
+                # Update connections between states and transitions
+                wf.states['proposed'].setProperties(
+                    title='proposed', description='',
+                    transitions=['backToItemCreated', 'proposeToServiceHead'])
+                wf.states['proposed_to_servicehead'].setProperties(
+                    title='proposed_to_servicehead', description='',
+                    transitions=['backToProposed', 'prevalidate'])
+                wf.states['prevalidated'].setProperties(
+                    title='prevalidated', description='',
+                    transitions=['backToProposedToServiceHead', 'validate'])
+                # Initialize permission->roles mapping for new state "proposed_to_servicehead",
+                # which is the same as state "proposed" in the previous setting.
+                proposed = wf.states['proposed']
+                proposed_to_servicehead = wf.states['prevalidated']
+                for permission, roles in proposed.permission_roles.iteritems():
+                    proposed_to_servicehead.setPermission(permission, 0, roles)
+                # Update permission->roles mappings for states 'proposed' and
+                # 'proposed_to_servicehead': 'proposed' is 'mainly managed' by
+                # 'MeetingServiceHead', while 'proposed_to_servicehead' is "mainly managed" by
+                # 'MeetingPreReviewer'.
+                for permission in proposed.permission_roles.iterkeys():
+                    roles = list(proposed.permission_roles[permission])
+                    if 'MeetingPreReviewer' not in roles:
+                        continue
+                    roles.remove('MeetingPreReviewer')
+                    roles.append('MeetingServiceHead')
+                    proposed.setPermission(permission, 0, roles)
+                for permission in proposed_to_servicehead.permission_roles.iterkeys():
+                    roles = list(proposed_to_servicehead.permission_roles[permission])
+                    if 'MeetingServiceHead' not in roles:
+                        continue
+                    roles.remove('MeetingServiceHead')
+                    roles.append('MeetingPreReviewer')
+                    proposed_to_servicehead.setPermission(permission, 0, roles)
+                # The previous update on state 'proposed_to_servicehead' was a bit too restrictive:
+                # it prevents the MeetingServiceHead from consulting the item once it has been
+                # proposed_to_servicehead. So here we grant him back this right.
+                for viewPerm in ('View', 'Access contents information'):
+                    grantPermission(proposed_to_servicehead, viewPerm, 'MeetingServiceHead')
+                # Update permission->role mappings for every other state, taking into
+                # account new role 'MeetingServiceHead'. The idea is: later in the
+                # workflow, MeetingServiceHead and MeetingPreReviewer are granted exactly
+                # the same rights.
+                for stateName in wf.states.keys():
+                    if stateName in ('itemcreated', 'proposed', 'proposed_to_servicehead', 'prevalidated'):
+                        continue
+                    state = wf.states[stateName]
+                    for permission in state.permission_roles.iterkeys():
+                        roles = state.permission_roles[permission]
+                        if ('MeetingPreReviewer' in roles) and \
+                           ('MeetingServiceHead' not in roles):
+                            grantPermission(state, permission, 'MeetingServiceHead')
+                # Transition "backToProposedToServiceHead" must be protected by a popup, like
+                # any other "correct"-like transition.
+                toConfirm = meetingConfig.getTransitionsToConfirm()
+                if 'MeetingItem.backToProposedToServiceHead' not in toConfirm:
+                    toConfirm = list(toConfirm)
+                    toConfirm.append('MeetingItem.backToProposedToServiceHead')
+                    meetingConfig.setTransitionsToConfirm(toConfirm)
+            logger.info(WF_APPLIED % ("charleroi_add_servicehead", meetingConfig.getId()))
             return True
         return False
 
