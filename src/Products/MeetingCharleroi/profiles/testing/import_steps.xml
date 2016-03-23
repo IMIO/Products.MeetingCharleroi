@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<import-steps>
+ <import-step id="installMeetingCharleroi" version="20080501-01"
+              handler="Products.MeetingCharleroi.setuphandlers.installMeetingCharleroi"
+              title="Install MeetingCharleroi.">
+  Install MeetingCharleroi.
+ </import-step>
+ <import-step id="initializetool-MeetingCharleroi" version="20060707-01"
+              handler="Products.MeetingCharleroi.setuphandlers.initializeTool"
+              title="Initialize MeetingCharleroi with examples.">
+  <dependency step="installMeetingCharleroi"/>
+  Initialize portal_plonemeeting folders.
+ </import-step>
+
+</import-steps>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<object name="portal_skins"
+        meta_type="Plone Skins Tool"
+        allow_any="False"
+        cookie_persistence="False"
+        request_varname="plone_skin">
+
+ <object name="meetingcharleroi_images"
+         meta_type="Filesystem Directory View"
+         directory="MeetingCharleroi/skins/meetingcharleroi_images"/>
+ <object name="meetingcharleroi_styles"
+         meta_type="Filesystem Directory View"
+         directory="MeetingCharleroi/skins/meetingcharleroi_styles"/>
+ <object name="meetingcharleroi_templates"
+         meta_type="Filesystem Directory View"
+         directory="MeetingCharleroi/skins/meetingcharleroi_templates"/>
+ 
+ <skin-path name="*">
+  <layer insert-after="custom" 
+         name="meetingcharleroi_images"/>
+  <layer insert-after="custom" 
+         name="meetingcharleroi_styles"/>
+  <layer insert-after="custom" 
+         name="meetingcharleroi_templates"/>
+ </skin-path>
+
+</object>

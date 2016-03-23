@@ -3,9 +3,9 @@ import os
 
 version = '3.4dev'
 
-setup(name='Products.MeetingCommunes',
+setup(name='Products.MeetingCharleroi',
       version=version,
-      description="Official meetings management for college and council of belgian communes (PloneMeeting extension profile)",
+      description="Official meetings management for college and council of Charleroi city (PloneMeeting extension profile)",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       classifiers=[
