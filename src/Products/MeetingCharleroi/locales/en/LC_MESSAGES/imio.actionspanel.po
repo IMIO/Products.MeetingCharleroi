@@ -38,6 +38,10 @@ msgstr ""
 msgid "backToFrozen_done_descr"
 msgstr ""
 
+#. Default: "This item is return to service head"
+msgid "backToProposed_done_descr"
+msgstr ""
+
 #. Default: "The meeting is now closed, every items for wich no decisions had been taken, have been automatically accepted."
 msgid "close_done_descr"
 msgstr ""

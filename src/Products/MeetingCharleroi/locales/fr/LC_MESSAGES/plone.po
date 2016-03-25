@@ -164,11 +164,15 @@ msgstr "Séance du Comité de Concertation"
 
 #. Default: "Back to 'Pre-validated'"
 msgid "backToPrevalidated"
-msgstr "Renvoyer au référent administratif"
+msgstr "Renvoyer au directeur"
 
-#. Default: "Back to service head"
-msgid "backToProposedToServiceHead"
+#. Default: "Back to 'Proposed'"
+msgid "backToProposed"
 msgstr "Renvoyer au chef de service"
+
+#. Default: "Back to admin referent"
+msgid "backToProposedToRefAdmin"
+msgstr "Renvoyer au référent administratif"
 
 #. Default: "Create an item CAS from an item BP"
 msgid "create_to_meeting-config-cas_from_meeting-config-bp"
@@ -192,16 +196,24 @@ msgstr "Gelé"
 
 #. Default: "Pre-validate"
 msgid "prevalidate"
-msgstr "Proposer au référent administratif"
+msgstr "Proposer au directeur"
 
 #. Default: "Pre-validated"
 msgid "prevalidated"
-msgstr "Proposé au référent administratif"
+msgstr "Proposé au directeur"
 
-#. Default: "Propose to service head"
-msgid "proposeToServiceHead"
-msgstr "Proposer au chef de service"
+#. Default: "Propose"
+msgid "propose"
+msgstr "Proposer au chef de service "
 
-#. Default: "Proposed to service head"
-msgid "proposed_to_servicehead"
+#. Default: "Propose to referent admin"
+msgid "proposeToRefAdmin"
+msgstr "Proposer au référent administratif"
+
+#. Default: "Proposed"
+msgid "proposed"
 msgstr "Proposé au chef de service"
+
+#. Default: "Proposed to admin referent"
+msgid "proposed_to_refadmin"
+msgstr "Proposé au référent administratif"

@@ -46,9 +46,9 @@ msgstr "<p>Avant de tester, nous vous recommandons de lire la <span class=\"link
 msgid "icon_help_prevalidated"
 msgstr ""
 
-#. Default: "Proposed to service head"
-msgid "icon_help_proposed_to_servicehead"
-msgstr "Proposé au chef de service"
+#. Default: "Proposed to admin referent"
+msgid "icon_help_proposed_to_refadmin"
+msgstr "Proposé au référent administratif"
 
 #. Default: "If you check this box, when a meeting will be decided, if an item does not have a decision defined, this decision will be automatically filled with title and description of the item"
 msgid "init_item_decision_if_empty_on_decide"
@@ -62,9 +62,18 @@ msgstr "Référent administratif"
 msgid "prereviewers"
 msgstr "Référents administratif"
 
+#. Default: "Validator"
+msgid "reviewer"
+msgstr "Directeur"
+
+# Suffix
+#. Default: "reviewers"
+msgid "reviewers"
+msgstr "Directeurs"
+
 #. Default: "Items to pre validate"
 msgid "searchitemstoprevalidate"
-msgstr "Points du référent administratif"
+msgstr "Points proposé au référent administratif"
 
 # searches
 #. Default: "Synthesis finance advices"
@@ -74,7 +83,7 @@ msgstr "Synthèse Avis DF"
 # searches
 #. Default: "Proposed items"
 msgid "searchproposeditems"
-msgstr "Points proposés"
+msgstr "Points proposé au chef de service"
 
 #. Default: "Validated items"
 msgid "searchvalidateditems"
@@ -101,6 +110,6 @@ msgid "sendto_meeting-config-council_success"
 msgstr "Le point a été envoyé au Conseil communal."
 
 # Suffix
-#. Default: "service heads"
+#. Default: "Service heads"
 msgid "serviceheads"
 msgstr "Chefs de service"

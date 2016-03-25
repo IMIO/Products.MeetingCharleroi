@@ -159,16 +159,16 @@ msgstr ""
 msgid "create_to_meeting-config-cas_from_meeting-config-bp"
 msgstr ""
 
-#. Default: "Back to service head"
-msgid "backToProposedToServiceHead"
+#. Default: "Back to admin referent"
+msgid "backToProposedToRefAdmin"
 msgstr ""
 
-#. Default: "Propose to service head"
-msgid "proposeToServiceHead"
+#. Default: "Propose to referent admin"
+msgid "proposeToRefAdmin"
 msgstr ""
 
-#. Default: "Proposed to service head"
-msgid "proposed_to_servicehead"
+#. Default: "Proposed to admin referent"
+msgid "proposed_to_refadmin"
 msgstr ""
 
 #. Default: "MeetingItemBourgmestre"
@@ -197,4 +197,16 @@ msgstr ""
 
 #. Default: "Back to 'Pre-validated'"
 msgid "backToPrevalidated"
+msgstr ""
+
+#. Default: "Proposed"
+msgid "proposed"
+msgstr ""
+
+#. Default: "Propose"
+msgid "propose"
+msgstr ""
+
+#. Default: "Back to 'Proposed'"
+msgid "backToProposed"
 msgstr ""

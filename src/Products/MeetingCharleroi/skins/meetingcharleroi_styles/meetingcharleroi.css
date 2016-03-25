@@ -22,6 +22,17 @@
     border: 2px solid green;
 }
 
+.state-proposed_to_refadmin, .label-state-proposed_to_refadmin {
+    color: #8E2585 !important;
+}
+#plone-contentmenu-workflow .state-proposed_to_refadmin {
+    border-radius: 0.5em 0.5em 0.5em 0.5em;
+    background-color: #8E2585;
+    padding: 0 0.5em;
+    color: white !important;
+    border: 2px solid #8E2585;
+}
+
 /* make sure multiselect fields displayed on the edit form are not too long */
 div#archetypes-fieldname-echevinServices {
     max-height: 300px;

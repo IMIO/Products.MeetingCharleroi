@@ -74,12 +74,21 @@ msgid "init_item_decision_if_empty_on_decide"
 msgstr ""
 
 # Suffix
-#. Default: "service heads"
+#. Default: "Service heads"
 msgid "serviceheads"
 msgstr ""
 
-#. Default: "Proposed to service head"
-msgid "icon_help_proposed_to_servicehead"
+# Suffix
+#. Default: "reviewers"
+msgid "reviewers"
+msgstr ""
+
+#. Default: "Validator"
+msgid "reviewer"
+msgstr ""
+
+#. Default: "Proposed to admin referent"
+msgid "icon_help_proposed_to_refadmin"
 msgstr ""
 
 #. Default: "Items to pre validate"

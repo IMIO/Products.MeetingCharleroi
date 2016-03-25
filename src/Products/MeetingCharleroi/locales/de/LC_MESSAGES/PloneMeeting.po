@@ -45,8 +45,8 @@ msgstr ""
 msgid "icon_help_prevalidated"
 msgstr ""
 
-#. Default: "Proposed to service head"
-msgid "icon_help_proposed_to_servicehead"
+#. Default: "Proposed to admin referent"
+msgid "icon_help_proposed_to_refadmin"
 msgstr ""
 
 #. Default: "If you check this box, when a meeting will be decided, if an item does not have a decision defined, this decision will be automatically filled with title and description of the item"
@@ -59,6 +59,15 @@ msgstr ""
 
 #. Default: "Pre-validators"
 msgid "prereviewers"
+msgstr ""
+
+#. Default: "Validator"
+msgid "reviewer"
+msgstr ""
+
+# Suffix
+#. Default: "reviewers"
+msgid "reviewers"
 msgstr ""
 
 #. Default: "Items to pre validate"
@@ -101,6 +110,6 @@ msgid "sendto_meeting-config-council_success"
 msgstr ""
 
 # Suffix
-#. Default: "service heads"
+#. Default: "Service heads"
 msgid "serviceheads"
 msgstr ""

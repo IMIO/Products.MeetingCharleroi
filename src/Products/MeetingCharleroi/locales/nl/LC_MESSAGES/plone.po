@@ -165,8 +165,12 @@ msgstr "Comitevergadering"
 msgid "backToPrevalidated"
 msgstr ""
 
-#. Default: "Back to service head"
-msgid "backToProposedToServiceHead"
+#. Default: "Back to 'Proposed'"
+msgid "backToProposed"
+msgstr ""
+
+#. Default: "Back to admin referent"
+msgid "backToProposedToRefAdmin"
 msgstr ""
 
 #. Default: "Create an item CAS from an item BP"
@@ -199,10 +203,18 @@ msgstr ""
 msgid "prevalidated"
 msgstr ""
 
-#. Default: "Propose to service head"
-msgid "proposeToServiceHead"
+#. Default: "Propose"
+msgid "propose"
 msgstr ""
 
-#. Default: "Proposed to service head"
-msgid "proposed_to_servicehead"
+#. Default: "Propose to referent admin"
+msgid "proposeToRefAdmin"
+msgstr ""
+
+#. Default: "Proposed"
+msgid "proposed"
+msgstr ""
+
+#. Default: "Proposed to admin referent"
+msgid "proposed_to_refadmin"
 msgstr ""

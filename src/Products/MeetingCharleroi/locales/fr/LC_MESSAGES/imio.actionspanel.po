@@ -38,6 +38,10 @@ msgstr "La séance a été remise en \"Décisions publiées\""
 msgid "backToFrozen_done_descr"
 msgstr "Vous ne pouvez plus rédiger le Procès-verbal pour l'instant."
 
+#. Default: "This item is return to service head"
+msgid "backToProposed_done_descr"
+msgstr "Le point est retourné chez le chef de service"
+
 #. Default: "The meeting is now closed, every items for wich no decisions had been taken, have been automatically accepted."
 msgid "close_done_descr"
 msgstr "Le procès-verbal est maintenant clôturé, tous les points pour lesquels aucune décision n'avait été prise ont été automatiquement acceptés."
