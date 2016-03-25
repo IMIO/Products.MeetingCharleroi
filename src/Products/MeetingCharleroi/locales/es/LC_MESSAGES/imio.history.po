@@ -21,4 +21,3 @@ msgstr ""
 #. Default: "Item created from a college item."
 msgid "create_to_meeting-config-council_from_meeting-config-college_comments"
 msgstr ""
-

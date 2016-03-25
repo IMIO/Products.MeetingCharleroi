@@ -17,6 +17,10 @@ msgstr ""
 "X-is-fallback-for: nl-be\n"
 "X-Generator: Poedit 1.5.5\n"
 
+#. Default: "MeetingBourgmestre"
+msgid "MeetingBourgmestre"
+msgstr ""
+
 #. Default: "MeetingCA"
 msgid "MeetingCA"
 msgstr ""
@@ -37,6 +41,10 @@ msgstr "Collegevergadering"
 msgid "MeetingCouncil"
 msgstr "Gemeenteraadsvergadering"
 
+#. Default: "MeetingItemBourgmestre"
+msgid "MeetingItemBourgmestre"
+msgstr ""
+
 #. Default: "MeetingItemCA"
 msgid "MeetingItemCA"
 msgstr ""
@@ -56,6 +64,10 @@ msgstr "Item collegevergadering"
 #. Default: "MeetingItemCouncil"
 msgid "MeetingItemCouncil"
 msgstr "Item gemeenteraadsvergadering"
+
+#. Default: "MeetingItemRecurringBourgmestre"
+msgid "MeetingItemRecurringBourgmestre"
+msgstr ""
 
 #. Default: "MeetingItemRecurringCA"
 msgid "MeetingItemRecurringCA"
@@ -87,6 +99,10 @@ msgstr ""
 
 #. Default: "Meeting item recurring Comitee"
 msgid "MeetingItemRecurringcomitee"
+msgstr ""
+
+#. Default: "MeetingItemTemplateBourgmestre"
+msgid "MeetingItemTemplateBourgmestre"
 msgstr ""
 
 #. Default: "MeetingItemTemplateCA"
@@ -145,6 +161,10 @@ msgstr ""
 msgid "Meetingcomitee"
 msgstr "Comitevergadering"
 
+#. Default: "Back to service head"
+msgid "backToProposedToServiceHead"
+msgstr ""
+
 #. Default: "Create an item CAS from an item BP"
 msgid "create_to_meeting-config-cas_from_meeting-config-bp"
 msgstr ""
@@ -167,3 +187,10 @@ msgstr "Bevroren"
 msgid "itemfrozen"
 msgstr "Item bevroren"
 
+#. Default: "Propose to service head"
+msgid "proposeToServiceHead"
+msgstr ""
+
+#. Default: "Proposed to service head"
+msgid "proposed_to_servicehead"
+msgstr ""

@@ -72,3 +72,12 @@ msgstr ""
 #. Default: "If you check this box, when a meeting will be decided, if an item does not have a decision defined, this decision will be automatically filled with title and description of the item"
 msgid "init_item_decision_if_empty_on_decide"
 msgstr ""
+
+# Suffix
+#. Default: "service heads"
+msgid "serviceheads"
+msgstr ""
+
+#. Default: "Proposed to service head"
+msgid "icon_help_proposed_to_servicehead"
+msgstr ""

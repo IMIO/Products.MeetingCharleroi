@@ -53,4 +53,3 @@ msgstr "Le point a été accepté provisoirement."
 #. Default: "Decisions have been published and are now visible to relevant proposing groups."
 msgid "publish_decisions_done_descr"
 msgstr "Les décisions ont été publiées et sont maintenant visibles par les personnes pouvant voir le point."
-

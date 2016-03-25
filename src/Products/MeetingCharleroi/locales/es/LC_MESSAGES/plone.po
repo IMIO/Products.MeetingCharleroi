@@ -18,6 +18,10 @@ msgstr ""
 "Domain: plone\n"
 "X-Is-Fallback-For: es-ar es-bo es-cl es-co es-cr es-do es-ec es-es es-sv es-gt es-hn es-mx es-ni es-pa es-py es-pe es-pr es-us es-uy es-ve\n"
 
+#. Default: "MeetingBourgmestre"
+msgid "MeetingBourgmestre"
+msgstr ""
+
 #. Default: "MeetingCA"
 msgid "MeetingCA"
 msgstr ""
@@ -38,6 +42,10 @@ msgstr "Reunión del Colegio Comunal"
 msgid "MeetingCouncil"
 msgstr "Reunión del Consejo Comunal"
 
+#. Default: "MeetingItemBourgmestre"
+msgid "MeetingItemBourgmestre"
+msgstr ""
+
 #. Default: "MeetingItemCA"
 msgid "MeetingItemCA"
 msgstr ""
@@ -57,6 +65,10 @@ msgstr "Tema Colegio"
 #. Default: "MeetingItemCouncil"
 msgid "MeetingItemCouncil"
 msgstr "Tema Consejo"
+
+#. Default: "MeetingItemRecurringBourgmestre"
+msgid "MeetingItemRecurringBourgmestre"
+msgstr ""
 
 #. Default: "MeetingItemRecurringCA"
 msgid "MeetingItemRecurringCA"
@@ -88,6 +100,10 @@ msgstr ""
 
 #. Default: "Meeting item recurring Comitee"
 msgid "MeetingItemRecurringcomitee"
+msgstr ""
+
+#. Default: "MeetingItemTemplateBourgmestre"
+msgid "MeetingItemTemplateBourgmestre"
 msgstr ""
 
 #. Default: "MeetingItemTemplateCA"
@@ -146,6 +162,10 @@ msgstr "Reunión de Consejo Social"
 msgid "Meetingcomitee"
 msgstr "Reunión de Comité de Concertación"
 
+#. Default: "Back to service head"
+msgid "backToProposedToServiceHead"
+msgstr ""
+
 #. Default: "Create an item CAS from an item BP"
 msgid "create_to_meeting-config-cas_from_meeting-config-bp"
 msgstr ""
@@ -168,3 +188,10 @@ msgstr "congelado"
 msgid "itemfrozen"
 msgstr "congelado"
 
+#. Default: "Propose to service head"
+msgid "proposeToServiceHead"
+msgstr ""
+
+#. Default: "Proposed to service head"
+msgid "proposed_to_servicehead"
+msgstr ""

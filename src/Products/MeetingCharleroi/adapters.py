@@ -847,6 +847,11 @@ class MeetingItemCollegeWorkflowActions(MeetingItemWorkflowActions):
     def doPre_accept(self, stateChange):
         pass
 
+    security.declarePrivate('doProposeToServiceHead')
+
+    def doProposeToServiceHead(self, stateChange):
+        pass
+
 
 class MeetingItemCollegeWorkflowConditions(MeetingItemWorkflowConditions):
     '''Adapter that adapts a meeting item implementing IMeetingItem to the
@@ -869,13 +874,14 @@ class MeetingItemCollegeWorkflowConditions(MeetingItemWorkflowConditions):
             res = True
         return res
 
-    security.declarePublic('mayDecide')
+    security.declarePublic('mayProposeToServiceHead')
 
     def mayProposeToServiceHead(self):
         res = False
         if checkPermission(ReviewPortalContent, self.context):
             res = True
         return res
+
 
 class MeetingCouncilWorkflowActions(MeetingCollegeWorkflowActions):
     '''Adapter that adapts a meeting item implementing IMeetingItem to the
@@ -930,6 +936,11 @@ class MeetingItemCouncilWorkflowActions(MeetingItemCollegeWorkflowActions):
     implements(IMeetingItemCouncilWorkflowActions)
     security = ClassSecurityInfo()
 
+    security.declarePrivate('doProposeToServiceHead')
+
+    def doProposeToServiceHead(self, stateChange):
+        pass
+
 
 class MeetingItemCouncilWorkflowConditions(MeetingItemCollegeWorkflowConditions):
     '''Adapter that adapts a meeting item implementing IMeetingItem to the
@@ -962,7 +973,7 @@ class MeetingItemCouncilWorkflowConditions(MeetingItemCollegeWorkflowConditions)
             res = True
         return res
 
-    security.declarePublic('mayDecide')
+    security.declarePublic('mayProposeToServiceHead')
 
     def mayProposeToServiceHead(self):
         """
@@ -1022,7 +1033,7 @@ class CustomToolPloneMeeting(ToolPloneMeeting):
                 # Initialize permission->roles mapping for new state "proposed_to_servicehead",
                 # which is the same as state "proposed" in the previous setting.
                 proposed = wf.states['proposed']
-                proposed_to_servicehead = wf.states['prevalidated']
+                proposed_to_servicehead = wf.states['proposed_to_servicehead']
                 for permission, roles in proposed.permission_roles.iteritems():
                     proposed_to_servicehead.setPermission(permission, 0, roles)
                 # Update permission->roles mappings for states 'proposed' and

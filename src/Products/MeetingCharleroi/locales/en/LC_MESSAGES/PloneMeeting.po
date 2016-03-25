@@ -42,6 +42,10 @@ msgstr "Initialize the item decision when deciding meeting"
 msgid "front_page_body"
 msgstr ""
 
+#. Default: "Proposed to service head"
+msgid "icon_help_proposed_to_servicehead"
+msgstr ""
+
 #. Default: "If you check this box, when a meeting will be decided, if an item does not have a decision defined, this decision will be automatically filled with title and description of the item"
 msgid "init_item_decision_if_empty_on_decide"
 msgstr "If you check this box, when a meeting will be decided, if an item does not have a decision defined, this decision will be automatically filled with title and description of the item"
@@ -79,3 +83,7 @@ msgstr "The item has been successfully transfered to the comitee."
 msgid "sendto_meeting-config-council_success"
 msgstr "The item has been successfully transfered to the council."
 
+# Suffix
+#. Default: "service heads"
+msgid "serviceheads"
+msgstr ""

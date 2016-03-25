@@ -158,3 +158,31 @@ msgstr ""
 #. Default: "Create an item CAS from an item BP"
 msgid "create_to_meeting-config-cas_from_meeting-config-bp"
 msgstr ""
+
+#. Default: "Back to service head"
+msgid "backToProposedToServiceHead"
+msgstr ""
+
+#. Default: "Propose to service head"
+msgid "proposeToServiceHead"
+msgstr ""
+
+#. Default: "Proposed to service head"
+msgid "proposed_to_servicehead"
+msgstr ""
+
+#. Default: "MeetingItemBourgmestre"
+msgid "MeetingItemBourgmestre"
+msgstr ""
+
+#. Default: "MeetingBourgmestre"
+msgid "MeetingBourgmestre"
+msgstr ""
+
+#. Default: "MeetingItemRecurringBourgmestre"
+msgid "MeetingItemRecurringBourgmestre"
+msgstr ""
+
+#. Default: "MeetingItemTemplateBourgmestre"
+msgid "MeetingItemTemplateBourgmestre"
+msgstr ""

@@ -15,6 +15,10 @@ msgstr ""
 "Domain: plone\n"
 "X-Is-Fallback-For: de-at de-li de-lu de-ch de-de\n"
 
+#. Default: "MeetingBourgmestre"
+msgid "MeetingBourgmestre"
+msgstr ""
+
 #. Default: "MeetingCA"
 msgid "MeetingCA"
 msgstr ""
@@ -35,6 +39,10 @@ msgstr "Sitzung des Gemeindekollegiums"
 msgid "MeetingCouncil"
 msgstr "Sitzung des Gemeinderats"
 
+#. Default: "MeetingItemBourgmestre"
+msgid "MeetingItemBourgmestre"
+msgstr ""
+
 #. Default: "MeetingItemCA"
 msgid "MeetingItemCA"
 msgstr ""
@@ -54,6 +62,10 @@ msgstr "TOP Kollegium"
 #. Default: "MeetingItemCouncil"
 msgid "MeetingItemCouncil"
 msgstr "TOP Rat"
+
+#. Default: "MeetingItemRecurringBourgmestre"
+msgid "MeetingItemRecurringBourgmestre"
+msgstr ""
 
 #. Default: "MeetingItemRecurringCA"
 msgid "MeetingItemRecurringCA"
@@ -85,6 +97,10 @@ msgstr ""
 
 #. Default: "Meeting item recurring Comitee"
 msgid "MeetingItemRecurringcomitee"
+msgstr ""
+
+#. Default: "MeetingItemTemplateBourgmestre"
+msgid "MeetingItemTemplateBourgmestre"
 msgstr ""
 
 #. Default: "MeetingItemTemplateCA"
@@ -143,6 +159,10 @@ msgstr "Sitzung Sozialhilferat"
 msgid "Meetingcomitee"
 msgstr "Sitzung Konzertierungsausschuss"
 
+#. Default: "Back to service head"
+msgid "backToProposedToServiceHead"
+msgstr ""
+
 #. Default: "Create an item CAS from an item BP"
 msgid "create_to_meeting-config-cas_from_meeting-config-bp"
 msgstr ""
@@ -165,3 +185,10 @@ msgstr "Gesperrt"
 msgid "itemfrozen"
 msgstr "TOP gesperrt"
 
+#. Default: "Propose to service head"
+msgid "proposeToServiceHead"
+msgstr ""
+
+#. Default: "Proposed to service head"
+msgid "proposed_to_servicehead"
+msgstr ""
