@@ -162,6 +162,10 @@ msgstr "Séance du Conseil de l'Action Sociale"
 msgid "Meetingcomitee"
 msgstr "Séance du Comité de Concertation"
 
+#. Default: "Back to 'Pre-validated'"
+msgid "backToPrevalidated"
+msgstr "Renvoyer au référent administratif"
+
 #. Default: "Back to service head"
 msgid "backToProposedToServiceHead"
 msgstr "Renvoyer au chef de service"
@@ -185,6 +189,14 @@ msgstr "Gelée"
 #. Default: "Itemfrozen"
 msgid "itemfrozen"
 msgstr "Gelé"
+
+#. Default: "Pre-validate"
+msgid "prevalidate"
+msgstr "Proposer au référent administratif"
+
+#. Default: "Pre-validated"
+msgid "prevalidated"
+msgstr "Proposé au référent administratif"
 
 #. Default: "Propose to service head"
 msgid "proposeToServiceHead"

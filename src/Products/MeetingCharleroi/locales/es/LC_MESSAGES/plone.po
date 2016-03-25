@@ -162,6 +162,10 @@ msgstr "Reunión de Consejo Social"
 msgid "Meetingcomitee"
 msgstr "Reunión de Comité de Concertación"
 
+#. Default: "Back to 'Pre-validated'"
+msgid "backToPrevalidated"
+msgstr ""
+
 #. Default: "Back to service head"
 msgid "backToProposedToServiceHead"
 msgstr ""
@@ -187,6 +191,14 @@ msgstr "congelado"
 #, fuzzy
 msgid "itemfrozen"
 msgstr "congelado"
+
+#. Default: "Pre-validate"
+msgid "prevalidate"
+msgstr ""
+
+#. Default: "Pre-validated"
+msgid "prevalidated"
+msgstr ""
 
 #. Default: "Propose to service head"
 msgid "proposeToServiceHead"

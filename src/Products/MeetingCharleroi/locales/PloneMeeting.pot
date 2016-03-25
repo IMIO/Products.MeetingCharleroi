@@ -81,3 +81,19 @@ msgstr ""
 #. Default: "Proposed to service head"
 msgid "icon_help_proposed_to_servicehead"
 msgstr ""
+
+#. Default: "Items to pre validate"
+msgid "searchitemstoprevalidate"
+msgstr ""
+
+#. Default: "Pre-validated"
+msgid "icon_help_prevalidated"
+msgstr ""
+
+#. Default: "Pre-validator"
+msgid "prereviewer"
+msgstr ""
+
+#. Default: "Pre-validators"
+msgid "prereviewers"
+msgstr ""

@@ -186,3 +186,15 @@ msgstr ""
 #. Default: "MeetingItemTemplateBourgmestre"
 msgid "MeetingItemTemplateBourgmestre"
 msgstr ""
+
+#. Default: "Pre-validated"
+msgid "prevalidated"
+msgstr ""
+
+#. Default: "Pre-validate"
+msgid "prevalidate"
+msgstr ""
+
+#. Default: "Back to 'Pre-validated'"
+msgid "backToPrevalidated"
+msgstr ""

@@ -159,6 +159,10 @@ msgstr "Sitzung Sozialhilferat"
 msgid "Meetingcomitee"
 msgstr "Sitzung Konzertierungsausschuss"
 
+#. Default: "Back to 'Pre-validated'"
+msgid "backToPrevalidated"
+msgstr ""
+
 #. Default: "Back to service head"
 msgid "backToProposedToServiceHead"
 msgstr ""
@@ -184,6 +188,14 @@ msgstr "Gesperrt"
 #, fuzzy
 msgid "itemfrozen"
 msgstr "TOP gesperrt"
+
+#. Default: "Pre-validate"
+msgid "prevalidate"
+msgstr ""
+
+#. Default: "Pre-validated"
+msgid "prevalidated"
+msgstr ""
 
 #. Default: "Propose to service head"
 msgid "proposeToServiceHead"

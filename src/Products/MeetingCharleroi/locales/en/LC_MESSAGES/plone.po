@@ -162,6 +162,10 @@ msgstr ""
 msgid "Meetingcomitee"
 msgstr ""
 
+#. Default: "Back to 'Pre-validated'"
+msgid "backToPrevalidated"
+msgstr ""
+
 #. Default: "Back to service head"
 msgid "backToProposedToServiceHead"
 msgstr ""
@@ -187,6 +191,14 @@ msgstr "Frozen"
 #, fuzzy
 msgid "itemfrozen"
 msgstr "frozen"
+
+#. Default: "Pre-validate"
+msgid "prevalidate"
+msgstr ""
+
+#. Default: "Pre-validated"
+msgid "prevalidated"
+msgstr ""
 
 #. Default: "Propose to service head"
 msgid "proposeToServiceHead"

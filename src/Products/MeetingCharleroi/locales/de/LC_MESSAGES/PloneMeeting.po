@@ -41,12 +41,28 @@ msgstr ""
 msgid "front_page_body"
 msgstr ""
 
+#. Default: "Pre-validated"
+msgid "icon_help_prevalidated"
+msgstr ""
+
 #. Default: "Proposed to service head"
 msgid "icon_help_proposed_to_servicehead"
 msgstr ""
 
 #. Default: "If you check this box, when a meeting will be decided, if an item does not have a decision defined, this decision will be automatically filled with title and description of the item"
 msgid "init_item_decision_if_empty_on_decide"
+msgstr ""
+
+#. Default: "Pre-validator"
+msgid "prereviewer"
+msgstr ""
+
+#. Default: "Pre-validators"
+msgid "prereviewers"
+msgstr ""
+
+#. Default: "Items to pre validate"
+msgid "searchitemstoprevalidate"
 msgstr ""
 
 #. Default: "Synthesis finance advices"
