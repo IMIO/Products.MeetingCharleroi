@@ -3,6 +3,7 @@
   <version>3.4dev</version>
   <!-- ##code-section METADATA -->
   <dependencies>
+    profile-Products.MeetingCommunes:default
   </dependencies>
   <!-- ##/code-section METADATA -->
 </metadata>

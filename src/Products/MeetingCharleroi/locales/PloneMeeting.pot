@@ -106,3 +106,7 @@ msgstr ""
 #. Default: "Pre-validators"
 msgid "prereviewers"
 msgstr ""
+
+#. Default: "Add referent's admin"
+msgid "wa_charleroi_add_refadmin"
+msgstr ""

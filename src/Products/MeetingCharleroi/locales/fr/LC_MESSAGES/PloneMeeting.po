@@ -113,3 +113,7 @@ msgstr "Le point a été envoyé au Conseil communal."
 #. Default: "Service heads"
 msgid "serviceheads"
 msgstr "Chefs de service"
+
+#. Default: "Add referent's admin"
+msgid "wa_charleroi_add_refadmin"
+msgstr "Ajout du référent administratif"

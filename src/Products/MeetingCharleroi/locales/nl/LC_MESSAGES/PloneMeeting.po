@@ -111,3 +111,7 @@ msgstr ""
 #. Default: "Service heads"
 msgid "serviceheads"
 msgstr ""
+
+#. Default: "Add referent's admin"
+msgid "wa_charleroi_add_refadmin"
+msgstr ""

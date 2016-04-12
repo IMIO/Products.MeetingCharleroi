@@ -157,6 +157,10 @@ developers.observers.append(pmReviewer1)
 developers.observers.append(pmManager)
 developers.advisers.append(pmAdviser1)
 developers.advisers.append(pmManager)
+developers.serviceheads.append(pmManager)
+developers.prereviewers.append(pmManager)
+developers.serviceheads.append(pmReviewer1)
+developers.prereviewers.append(pmReviewer1)
 setattr(developers, 'signatures', 'developers signatures')
 setattr(developers, 'echevinServices', 'developers')
 # put pmReviewerLevel1 in first level of reviewers from what is in MEETINGREVIEWERS
@@ -171,6 +175,10 @@ vendors.reviewers.append(pmReviewer2)
 vendors.observers.append(pmReviewer2)
 vendors.advisers.append(pmReviewer2)
 vendors.advisers.append(pmManager)
+vendors.serviceheads.append(pmManager)
+vendors.prereviewers.append(pmManager)
+vendors.serviceheads.append(pmReviewer2)
+vendors.prereviewers.append(pmReviewer2)
 setattr(vendors, 'signatures', '')
 
 # Do voters able to see items to vote for
@@ -230,7 +238,7 @@ collegeMeeting.itemActionsInterface = 'Products.MeetingCharleroi.interfaces.IMee
 collegeMeeting.meetingConditionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCollegeWorkflowConditions'
 collegeMeeting.meetingActionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCollegeWorkflowActions'
 collegeMeeting.transitionsToConfirm = []
-collegeMeeting.transitionsForPresentingAnItem = ['propose', 'validate', 'present', ]
+collegeMeeting.transitionsForPresentingAnItem = ('propose', 'proposeToRefAdmin', 'prevalidate', 'validate', 'present', )
 collegeMeeting.onMeetingTransitionItemTransitionToTrigger = ({'meeting_transition': 'freeze',
                                                               'item_transition': 'itemfreeze'},
 
@@ -259,14 +267,15 @@ collegeMeeting.meetingAppDefaultView = 'searchallitems'
 collegeMeeting.itemDocFormats = ('odt', 'pdf')
 collegeMeeting.meetingDocFormats = ('odt', 'pdf')
 collegeMeeting.useAdvices = True
-collegeMeeting.itemAdviceStates = ['proposed', ]
-collegeMeeting.itemAdviceEditStates = ['proposed', 'validated']
+collegeMeeting.itemAdviceStates = ['prevalidated', ]
+collegeMeeting.itemAdviceEditStates = ['prevalidated', 'validated', ]
 collegeMeeting.itemAdviceViewStates = ['presented', ]
 collegeMeeting.transitionsReinitializingDelays = ('backToItemCreated', )
 collegeMeeting.enforceAdviceMandatoriness = False
 collegeMeeting.itemPowerObserversStates = ('itemcreated', 'presented', 'accepted', 'delayed', 'refused')
 collegeMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed', 'accepted_but_modified', 'pre_accepted']
-collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation']
+collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation', 'return_to_proposing_group',
+                                      'pre_validation', 'charleroi_add_refadmin']
 collegeMeeting.insertingMethodsOnAddItem = ({'insertingMethod': 'on_proposing_groups',
                                              'reverse': '0'}, )
 collegeMeeting.useGroupsAsCategories = True
@@ -362,6 +371,8 @@ councilMeeting.itemAdviceViewStates = ['presented', ]
 councilMeeting.transitionsReinitializingDelays = 'backToItemCreated'
 councilMeeting.enforceAdviceMandatoriness = False
 councilMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed', 'accepted_but_modified', 'pre_accepted']
+councilMeeting.workflowAdaptations = ['no_publication', 'no_global_observation', 'return_to_proposing_group',
+                                      'pre_validation', 'charleroi_add_refadmin']
 councilMeeting.itemPowerObserversStates = collegeMeeting.itemPowerObserversStates
 councilMeeting.meetingPowerObserversStates = collegeMeeting.meetingPowerObserversStates
 councilMeeting.useCopies = True
@@ -378,6 +389,8 @@ data = PloneMeetingConfiguration(
     meetingFolderTitle='Mes seances',
     meetingConfigs=(collegeMeeting, councilMeeting),
     groups=(developers, vendors, endUsers))
+# necessary for testSetup.test_pm_ToolAttributesAreOnlySetOnFirstImportData
+data.restrictUsers = False
 data.usersOutsideGroups = [voter1, voter2, powerobserver1, powerobserver2,
                            restrictedpowerobserver1, restrictedpowerobserver2,
                            budgetimpacteditor]

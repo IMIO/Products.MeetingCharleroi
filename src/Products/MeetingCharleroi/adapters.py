@@ -997,6 +997,24 @@ class CustomToolPloneMeeting(ToolPloneMeeting):
     def performCustomWFAdaptations(self, meetingConfig, wfAdaptation, logger, itemWorkflow, meetingWorkflow):
         '''This function applies workflow changes as specified by the
            p_meetingConfig.'''
+        if wfAdaptation == 'no_publication':
+            # we override the PloneMeeting's 'no_publication' wfAdaptation
+            # First, update the meeting workflow
+            wf = meetingWorkflow
+            # Delete transitions 'publish' and 'backToPublished'
+            for tr in ('publish', 'backToPublished'):
+                if tr in wf.transitions:
+                    wf.transitions.deleteTransitions([tr])
+            # Update connections between states and transitions
+            wf.states['frozen'].setProperties(
+                title='frozen', description='',
+                transitions=['backToCreated', 'decide'])
+            wf.states['decided'].setProperties(
+                title='decided', description='', transitions=['backToFrozen', 'close'])
+            # Delete state 'published'
+            if 'published' in wf.states:
+                wf.states.deleteStates(['published'])
+            # Then, update the item workflow.
         if wfAdaptation == 'charleroi_add_refadmin':
             # add the 'proposed_to_refadmin' state after proposed state and before prevalidated state
             itemStates = itemWorkflow.states
@@ -1018,7 +1036,7 @@ class CustomToolPloneMeeting(ToolPloneMeeting):
                 transition = wf.transitions['backToProposedToRefAdmin']
                 transition.setProperties(
                     title='backToProposedToRefAdmin',
-                    new_state_id='proposeToRefAdmin', trigger_type=1, script_name='',
+                    new_state_id='proposed_to_refadmin', trigger_type=1, script_name='',
                     actbox_name='backToProposedToRefAdmin', actbox_url='',
                     actbox_icon='%(portal_url)s/backToProposedToRefAdmin.png', actbox_category='workflow',
                     props={'guard_expr': 'python:here.wfConditions().mayCorrect()'})

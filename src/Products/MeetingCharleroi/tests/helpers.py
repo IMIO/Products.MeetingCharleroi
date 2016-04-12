@@ -34,6 +34,22 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                                                                              'publish',
                                                                              'decide',
                                                                              'close', )
+
+    TRANSITIONS_FOR_PROPOSING_ITEM_1 = ('propose',
+                                        'proposeToRefAdmin',
+                                        'prevalidate', )
+
+    TRANSITIONS_FOR_VALIDATING_ITEM_1 = ('propose',
+                                         'proposeToRefAdmin',
+                                         'prevalidate',
+                                         'validate', )
+
+    TRANSITIONS_FOR_PRESENTING_ITEM_1 = ('propose',
+                                         'proposeToRefAdmin',
+                                         'prevalidate',
+                                         'validate',
+                                         'present', )
+
     TRANSITIONS_FOR_ACCEPTING_ITEMS_1 = ('freeze', 'decide', )
     TRANSITIONS_FOR_ACCEPTING_ITEMS_2 = ('freeze', 'publish', 'decide', )
     BACK_TO_WF_PATH_1 = BACK_TO_WF_PATH_2 = {
@@ -48,15 +64,22 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                         'backToItemFrozen',
                         'backToPresented',
                         'backToValidated',
-                        'backToPreValidated',
+                        'backToPrevalidated',
+                        'backToProposedToRefAdmin',
                         'backToProposed',
                         'backToItemCreated', ),
         'proposed': ('backToItemPublished',
                      'backToItemFrozen',
                      'backToPresented',
                      'backToValidated',
-                     'backToPreValidated',
+                     'backToPrevalidated',
+                     'backToProposedToRefAdmin',
                      'backToProposed', ),
+        'prevalidated': ('backToItemPublished',
+                         'backToItemFrozen',
+                         'backToPresented',
+                         'backToValidated',
+                         'backToPrevalidated',),
         'validated': ('backToItemPublished',
                       'backToItemFrozen',
                       'backToPresented',
@@ -64,6 +87,14 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         'presented': ('backToItemPublished',
                       'backToItemFrozen',
                       'backToPresented', )}
+
+    WF_STATE_NAME_MAPPINGS = {'itemcreated': 'itemcreated',
+                              'proposed': 'prevalidated',
+                              'proposed_to_refadmin': 'proposed_to_refadmin',
+                              'prevalidated': 'prevalidated',
+                              'validated': 'validated',
+                              'presented': 'presented'}
+
     # in which state an item must be after an particular meeting transition?
     ITEM_WF_STATE_AFTER_MEETING_TRANSITION = {'publish_decisions': 'accepted',
                                               'close': 'accepted'}

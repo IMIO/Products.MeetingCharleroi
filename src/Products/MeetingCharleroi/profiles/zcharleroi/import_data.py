@@ -305,7 +305,8 @@ collegeMeeting.itemPowerObserversStates = ('itemfrozen',
                                            'accepted_but_modified',
                                            'pre_accepted')
 collegeMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed', 'accepted_but_modified', 'pre_accepted']
-collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation', 'return_to_proposing_group', 'pre_validation', 'charleroi_add_refadmin']
+collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation', 'return_to_proposing_group',
+                                      'pre_validation', 'charleroi_add_refadmin']
 collegeMeeting.transitionsForPresentingAnItem = ('propose', 'proposeToRefAdmin', 'prevalidate', 'validate', 'present', )
 collegeMeeting.onTransitionFieldTransforms = (
     ({'transition': 'delay',
@@ -536,7 +537,8 @@ councilMeeting.itemAdviceStates = ()
 councilMeeting.itemAdviceEditStates = ()
 councilMeeting.itemAdviceViewStates = ()
 councilMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed', 'accepted_but_modified', 'pre_accepted']
-councilMeeting.workflowAdaptations = ['no_publication', 'no_global_observation', 'return_to_proposing_group', 'pre_validation', 'charleroi_add_refadmin']
+councilMeeting.workflowAdaptations = ['no_publication', 'no_global_observation', 'return_to_proposing_group',
+                                      'pre_validation', 'charleroi_add_refadmin']
 councilMeeting.transitionsForPresentingAnItem = ('propose', 'proposeToRefAdmin', 'prevalidate', 'validate', 'present', )
 councilMeeting.onMeetingTransitionItemTransitionToTrigger = ({'meeting_transition': 'freeze',
                                                               'item_transition': 'itemfreeze'},
