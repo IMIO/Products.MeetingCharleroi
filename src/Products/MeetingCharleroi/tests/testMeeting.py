@@ -23,10 +23,10 @@
 #
 
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
-from Products.PloneMeeting.tests.testMeeting import testMeeting as pmtm
+from Products.MeetingCommunes.tests.testMeeting import testMeeting as mctm
 
 
-class testMeeting(MeetingCharleroiTestCase, pmtm):
+class testMeeting(MeetingCharleroiTestCase, mctm):
     """
         Tests the Meeting class methods.
     """
@@ -35,5 +35,5 @@ class testMeeting(MeetingCharleroiTestCase, pmtm):
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
-    suite.addTest(makeSuite(testMeeting, prefix='test_pm_'))
+    suite.addTest(makeSuite(testMeeting, prefix='test_'))
     return suite

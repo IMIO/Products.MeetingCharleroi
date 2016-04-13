@@ -48,18 +48,10 @@ from Products.MeetingCharleroi.interfaces import \
     IMeetingItemCharleroiCouncilWorkflowConditions, IMeetingItemCharleroiCouncilWorkflowActions,\
     IMeetingCharleroiCouncilWorkflowConditions, IMeetingCharleroiCouncilWorkflowActions
 
-# Names of available workflow adaptations.
-customwfAdaptations = list(MeetingConfig.wfAdaptations)
-# remove the 'creator_initiated_decisions' as this is always the case in our wfs
-if 'creator_initiated_decisions' in customwfAdaptations:
-    customwfAdaptations.remove('creator_initiated_decisions')
-# remove the 'archiving' as we do not handle archive in our wfs
-if 'archiving' in customwfAdaptations:
-    customwfAdaptations.remove('archiving')
-
-customwfAdaptations.append('charleroi_add_refadmin')
-
-MeetingConfig.wfAdaptations = customwfAdaptations
+# disable most of wfAdaptations
+customWfAdaptations = ('no_publication', 'no_global_observation', 'pre_validation', 'return_to_proposing_group',
+                       'charleroi_add_refadmin')
+MeetingConfig.wfAdaptations = customWfAdaptations
 originalPerformWorkflowAdaptations = adaptations.performWorkflowAdaptations
 
 # states taken into account by the 'no_global_observation' wfAdaptation

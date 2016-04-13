@@ -23,15 +23,15 @@
 #
 
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
-from Products.PloneMeeting.tests.testFaceted import testFaceted as pmtf
+from Products.MeetingCommunes.tests.testFaceted import testFaceted as mctf
 
 
-class testFaceted(MeetingCharleroiTestCase, pmtf):
+class testFaceted(MeetingCharleroiTestCase, mctf):
     '''Tests the faceted navigation.'''
 
 
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
-    suite.addTest(makeSuite(testFaceted, prefix='test_pm_'))
+    suite.addTest(makeSuite(testFaceted, prefix='test_'))
     return suite

@@ -175,8 +175,6 @@ vendors.reviewers.append(pmReviewer2)
 vendors.observers.append(pmReviewer2)
 vendors.advisers.append(pmReviewer2)
 vendors.advisers.append(pmManager)
-vendors.serviceheads.append(pmManager)
-vendors.prereviewers.append(pmManager)
 vendors.serviceheads.append(pmReviewer2)
 vendors.prereviewers.append(pmReviewer2)
 setattr(vendors, 'signatures', '')
@@ -233,10 +231,10 @@ collegeMeeting.meetingFileTypes = [annexe, annexeBudget, annexeCahier, itemAnnex
 collegeMeeting.usedItemAttributes = ('toDiscuss', 'associatedGroups', 'itemIsSigned',)
 collegeMeeting.itemWorkflow = 'meetingitemcommunes_workflow'
 collegeMeeting.meetingWorkflow = 'meetingcommunes_workflow'
-collegeMeeting.itemConditionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingItemCollegeWorkflowConditions'
-collegeMeeting.itemActionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingItemCollegeWorkflowActions'
-collegeMeeting.meetingConditionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCollegeWorkflowConditions'
-collegeMeeting.meetingActionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCollegeWorkflowActions'
+collegeMeeting.itemConditionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCollegeWorkflowConditions'
+collegeMeeting.itemActionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCollegeWorkflowActions'
+collegeMeeting.meetingConditionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCollegeWorkflowConditions'
+collegeMeeting.meetingActionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCollegeWorkflowActions'
 collegeMeeting.transitionsToConfirm = []
 collegeMeeting.transitionsForPresentingAnItem = ('propose', 'proposeToRefAdmin', 'prevalidate', 'validate', 'present', )
 collegeMeeting.onMeetingTransitionItemTransitionToTrigger = ({'meeting_transition': 'freeze',
@@ -274,7 +272,7 @@ collegeMeeting.transitionsReinitializingDelays = ('backToItemCreated', )
 collegeMeeting.enforceAdviceMandatoriness = False
 collegeMeeting.itemPowerObserversStates = ('itemcreated', 'presented', 'accepted', 'delayed', 'refused')
 collegeMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed', 'accepted_but_modified', 'pre_accepted']
-collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation', 'return_to_proposing_group',
+collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation', 
                                       'pre_validation', 'charleroi_add_refadmin']
 collegeMeeting.insertingMethodsOnAddItem = ({'insertingMethod': 'on_proposing_groups',
                                              'reverse': '0'}, )
@@ -317,12 +315,12 @@ councilMeeting.meetingFileTypes = [annexe, annexeBudget, annexeCahier,
                                    itemAnnex, annexeDecision, adviceAnnex, adviceLegalAnalysis]
 councilMeeting.itemWorkflow = 'meetingitemcommunes_workflow'
 councilMeeting.meetingWorkflow = 'meetingcommunes_workflow'
-councilMeeting.itemConditionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingItemCouncilWorkflowConditions'
-councilMeeting.itemActionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingItemCouncilWorkflowActions'
-councilMeeting.meetingConditionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCouncilWorkflowConditions'
-councilMeeting.meetingActionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCouncilWorkflowActions'
+councilMeeting.itemConditionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCouncilWorkflowConditions'
+councilMeeting.itemActionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCouncilWorkflowActions'
+councilMeeting.meetingConditionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCouncilWorkflowConditions'
+councilMeeting.meetingActionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCouncilWorkflowActions'
 councilMeeting.transitionsToConfirm = []
-councilMeeting.transitionsForPresentingAnItem = ['propose', 'validate', 'present', ]
+councilMeeting.transitionsForPresentingAnItem = ('propose', 'validate', 'present', )
 councilMeeting.onMeetingTransitionItemTransitionToTrigger = ({'meeting_transition': 'freeze',
                                                               'item_transition': 'itemfreeze'},
 
@@ -371,8 +369,8 @@ councilMeeting.itemAdviceViewStates = ['presented', ]
 councilMeeting.transitionsReinitializingDelays = 'backToItemCreated'
 councilMeeting.enforceAdviceMandatoriness = False
 councilMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed', 'accepted_but_modified', 'pre_accepted']
-councilMeeting.workflowAdaptations = ['no_publication', 'no_global_observation', 'return_to_proposing_group',
-                                      'pre_validation', 'charleroi_add_refadmin']
+#councilMeeting.workflowAdaptations = ['no_publication', 'no_global_observation', 'return_to_proposing_group',
+#                                      'pre_validation', 'charleroi_add_refadmin']
 councilMeeting.itemPowerObserversStates = collegeMeeting.itemPowerObserversStates
 councilMeeting.meetingPowerObserversStates = collegeMeeting.meetingPowerObserversStates
 councilMeeting.useCopies = True

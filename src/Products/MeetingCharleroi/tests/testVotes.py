@@ -22,24 +22,22 @@
 # 02110-1301, USA.
 #
 
-from Products.PloneMeeting.tests.testVotes import testVotes as pmtv
+from Products.MeetingCommunes.tests.testVotes import testVotes as mctv
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 
 
-class testVotes(MeetingCharleroiTestCase, pmtv):
+class testVotes(MeetingCharleroiTestCase, mctv):
     '''Tests various aspects of votes management.
        Advices are enabled for PloneMeeting Assembly, not for PloneGov Assembly.
        By default, vote are encoded by 'theVoterHimself'.'''
 
     def setUp(self):
         """ """
-        super(testVotes, self).setUp()
-        # use meetingConfig2
-        self.setMeetingConfig(self.meetingConfig2.getId())
+        mctv.setUp(self)
 
 
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
-    suite.addTest(makeSuite(testVotes, prefix='test_pm_'))
+    suite.addTest(makeSuite(testVotes, prefix='test_'))
     return suite

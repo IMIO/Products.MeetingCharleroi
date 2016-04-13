@@ -23,10 +23,10 @@
 #
 
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
-from Products.PloneMeeting.tests.testValidators import testValidators as pmtv
+from Products.MeetingCommunes.tests.testValidators import testValidators as mctv
 
 
-class testValidators(MeetingCharleroiTestCase, pmtv):
+class testValidators(MeetingCharleroiTestCase, mctv):
     """
         Tests the validators.
     """
@@ -35,5 +35,5 @@ class testValidators(MeetingCharleroiTestCase, pmtv):
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
-    suite.addTest(makeSuite(testValidators, prefix='test_pm_'))
+    suite.addTest(makeSuite(testValidators, prefix='test_'))
     return suite

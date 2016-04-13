@@ -24,6 +24,7 @@ __docformat__ = 'plaintext'
 
 from Products.CMFCore.permissions import setDefaultRoles
 ##code-section config-head #fill in your manual code here
+from collections import OrderedDict
 ##/code-section config-head
 
 
@@ -49,6 +50,12 @@ CHARLEROIROLES = {}
 CHARLEROIROLES['serviceheads'] = 'MeetingServiceHead'
 PMconfig.MEETINGROLES.update(CHARLEROIROLES)
 PMconfig.MEETING_GROUP_SUFFIXES = PMconfig.MEETINGROLES.keys()
+
+CHARLEROIMEETINGREVIEWERS = OrderedDict([('reviewers', 'prevalidated'),
+                                         ('prereviewers', 'proposed_to_refadmin'),
+                                         ('serviceheads', 'proposed'), ])
+PMconfig.MEETINGREVIEWERS = CHARLEROIMEETINGREVIEWERS
+
 # Define PloneMeeting-specific permissions
 AddAnnex = 'PloneMeeting: Add annex'
 setDefaultRoles(AddAnnex, ('Manager', 'Owner'))

@@ -5,23 +5,24 @@ from plone.app.testing import PloneWithPackageLayer
 import Products.MeetingCharleroi
 
 
-MC_ZCML = zca.ZCMLSandbox(filename="testing.zcml",
-                          package=Products.MeetingCharleroi,
-                          name='ML_ZCML')
+MCH_ZCML = zca.ZCMLSandbox(filename="testing.zcml",
+                           package=Products.MeetingCharleroi,
+                           name='MCH_ZCML')
 
-MC_Z2 = z2.IntegrationTesting(bases=(z2.STARTUP, MC_ZCML),
-                              name='MC_Z2')
+MCH_Z2 = z2.IntegrationTesting(bases=(z2.STARTUP, MCH_ZCML),
+                               name='MCH_Z2')
 
-MC_TESTING_PROFILE = PloneWithPackageLayer(
+MCH_TESTING_PROFILE = PloneWithPackageLayer(
     zcml_filename="testing.zcml",
     zcml_package=Products.MeetingCharleroi,
     additional_z2_products=('imio.dashboard',
                             'Products.MeetingCharleroi',
+                            'Products.MeetingCommunes',
                             'Products.PloneMeeting',
                             'Products.CMFPlacefulWorkflow',
                             'Products.PasswordStrength'),
     gs_profile_id='Products.MeetingCharleroi:testing',
-    name="MC_TESTING_PROFILE")
+    name="MCH_TESTING_PROFILE")
 
-MC_TESTING_PROFILE_FUNCTIONAL = FunctionalTesting(
-    bases=(MC_TESTING_PROFILE,), name="MC_TESTING_PROFILE_FUNCTIONAL")
+MCH_TESTING_PROFILE_FUNCTIONAL = FunctionalTesting(
+    bases=(MCH_TESTING_PROFILE,), name="MCH_TESTING_PROFILE_FUNCTIONAL")

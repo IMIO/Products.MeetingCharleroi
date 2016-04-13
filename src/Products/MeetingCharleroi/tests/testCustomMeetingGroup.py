@@ -23,14 +23,15 @@
 #
 
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
+from Products.MeetingCommunes.tests.testCustomMeetingGroup import testCustomMeetingGroup as mctcmg
 
 
-class testCustomMeetingGroup(MeetingCharleroiTestCase):
+class testCustomMeetingGroup(MeetingCharleroiTestCase, mctcmg):
     '''Tests the MeetingGroup adapted methods.'''
 
-    def test_ListEchevinServices(self):
-        self.changeUser('admin')
-        from Products.Archetypes.atapi import DisplayList
-        les = DisplayList([('developers', u'Developers'), ('vendors', u'Vendors')])
-        meetingGroups = self.tool.objectValues('MeetingGroup')
-        self.assertEquals(meetingGroups[0].listEchevinServices(), les)
+
+def test_suite():
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    suite.addTest(makeSuite(testCustomMeetingGroup, prefix='test_'))
+    return suite

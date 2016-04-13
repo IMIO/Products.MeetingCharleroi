@@ -23,15 +23,15 @@
 #
 
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
-from Products.PloneMeeting.tests.testViews import testViews as pmtv
+from Products.MeetingCommunes.tests.testViews import testViews as mctv
 
 
-class testViews(MeetingCharleroiTestCase, pmtv):
+class testViews(MeetingCharleroiTestCase, mctv):
     ''' '''
 
 
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
-    suite.addTest(makeSuite(testViews, prefix='test_pm_'))
+    suite.addTest(makeSuite(testViews, prefix='test_'))
     return suite

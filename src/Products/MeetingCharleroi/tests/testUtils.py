@@ -22,74 +22,21 @@
 # 02110-1301, USA.
 #
 
-from AccessControl import Unauthorized
-from Products.ExternalMethod.ExternalMethod import manage_addExternalMethod
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
+from Products.MeetingCommunes.tests.testUtils import testUtils as mctu
 
 
-class testUtils(MeetingCharleroiTestCase):
+class testUtils(MeetingCharleroiTestCase, mctu):
     """
         Tests the Extensions/utils methods.
     """
-
     def setUp(self):
-        MeetingCharleroiTestCase.setUp(self)
-        #add the ExternalMethod export_meetinggroups in Zope
-        manage_addExternalMethod(self.portal.aq_inner.aq_parent,
-                                 'export_meetinggroups',
-                                 '',
-                                 'Products.MeetingCharleroi.utils',
-                                 'export_meetinggroups')
-        #add the ExternalMethod import_meetinggroups in Zope
-        manage_addExternalMethod(self.portal.aq_inner.aq_parent,
-                                 'import_meetinggroups',
-                                 '',
-                                 'Products.MeetingCharleroi.utils',
-                                 'import_meetinggroups')
+        """ """
+        mctu.setUp(self)
 
-    def _exportMeetingGroups(self):
-        return self.portal.export_meetinggroups()
 
-    def _importMeetingGroups(self, dict):
-        return self.portal.import_meetinggroups(dict=str(dict))
-
-    def test_AccessToMethods(self):
-        """
-          Check that only Managers can access the methods
-        """
-        self.assertRaises(Unauthorized, self._exportMeetingGroups)
-        self.assertRaises(Unauthorized, self._importMeetingGroups, {})
-
-    def test_ExportMeetingGroups(self):
-        """
-          Check that calling this method returns the right content
-        """
-        self.changeUser('admin')
-        expected = {
-            'vendors': ('Vendors', '', 'Devil'),
-            'endUsers': ('End users', '', 'EndUsers'),
-            'developers': ('Developers', '', 'Devel')}
-        res = self._exportMeetingGroups()
-        self.assertEquals(expected, res)
-
-    def test_ImportMeetingGroups(self):
-        """
-          Check that calling this method creates the MeetingGroups if not exist
-        """
-        self.changeUser('admin')
-        #if we pass a dict containing the existing groups, it does nothing but
-        #returning that the groups already exist
-        dict = self._exportMeetingGroups()
-        expected = 'MeetingGroup endUsers already exists\n' \
-                   'MeetingGroup vendors already exists\n' \
-                   'MeetingGroup developers already exists'
-        res = self._importMeetingGroups(dict)
-        self.assertEquals(expected, res)
-        #but it can also add a MeetingGroup if it does not exist
-        dict['newGroup'] = ('New group title', 'New group description', 'NGAcronym', 'python:False')
-        expected = 'MeetingGroup endUsers already exists\n' \
-                   'MeetingGroup vendors already exists\n' \
-                   'MeetingGroup newGroup added\n' \
-                   'MeetingGroup developers already exists'
-        res = self._importMeetingGroups(dict)
-        self.assertEquals(expected, res)
+def test_suite():
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    suite.addTest(makeSuite(testUtils, prefix='test_'))
+    return suite

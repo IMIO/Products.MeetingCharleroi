@@ -23,15 +23,15 @@
 #
 
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
-from Products.PloneMeeting.tests.testMeetingFile import testMeetingFile as pmmf
+from Products.MeetingCommunes.tests.testMeetingFile import testMeetingFile as mcmf
 
 
-class testMeetingFile(MeetingCharleroiTestCase, pmmf):
+class testMeetingFile(MeetingCharleroiTestCase, mcmf):
     '''Tests the MeetingFile class methods.'''
 
 
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
-    suite.addTest(makeSuite(testMeetingFile, prefix='test_pm_'))
+    suite.addTest(makeSuite(testMeetingFile, prefix='test_'))
     return suite

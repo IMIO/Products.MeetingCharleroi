@@ -23,10 +23,10 @@
 #
 
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
-from Products.PloneMeeting.tests.testAdvices import testAdvices as pmta
+from Products.MeetingCommunes.tests.testAdvices import testAdvices as mcta
 
 
-class testAdvices(MeetingCharleroiTestCase, pmta):
+class testAdvices(MeetingCharleroiTestCase, mcta):
     '''Tests various aspects of advices management.
        Advices are enabled for PloneGov Assembly, not for PloneMeeting Assembly.'''
 
@@ -34,5 +34,5 @@ class testAdvices(MeetingCharleroiTestCase, pmta):
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
-    suite.addTest(makeSuite(testAdvices, prefix='test_pm_'))
+    suite.addTest(makeSuite(testAdvices, prefix='test_'))
     return suite
