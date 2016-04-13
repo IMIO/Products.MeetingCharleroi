@@ -11,6 +11,7 @@
 
   <include package="Products.CMFPlacefulWorkflow"/>
   <include package="Products.PloneMeeting"/>
+  <include package="Products.MeetingCommunes"/>
 
   <adapter for="Products.PloneMeeting.interfaces.IMeetingItem"
            factory="Products.MeetingCharleroi.adapters.MeetingItemCharleroiCollegeWorkflowActions"
@@ -44,25 +45,27 @@
            factory="Products.MeetingCharleroi.adapters.MeetingCharleroiCouncilWorkflowConditions"
            provides="Products.MeetingCharleroi.interfaces.IMeetingCharleroiCouncilWorkflowConditions"/>
 
-  <adapter for="Products.PloneMeeting.interfaces.IMeetingItem"
-           factory="Products.MeetingCharleroi.adapters.CustomMeetingItem"
-           provides="Products.PloneMeeting.interfaces.IMeetingItemCustom"/>
-
-  <adapter for="Products.PloneMeeting.interfaces.IMeeting"
-           factory="Products.MeetingCharleroi.adapters.CustomCharleroiMeeting"
-           provides="Products.PloneMeeting.interfaces.IMeetingCustom"/>
-
-  <adapter for="Products.PloneMeeting.interfaces.IMeetingGroup"
-           factory="Products.MeetingCharleroi.adapters.CustomMeetingGroup"
-           provides="Products.PloneMeeting.interfaces.IMeetingGroupCustom"/>
+  <configure package="Products.MeetingCommunes">
+    <adapter for="Products.PloneMeeting.interfaces.IMeetingItem"
+             factory="Products.MeetingCharleroi.adapters.CustomCharleroiMeetingItem"
+             provides="Products.PloneMeeting.interfaces.IMeetingItemCustom"/>
   
-  <adapter for="Products.PloneMeeting.interfaces.IMeetingConfig"
-           factory="Products.MeetingCharleroi.adapters.CustomMeetingConfig"
-           provides="Products.PloneMeeting.interfaces.IMeetingConfigCustom"/>
-
-  <adapter for="Products.PloneMeeting.interfaces.IToolPloneMeeting"
-           factory="Products.MeetingCharleroi.adapters.CustomToolPloneMeeting"
-           provides="Products.PloneMeeting.interfaces.IToolPloneMeetingCustom"/>
+    <adapter for="Products.PloneMeeting.interfaces.IMeeting"
+             factory="Products.MeetingCharleroi.adapters.CustomCharleroiMeeting"
+             provides="Products.PloneMeeting.interfaces.IMeetingCustom"/>
+  
+    <adapter for="Products.PloneMeeting.interfaces.IMeetingGroup"
+             factory="Products.MeetingCharleroi.adapters.CustomCharleroiMeetingGroup"
+             provides="Products.PloneMeeting.interfaces.IMeetingGroupCustom"/>
+    
+    <adapter for="Products.PloneMeeting.interfaces.IMeetingConfig"
+             factory="Products.MeetingCharleroi.adapters.CustomCharleroiMeetingConfig"
+             provides="Products.PloneMeeting.interfaces.IMeetingConfigCustom"/>
+  
+    <adapter for="Products.PloneMeeting.interfaces.IToolPloneMeeting"
+             factory="Products.MeetingCharleroi.adapters.CustomCharleroiToolPloneMeeting"
+             provides="Products.PloneMeeting.interfaces.IToolPloneMeetingCustom"/>
+  </configure>
 
   <!-- ##/code-section configure.zcml.header -->
 

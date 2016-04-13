@@ -22,10 +22,11 @@
 # 02110-1301, USA.
 #
 
-from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
+#from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
+from Products.MeetingCommunes.tests.testCustomMeeting import testCustomMeeting as tcm
 
 
-class testCustomMeeting(MeetingCharleroiTestCase):
+class testCustomMeeting(tcm):
     """
         Tests the Meeting adapted methods
     """

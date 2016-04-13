@@ -1,26 +1,5 @@
 /* Colors on states */
 /* Items */
-.state-accepted_but_modified, .label-state-accepted_but_modified {
-    color: green !important;
-}
-#plone-contentmenu-workflow .state-accepted_but_modified {
-    border-radius: 0.5em 0.5em 0.5em 0.5em;
-    background-color: green;
-    padding: 0 0.5em;
-    color: white !important;
-    border: 2px solid green;
-}
-
-.state-pre_accepted, .label-state-pre_accepted {
-    color: green !important;
-}
-#plone-contentmenu-workflow .state-pre_accepted {
-    border-radius: 0.5em 0.5em 0.5em 0.5em;
-    background-color: green;
-    padding: 0 0.5em;
-    color: white !important;
-    border: 2px solid green;
-}
 
 .state-proposed_to_refadmin, .label-state-proposed_to_refadmin {
     color: #8E2585 !important;
@@ -31,11 +10,4 @@
     padding: 0 0.5em;
     color: white !important;
     border: 2px solid #8E2585;
-}
-
-/* make sure multiselect fields displayed on the edit form are not too long */
-div#archetypes-fieldname-echevinServices {
-    max-height: 300px;
-    max-width: 500px;
-    overflow-x: auto;
 }

@@ -13,11 +13,3 @@ msgstr ""
 "Language-Name: English\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: DOMAIN\n"
-
-#. Default: "Item created from a council item."
-msgid "create_to_meeting-config-college_from_meeting-config-council_comments"
-msgstr "Point Collège Communal créé depuis un point Conseil Communal."
-
-#. Default: "Item created from a college item."
-msgid "create_to_meeting-config-council_from_meeting-config-college_comments"
-msgstr "Point Conseil Communal créé depuis un point Collège Communal."

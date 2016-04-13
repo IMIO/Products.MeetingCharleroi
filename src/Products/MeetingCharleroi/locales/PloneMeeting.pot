@@ -11,68 +11,6 @@ msgstr ""
 "Preferred-encodings: utf-8 latin1\n"
 "Domain: PloneMeeting\n"
 
-# MeetingItem
-#searches
-#. Default: "Proposed items"
-msgid "searchproposeditems"
-msgstr ""
-
-#. Default: "Validated items"
-msgid "searchvalidateditems"
-msgstr ""
-
-#. Default: "Synthesis finance advices"
-msgid "searchitemswithfinanceadvice"
-msgstr ""
-
-#. Default: "Alderman of the following services (departments)"
-msgid "MeetingCharleroi_label_echevinServices"
-msgstr ""
-
-#. Default: "If the group is responsible of other groups, select them here above, either do not select any elements of the list."
-msgid "MeetingCharleroi_descr_echevinServices"
-msgstr ""
-
-#portal_tabs
-#. Default: "Meeting config College"
-msgid "Meeting config College"
-msgstr ""
-
-#. Default: "Meeting config Council"
-msgid "Meeting config Council"
-msgstr ""
-
-msgid "front_page_body"
-msgstr ""
-
-#. Default: "The item has been successfully transfered to the council."
-msgid "sendto_meeting-config-council_success"
-msgstr ""
-
-#. Default: "The item has been successfully transfered to the college."
-msgid "sendto_meeting-config-college_success"
-msgstr ""
-
-#. Default: "The item has been successfully transfered to the bp."
-msgid "sendto_meeting-config-bp_success"
-msgstr ""
-
-#. Default: "The item has been successfully transfered to the cas."
-msgid "sendto_meeting-config-cas_success"
-msgstr ""
-
-#. Default: "The item has been successfully transfered to the comitee."
-msgid "sendto_meeting-config-comitee_success"
-msgstr ""
-
-#. Default: "Initialize the item decision when deciding meeting"
-msgid "MeetingCharleroi_label_initItemDecisionIfEmptyOnDecide"
-msgstr ""
-
-#. Default: "If you check this box, when a meeting will be decided, if an item does not have a decision defined, this decision will be automatically filled with title and description of the item"
-msgid "init_item_decision_if_empty_on_decide"
-msgstr ""
-
 # Suffix
 #. Default: "Service heads"
 msgid "serviceheads"

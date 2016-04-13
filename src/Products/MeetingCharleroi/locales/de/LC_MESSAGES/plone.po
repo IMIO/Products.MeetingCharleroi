@@ -19,145 +19,17 @@ msgstr ""
 msgid "MeetingBourgmestre"
 msgstr ""
 
-#. Default: "MeetingCA"
-msgid "MeetingCA"
-msgstr ""
-
-#. Default: "MeetingCOGES"
-msgid "MeetingCOGES"
-msgstr ""
-
-#. Default: "MeetingCoDir"
-msgid "MeetingCoDir"
-msgstr ""
-
-#. Default: "MeetingCollege"
-msgid "MeetingCollege"
-msgstr "Sitzung des Gemeindekollegiums"
-
-#. Default: "MeetincCouncil"
-msgid "MeetingCouncil"
-msgstr "Sitzung des Gemeinderats"
-
 #. Default: "MeetingItemBourgmestre"
 msgid "MeetingItemBourgmestre"
 msgstr ""
-
-#. Default: "MeetingItemCA"
-msgid "MeetingItemCA"
-msgstr ""
-
-#. Default: "MeetingItemCOGES"
-msgid "MeetingItemCOGES"
-msgstr ""
-
-#. Default: "MeetingItemCoDir"
-msgid "MeetingItemCoDir"
-msgstr ""
-
-#. Default: "MeetingItemCollege"
-msgid "MeetingItemCollege"
-msgstr "TOP Kollegium"
-
-#. Default: "MeetingItemCouncil"
-msgid "MeetingItemCouncil"
-msgstr "TOP Rat"
 
 #. Default: "MeetingItemRecurringBourgmestre"
 msgid "MeetingItemRecurringBourgmestre"
 msgstr ""
 
-#. Default: "MeetingItemRecurringCA"
-msgid "MeetingItemRecurringCA"
-msgstr ""
-
-#. Default: "MeetingItemRecurringCOGES"
-msgid "MeetingItemRecurringCOGES"
-msgstr ""
-
-#. Default: "MeetingItemRecurringCoDir"
-msgid "MeetingItemRecurringCoDir"
-msgstr ""
-
-#. Default: "MeetingItemRecurringCollege"
-msgid "MeetingItemRecurringCollege"
-msgstr ""
-
-#. Default: "MeetingItemRecurringCouncil"
-msgid "MeetingItemRecurringCouncil"
-msgstr ""
-
-#. Default: "Meeting item recurring BP"
-msgid "MeetingItemRecurringbp"
-msgstr ""
-
-#. Default: "Meeting item recurring CAS"
-msgid "MeetingItemRecurringcas"
-msgstr ""
-
-#. Default: "Meeting item recurring Comitee"
-msgid "MeetingItemRecurringcomitee"
-msgstr ""
-
 #. Default: "MeetingItemTemplateBourgmestre"
 msgid "MeetingItemTemplateBourgmestre"
 msgstr ""
-
-#. Default: "MeetingItemTemplateCA"
-msgid "MeetingItemTemplateCA"
-msgstr ""
-
-#. Default: "MeetingItemTemplateCOGES"
-msgid "MeetingItemTemplateCOGES"
-msgstr ""
-
-#. Default: "MeetingItemTemplateCoDir"
-msgid "MeetingItemTemplateCoDir"
-msgstr ""
-
-#. Default: "MeetingItemTemplateCollege"
-msgid "MeetingItemTemplateCollege"
-msgstr ""
-
-#. Default: "MeetingItemTemplateCouncil"
-msgid "MeetingItemTemplateCouncil"
-msgstr ""
-
-#. Default: "Meeting item template BP"
-msgid "MeetingItemTemplatebp"
-msgstr ""
-
-#. Default: "Meeting item template CAS"
-msgid "MeetingItemTemplatecas"
-msgstr ""
-
-#. Default: "Meeting item template Comitee"
-msgid "MeetingItemTemplatecomitee"
-msgstr ""
-
-#. Default: "Meeting item BP"
-msgid "MeetingItembp"
-msgstr "TOP Ständiges Präsidium"
-
-#. Default: "Meeting item CAS"
-msgid "MeetingItemcas"
-msgstr "TOP Sozialhilferat"
-
-#. Default: "Meeting item Comitee"
-msgid "MeetingItemcomitee"
-msgstr "TOP Konzertierungsausschuss"
-
-#. Default: "Meeting BP"
-msgid "Meetingbp"
-msgstr "Sitzung Ständiges Präsidium"
-
-#. Default: "Meeting CAS"
-msgid "Meetingcas"
-msgstr "Sitzung Sozialhilferat"
-
-#. Default: "Meeting Comitee"
-msgid "Meetingcomitee"
-msgstr "Sitzung Konzertierungsausschuss"
 
 #. Default: "Back to 'Pre-validated'"
 msgid "backToPrevalidated"
@@ -170,28 +42,6 @@ msgstr ""
 #. Default: "Back to admin referent"
 msgid "backToProposedToRefAdmin"
 msgstr ""
-
-#. Default: "Create an item CAS from an item BP"
-msgid "create_to_meeting-config-cas_from_meeting-config-bp"
-msgstr ""
-
-#. Default: "Create an item college from an item council"
-msgid "create_to_meeting-config-college_from_meeting-config-council"
-msgstr ""
-
-#. Default: "Create an item council from an item college"
-msgid "create_to_meeting-config-council_from_meeting-config-college"
-msgstr ""
-
-#. Default: "Frozen"
-#, fuzzy
-msgid "frozen"
-msgstr "Gesperrt"
-
-#. Default: "Itemfrozen"
-#, fuzzy
-msgid "itemfrozen"
-msgstr "TOP gesperrt"
 
 #. Default: "Pre-validate"
 msgid "prevalidate"

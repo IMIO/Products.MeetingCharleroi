@@ -18,30 +18,6 @@ msgstr ""
 "Preferred-encodings: utf-8 latin1\n"
 "X-is-fallback-for: en-us en-ca\n"
 
-# portal_tabs
-#. Default: "Meeting config College"
-msgid "Meeting config College"
-msgstr "Meeting config College"
-
-#. Default: "Meeting config Council"
-msgid "Meeting config Council"
-msgstr "Meeting config Council"
-
-#. Default: "If the group is responsible of other groups, select them here above, either do not select any elements of the list."
-msgid "MeetingCharleroi_descr_echevinServices"
-msgstr "If the group is responsible of other groups, select them here above, either do not select any elements of the list."
-
-#. Default: "Alderman of the following services (departments)"
-msgid "MeetingCharleroi_label_echevinServices"
-msgstr "Alderman of the following services (departments)"
-
-#. Default: "Initialize the item decision when deciding meeting"
-msgid "MeetingCharleroi_label_initItemDecisionIfEmptyOnDecide"
-msgstr "Initialize the item decision when deciding meeting"
-
-msgid "front_page_body"
-msgstr ""
-
 #. Default: "Pre-validated"
 msgid "icon_help_prevalidated"
 msgstr ""
@@ -49,10 +25,6 @@ msgstr ""
 #. Default: "Proposed to admin referent"
 msgid "icon_help_proposed_to_refadmin"
 msgstr ""
-
-#. Default: "If you check this box, when a meeting will be decided, if an item does not have a decision defined, this decision will be automatically filled with title and description of the item"
-msgid "init_item_decision_if_empty_on_decide"
-msgstr "If you check this box, when a meeting will be decided, if an item does not have a decision defined, this decision will be automatically filled with title and description of the item"
 
 #. Default: "Pre-validator"
 msgid "prereviewer"
@@ -74,39 +46,6 @@ msgstr ""
 #. Default: "Items to pre validate"
 msgid "searchitemstoprevalidate"
 msgstr ""
-
-#. Default: "Synthesis finance advices"
-msgid "searchitemswithfinanceadvice"
-msgstr ""
-
-# searches
-#. Default: "Proposed items"
-msgid "searchproposeditems"
-msgstr "Proposed items"
-
-#. Default: "Validated items"
-msgid "searchvalidateditems"
-msgstr "Validated items"
-
-#. Default: "The item has been successfully transfered to the bp."
-msgid "sendto_meeting-config-bp_success"
-msgstr "The item has been successfully transfered to the bp."
-
-#. Default: "The item has been successfully transfered to the cas."
-msgid "sendto_meeting-config-cas_success"
-msgstr "The item has been successfully transfered to the cas."
-
-#. Default: "The item has been successfully transfered to the college."
-msgid "sendto_meeting-config-college_success"
-msgstr "The item has been successfully transfered to the college."
-
-#. Default: "The item has been successfully transfered to the comitee."
-msgid "sendto_meeting-config-comitee_success"
-msgstr "The item has been successfully transfered to the comitee."
-
-#. Default: "The item has been successfully transfered to the council."
-msgid "sendto_meeting-config-council_success"
-msgstr "The item has been successfully transfered to the council."
 
 # Suffix
 #. Default: "Service heads"

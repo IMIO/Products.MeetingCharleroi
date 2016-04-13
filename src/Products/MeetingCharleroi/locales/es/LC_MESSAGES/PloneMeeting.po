@@ -18,40 +18,12 @@ msgstr ""
 "Domain: PloneMeeting\n"
 "X-Is-Fallback-For: es-ar es-bo es-cl es-co es-cr es-do es-ec es-es es-sv es-gt es-hn es-mx es-ni es-pa es-py es-pe es-pr es-us es-uy es-ve\n"
 
-# portal_tabs
-#. Default: "Meeting config College"
-msgid "Meeting config College"
-msgstr ""
-
-#. Default: "Meeting config Council"
-msgid "Meeting config Council"
-msgstr ""
-
-#. Default: "If the group is responsible of other groups, select them here above, either do not select any elements of the list."
-msgid "MeetingCharleroi_descr_echevinServices"
-msgstr ""
-
-#. Default: "Alderman of the following services (departments)"
-msgid "MeetingCharleroi_label_echevinServices"
-msgstr ""
-
-#. Default: "Initialize the item decision when deciding meeting"
-msgid "MeetingCharleroi_label_initItemDecisionIfEmptyOnDecide"
-msgstr ""
-
-msgid "front_page_body"
-msgstr ""
-
 #. Default: "Pre-validated"
 msgid "icon_help_prevalidated"
 msgstr ""
 
 #. Default: "Proposed to admin referent"
 msgid "icon_help_proposed_to_refadmin"
-msgstr ""
-
-#. Default: "If you check this box, when a meeting will be decided, if an item does not have a decision defined, this decision will be automatically filled with title and description of the item"
-msgid "init_item_decision_if_empty_on_decide"
 msgstr ""
 
 #. Default: "Pre-validator"
@@ -73,41 +45,6 @@ msgstr ""
 
 #. Default: "Items to pre validate"
 msgid "searchitemstoprevalidate"
-msgstr ""
-
-#. Default: "Synthesis finance advices"
-msgid "searchitemswithfinanceadvice"
-msgstr ""
-
-# searches
-#. Default: "Proposed items"
-#, fuzzy
-msgid "searchproposeditems"
-msgstr "los temas propuestos"
-
-#. Default: "Validated items"
-#, fuzzy
-msgid "searchvalidateditems"
-msgstr "los temas validados"
-
-#. Default: "The item has been successfully transfered to the bp."
-msgid "sendto_meeting-config-bp_success"
-msgstr ""
-
-#. Default: "The item has been successfully transfered to the cas."
-msgid "sendto_meeting-config-cas_success"
-msgstr ""
-
-#. Default: "The item has been successfully transfered to the college."
-msgid "sendto_meeting-config-college_success"
-msgstr ""
-
-#. Default: "The item has been successfully transfered to the comitee."
-msgid "sendto_meeting-config-comitee_success"
-msgstr ""
-
-#. Default: "The item has been successfully transfered to the council."
-msgid "sendto_meeting-config-council_success"
 msgstr ""
 
 # Suffix
