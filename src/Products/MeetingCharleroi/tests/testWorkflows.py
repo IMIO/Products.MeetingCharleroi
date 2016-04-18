@@ -84,6 +84,8 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         # pmReviewer1 validates item1 and adds an annex to it
         self.changeUser('pmReviewer1')
         self.addAnnex(item1, relatedTo='item_decision')
+        self.do(item1, 'proposeToRefAdmin')
+        self.do(item1, 'prevalidate')
         self.do(item1, 'validate')
         self.assertRaises(Unauthorized, self.addAnnex, item1, relatedTo='item_decision')
         self.failIf(self.hasPermission('PloneMeeting: Add annex', item1))
@@ -97,9 +99,11 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         self.assertRaises(Unauthorized, self.addAnnex, item2)
         # meeting is frozen
         self.changeUser('pmManager')
-        self.do(meeting, 'freeze')  # publish in pm forkflow
+        self.do(meeting, 'freeze')
         # pmReviewer2 validates item2
         self.changeUser('pmReviewer2')
+        self.do(item2, 'proposeToRefAdmin')
+        self.do(item2, 'prevalidate')
         self.do(item2, 'validate')
         # pmManager inserts item2 into the meeting, as late item, and adds an
         # annex to it

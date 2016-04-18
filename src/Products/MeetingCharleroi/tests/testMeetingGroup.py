@@ -24,10 +24,10 @@
 
 from plone.app.testing import logout
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
-from Products.PloneMeeting.tests.testMeetingGroup import testMeetingGroup as pmmg
+from Products.MeetingCommunes.tests.testMeetingGroup import testMeetingGroup as mcmg
 
 
-class testMeetingGroup(MeetingCharleroiTestCase, pmmg):
+class testMeetingGroup(MeetingCharleroiTestCase, mcmg):
     '''Tests the testMeetingGroup class methods.'''
 
     def test_pm_CanNotRemoveUsedMeetingGroup(self):

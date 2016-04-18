@@ -234,6 +234,27 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
             if 'published' in wf.states:
                 wf.states.deleteStates(['published'])
             # Then, update the item workflow.
+            wf = itemWorkflow
+            # Delete transitions 'itempublish' and 'backToItemPublished'
+            for tr in ('itempublish', 'backToItemPublished'):
+                if tr in wf.transitions:
+                    wf.transitions.deleteTransitions([tr])
+            # Update connections between states and transitions
+            wf.states['itemfrozen'].setProperties(
+                title='itemfrozen', description='',
+                transitions=['accept', 'accept_but_modify', 'refuse', 'delay', 'pre_accept', 'backToPresented'])
+            for decidedState in ['accepted', 'refused', 'delayed', 'accepted_but_modified']:
+                wf.states[decidedState].setProperties(
+                    title=decidedState, description='',
+                    transitions=['backToItemFrozen', ])
+            wf.states['pre_accepted'].setProperties(
+                title='pre_accepted', description='',
+                transitions=['accept', 'accept_but_modify', 'backToItemFrozen'])
+            # Delete state 'published'
+            if 'itempublished' in wf.states:
+                wf.states.deleteStates(['itempublished'])
+            logger.info(WF_APPLIED % ("no_publication", meetingConfig.getId()))
+            return True
         if wfAdaptation == 'charleroi_add_refadmin':
             # add the 'proposed_to_refadmin' state after proposed state and before prevalidated state
             itemStates = itemWorkflow.states

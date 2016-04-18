@@ -29,6 +29,51 @@ from Products.PloneMeeting.tests.testToolPloneMeeting import testToolPloneMeetin
 class testToolPloneMeeting(MeetingCharleroiTestCase, pmtt):
     '''Tests the ToolPloneMeeting class methods.'''
 
+    def test_pm_GetGroupsForUser(self):
+        '''getGroupsForUser check in with Plone subgroups a user is and
+           returns corresponding MeetingGroups.'''
+        self.changeUser('pmManager')
+        # pmManager is in every 'developers' Plone groups except 'prereviewers'
+        # and in the 'vendors_advisers' Plone group and in the _meetingmanagers groups
+        dev = self.meetingConfig.developers
+        globalGroups = ['AuthenticatedUsers',
+                        '%s_meetingmanagers' % self.meetingConfig.getId(),
+                        '%s_meetingmanagers' % self.meetingConfig2.getId()]
+        pmManagerGroups = dev.getPloneGroups(idsOnly=True) + ['vendors_advisers', ] + globalGroups
+        self.assertTrue(set(self.member.getGroups()) == set(pmManagerGroups))
+        self.assertTrue([mGroup.getId() for mGroup in self.tool.getGroupsForUser()] ==
+                        ['developers', 'vendors'])
+        # check the 'suffix' parameter, it will check that user is in a Plone group of that suffix
+        # here, 'pmManager' is only in the '_creators' or 'developers'
+        self.assertTrue([mGroup.getId() for mGroup in self.tool.getGroupsForUser(suffixes=['reviewers'])] ==
+                        ['developers'])
+        # check the 'omittedSuffixes' parameter, it will not consider Plone group having that suffix
+        # here, if we omit the 'advisers' suffix, the 'vendors' MeetingGroup will not be returned
+        self.assertTrue([mGroup.getId() for mGroup in self.tool.getGroupsForUser(omittedSuffixes=('advisers', ))] ==
+                        ['developers'])
+        # we can get MeetingGroup for another user
+        pmCreator1 = self.portal.portal_membership.getMemberById('pmCreator1')
+        self.assertTrue(pmCreator1.getGroups() == ['AuthenticatedUsers', 'developers_creators'])
+        self.assertTrue([mGroup.getId() for mGroup in self.tool.getGroupsForUser(userId='pmCreator1')] ==
+                        ['developers', ])
+
+        # the 'active' parameter will return only active MeetingGroups
+        # so deactivate MeetingGroup 'vendors' and check
+        self.changeUser('admin')
+        self.do(self.tool.vendors, 'deactivate')
+        self.changeUser('pmManager')
+        self.assertTrue([mGroup.getId() for mGroup in self.tool.getGroupsForUser(active=True)] ==
+                        ['developers', ])
+        self.assertTrue([mGroup.getId() for mGroup in self.tool.getGroupsForUser(active=False)] ==
+                        ['developers', 'vendors', ])
+        self.changeUser('admin')
+        self.do(self.tool.vendors, 'activate')
+        self.changeUser('pmManager')
+        # if we pass a 'zope=True' parameter, it will actually return
+        # Plone groups the user is in, no more MeetingGroups
+        self.assertTrue(set([group.getId() for group in self.tool.getGroupsForUser(zope=True)]) ==
+                        set([group for group in pmManagerGroups if group not in globalGroups]))
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite

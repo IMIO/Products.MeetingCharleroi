@@ -168,7 +168,7 @@ getattr(developers, MEETINGREVIEWERS.keys()[-1]).append(pmReviewerLevel1)
 # put pmReviewerLevel2 in second level of reviewers from what is in MEETINGREVIEWERS
 getattr(developers, MEETINGREVIEWERS.keys()[0]).append(pmReviewerLevel2)
 
-#give an advice on recurring items
+# give an advice on recurring items
 vendors = GroupDescriptor('vendors', 'Vendors', 'Devil')
 vendors.creators.append(pmCreator2)
 vendors.reviewers.append(pmReviewer2)
@@ -236,7 +236,7 @@ collegeMeeting.itemActionsInterface = 'Products.MeetingCharleroi.interfaces.IMee
 collegeMeeting.meetingConditionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCollegeWorkflowConditions'
 collegeMeeting.meetingActionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCollegeWorkflowActions'
 collegeMeeting.transitionsToConfirm = []
-collegeMeeting.transitionsForPresentingAnItem = ('propose', 'proposeToRefAdmin', 'prevalidate', 'validate', 'present', )
+collegeMeeting.transitionsForPresentingAnItem = ['propose', 'proposeToRefAdmin', 'prevalidate', 'validate', 'present', ]
 collegeMeeting.onMeetingTransitionItemTransitionToTrigger = ({'meeting_transition': 'freeze',
                                                               'item_transition': 'itemfreeze'},
 
@@ -265,8 +265,9 @@ collegeMeeting.meetingAppDefaultView = 'searchallitems'
 collegeMeeting.itemDocFormats = ('odt', 'pdf')
 collegeMeeting.meetingDocFormats = ('odt', 'pdf')
 collegeMeeting.useAdvices = True
+collegeMeeting.selectableAdvisers = ['developers', 'vendors']
 collegeMeeting.itemAdviceStates = ['prevalidated', ]
-collegeMeeting.itemAdviceEditStates = ['prevalidated', 'validated', ]
+collegeMeeting.itemAdviceEditStates = ['prevalidated', 'validated']
 collegeMeeting.itemAdviceViewStates = ['presented', ]
 collegeMeeting.transitionsReinitializingDelays = ('backToItemCreated', )
 collegeMeeting.enforceAdviceMandatoriness = False
@@ -320,7 +321,7 @@ councilMeeting.itemActionsInterface = 'Products.MeetingCharleroi.interfaces.IMee
 councilMeeting.meetingConditionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCouncilWorkflowConditions'
 councilMeeting.meetingActionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCouncilWorkflowActions'
 councilMeeting.transitionsToConfirm = []
-councilMeeting.transitionsForPresentingAnItem = ('propose', 'validate', 'present', )
+councilMeeting.transitionsForPresentingAnItem = ['propose', 'validate', 'present', ]
 councilMeeting.onMeetingTransitionItemTransitionToTrigger = ({'meeting_transition': 'freeze',
                                                               'item_transition': 'itemfreeze'},
 
@@ -363,14 +364,13 @@ councilMeeting.insertingMethodsOnAddItem = ({'insertingMethod': 'on_categories',
                                              'reverse': '0'}, )
 councilMeeting.useGroupsAsCategories = False
 councilMeeting.useAdvices = False
+councilMeeting.selectableAdvisers = []
 councilMeeting.itemAdviceStates = ['proposed', ]
 councilMeeting.itemAdviceEditStates = ['proposed', 'validated']
 councilMeeting.itemAdviceViewStates = ['presented', ]
 councilMeeting.transitionsReinitializingDelays = 'backToItemCreated'
 councilMeeting.enforceAdviceMandatoriness = False
 councilMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed', 'accepted_but_modified', 'pre_accepted']
-#councilMeeting.workflowAdaptations = ['no_publication', 'no_global_observation', 'return_to_proposing_group',
-#                                      'pre_validation', 'charleroi_add_refadmin']
 councilMeeting.itemPowerObserversStates = collegeMeeting.itemPowerObserversStates
 councilMeeting.meetingPowerObserversStates = collegeMeeting.meetingPowerObserversStates
 councilMeeting.useCopies = True
@@ -380,8 +380,8 @@ councilMeeting.meetingUsers = [muser_voter1, muser_voter2, ]
 councilMeeting.recurringItems = []
 councilMeeting.itemTemplates = (template1, template2)
 
-#no recurring items for this meetingConfig, only for tests !!!
-#so we can test a meetingConfig with recurring items (college) and without (council)
+# no recurring items for this meetingConfig, only for tests !!!
+# so we can test a meetingConfig with recurring items (college) and without (council)
 
 data = PloneMeetingConfiguration(
     meetingFolderTitle='Mes seances',
