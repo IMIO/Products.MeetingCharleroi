@@ -264,7 +264,7 @@ collegeMeeting.usedMeetingAttributes = ['startDate', 'endDate', 'signatures', 'a
 collegeMeeting.recordMeetingHistoryStates = []
 collegeMeeting.itemsListVisibleColumns = ['Creator', 'CreationDate', 'review_state',
                                           'getProposingGroup', 'advices', 'actions']
-collegeMeeting.itemColumns = ['Creator', 'CreationDate', 'review_state',
+collegeMeeting.itemColumns = ['Creator', 'CreationDate', 'ModificationDate', 'review_state',
                               'getProposingGroup', 'advices', 'linkedMeetingDate',
                               'getItemIsSigned', 'actions']
 collegeMeeting.xhtmlTransformFields = ('MeetingItem.description',
@@ -338,7 +338,7 @@ collegeMeeting.itemPowerObserversStates = ('itemfrozen',
                                            'pre_accepted')
 collegeMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed', 'accepted_but_modified', 'pre_accepted']
 collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation', 'return_to_proposing_group',
-                                      'pre_validation', 'charleroi_add_refadmin']
+                                      'pre_validation', 'charleroi_add_refadmin', 'waiting_advices']
 collegeMeeting.transitionsForPresentingAnItem = ('propose', 'proposeToRefAdmin', 'prevalidate', 'validate', 'present', )
 collegeMeeting.onTransitionFieldTransforms = (
     ({'transition': 'delay',

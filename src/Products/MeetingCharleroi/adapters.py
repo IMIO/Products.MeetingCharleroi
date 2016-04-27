@@ -49,8 +49,9 @@ from Products.MeetingCharleroi.interfaces import \
     IMeetingCharleroiCouncilWorkflowConditions, IMeetingCharleroiCouncilWorkflowActions
 
 # disable most of wfAdaptations
-customWfAdaptations = ('no_publication', 'no_global_observation', 'pre_validation', 'return_to_proposing_group',
-                       'charleroi_add_refadmin')
+customWfAdaptations = ('no_publication', 'no_global_observation',
+                       'pre_validation', 'return_to_proposing_group',
+                       'charleroi_add_refadmin', 'waiting_advices')
 MeetingConfig.wfAdaptations = customWfAdaptations
 originalPerformWorkflowAdaptations = adaptations.performWorkflowAdaptations
 
@@ -62,6 +63,11 @@ adaptations.noGlobalObsStates = noGlobalObsStates
 
 adaptations.WF_NOT_CREATOR_EDITS_UNLESS_CLOSED = ('delayed', 'refused', 'accepted',
                                                   'pre_accepted', 'accepted_but_modified')
+
+adaptations.WAITING_ADVICES_FROM_STATES = ({'from_states': ('proposed_to_refadmin', 'prevalidated'),
+                                            'back_states': ('proposed_to_refadmin', 'prevalidated'),
+                                            'perm_cloned_states': ('prevalidated',),
+                                            'remove_modify_access': True},)
 
 RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = {'meetingitemcommunes_workflow': 'meetingitemcommunes_workflow.itemcreated'}
 adaptations.RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE
@@ -138,6 +144,11 @@ class MeetingItemCharleroiCollegeWorkflowActions(MeetingItemCollegeWorkflowActio
     def doProposeToRefAdmin(self, stateChange):
         pass
 
+    security.declarePrivate('doWait_advices_from_proposed_to_refadmin')
+
+    def doWait_advices_from_proposed_to_refadmin(self, stateChange):
+        pass
+
 
 class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowConditions):
     '''Adapter that adapts a meeting item implementing IMeetingItem to the
@@ -152,6 +163,14 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
     security.declarePublic('mayProposeToRefAdmin')
 
     def mayProposeToRefAdmin(self):
+        res = False
+        if checkPermission(ReviewPortalContent, self.context):
+            res = True
+        return res
+
+    security.declarePublic('mayWait_advices_from_proposed_to_refadmin')
+
+    def mayWait_advices_from_proposed_to_refadmin(self):
         res = False
         if checkPermission(ReviewPortalContent, self.context):
             res = True
@@ -360,7 +379,7 @@ InitializeClass(CustomCharleroiToolPloneMeeting)
 # ------------------------------------------------------------------------------
 
 
-class MCItemPrettyLinkAdapter(ItemPrettyLinkAdapter):
+class MCHItemPrettyLinkAdapter(ItemPrettyLinkAdapter):
     """
       Override to take into account MeetingCharleroi use cases...
     """
@@ -369,12 +388,8 @@ class MCItemPrettyLinkAdapter(ItemPrettyLinkAdapter):
         """
           Manage icons to display before the icons managed by PrettyLink._icons.
         """
-        res = []
-        if not self.context.meta_type == 'MeetingItem':
-            return res
-
         # Default PM item icons
-        icons = super(MCItemPrettyLinkAdapter, self)._leadingIcons()
+        icons = super(MCHItemPrettyLinkAdapter, self)._leadingIcons()
 
         if self.context.isDefinedInTool():
             return icons

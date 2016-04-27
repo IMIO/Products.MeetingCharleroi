@@ -20,11 +20,15 @@ msgstr ""
 
 #. Default: "Pre-validated"
 msgid "icon_help_prevalidated"
-msgstr ""
+msgstr "Proposé au directeur"
 
 #. Default: "Proposed to admin referent"
 msgid "icon_help_proposed_to_refadmin"
 msgstr "Proposé au référent administratif"
+
+#. Default: "Waiting advices"
+msgid "icon_help_waiting_advices"
+msgstr "En attente avis finances"
 
 #. Default: "Pre-validator"
 msgid "prereviewer"
@@ -55,3 +59,7 @@ msgstr "Chefs de service"
 #. Default: "Add referent's admin"
 msgid "wa_charleroi_add_refadmin"
 msgstr "Ajout du référent administratif"
+
+#. Default: "Wait advices"
+msgid "wa_waiting_advices"
+msgstr "Etat supplémentaire pour demander l'avis des finances"

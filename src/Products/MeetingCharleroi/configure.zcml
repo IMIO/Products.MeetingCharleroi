@@ -12,6 +12,7 @@
   <include package="Products.CMFPlacefulWorkflow"/>
   <include package="Products.PloneMeeting"/>
   <include package="Products.MeetingCommunes"/>
+  <includeOverrides file="overrides.zcml" />
 
   <adapter for="Products.PloneMeeting.interfaces.IMeetingItem"
            factory="Products.MeetingCharleroi.adapters.MeetingItemCharleroiCollegeWorkflowActions"

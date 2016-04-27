@@ -48,3 +48,11 @@ msgstr ""
 #. Default: "Add referent's admin"
 msgid "wa_charleroi_add_refadmin"
 msgstr ""
+
+#. Default: "Waiting advices"
+msgid "icon_help_waiting_advices"
+msgstr ""
+
+#. Default: "Wait advices"
+msgid "wa_waiting_advices"
+msgstr ""

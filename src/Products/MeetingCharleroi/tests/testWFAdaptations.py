@@ -37,6 +37,7 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
                                'no_publication',
                                'pre_validation',
                                'return_to_proposing_group',
+                               'waiting_advices',
                                'charleroi_add_refadmin',
                                )))
 

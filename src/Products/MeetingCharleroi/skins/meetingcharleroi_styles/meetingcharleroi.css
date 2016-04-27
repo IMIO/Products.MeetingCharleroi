@@ -1,13 +1,7 @@
 /* Colors on states */
 /* Items */
 
-.state-proposed_to_refadmin, .label-state-proposed_to_refadmin {
-    color: #8E2585 !important;
-}
-#plone-contentmenu-workflow .state-proposed_to_refadmin {
-    border-radius: 0.5em 0.5em 0.5em 0.5em;
-    background-color: #8E2585;
-    padding: 0 0.5em;
-    color: white !important;
-    border: 2px solid #8E2585;
+.state-proposed_to_refadmin,
+.label-state-proposed_to_refadmin {
+    color: DarkOrange !important;
 }

@@ -34,11 +34,11 @@ msgstr "Point récurrent Bourgmestre"
 msgid "MeetingItemTemplateBourgmestre"
 msgstr "Modèle de point Bourgmestre"
 
-#. Default: "Back to 'Pre-validated'"
+#. Default: "Back to 'Proposed to director'"
 msgid "backToPrevalidated"
 msgstr "Renvoyer au directeur"
 
-#. Default: "Back to 'Proposed'"
+#. Default: "Back to 'Proposed to service head'"
 msgid "backToProposed"
 msgstr "Renvoyer au chef de service"
 
@@ -46,15 +46,23 @@ msgstr "Renvoyer au chef de service"
 msgid "backToProposedToRefAdmin"
 msgstr "Renvoyer au référent administratif"
 
-#. Default: "Pre-validate"
+#. Default: "Back to 'proposed to director'"
+msgid "backTo_prevalidated_from_waiting_advices"
+msgstr "Renvoyer au directeur"
+
+#. Default: "Back to 'proposed to refadmin'"
+msgid "backTo_proposed_to_refadmin_from_waiting_advices"
+msgstr "Renvoyer au référent administratif"
+
+#. Default: "Propose to director"
 msgid "prevalidate"
 msgstr "Proposer au directeur"
 
-#. Default: "Pre-validated"
+#. Default: "Proposed to director"
 msgid "prevalidated"
 msgstr "Proposé au directeur"
 
-#. Default: "Propose"
+#. Default: "Propose to service head"
 msgid "propose"
 msgstr "Proposer au chef de service "
 
@@ -69,3 +77,16 @@ msgstr "Proposé au chef de service"
 #. Default: "Proposed to admin referent"
 msgid "proposed_to_refadmin"
 msgstr "Proposé au référent administratif"
+
+#. Default: "Ask finances advices"
+msgid "wait_advices_from_prevalidated"
+msgstr "Demander l'avis des finances"
+
+#. Default: "Ask finances advices"
+msgid "wait_advices_from_proposed_to_refadmin"
+msgstr "Demander l'avis des finances"
+
+#. Default: "Waiting advices"
+msgid "waiting_advices"
+msgstr "En attente avis finances"
+
