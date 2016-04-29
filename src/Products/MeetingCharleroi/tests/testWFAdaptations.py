@@ -69,6 +69,15 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
         '''No sense...'''
         pass
 
+    def _waiting_advices_with_prevalidation_active(self):
+        '''Enable WFAdaptation 'charleroi_add_refadmin' before executing test.'''
+        cfg = self.meetingConfig
+        cfg.setWorkflowAdaptations(('pre_validation', 'charleroi_add_refadmin', 'waiting_advices'))
+        cfg.at_post_edit_script()
+        # put pmReviewerLevel1 in _refadmins group
+        self.portal.portal_groups.addPrincipalToGroup('pmReviewerLevel1', 'developers_prereviewers')
+        super(testWFAdaptations, self)._waiting_advices_with_prevalidation_active()
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite
