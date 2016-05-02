@@ -28,11 +28,11 @@
 
 
   <genericsetup:upgradeStep
-      title="Go to MeetingCharleroi 3.4"
+      title="Go to MeetingCharleroi 4.0"
       description=""
       source="3.3"
-      destination="3.4"
-      handler="Products.MeetingCharleroi.migrations.migrate_to_3_4.migrate"
+      destination="4.0"
+      handler="Products.MeetingCharleroi.migrations.migrate_to_4_0.migrate"
       profile="Products.MeetingCharleroi:default" />
 
   <!-- ##/code-section profiles.zcml-bottom -->
