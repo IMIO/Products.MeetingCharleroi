@@ -16,8 +16,6 @@ class Migrate_To_4_0(PMMigrate_To_4_0):
         PMMigrate_To_4_0.run(self)
         # now MeetingLiege specific steps
         logger.info('Migrating to MeetingCharleroi 4.0...')
-        self._cleanCDLD()
-        self._migrateItemPositiveDecidedStates()
 
 
 # The migration function -------------------------------------------------------
