@@ -24,8 +24,6 @@ __docformat__ = 'plaintext'
 
 from collections import OrderedDict
 from Products.CMFCore.permissions import setDefaultRoles
-from Products.MeetingCommunes.config import FINANCE_GROUP_SUFFIXES
-
 
 PROJECTNAME = "MeetingCharleroi"
 
@@ -96,5 +94,10 @@ PMconfig.EXTRA_ADVICE_TYPES = CHARLEROI_EXTRA_ADVICE_TYPES
 # comment used when a finance advice has been signed and so historized
 FINANCE_ADVICE_HISTORIZE_COMMENTS = 'financial_advice_signed_historized_comments'
 
+# copy/pasted from MeetingCommunes because importing from MeetingCommunes break
+# the constant monkey patches...
+FINANCE_GROUP_SUFFIXES = ('financialcontrollers',
+                          'financialreviewers',
+                          'financialmanagers')
 CHARLEROI_EXTRA_ADVICE_SUFFIXES = {FINANCE_GROUP_ID: list(FINANCE_GROUP_SUFFIXES)}
 PMconfig.EXTRA_ADVICE_SUFFIXES = CHARLEROI_EXTRA_ADVICE_SUFFIXES
