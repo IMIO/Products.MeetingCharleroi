@@ -1,20 +1,8 @@
 <?xml version="1.0"?>
 <object name="portal_workflow" meta_type="Plone Workflow Tool">
- <!-- first remove then re-apply so workflows are correct regarding workflow adaptations... -->
- <object name="meetingcommunes_workflow" meta_type="Workflow" remove="True"/>
- <object name="meetingitemcommunes_workflow" meta_type="Workflow" remove="True"/>
- <object name="meetingcommunes_workflow" meta_type="Workflow"/>
- <object name="meetingitemcommunes_workflow" meta_type="Workflow"/>
-<!-- ##code-section workflowobjects -->
-<!-- ##/code-section workflowobjects -->
  <bindings>
-  <type type_id="DummyMeetingCommunes">
-     <bound-workflow workflow_id="meetingcommunes_workflow" />
+  <type type_id="meetingadvicefinances">
+     <bound-workflow workflow_id="meetingadvicefinances_workflow" />
   </type>
-  <type type_id="DummyMeetingItemCommunes">
-     <bound-workflow workflow_id="meetingitemcommunes_workflow" />
-  </type>
-<!-- ##code-section workflowbindings -->
-<!-- ##/code-section workflowbindings -->
  </bindings>
 </object>

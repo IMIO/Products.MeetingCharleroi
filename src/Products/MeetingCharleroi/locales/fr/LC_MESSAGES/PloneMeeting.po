@@ -18,6 +18,26 @@ msgstr ""
 "Preferred-encodings: utf-8 latin1\n"
 "X-is-fallback-for: fr-be fr-ca fr-lu fr-mc fr-ch fr-fr\n"
 
+#. Default: "Advice is still not giveable because item is not considered complete."
+msgid "finance_advice_not_giveable_because_item_not_complete"
+msgstr "Cet avis ne pourra être rendu que lorsque le point sera considéré 'complet'."
+
+#. Default: "Advice is suspended because it was sent back to proposing group."
+msgid "finance_advice_suspended_because_item_sent_back_to_proposing_group"
+msgstr "Cet avis est suspendu car le point a été renvoyé vers le groupe proposant."
+
+#. Default: "Financial controllers"
+msgid "financialcontrollers"
+msgstr "Contrôleurs financiers"
+
+#. Default: "Financial managers"
+msgid "financialmanagers"
+msgstr "Directeurs financiers"
+
+#. Default: "Financial reviewers"
+msgid "financialreviewers"
+msgstr "Validateurs financiers"
+
 #. Default: "Pre-validated"
 msgid "icon_help_prevalidated"
 msgstr "Proposé au directeur"
@@ -30,13 +50,33 @@ msgstr "Proposé au référent administratif"
 msgid "icon_help_waiting_advices"
 msgstr "En attente avis finances"
 
+#. Default: "Unfavorable opinion"
+msgid "negative_finance"
+msgstr "Avis finances défavorable"
+
+#. Default: "The finances advice has not been selected on this item."
+msgid "no_finances_advice_asked"
+msgstr "L'avis des finances n'a pas été demandé sur ce point."
+
+#. Default: "Not given opinion"
+msgid "not_given_finance"
+msgstr "Avis finances non remis"
+
+#. Default: "Favorable opinion"
+msgid "positive_finance"
+msgstr "Avis finances favorable"
+
+#. Default: "Favorable opinion with remarks"
+msgid "positive_with_remarks_finance"
+msgstr "Avis finances favorable avec remarques"
+
 #. Default: "Pre-validator"
 msgid "prereviewer"
 msgstr "Référent administratif"
 
 #. Default: "Pre-validators"
 msgid "prereviewers"
-msgstr "Référents administratif"
+msgstr "Référents administratifs"
 
 #. Default: "Validator"
 msgid "reviewer"
@@ -49,7 +89,7 @@ msgstr "Directeurs"
 
 #. Default: "Items to pre validate"
 msgid "searchitemstoprevalidate"
-msgstr "Points proposé au référent administratif"
+msgstr "Points proposés au référent administratif"
 
 # Suffix
 #. Default: "Service heads"
@@ -63,3 +103,4 @@ msgstr "Ajout du référent administratif"
 #. Default: "Wait advices"
 msgid "wa_waiting_advices"
 msgstr "Etat supplémentaire pour demander l'avis des finances"
+

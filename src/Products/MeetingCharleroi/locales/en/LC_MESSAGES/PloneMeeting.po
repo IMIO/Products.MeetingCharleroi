@@ -18,6 +18,26 @@ msgstr ""
 "Preferred-encodings: utf-8 latin1\n"
 "X-is-fallback-for: en-us en-ca\n"
 
+#. Default: "Advice is still not giveable because item is not considered complete."
+msgid "finance_advice_not_giveable_because_item_not_complete"
+msgstr ""
+
+#. Default: "Advice is suspended because it was sent back to proposing group."
+msgid "finance_advice_suspended_because_item_sent_back_to_proposing_group"
+msgstr ""
+
+#. Default: "Financial controllers"
+msgid "financialcontrollers"
+msgstr ""
+
+#. Default: "Financial managers"
+msgid "financialmanagers"
+msgstr ""
+
+#. Default: "Financial reviewers"
+msgid "financialreviewers"
+msgstr ""
+
 #. Default: "Pre-validated"
 msgid "icon_help_prevalidated"
 msgstr ""
@@ -28,6 +48,26 @@ msgstr ""
 
 #. Default: "Waiting advices"
 msgid "icon_help_waiting_advices"
+msgstr ""
+
+#. Default: "Unfavorable opinion"
+msgid "negative_finance"
+msgstr ""
+
+#. Default: "The finances advice has not been selected on this item."
+msgid "no_finances_advice_asked"
+msgstr ""
+
+#. Default: "Not given opinion"
+msgid "not_given_finance"
+msgstr ""
+
+#. Default: "Favorable opinion"
+msgid "positive_finance"
+msgstr ""
+
+#. Default: "Favorable opinion with remarks"
+msgid "positive_with_remarks_finance"
 msgstr ""
 
 #. Default: "Pre-validator"

@@ -255,6 +255,7 @@ collegeMeeting.shortName = 'College'
 collegeMeeting.meetingFileTypes = [annexe, annexeBudget, annexeCahier,
                                    annexeDecision, annexeAvis, annexeAvisLegal]
 collegeMeeting.usedItemAttributes = ['detailedDescription',
+                                     'completeness',
                                      'budgetInfos',
                                      'observations',
                                      'toDiscuss',
@@ -300,7 +301,9 @@ collegeMeeting.itemAdviceViewStates = ('validated',
                                        'accepted_but_modified',
                                        'delayed',
                                        'pre_accepted',)
-collegeMeeting.usedAdviceTypes = ['positive', 'positive_with_remarks', 'negative', 'nil', ]
+collegeMeeting.usedAdviceTypes = ['positive', 'positive_with_remarks', 'negative', 'nil',
+                                  'positive_finance', 'positive_with_remarks_finance',
+                                  'negative_finance', 'not_given_finance']
 collegeMeeting.enableAdviceInvalidation = False
 collegeMeeting.itemAdviceInvalidateStates = []
 collegeMeeting.customAdvisers = [

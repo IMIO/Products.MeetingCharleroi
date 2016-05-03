@@ -22,10 +22,9 @@ __docformat__ = 'plaintext'
 # AppConfig.py in your product's root directory. The items in there
 # will be included (by importing) in this file if found.
 
-from Products.CMFCore.permissions import setDefaultRoles
-##code-section config-head #fill in your manual code here
 from collections import OrderedDict
-##/code-section config-head
+from Products.CMFCore.permissions import setDefaultRoles
+from Products.MeetingCommunes.config import FINANCE_GROUP_SUFFIXES
 
 
 PROJECTNAME = "MeetingCharleroi"
@@ -83,11 +82,19 @@ FINANCE_ADVICE_LEGAL_TEXT = "<p>Attendu l'avis {0} du Directeur financier "\
 FINANCE_ADVICE_LEGAL_TEXT_NOT_GIVEN = "<p>Attendu l'absence d'avis du "\
     "Directeur financier rendu dans le délai prescrit à l'article L1124-40 "\
     "du Code de la démocratie locale et de la décentralisation,</p>"
-##/code-section config-bottom
 
+FINANCE_GROUP_ID = "dirfin"
 
-# Load custom configuration not managed by archgenxml
-try:
-    from Products.MeetingCharleroi.AppConfig import *
-except ImportError:
-    pass
+# in those states, finance advice can still be given
+FINANCE_GIVEABLE_ADVICE_STATES = ('waiting_advices', )
+
+# additional advice types used for finances advice
+CHARLEROI_EXTRA_ADVICE_TYPES = ('positive_finance', 'positive_with_remarks_finance',
+                                'negative_finance', 'not_given_finance')
+PMconfig.EXTRA_ADVICE_TYPES = CHARLEROI_EXTRA_ADVICE_TYPES
+
+# comment used when a finance advice has been signed and so historized
+FINANCE_ADVICE_HISTORIZE_COMMENTS = 'financial_advice_signed_historized_comments'
+
+CHARLEROI_EXTRA_ADVICE_SUFFIXES = {FINANCE_GROUP_ID: list(FINANCE_GROUP_SUFFIXES)}
+PMconfig.EXTRA_ADVICE_SUFFIXES = CHARLEROI_EXTRA_ADVICE_SUFFIXES

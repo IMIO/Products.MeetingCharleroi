@@ -4,6 +4,7 @@
   <!-- ##code-section METADATA -->
   <dependencies>
     <dependency>profile-Products.MeetingCommunes:default</dependency>
+    <dependency>profile-Products.MeetingCommunes:financesadvice</dependency>
   </dependencies>
   <!-- ##/code-section METADATA -->
 </metadata>
