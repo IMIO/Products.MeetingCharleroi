@@ -20,7 +20,9 @@
 # 02110-1301, USA.
 #
 
+from plone import api
 from Products.PloneMeeting.tests.helpers import PloneMeetingTestingHelpers
+from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 
 
 class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
@@ -103,3 +105,11 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                                               'close': 'accepted'}
 
     TRANSITIONS_FOR_ACCEPTING_ITEMS_MEETING_1 = TRANSITIONS_FOR_ACCEPTING_ITEMS_MEETING_2 = ('freeze', 'decide', )
+
+    def _setupFinancesGroup(self):
+        '''Configure finances group.'''
+        groupsTool = api.portal.get_tool('portal_groups')
+        # add pmFinController, pmFinReviewer and pmFinManager to advisers and to their respective finance group
+        groupsTool.addPrincipalToGroup('pmFinController', '%s_advisers' % FINANCE_GROUP_ID)
+        groupsTool.addPrincipalToGroup('pmFinReviewer', '%s_advisers' % FINANCE_GROUP_ID)
+        groupsTool.addPrincipalToGroup('pmFinManager', '%s_advisers' % FINANCE_GROUP_ID)

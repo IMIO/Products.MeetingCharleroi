@@ -21,6 +21,7 @@ from plone import api
 from Products.CMFPlone.utils import _createObjectByType
 from Products.PloneMeeting.exportimport.content import ToolInitializer
 from Products.PloneMeeting.model.adaptations import performWorkflowAdaptations
+from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.config import PROJECTNAME
 
 
@@ -211,6 +212,84 @@ def finalizeExampleInstance(context):
     # thru the import_data...
     mc_council_or_cas.setWorkflowAdaptations(['no_global_observation', 'no_publication'])
     performWorkflowAdaptations(mc_council_or_cas, logger)
+    if not context.readDataFile("MeetingCharleroi_testing_marker.txt"):
+        logStep("_createFinanceGroups", context)
+        _createFinanceGroups(site)
+        # populate the customAdvisers of 'meeting-config-college'
+        logStep("_configureCollegeCustomAdvisers", context)
+        _configureCollegeCustomAdvisers(site)
+
+
+def _configureCollegeCustomAdvisers(site):
+    '''
+    '''
+    college = getattr(site.portal_plonemeeting, 'meeting-config-college')
+    college.setCustomAdvisers((
+        {'delay_label': 'Incidence financi\xc3\xa8re',
+         'for_item_created_until': '',
+         'group': FINANCE_GROUP_ID,
+         'available_on': '',
+         'delay': '10',
+         'gives_auto_advice_on_help_message': '',
+         'gives_auto_advice_on': '',
+         'delay_left_alert': '3',
+         'is_linked_to_previous_row': '0',
+         'for_item_created_from': '2016/05/01',
+         'row_id': '2016-05-01.0'},
+        {'delay_label': 'Incidence financi\xc3\xa8re (urgence)',
+         'for_item_created_until': '',
+         'group': FINANCE_GROUP_ID,
+         'available_on': '',
+         'delay': '5',
+         'gives_auto_advice_on_help_message': '',
+         'gives_auto_advice_on': '',
+         'delay_left_alert': '3',
+         'is_linked_to_previous_row': '1',
+         'for_item_created_from': '2016/05/01',
+         'row_id': '2016-05-01.1'},
+        {'delay_label': 'Incidence financi\xc3\xa8re (prolongation)',
+         'for_item_created_until': '',
+         'group': FINANCE_GROUP_ID,
+         'available_on': '',
+         'delay': '20',
+         'gives_auto_advice_on_help_message': '',
+         'gives_auto_advice_on': '',
+         'delay_left_alert': '3',
+         'is_linked_to_previous_row': '1',
+         'for_item_created_from': '2016/05/01',
+         'row_id': '2016-05-01.2'},))
+
+
+def _createFinancesGroup(site):
+    """
+       Create the finances group.
+    """
+    financeGroupsData = ({'id': FINANCE_GROUP_ID,
+                          'title': 'Directeur financier',
+                          'acronym': 'DF', },
+                         )
+
+    tool = api.portal.get_tool('portal_plonemeeting')
+    for financeGroup in financeGroupsData:
+        if not hasattr(tool, financeGroup['id']):
+            newGroupId = tool.invokeFactory(
+                'MeetingGroup',
+                id=financeGroup['id'],
+                title=financeGroup['title'],
+                acronym=financeGroup['acronym'],
+                itemAdviceStates=('meeting-config-college__state__waiting_advices',),
+                itemAdviceEditStates=('meeting-config-college__state__waiting_advices',),
+                itemAdviceViewStates=('meeting-config-college__state__accepted',
+                                      'meeting-config-college__state__accepted_but_modified',
+                                      'meeting-config-college__state__pre_accepted',
+                                      'meeting-config-college__state__delayed',
+                                      'meeting-config-college__state__itemfrozen',
+                                      'meeting-config-college__state__waiting_advices',
+                                      'meeting-config-college__state__presented',
+                                      'meeting-config-college__state__refused',
+                                      'meeting-config-college__state__validated'))
+            newGroup = getattr(tool, newGroupId)
+            newGroup.processForm(values={'dummy': None})
 
 
 def reorderCss(context):
@@ -218,7 +297,8 @@ def reorderCss(context):
        Make sure CSS are correctly reordered in portal_css so things
        work as expected...
     """
-    if isNotMeetingCharleroiProfile(context) and not isMeetingCharleroiConfigureProfile(context):
+    if isNotMeetingCharleroiProfile(context) and \
+       not isMeetingCharleroiConfigureProfile(context):
         return
 
     site = context.getSite()

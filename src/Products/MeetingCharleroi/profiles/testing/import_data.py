@@ -104,6 +104,10 @@ categories = [
 ]
 
 # Users and groups -------------------------------------------------------------
+pmFinController = UserDescriptor('pmFinController', [])
+pmFinReviewer = UserDescriptor('pmFinReviewer', [])
+pmFinManager = UserDescriptor('pmFinManager', [])
+
 pmManager = UserDescriptor('pmManager', [])
 pmCreator1 = UserDescriptor('pmCreator1', [])
 pmCreator1b = UserDescriptor('pmCreator1b', [])
@@ -273,8 +277,8 @@ collegeMeeting.transitionsReinitializingDelays = ('backToItemCreated', )
 collegeMeeting.enforceAdviceMandatoriness = False
 collegeMeeting.itemPowerObserversStates = ('itemcreated', 'presented', 'accepted', 'delayed', 'refused')
 collegeMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed', 'accepted_but_modified', 'pre_accepted']
-collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation', 
-                                      'pre_validation', 'charleroi_add_refadmin']
+collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
+                                      'pre_validation', 'charleroi_add_refadmin', 'waiting_advices']
 collegeMeeting.insertingMethodsOnAddItem = ({'insertingMethod': 'on_proposing_groups',
                                              'reverse': '0'}, )
 collegeMeeting.useGroupsAsCategories = True
@@ -391,5 +395,5 @@ data = PloneMeetingConfiguration(
 data.restrictUsers = False
 data.usersOutsideGroups = [voter1, voter2, powerobserver1, powerobserver2,
                            restrictedpowerobserver1, restrictedpowerobserver2,
-                           budgetimpacteditor]
+                           budgetimpacteditor, pmFinController, pmFinReviewer, pmFinManager]
 # ------------------------------------------------------------------------------

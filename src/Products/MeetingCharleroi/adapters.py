@@ -384,7 +384,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
         return res
 
     def _mayWaitAdvices(self):
-        """ """
+        """May only be set to 'waiting_advices' if finances advice is asked."""
         if not FINANCE_GROUP_ID in self.context.adviceIndex:
             return No(translate('no_finances_advice_asked',
                                 domain="PloneMeeting",

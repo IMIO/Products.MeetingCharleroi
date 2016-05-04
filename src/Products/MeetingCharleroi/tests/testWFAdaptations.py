@@ -24,6 +24,8 @@
 
 from Products.MeetingCommunes.tests.testWFAdaptations import testWFAdaptations as mctwfa
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
+from Products.MeetingCharleroi.setuphandlers import _configureCollegeCustomAdvisers
+from Products.MeetingCharleroi.setuphandlers import _createFinancesGroup
 
 
 class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
@@ -76,7 +78,28 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
         cfg.at_post_edit_script()
         # put pmReviewerLevel1 in _refadmins group
         self.portal.portal_groups.addPrincipalToGroup('pmReviewerLevel1', 'developers_prereviewers')
+        self.portal.REQUEST.set('mayWaitAdvices', True)
         super(testWFAdaptations, self)._waiting_advices_with_prevalidation_active()
+
+    def _setItemToWaitingAdvices(self, item, transition=None):
+        """We need to ask finances advice to be able to do the transition."""
+        originalMember = self.member.getId()
+        self.changeUser('siteadmin')
+        # configure customAdvisers for 'meeting-config-college'
+        _configureCollegeCustomAdvisers(self.portal)
+        # add finances group
+        _createFinancesGroup(self.portal)
+        # put users in finances group
+        self._setupFinancesGroup()
+        self.changeUser(originalMember)
+        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
+        item.at_post_edit_script()
+        if transition:
+            self.do(item, transition)
+
+    def _afterItemCreatedWaitingAdviceWithPrevalidation(self, item):
+        """ """
+        self._setItemToWaitingAdvices(item)
 
 
 def test_suite():
