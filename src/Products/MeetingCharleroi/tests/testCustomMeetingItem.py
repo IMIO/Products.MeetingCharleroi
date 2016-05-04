@@ -71,7 +71,6 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
         item.at_post_edit_script()
         self.do(item, 'wait_advices_from_prevalidated')
-        import ipdb; ipdb.set_trace()
         self.assertFalse(item.adapted().mayEvaluateCompleteness())
 
         # finances controller is able to evaluate
