@@ -83,6 +83,15 @@ FINANCE_ADVICE_LEGAL_TEXT_NOT_GIVEN = "<p>Attendu l'absence d'avis du "\
 
 FINANCE_GROUP_ID = "dirfin"
 
+CHARLEROI_ADVICE_STATES_ALIVE = ('advice_under_edit',
+                                 'proposed_to_financial_controller',
+                                 'proposed_to_financial_reviewer',
+                                 'proposed_to_financial_manager',
+                                 'financial_advice_signed', )
+CHARLEROI_ADVICE_STATES_ENDED = ('advice_given', )
+PMconfig.ADVICE_STATES_ALIVE = CHARLEROI_ADVICE_STATES_ALIVE
+PMconfig.ADVICE_STATES_ENDED = CHARLEROI_ADVICE_STATES_ENDED
+
 # in those states, finance advice can still be given
 FINANCE_GIVEABLE_ADVICE_STATES = ('waiting_advices', )
 
