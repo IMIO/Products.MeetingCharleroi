@@ -30,6 +30,9 @@ class testMeetingItem(MeetingCharleroiTestCase, mctmi):
     """
         Tests the MeetingItem class methods.
     """
+    def test_pm_Completeness(self):
+        '''Already tested in testCustomMeetingItem.'''
+        pass
 
 
 def test_suite():
