@@ -76,7 +76,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         # finances controller is able to evaluate
         self.changeUser('pmFinController')
         self.assertTrue(self.hasPermission(View, item))
-        self.assertFalse(item.adapted().mayEvaluateCompleteness())
+        self.assertTrue(item.adapted().mayEvaluateCompleteness())
         itemCompletenessView = item.restrictedTraverse('item-completeness')
         # and even able to change it
         self.assertTrue(itemCompletenessView.listSelectableCompleteness())

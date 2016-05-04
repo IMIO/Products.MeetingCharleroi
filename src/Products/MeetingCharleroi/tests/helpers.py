@@ -113,3 +113,6 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         groupsTool.addPrincipalToGroup('pmFinController', '%s_advisers' % FINANCE_GROUP_ID)
         groupsTool.addPrincipalToGroup('pmFinReviewer', '%s_advisers' % FINANCE_GROUP_ID)
         groupsTool.addPrincipalToGroup('pmFinManager', '%s_advisers' % FINANCE_GROUP_ID)
+        groupsTool.addPrincipalToGroup('pmFinController', '%s_financialcontrollers' % FINANCE_GROUP_ID)
+        groupsTool.addPrincipalToGroup('pmFinReviewer', '%s_financialreviewers' % FINANCE_GROUP_ID)
+        groupsTool.addPrincipalToGroup('pmFinManager', '%s_financialmanagers' % FINANCE_GROUP_ID)
