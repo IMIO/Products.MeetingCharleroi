@@ -214,7 +214,7 @@ def finalizeExampleInstance(context):
     performWorkflowAdaptations(mc_council_or_cas, logger)
     if not context.readDataFile("MeetingCharleroi_testing_marker.txt"):
         logStep("_createFinanceGroups", context)
-        _createFinanceGroups(site)
+        _createFinancesGroup(site)
         # populate the customAdvisers of 'meeting-config-college'
         logStep("_configureCollegeCustomAdvisers", context)
         _configureCollegeCustomAdvisers(site)
