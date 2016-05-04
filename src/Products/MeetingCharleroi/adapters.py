@@ -408,6 +408,21 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
         """ """
         return self._mayWaitAdvices()
 
+    security.declarePublic('mayCorrect')
+
+    def mayCorrect(self):
+        '''If the item is not linked to a meeting, the user just need the
+           'Review portal content' permission, if it is linked to a meeting, an item
+           may still be corrected until the meeting is 'closed'.'''
+        res = MeetingItemCollegeWorkflowConditions(self.context).mayCorrect()
+        if not res:
+            # if item is 'waiting_advices', finances adviser may send the item back
+            if self.context.queryState() == 'waiting_advices':
+                member = api.user.get_current()
+                if '{0}_advisers'.format(FINANCE_GROUP_ID) in member.getGroups():
+                    res = True
+        return res
+
 
 class MeetingCharleroiCouncilWorkflowActions(MeetingCharleroiCollegeWorkflowActions):
     '''Adapter that adapts a meeting item implementing IMeetingItem to the
