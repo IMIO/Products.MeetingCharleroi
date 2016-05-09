@@ -15,6 +15,14 @@ msgstr ""
 "Domain: PloneMeeting\n"
 "X-is-fallback-for: nl-be\n"
 
+#. Default: "Category"
+msgid "MeetingCharleroi_label_advice_category"
+msgstr ""
+
+#. Default: "Motivation categories"
+msgid "MeetingCharleroi_label_advice_motivation_categories"
+msgstr ""
+
 #. Default: "Advice is still not giveable because item is not considered complete."
 msgid "finance_advice_not_giveable_because_item_not_complete"
 msgstr ""

@@ -110,3 +110,41 @@ FINANCE_GROUP_SUFFIXES = ('financialcontrollers',
                           'financialmanagers')
 CHARLEROI_EXTRA_ADVICE_SUFFIXES = {FINANCE_GROUP_ID: list(FINANCE_GROUP_SUFFIXES)}
 PMconfig.EXTRA_ADVICE_SUFFIXES = CHARLEROI_EXTRA_ADVICE_SUFFIXES
+
+# advice categories
+ADVICE_CATEGORIES = (
+    ('acquisitions', u'1. Acquisitions'),
+    ('attributions', u'2. Attributions'),
+    ('autres', u'3. Autres'),
+    ('avenants', u'4. Avenants'),
+    ('entites-consolidees', u'5. Entités consolidées'),
+    ('conventions', u'6. Conventions'),
+    ('dossiers-budgetaires', u'7. Dossiers budgétaires'),
+    ('etats-d-avancement-decomptes-factures', u'8. États d’avancement, décomptes, factures'),
+    ('jugements-transactions', '9. Jugements, transactions'),
+    ('modes-et-conditions', '10. Modes et conditions'),
+    ('non-valeurs', '11. Non-valeurs'),
+    ('octrois-de-subsides', '12. Octrois de subsides'),
+    ('recrutements-demissions-fins-de-contrats', '13. Recrutements, démissions, fins de contrats'),
+    ('taxes-et-redevances', '14. Taxes et redevances'), )
+
+# advice motivation categories
+ADVICE_MOTIVATION_CATEGORIES = (
+    ('pieces-annexes-absentes-incompletes-ou-inappropriees',
+     u'A. Pièces annexes absentes, incomplètes ou inappropriées'),
+    ('problemes-de-definition-du-cadre-legal-et-reglementaire-ou-de-respect-de-celui-ci',
+     u'B. Problèmes de définition du cadre légal et réglementaire ou de respect de celui-ci'),
+    ('problemes-de-redaction-du-projet-de-deliberation',
+     u'C. Problèmes de rédaction du projet de délibération'),
+    ('erreurs-sur-les-montants',
+     u'D. Erreurs sur les montants'),
+    ('non-conformite-avec-la-loi-sur-les-marches',
+     u'E. Non-conformité avec la loi sur les marchés'),
+    ('probleme-de-disponibilite-budgetaire-ou-de-reference-correcte-aux-articles-du-budget',
+     u'F. Problème de disponibilité budgétaire ou de référence correcte aux articles du budget'),
+    ('motivation-insuffisante-ou-inappropriee',
+     u'G. Motivation insuffisante ou inappropriée'),
+    ('competence-du-college-ou-du-conseil-communal',
+     u'H. Compétence du Collège ou du conseil communal'),
+    ('autres',
+     u'I. Autres'), )

@@ -18,6 +18,14 @@ msgstr ""
 "Preferred-encodings: utf-8 latin1\n"
 "X-is-fallback-for: fr-be fr-ca fr-lu fr-mc fr-ch fr-fr\n"
 
+#. Default: "Category"
+msgid "MeetingCharleroi_label_advice_category"
+msgstr "Catégorie"
+
+#. Default: "Motivation categories"
+msgid "MeetingCharleroi_label_advice_motivation_categories"
+msgstr "Catégories de la motivation"
+
 #. Default: "Advice is still not giveable because item is not considered complete."
 msgid "finance_advice_not_giveable_because_item_not_complete"
 msgstr "Cet avis ne pourra être rendu que lorsque le point sera considéré 'complet'."

@@ -96,3 +96,11 @@ msgstr ""
 #. Default: "Favorable opinion with remarks"
 msgid "positive_with_remarks_finance"
 msgstr ""
+
+#. Default: "Category"
+msgid "MeetingCharleroi_label_advice_category"
+msgstr ""
+
+#. Default: "Motivation categories"
+msgid "MeetingCharleroi_label_advice_motivation_categories"
+msgstr ""

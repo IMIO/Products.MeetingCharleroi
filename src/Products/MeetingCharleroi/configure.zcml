@@ -8,6 +8,7 @@
        so Products.MeetingCharleroi can overrides Products.PloneMeeting translations -->
   <i18n:registerTranslations directory="locales" />
 
+  <include package=".browser" />
   <include package="Products.CMFPlacefulWorkflow"/>
   <include package="Products.PloneMeeting"/>
   <include package="Products.MeetingCommunes"/>
@@ -69,6 +70,9 @@
              provides="Products.PloneMeeting.interfaces.IToolPloneMeetingCustom"/>
   </configure>
 
-  <include package=".browser" />
+  <utility component=".vocabularies.AdviceCategoriesVocabularyFactory"
+           name="Products.MeetingCharleroi.vocabularies.advicecategoriesvocabulary" />
+  <utility component=".vocabularies.AdviceMotivationCategoriesVocabularyFactory"
+           name="Products.MeetingCharleroi.vocabularies.advicemotivationcategoriesvocabulary" />
 
 </configure>

@@ -4,9 +4,18 @@
  <property name="model_source">
      &lt;model xmlns:security="http://namespaces.plone.org/supermodel/security" xmlns:marshal="http://namespaces.plone.org/supermodel/marshal" xmlns:form="http://namespaces.plone.org/supermodel/form" xmlns="http://namespaces.plone.org/supermodel/schema" xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="PloneMeeting"&gt;
        &lt;schema based-on="Products.PloneMeeting.content.advice.IMeetingAdvice"&gt;
-         &lt;field name="advice_category" type="zope.schema.TextLine" &gt;
+         &lt;field name="advice_category" type="zope.schema.Choice" &gt;
            &lt;description/&gt;
            &lt;title i18n:translate=""&gt;MeetingCharleroi_label_advice_category&lt;/title&gt;
+           &lt;vocabulary&gt;Products.MeetingCharleroi.vocabularies.advicecategoriesvocabulary&lt;/vocabulary&gt;
+           &lt;required&gt;False&lt;/required&gt;
+         &lt;/field&gt;
+         &lt;field name="advice_motivation_categories" type="zope.schema.List" &gt;
+           &lt;description/&gt;
+           &lt;title i18n:translate=""&gt;MeetingCharleroi_label_advice_motivation_categories&lt;/title&gt;
+           &lt;value_type type="zope.schema.Choice"&gt;
+                &lt;vocabulary&gt;Products.MeetingCharleroi.vocabularies.advicemotivationcategoriesvocabulary&lt;/vocabulary&gt;
+           &lt;/value_type&gt;
            &lt;required&gt;False&lt;/required&gt;
          &lt;/field&gt;
        &lt;/schema&gt;
