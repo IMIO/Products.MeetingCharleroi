@@ -291,9 +291,9 @@ collegeMeeting.maxShownMeetings = 5
 collegeMeeting.maxDaysDecisions = 60
 collegeMeeting.meetingAppDefaultView = 'searchmyitems'
 collegeMeeting.useAdvices = True
-collegeMeeting.itemAdviceStates = ('validated',)
-collegeMeeting.itemAdviceEditStates = ('validated',)
-collegeMeeting.itemAdviceViewStates = ('validated',
+collegeMeeting.itemAdviceStates = ('itemcreated_waiting_advices',)
+collegeMeeting.itemAdviceEditStates = ('itemcreated_waiting_advices',)
+collegeMeeting.itemAdviceViewStates = ('itemcreated_waiting_advices',
                                        'presented',
                                        'itemfrozen',
                                        'accepted',
@@ -306,6 +306,7 @@ collegeMeeting.usedAdviceTypes = ['positive', 'positive_with_remarks', 'negative
                                   'negative_finance', 'not_given_finance']
 collegeMeeting.enableAdviceInvalidation = False
 collegeMeeting.itemAdviceInvalidateStates = []
+collegeMeeting.keepAccessToItemWhenAdviceIsGiven = True
 collegeMeeting.customAdvisers = [
     {'row_id': 'unique_id_001',
      'group': 'comptabilite',
