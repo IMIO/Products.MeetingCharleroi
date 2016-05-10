@@ -81,10 +81,15 @@ adaptations.noGlobalObsStates = noGlobalObsStates
 adaptations.WF_NOT_CREATOR_EDITS_UNLESS_CLOSED = ('delayed', 'refused', 'accepted',
                                                   'pre_accepted', 'accepted_but_modified')
 
-adaptations.WAITING_ADVICES_FROM_STATES = ({'from_states': ('proposed_to_refadmin', 'prevalidated'),
-                                            'back_states': ('proposed_to_refadmin', 'prevalidated'),
-                                            'perm_cloned_states': ('prevalidated',),
-                                            'remove_modify_access': True},)
+adaptations.WAITING_ADVICES_FROM_STATES = (
+    {'from_states': ('itemcreated', ),
+     'back_states': ('itemcreated', ),
+     'perm_cloned_states': ('itemcreated',),
+     'remove_modify_access': True},
+    {'from_states': ('prevalidated', ),
+     'back_states': ('proposed_to_refadmin', 'prevalidated', ),
+     'perm_cloned_states': ('prevalidated',),
+     'remove_modify_access': True},)
 
 RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = {'meetingitemcommunes_workflow': 'meetingitemcommunes_workflow.itemcreated'}
 adaptations.RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE
@@ -653,5 +658,4 @@ class MCHItemPrettyLinkAdapter(ItemPrettyLinkAdapter):
                           translate('icon_help_proposed_to_refadmin',
                                     domain="PloneMeeting",
                                     context=self.request)))
-
         return icons

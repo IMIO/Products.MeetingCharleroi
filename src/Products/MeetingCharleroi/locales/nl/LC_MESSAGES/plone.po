@@ -53,10 +53,6 @@ msgstr ""
 msgid "backTo_proposed_to_refadmin_from_waiting_advices"
 msgstr ""
 
-#. Default: "Financial advice signed"
-msgid "financial_advice_signed"
-msgstr ""
-
 #. Default: "Propose to director"
 msgid "prevalidate"
 msgstr ""
@@ -65,20 +61,12 @@ msgstr ""
 msgid "prevalidated"
 msgstr ""
 
+#. Default: "Waiting finances advices"
+msgid "prevalidated_waiting_advices"
+msgstr ""
+
 #. Default: "Propose to service head"
 msgid "propose"
-msgstr ""
-
-#. Default: "Propose to financial controller"
-msgid "proposeToFinancialController"
-msgstr ""
-
-#. Default: "Propose to financial manager"
-msgid "proposeToFinancialManager"
-msgstr ""
-
-#. Default: "Propose to financial reviewer"
-msgid "proposeToFinancialReviewer"
 msgstr ""
 
 #. Default: "Propose to referent admin"
@@ -89,35 +77,11 @@ msgstr ""
 msgid "proposed"
 msgstr ""
 
-#. Default: "Proposed to financial controller"
-msgid "proposed_to_financial_controller"
-msgstr ""
-
-#. Default: "Proposed to financial manager"
-msgid "proposed_to_financial_manager"
-msgstr ""
-
-#. Default: "Proposed to financial reviewer"
-msgid "proposed_to_financial_reviewer"
-msgstr ""
-
 #. Default: "Proposed to admin referent"
 msgid "proposed_to_refadmin"
 msgstr ""
 
-#. Default: "Sign financial advice"
-msgid "signFinancialAdvice"
-msgstr ""
-
 #. Default: "Ask finances advices"
 msgid "wait_advices_from_prevalidated"
-msgstr ""
-
-#. Default: "Ask finances advices"
-msgid "wait_advices_from_proposed_to_refadmin"
-msgstr ""
-
-#. Default: "Waiting advices"
-msgid "waiting_advices"
 msgstr ""
 
