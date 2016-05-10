@@ -133,11 +133,11 @@ def onAdvicesUpdated(item, event):
            event.old_adviceIndex[groupId]['delay_infos']['delay_status'] == 'timed_out':
             if item.queryState() == 'waiting_advices':
                 wfTool = api.portal.get_tool('portal_workflow')
-            item.REQUEST.set('mayBackToPrevalidatedFromWaitingAdvices', True)
-            wfTool.doActionFor(item,
-                               'backTo_prevalidated_from_waiting_advices',
-                               comment='item_wf_changed_finance_advice_given')
-            item.REQUEST.set('mayBackToPrevalidatedFromWaitingAdvices', False)
+                item.REQUEST.set('mayBackToPrevalidatedFromWaitingAdvices', True)
+                wfTool.doActionFor(item,
+                                   'backTo_prevalidated_from_waiting_advices',
+                                   comment='item_wf_changed_finance_advice_given')
+                item.REQUEST.set('mayBackToPrevalidatedFromWaitingAdvices', False)
 
     # when item is 'backToProposedToInternalReviewer', reinitialize advice delay
     if event.triggered_by_transition in ('backTo_prevalidated_from_waiting_advices',

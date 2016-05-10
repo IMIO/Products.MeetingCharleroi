@@ -251,7 +251,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
 
         # item must be still in a state where the advice can be given
         # and advice must still not have been given
-        if not item.queryState() == 'waiting_advices':
+        if not item.queryState() == 'prevalidated_waiting_advices':
             return False
         return True
 
