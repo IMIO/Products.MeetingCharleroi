@@ -107,6 +107,13 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
         """ """
         self._setItemToWaitingAdvices(item)
 
+    def _userAbleToBackFromWaitingAdvices(self, currentState):
+        """Return username able to back from waiting advices."""
+        if currentState == 'prevalidated_waiting_advices':
+            return 'pmFinManager'
+        else:
+            return super(testWFAdaptations, self)._userAbleToBackFromWaitingAdvices(currentState)
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite
