@@ -21,7 +21,6 @@
 #
 # ------------------------------------------------------------------------------
 
-from appy.gen import No
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
 from zope.interface import implements
@@ -306,31 +305,6 @@ class MeetingItemCharleroiCollegeWorkflowActions(MeetingItemCollegeWorkflowActio
     def doProposeToRefAdmin(self, stateChange):
         pass
 
-    def doProposeToFinance(self, stateChange):
-        '''When an item is proposed to finance again, make sure the item
-           completeness si no more in ('completeness_complete', 'completeness_evaluation_not_required')
-           so advice is not addable/editable when item come back again to the finance.'''
-        # if we found an event 'proposeToFinance' in workflow_history, it means that item is
-        # proposed again to the finances and we need to ask completeness evaluation again
-        # current transition 'proposeToFinance' is already in workflow_history...
-        wfTool = api.portal.get_tool('portal_workflow')
-        # take history but leave last event apart
-        history = self.context.workflow_history[wfTool.getWorkflowsFor(self.context)[0].getId()][:-1]
-        # if we find 'proposeToFinance' in previous actions, then item is proposed to finance again
-        for event in history:
-            if event['action'] == 'proposeToFinance':
-                changeCompleteness = self.context.restrictedTraverse('@@change-item-completeness')
-                comment = translate('completeness_asked_again_by_app',
-                                    domain='PloneMeeting',
-                                    context=self.context.REQUEST)
-                # change completeness even if current user is not able to set it to
-                # 'completeness_evaluation_asked_again', here it is the application that set
-                # it automatically
-                changeCompleteness._changeCompleteness('completeness_evaluation_asked_again',
-                                                       bypassSecurityCheck=True,
-                                                       comment=comment)
-                break
-
     def _doWaitAdvices(self):
         '''When an item is proposed to finances again, make sure the item
            completeness si no more in ('completeness_complete', 'completeness_evaluation_not_required')
@@ -343,8 +317,7 @@ class MeetingItemCharleroiCollegeWorkflowActions(MeetingItemCollegeWorkflowActio
         history = self.context.workflow_history[wfTool.getWorkflowsFor(self.context)[0].getId()][:-1]
         # if we find 'proposeToFinance' in previous actions, then item is proposed to finance again
         for event in history:
-            if event['action'] in ('wait_advices_from_proposed_to_refadmin',
-                                   'wait_advices_from_prevalidated'):
+            if event['action'] == 'wait_advices_from_prevalidated':
                 changeCompleteness = self.context.restrictedTraverse('@@change-item-completeness')
                 comment = translate('completeness_asked_again_by_app',
                                     domain='PloneMeeting',
@@ -394,6 +367,27 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
         """ """
         return self._mayWaitAdvices(self._getWaitingAdvicesStateFrom('proposed_to_refadmin'))
 
+    security.declarePublic('mayValidate')
+
+    def mayValidate(self):
+        """
+          This differs if the item needs finance advice or not.
+          - it does NOT have finance advice : either the Director or the MeetingManager
+            can validate, the MeetingManager can bypass the validation process
+            and validate an item that is in the state 'itemcreated';
+          - it does have a finance advice : it will be automatically validated when
+            the advice will be 'signed' by the finance group if the advice type
+            is 'positive_finance/positive_with_remarks_finance' or 'not_required_finance' or it can be manually
+            validated by the director if item emergency has been asked and motivated on the item.
+        """
+        # very special case, we can bypass the guard if a 'mayValidate'
+        # value is found to True in the REQUEST
+        if self.context.REQUEST.get('mayValidate', False):
+            return True
+
+        res = MeetingItemCollegeWorkflowConditions.mayValidate(self)
+        return res
+
     security.declarePublic('mayCorrect')
 
     def mayCorrect(self):
@@ -401,12 +395,13 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
            'Review portal content' permission, if it is linked to a meeting, an item
            may still be corrected until the meeting is 'closed'.'''
         res = MeetingItemCollegeWorkflowConditions(self.context).mayCorrect()
-        if not res:
-            # if item is 'waiting_advices', finances adviser may send the item back
-            if self.context.queryState() == 'waiting_advices':
-                member = api.user.get_current()
-                if '{0}_advisers'.format(FINANCE_GROUP_ID) in member.getGroups():
-                    res = True
+        # if item is sent to finances, only finances adviser may send the item back
+        if self.context.queryState() == 'prevalidated_waiting_advices':
+            res = False
+            member = api.user.get_current()
+            if 'Manager' in member.getRoles() or \
+               '{0}_advisers'.format(FINANCE_GROUP_ID) in member.getGroups():
+                res = True
         return res
 
 

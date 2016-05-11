@@ -24,6 +24,10 @@
 
 from DateTime import DateTime
 from zope.i18n import translate
+from plone.app.textfield.value import RichTextValue
+from plone.dexterity.utils import createContentInContainer
+from Products.CMFCore.permissions import ModifyPortalContent
+from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 
 
@@ -126,7 +130,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
            aka no 'finances' advice is aksed.'''
         # normal advices can be given when item in state 'itemcreated_waiting_advices',
         cfg = self.meetingConfig
-        cfg.setUsedAdviceTypes(('asked_again', ) + self.meetingConfig.getUsedAdviceTypes())
+        cfg.setUsedAdviceTypes(('asked_again', ) + cfg.getUsedAdviceTypes())
         cfg.setItemAdviceStates(('itemcreated_waiting_advices', ))
         cfg.setItemAdviceEditStates = (('itemcreated_waiting_advices', ))
         cfg.setItemAdviceViewStates = (('itemcreated_waiting_advices', ))
@@ -135,7 +139,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')
         # if no advice to ask, pmCreator may only 'propose' the item
-        self.assertTrue(self.transitions(item) == ['propose', ])
+        self.assertEqual(self.transitions(item), ['propose', ])
         # the mayWait_advices_from_itemcreated wfCondition returns a 'No' instance
         advice_required_to_ask_advices = translate('advice_required_to_ask_advices',
                                                    domain='PloneMeeting',
@@ -145,49 +149,172 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # now ask 'vendors' advice
         item.setOptionalAdvisers(('vendors', ))
         item.at_post_edit_script()
-        self.assertTrue(self.transitions(item) == ['wait_advices_from_itemcreated',
-                                                   'propose', ])
+        self.assertEqual(self.transitions(item), ['propose', 'wait_advices_from_itemcreated'])
         # give advice
         self.do(item, 'wait_advices_from_itemcreated')
+        # no editable
+        self.assertFalse(self.hasPermission(ModifyPortalContent, item))
+
         # pmReviewer2 is adviser for vendors
         self.changeUser('pmReviewer2')
-        advice = createContentInContainer(item,
-                                          'meetingadvice',
-                                          **{'advice_group': 'vendors',
-                                             'advice_type': u'positive',
-                                             'advice_comment': RichTextValue(u'My comment vendors')})
+        createContentInContainer(item,
+                                 'meetingadvice',
+                                 **{'advice_group': 'vendors',
+                                    'advice_type': u'positive',
+                                    'advice_comment': RichTextValue(u'My comment vendors')})
         # no more advice to give
         self.assertTrue(not item.hasAdvices(toGive=True))
-        # item may be proposed directly to administrative reviewer
-        # from state 'itemcreated_waiting_advices'
-        # we continue wf as internal reviewer may also ask advice
+        # item may be taken back by 'pmCreator1'
+        self.assertFalse(self.transitions(item))
         self.changeUser('pmCreator1')
-        self.do(item, 'proposeToAdministrativeReviewer')
-        self.changeUser('pmAdminReviewer1')
-        self.do(item, 'proposeToInternalReviewer')
-        self.changeUser('pmInternalReviewer1')
-        # no advice to give so not askable
-        self.assertTrue(self.transitions(item) == ['backToProposedToAdministrativeReviewer',
-                                                   'proposeToDirector', ])
-        # advice could be asked again
-        self.assertTrue(item.adapted().mayAskAdviceAgain(advice))
-        item.setOptionalAdvisers(('vendors', 'developers'))
+        self.do(item, 'backTo_itemcreated_from_waiting_advices')
+
+    def test_CollegeProcessWithFinancesAdvice(self):
+        '''How does the process behave when the 'finances' advice is asked.'''
+        cfg = self.meetingConfig
+        self.changeUser('siteadmin')
+        self._configureFinancesAdvice(cfg)
+
+        self.changeUser('pmCreator1')
+        item = self.create('MeetingItem', title='The first item')
+        # ask finances advice
+        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
         item.at_post_edit_script()
-        # now that there is an advice to give (developers)
-        # internal reviewer may ask it
-        self.assertTrue(self.transitions(item) == ['askAdvicesByInternalReviewer',
-                                                   'backToProposedToAdministrativeReviewer',
-                                                   'proposeToDirector', ])
-        # give advice
-        self.do(item, 'askAdvicesByInternalReviewer')
-        # pmAdviser1 is adviser for developers
-        self.changeUser('pmAdviser1')
-        createContentInContainer(item,
-                                 'meetingadvicefinances',
-                                 **{'advice_group': 'developers',
-                                    'advice_type': u'positive',
-                                    'advice_comment': RichTextValue(u'My comment developers')})
-        # item may be proposed directly to director
-        # from state 'proposed_to_internal_reviewer_waiting_advices'
-        self.changeUser('pmInternalReviewer1')
-        self.do(item, 'proposeToDirector')
+        # not askable for now
+        self.assertEqual(self.transitions(item), ['propose', ])
+
+        # only directors may ask finances advice, item must be 'prevalidated'
+        self.assertEqual(self.transitions(item), ['propose'])
+        self.do(item, 'propose')
+        self.assertFalse(self.transitions(item))
+        self.changeUser('pmServiceHead1')
+        self.assertEqual(self.transitions(item), ['backToItemCreated', 'proposeToRefAdmin'])
+        self.do(item, 'proposeToRefAdmin')
+        self.assertFalse(self.transitions(item))
+        self.changeUser('pmRefAdmin1')
+        self.assertEqual(self.transitions(item), ['backToProposed', 'prevalidate'])
+        self.do(item, 'prevalidate')
+        self.assertFalse(self.transitions(item))
+        self.changeUser('pmReviewer1')
+        self.assertEqual(self.transitions(item),
+                         ['backToProposedToRefAdmin',
+                          'validate',
+                          'wait_advices_from_prevalidated'])
+
+        # ask finances advice
+        self.do(item, 'wait_advices_from_prevalidated')
+        # when item is sent to finances, even the reviewer may not change it's state
+        self.assertFalse(self.transitions(item))
+        self.changeUser('pmFinController')
+        self.assertEqual(self.transitions(item),
+                         ['backTo_prevalidated_from_waiting_advices',
+                          'backTo_proposed_to_refadmin_from_waiting_advices'])
+
+    def test_CollegeFinancesAdviceWF(self):
+        '''Test the finances advice workflow.'''
+        cfg = self.meetingConfig
+        self.changeUser('siteadmin')
+        self._configureFinancesAdvice(cfg)
+        # put users in finances group
+        self._setupFinancesGroup()
+        self.changeUser('pmCreator1')
+        item = self.create('MeetingItem', title='The first item')
+        # ask finances advice
+        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
+        self.proposeItem(item)
+        self.changeUser('pmReviewer1')
+        self.do(item, 'wait_advices_from_prevalidated')
+
+        # now act as the finances users
+        # advice may be added/edit when item is considered 'complete'
+        self.changeUser('pmFinController')
+        self.assertEqual(self.transitions(item),
+                         ['backTo_prevalidated_from_waiting_advices',
+                          'backTo_proposed_to_refadmin_from_waiting_advices'])
+        toAdd, toEdit = item.getAdvicesGroupsInfosForUser()
+        self.assertFalse(toAdd or toEdit)
+
+        # set item as "incomplete" using itemcompleteness view
+        # this way, it checks that current user may actually evaluate completeness
+        # and item is updated (at_post_edit_script is called)
+        self.assertEqual(item.getCompleteness(), 'completeness_not_yet_evaluated')
+        changeCompleteness = item.restrictedTraverse('@@change-item-completeness')
+        self.request.set('new_completeness_value', 'completeness_incomplete')
+        self.request.form['form.submitted'] = True
+        changeCompleteness()
+        self.assertEqual(item.getCompleteness(), 'completeness_incomplete')
+        # can be sent back even if considered incomplete
+        self.assertEqual(self.transitions(item),
+                         ['backTo_prevalidated_from_waiting_advices',
+                          'backTo_proposed_to_refadmin_from_waiting_advices'])
+        toAdd, toEdit = item.getAdvicesGroupsInfosForUser()
+        self.assertFalse(toAdd or toEdit)
+        # back to reviewer
+        self.do(item, 'backTo_prevalidated_from_waiting_advices')
+
+        # now do item complete
+        self.changeUser('pmReviewer1')
+        self.do(item, 'wait_advices_from_prevalidated')
+        self.changeUser('pmFinController')
+        # delay is not started
+        self.assertIsNone(item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'])
+        self.assertEqual(item.getCompleteness(), 'completeness_evaluation_asked_again')
+        self.request.set('new_completeness_value', 'completeness_complete')
+        changeCompleteness()
+        self.assertEqual(item.getCompleteness(), 'completeness_complete')
+        self.assertTrue(item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'])
+        # advice may be added
+        toAdd, toEdit = item.getAdvicesGroupsInfosForUser()
+        self.assertEqual(toAdd, [(FINANCE_GROUP_ID, 'Directeur financier')])
+        self.assertFalse(toEdit)
+        # add advice
+        advice = createContentInContainer(
+            item,
+            'meetingadvicefinances',
+            **{'advice_group': FINANCE_GROUP_ID,
+               'advice_type': u'negative_finance',
+               'advice_comment': RichTextValue(u'My comment finances')})
+        # send item to finances reviewer
+        self.assertEqual(self.transitions(advice), ['proposeToFinancialReviewer'])
+        self.do(advice, 'proposeToFinancialReviewer')
+        self.changeUser('pmFinReviewer')
+        self.assertEqual(self.transitions(advice),
+                         ['backToProposedToFinancialController',
+                          'proposeToFinancialManager'])
+        # send item to finances manager
+        self.do(advice, 'proposeToFinancialManager')
+        self.changeUser('pmFinManager')
+        self.assertEqual(self.transitions(advice),
+                         ['backToProposedToFinancialController',
+                          'backToProposedToFinancialReviewer',
+                          'signFinancialAdvice'])
+
+        # sign the advice, as it is 'negative_finance', aka not 'positive_finances'
+        # it will be automatically sent back to the refadmin
+        self.do(advice, 'signFinancialAdvice')
+        self.assertEquals(item.queryState(), 'proposed_to_refadmin')
+
+        # sign the advice as 'positive_finance' it will be automatically 'validated'
+        self.changeUser('pmReviewer1')
+        self.do(item, 'prevalidate')
+        # as advice was already given, user needs to ask advice again
+        self.assertFalse('wait_advices_from_prevalidated' in self.transitions(item))
+        changeView = advice.restrictedTraverse('@@change-advice-asked-again')
+        changeView()
+        self.assertEquals(advice.advice_type, 'asked_again')
+        self.do(item, 'wait_advices_from_prevalidated')
+        self.changeUser('pmFinController')
+        # delay is not started
+        self.assertIsNone(item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'])
+        self.assertEqual(item.getCompleteness(), 'completeness_evaluation_asked_again')
+        self.request.set('new_completeness_value', 'completeness_complete')
+        changeCompleteness()
+        self.assertTrue(item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'])
+        # change advice_type to 'positive_finance'
+        advice.advice_type = u'positive_finance'
+        self.do(advice, 'proposeToFinancialReviewer')
+        self.changeUser('pmFinReviewer')
+        self.do(advice, 'proposeToFinancialManager')
+        self.changeUser('pmFinManager')
+        # self.do(advice, 'signFinancialAdvice')
+        # self.assertEquals(item.queryState(), 'validated')

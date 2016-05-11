@@ -12,7 +12,6 @@ __docformat__ = 'plaintext'
 
 from plone import api
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
-from Products.MeetingCharleroi.config import FINANCE_ADVICE_HISTORIZE_COMMENTS
 
 
 def onAdviceTransition(advice, event):
@@ -51,18 +50,20 @@ def onAdviceTransition(advice, event):
         advice.advice_hide_during_redaction = True
 
     if newStateId == 'financial_advice_signed':
-        # historize given advice into a version
-        advice.versionate_if_relevant(FINANCE_ADVICE_HISTORIZE_COMMENTS)
-
         # final state of the wf, make sure advice is no more hidden during redaction
         advice.advice_hide_during_redaction = False
-        # if item was still in state 'waiting_advices', it is automatically sent to director
-        if itemState == 'waiting_advices':
-            item.REQUEST.set('mayBackToPrevalidatedFromWaitingAdvices', True)
-            wfTool.doActionFor(item,
-                               'backTo_prevalidated_from_waiting_advices',
-                               comment='item_wf_changed_finance_advice_given')
-            item.REQUEST.set('mayBackToPrevalidatedFromWaitingAdvices', False)
+        # if item was still in state 'prevalidated_waiting_advices',
+        # it is automatically validated if advice is 'positive_finance'
+        # otherwise it is sent back to the refadmin
+        if itemState == 'prevalidated_waiting_advices':
+            if advice.advice_type == 'positive_finance':
+                item.REQUEST.set('mayValidate', True)
+                wfTool.doActionFor(item, 'validate', comment='item_wf_changed_finance_advice_positive')
+                item.REQUEST.set('mayValidate', False)
+            else:
+                wfTool.doActionFor(item,
+                                   'backTo_proposed_to_refadmin_from_waiting_advices',
+                                   comment='item_wf_changed_finance_advice_negative')
         else:
             # we need to _updateAdvices so change to
             # 'advice_hide_during_redaction' is taken into account
@@ -125,25 +126,3 @@ def onAdvicesUpdated(item, event):
             adviceInfo['advice_addable'] = False
             adviceInfo['advice_editable'] = False
             adviceInfo['delay_infos'] = item.getDelayInfosForAdvice(groupId)
-
-        # when a finance advice is just timed out, we will validate the item
-        # so MeetingManagers receive the item and do what necessary
-        if adviceInfo['delay_infos']['delay_status'] == 'timed_out' and \
-           'delay_infos' in event.old_adviceIndex[groupId] and not \
-           event.old_adviceIndex[groupId]['delay_infos']['delay_status'] == 'timed_out':
-            if item.queryState() == 'waiting_advices':
-                wfTool = api.portal.get_tool('portal_workflow')
-                item.REQUEST.set('mayBackToPrevalidatedFromWaitingAdvices', True)
-                wfTool.doActionFor(item,
-                                   'backTo_prevalidated_from_waiting_advices',
-                                   comment='item_wf_changed_finance_advice_given')
-                item.REQUEST.set('mayBackToPrevalidatedFromWaitingAdvices', False)
-
-    # when item is 'backToProposedToInternalReviewer', reinitialize advice delay
-    if event.triggered_by_transition in ('backTo_prevalidated_from_waiting_advices',
-                                         'backTo_proposed_to_refadmin_from_waiting_advices'):
-        if FINANCE_GROUP_ID in item.adviceIndex:
-            adviceInfo = item.adviceIndex[FINANCE_GROUP_ID]
-            adviceInfo['delay_started_on'] = None
-            adviceInfo['advice_addable'] = False
-            adviceInfo['delay_infos'] = item.getDelayInfosForAdvice(FINANCE_GROUP_ID)

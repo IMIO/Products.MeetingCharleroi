@@ -82,10 +82,12 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
                             preferredMeeting=meeting.UID())
         self.do(item2, 'propose')
         # pmReviewer1 validates item1 and adds an annex to it
-        self.changeUser('pmReviewer1')
+        self.changeUser('pmServiceHead1')
         self.addAnnex(item1, relatedTo='item_decision')
         self.do(item1, 'proposeToRefAdmin')
+        self.changeUser('pmRefAdmin1')
         self.do(item1, 'prevalidate')
+        self.changeUser('pmReviewer1')
         self.do(item1, 'validate')
         self.assertRaises(Unauthorized, self.addAnnex, item1, relatedTo='item_decision')
         self.failIf(self.hasPermission('PloneMeeting: Add annex', item1))

@@ -93,7 +93,7 @@ PMconfig.ADVICE_STATES_ALIVE = CHARLEROI_ADVICE_STATES_ALIVE
 PMconfig.ADVICE_STATES_ENDED = CHARLEROI_ADVICE_STATES_ENDED
 
 # in those states, finance advice can still be given
-FINANCE_GIVEABLE_ADVICE_STATES = ('waiting_advices', )
+FINANCE_GIVEABLE_ADVICE_STATES = ('prevalidated_waiting_advices', )
 
 # additional advice types used for finances advice
 CHARLEROI_EXTRA_ADVICE_TYPES = ('positive_finance', 'positive_with_remarks_finance',
