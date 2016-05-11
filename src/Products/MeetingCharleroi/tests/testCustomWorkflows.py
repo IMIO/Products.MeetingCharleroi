@@ -23,6 +23,7 @@
 #
 
 from DateTime import DateTime
+from zope.i18n import translate
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 
 
@@ -119,3 +120,74 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertEquals('accepted', wftool.getInfoFor(item6, 'review_state'))
         # presented change into accepted
         self.assertEquals('accepted', wftool.getInfoFor(item7, 'review_state'))
+
+    def test_CollegeProcessWithNormalAdvices(self):
+        '''How does the process behave when some 'normal' advices,
+           aka no 'finances' advice is aksed.'''
+        # normal advices can be given when item in state 'itemcreated_waiting_advices',
+        cfg = self.meetingConfig
+        cfg.setUsedAdviceTypes(('asked_again', ) + self.meetingConfig.getUsedAdviceTypes())
+        cfg.setItemAdviceStates(('itemcreated_waiting_advices', ))
+        cfg.setItemAdviceEditStates = (('itemcreated_waiting_advices', ))
+        cfg.setItemAdviceViewStates = (('itemcreated_waiting_advices', ))
+        cfg.setKeepAccessToItemWhenAdviceIsGiven(True)
+
+        self.changeUser('pmCreator1')
+        item = self.create('MeetingItem', title='The first item')
+        # if no advice to ask, pmCreator may only 'propose' the item
+        self.assertTrue(self.transitions(item) == ['propose', ])
+        # the mayWait_advices_from_itemcreated wfCondition returns a 'No' instance
+        advice_required_to_ask_advices = translate('advice_required_to_ask_advices',
+                                                   domain='PloneMeeting',
+                                                   context=self.request)
+        self.assertEqual(item.wfConditions().mayWait_advices_from_itemcreated().msg,
+                         advice_required_to_ask_advices)
+        # now ask 'vendors' advice
+        item.setOptionalAdvisers(('vendors', ))
+        item.at_post_edit_script()
+        self.assertTrue(self.transitions(item) == ['wait_advices_from_itemcreated',
+                                                   'propose', ])
+        # give advice
+        self.do(item, 'wait_advices_from_itemcreated')
+        # pmReviewer2 is adviser for vendors
+        self.changeUser('pmReviewer2')
+        advice = createContentInContainer(item,
+                                          'meetingadvice',
+                                          **{'advice_group': 'vendors',
+                                             'advice_type': u'positive',
+                                             'advice_comment': RichTextValue(u'My comment vendors')})
+        # no more advice to give
+        self.assertTrue(not item.hasAdvices(toGive=True))
+        # item may be proposed directly to administrative reviewer
+        # from state 'itemcreated_waiting_advices'
+        # we continue wf as internal reviewer may also ask advice
+        self.changeUser('pmCreator1')
+        self.do(item, 'proposeToAdministrativeReviewer')
+        self.changeUser('pmAdminReviewer1')
+        self.do(item, 'proposeToInternalReviewer')
+        self.changeUser('pmInternalReviewer1')
+        # no advice to give so not askable
+        self.assertTrue(self.transitions(item) == ['backToProposedToAdministrativeReviewer',
+                                                   'proposeToDirector', ])
+        # advice could be asked again
+        self.assertTrue(item.adapted().mayAskAdviceAgain(advice))
+        item.setOptionalAdvisers(('vendors', 'developers'))
+        item.at_post_edit_script()
+        # now that there is an advice to give (developers)
+        # internal reviewer may ask it
+        self.assertTrue(self.transitions(item) == ['askAdvicesByInternalReviewer',
+                                                   'backToProposedToAdministrativeReviewer',
+                                                   'proposeToDirector', ])
+        # give advice
+        self.do(item, 'askAdvicesByInternalReviewer')
+        # pmAdviser1 is adviser for developers
+        self.changeUser('pmAdviser1')
+        createContentInContainer(item,
+                                 'meetingadvicefinances',
+                                 **{'advice_group': 'developers',
+                                    'advice_type': u'positive',
+                                    'advice_comment': RichTextValue(u'My comment developers')})
+        # item may be proposed directly to director
+        # from state 'proposed_to_internal_reviewer_waiting_advices'
+        self.changeUser('pmInternalReviewer1')
+        self.do(item, 'proposeToDirector')

@@ -92,7 +92,8 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
         # put users in finances group
         self._setupFinancesGroup()
         self.changeUser(originalMember)
-        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
+        item.setOptionalAdvisers(item.getOptionalAdvisers() +
+                                 ('dirfin__rowid__2016-05-01.0', ))
         item.at_post_edit_script()
         if transition:
             self.do(item, transition)

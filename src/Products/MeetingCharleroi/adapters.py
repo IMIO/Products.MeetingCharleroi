@@ -388,30 +388,11 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
             res = True
         return res
 
-    def _mayWaitAdvices(self):
-        """May only be set to 'waiting_advices' if finances advice is asked."""
-        if not FINANCE_GROUP_ID in self.context.adviceIndex:
-            return No(translate('no_finances_advice_asked',
-                                domain="PloneMeeting",
-                                context=self.context.REQUEST,
-                                default="The finances advice has not been selected on this item."))
-
-        res = False
-        if checkPermission(ReviewPortalContent, self.context):
-            res = True
-        return res
-
     security.declarePublic('mayWait_advices_from_proposed_to_refadmin')
 
     def mayWait_advices_from_proposed_to_refadmin(self):
         """ """
-        return self._mayWaitAdvices()
-
-    security.declarePublic('mayWait_advices_from_prevalidated')
-
-    def mayWait_advices_from_prevalidated(self):
-        """ """
-        return self._mayWaitAdvices()
+        return self._mayWaitAdvices(self._getWaitingAdvicesStateFrom('proposed_to_refadmin'))
 
     security.declarePublic('mayCorrect')
 

@@ -169,6 +169,7 @@ setattr(developers, 'signatures', 'developers signatures')
 setattr(developers, 'echevinServices', 'developers')
 # put pmReviewerLevel1 in first level of reviewers from what is in MEETINGREVIEWERS
 getattr(developers, MEETINGREVIEWERS.keys()[-1]).append(pmReviewerLevel1)
+getattr(developers, MEETINGREVIEWERS.keys()[-2]).append(pmReviewerLevel1)
 # put pmReviewerLevel2 in second level of reviewers from what is in MEETINGREVIEWERS
 getattr(developers, MEETINGREVIEWERS.keys()[0]).append(pmReviewerLevel2)
 
