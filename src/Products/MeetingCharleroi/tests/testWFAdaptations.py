@@ -98,6 +98,11 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
         if transition:
             self.do(item, transition)
 
+    def test_pm_WFA_waiting_advices_with_prevalidation(self):
+        """Override to add 'pmReviewerLevel1' to the 'prereviewers' group."""
+        self.portal.portal_groups.addPrincipalToGroup('pmReviewerLevel1', 'developers_prereviewers')
+        super(testWFAdaptations, self).test_pm_WFA_waiting_advices_with_prevalidation()
+
     def _afterItemCreatedWaitingAdviceWithPrevalidation(self, item):
         """ """
         self._setItemToWaitingAdvices(item)
