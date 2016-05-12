@@ -316,5 +316,5 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmFinReviewer')
         self.do(advice, 'proposeToFinancialManager')
         self.changeUser('pmFinManager')
-        # self.do(advice, 'signFinancialAdvice')
-        # self.assertEquals(item.queryState(), 'validated')
+        self.do(advice, 'signFinancialAdvice')
+        self.assertEquals(item.queryState(), 'validated')

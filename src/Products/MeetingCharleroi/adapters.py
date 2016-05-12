@@ -380,7 +380,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
             is 'positive_finance/positive_with_remarks_finance' or 'not_required_finance' or it can be manually
             validated by the director if item emergency has been asked and motivated on the item.
         """
-        # very special case, we can bypass the guard if a 'mayValidate'
+        # special case, we can bypass the guard if a 'mayValidate'
         # value is found to True in the REQUEST
         if self.context.REQUEST.get('mayValidate', False):
             return True
@@ -390,16 +390,15 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
 
     security.declarePublic('mayCorrect')
 
-    def mayCorrect(self):
-        '''If the item is not linked to a meeting, the user just need the
-           'Review portal content' permission, if it is linked to a meeting, an item
-           may still be corrected until the meeting is 'closed'.'''
-        res = MeetingItemCollegeWorkflowConditions(self.context).mayCorrect()
-        # if item is sent to finances, only finances adviser may send the item back
+    def mayCorrect(self, destinationState=None):
+        '''See docstring in interfaces.py'''
+        res = MeetingItemCollegeWorkflowConditions(self.context).mayCorrect(destinationState)
+        # if item is sent to finances, only finances advisers and MeetingManagers may send it back
         if self.context.queryState() == 'prevalidated_waiting_advices':
             res = False
             member = api.user.get_current()
-            if 'Manager' in member.getRoles() or \
+            tool = api.portal.get_tool('portal_plonemeeting')
+            if tool.isManager(self.context) or \
                '{0}_advisers'.format(FINANCE_GROUP_ID) in member.getGroups():
                 res = True
         return res
@@ -526,7 +525,7 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
                     new_state_id='proposed_to_refadmin', trigger_type=1, script_name='',
                     actbox_name='backToProposedToRefAdmin', actbox_url='',
                     actbox_icon='%(portal_url)s/backToProposedToRefAdmin.png', actbox_category='workflow',
-                    props={'guard_expr': 'python:here.wfConditions().mayCorrect()'})
+                    props={'guard_expr': 'python:here.wfConditions().mayCorrect("proposed_to_refadmin")'})
                 # Update connections between states and transitions
                 wf.states['proposed'].setProperties(
                     title='proposed', description='',
