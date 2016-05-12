@@ -14,3 +14,11 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: DOMAIN\n"
 
+#. Default: "The item has been automatically sent back to administrative referent because the finances advice was not positive."
+msgid "item_wf_changed_finance_advice_not_positive"
+msgstr "Le point a été automatiquement renvoyé au référent administratif car l'avis rendu par le Directeur financier n'était pas favorable."
+
+#. Default: "The item has been automatically validated because the relevant finance advice was positive."
+msgid "item_wf_changed_finance_advice_positive"
+msgstr "Le point a été automatiquement validé car le Directeur financier a rendu un avis favorable."
+

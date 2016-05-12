@@ -54,6 +54,10 @@ msgstr "Renvoyer au directeur"
 msgid "backTo_proposed_to_refadmin_from_waiting_advices"
 msgstr "Renvoyer au référent administratif"
 
+#. Default: "Validate"
+msgid "backTo_validated_from_waiting_advices"
+msgstr "Valider (via avis Directeur financier)"
+
 #. Default: "Propose to director"
 msgid "prevalidate"
 msgstr "Proposer au directeur"

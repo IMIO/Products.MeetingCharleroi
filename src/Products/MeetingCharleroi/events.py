@@ -58,12 +58,14 @@ def onAdviceTransition(advice, event):
         if itemState == 'prevalidated_waiting_advices':
             if advice.advice_type == 'positive_finance':
                 item.REQUEST.set('mayValidate', True)
-                wfTool.doActionFor(item, 'validate', comment='item_wf_changed_finance_advice_positive')
+                wfTool.doActionFor(item,
+                                   'backTo_validated_from_waiting_advices',
+                                   comment='item_wf_changed_finance_advice_positive')
                 item.REQUEST.set('mayValidate', False)
             else:
                 wfTool.doActionFor(item,
                                    'backTo_proposed_to_refadmin_from_waiting_advices',
-                                   comment='item_wf_changed_finance_advice_negative')
+                                   comment='item_wf_changed_finance_advice_not_positive')
         else:
             # we need to _updateAdvices so change to
             # 'advice_hide_during_redaction' is taken into account

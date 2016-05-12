@@ -78,3 +78,11 @@ msgstr ""
 #. Default: "Waiting finances advices"
 msgid "prevalidated_waiting_advices"
 msgstr ""
+
+#. Default: "Validate"
+msgid "backTo_validated_from_waiting_advices"
+msgstr ""
+
+#. Default: "Waiting finances advices"
+msgid "prevalidated_waiting_advices"
+msgstr ""

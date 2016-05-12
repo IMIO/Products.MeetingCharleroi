@@ -86,11 +86,12 @@ adaptations.WAITING_ADVICES_FROM_STATES = (
      'perm_cloned_states': ('itemcreated',),
      'remove_modify_access': True},
     {'from_states': ('prevalidated', ),
-     'back_states': ('proposed_to_refadmin', 'prevalidated', ),
+     'back_states': ('proposed_to_refadmin', 'prevalidated', 'validated'),
      'perm_cloned_states': ('prevalidated',),
      'remove_modify_access': True},)
 
-RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = {'meetingitemcommunes_workflow': 'meetingitemcommunes_workflow.itemcreated'}
+RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = {'meetingitemcommunes_workflow':
+                                            'meetingitemcommunes_workflow.itemcreated'}
 adaptations.RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE
 
 
@@ -367,27 +368,6 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
         """ """
         return self._mayWaitAdvices(self._getWaitingAdvicesStateFrom('proposed_to_refadmin'))
 
-    security.declarePublic('mayValidate')
-
-    def mayValidate(self):
-        """
-          This differs if the item needs finance advice or not.
-          - it does NOT have finance advice : either the Director or the MeetingManager
-            can validate, the MeetingManager can bypass the validation process
-            and validate an item that is in the state 'itemcreated';
-          - it does have a finance advice : it will be automatically validated when
-            the advice will be 'signed' by the finance group if the advice type
-            is 'positive_finance/positive_with_remarks_finance' or 'not_required_finance' or it can be manually
-            validated by the director if item emergency has been asked and motivated on the item.
-        """
-        # special case, we can bypass the guard if a 'mayValidate'
-        # value is found to True in the REQUEST
-        if self.context.REQUEST.get('mayValidate', False):
-            return True
-
-        res = MeetingItemCollegeWorkflowConditions.mayValidate(self)
-        return res
-
     security.declarePublic('mayCorrect')
 
     def mayCorrect(self, destinationState=None):
@@ -396,11 +376,16 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
         # if item is sent to finances, only finances advisers and MeetingManagers may send it back
         if self.context.queryState() == 'prevalidated_waiting_advices':
             res = False
-            member = api.user.get_current()
-            tool = api.portal.get_tool('portal_plonemeeting')
-            if tool.isManager(self.context) or \
-               '{0}_advisers'.format(FINANCE_GROUP_ID) in member.getGroups():
-                res = True
+            if destinationState == 'validated':
+                # in this case, we need the 'mayValidate' to True in the REQUEST
+                if self.context.REQUEST.get('mayValidate', False):
+                    res = True
+            else:
+                member = api.user.get_current()
+                tool = api.portal.get_tool('portal_plonemeeting')
+                if tool.isManager(self.context) or \
+                   '{0}_advisers'.format(FINANCE_GROUP_ID) in member.getGroups():
+                    res = True
         return res
 
 

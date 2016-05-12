@@ -11,3 +11,11 @@ msgstr ""
 "Preferred-encodings: utf-8 latin1\n"
 "Domain: imio.history\n"
 
+#. Default: "The item has been automatically validated because the relevant finance advice was positive."
+msgid "item_wf_changed_finance_advice_positive"
+msgstr ""
+
+#. Default: "The item has been automatically sent back to administrative referent because the finances advice was not positive."
+msgid "item_wf_changed_finance_advice_not_positive"
+msgstr ""
+
