@@ -215,9 +215,6 @@ def finalizeExampleInstance(context):
     if not context.readDataFile("MeetingCharleroi_testing_marker.txt"):
         logStep("_createFinanceGroups", context)
         _createFinancesGroup(site)
-        # populate the customAdvisers of 'meeting-config-college'
-        logStep("_configureCollegeCustomAdvisers", context)
-        _configureCollegeCustomAdvisers(site)
 
 
 def _configureCollegeCustomAdvisers(site):
