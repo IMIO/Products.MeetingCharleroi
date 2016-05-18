@@ -81,22 +81,6 @@ msgstr ""
 msgid "finance_advice_suspended_because_item_sent_back_to_proposing_group"
 msgstr ""
 
-#. Default: "Unfavorable opinion"
-msgid "negative_finance"
-msgstr ""
-
-#. Default: "Not given opinion"
-msgid "not_given_finance"
-msgstr ""
-
-#. Default: "Favorable opinion"
-msgid "positive_finance"
-msgstr ""
-
-#. Default: "Favorable opinion with remarks"
-msgid "positive_with_remarks_finance"
-msgstr ""
-
 #. Default: "Category"
 msgid "MeetingCharleroi_label_advice_category"
 msgstr ""

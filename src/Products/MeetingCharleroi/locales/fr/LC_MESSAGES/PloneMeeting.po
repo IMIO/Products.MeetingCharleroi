@@ -62,25 +62,9 @@ msgstr "Proposé au référent administratif"
 msgid "icon_help_waiting_advices_from_prevalidated"
 msgstr "En attente avis finances"
 
-#. Default: "Unfavorable opinion"
-msgid "negative_finance"
-msgstr "Avis finances défavorable"
-
 #. Default: "The finances advice has not been selected on this item."
 msgid "no_finances_advice_asked"
 msgstr "L'avis des finances n'a pas été demandé sur ce point."
-
-#. Default: "Not given opinion"
-msgid "not_given_finance"
-msgstr "Avis finances non remis"
-
-#. Default: "Favorable opinion"
-msgid "positive_finance"
-msgstr "Avis finances favorable"
-
-#. Default: "Favorable opinion with remarks"
-msgid "positive_with_remarks_finance"
-msgstr "Avis finances favorable avec remarques"
 
 #. Default: "Pre-validator"
 msgid "prereviewer"
@@ -108,6 +92,7 @@ msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice"
 msgstr "Un point a été automatiquement renvoyé aux référents administratifs parce que l'avis finances signé n'était pas 'Favorable'"
 
 #. Default: "The item is entitled '${itemTitle}'. You can access it here: ${objectUrl}."
+#, fuzzy
 msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_body"
 msgstr "Le titre du point est '${itemTitle}'. Vous pouvez y accéder ici: ${objectUrl}."
 

@@ -61,24 +61,8 @@ msgstr ""
 msgid "icon_help_waiting_advices_from_prevalidated"
 msgstr ""
 
-#. Default: "Unfavorable opinion"
-msgid "negative_finance"
-msgstr ""
-
 #. Default: "The finances advice has not been selected on this item."
 msgid "no_finances_advice_asked"
-msgstr ""
-
-#. Default: "Not given opinion"
-msgid "not_given_finance"
-msgstr ""
-
-#. Default: "Favorable opinion"
-msgid "positive_finance"
-msgstr ""
-
-#. Default: "Favorable opinion with remarks"
-msgid "positive_with_remarks_finance"
 msgstr ""
 
 #. Default: "Pre-validator"

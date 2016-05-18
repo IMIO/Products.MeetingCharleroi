@@ -14,7 +14,7 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: DOMAIN\n"
 
-#. Default: "The item has been automatically sent back to administrative referent because the finances advice was not positive."
+#. Default: "The item has been automatically sent back to administrative referent because the finances advice was not 'Positive'."
 msgid "item_wf_changed_finance_advice_not_positive"
 msgstr ""
 

@@ -95,11 +95,6 @@ PMconfig.ADVICE_STATES_ENDED = CHARLEROI_ADVICE_STATES_ENDED
 # in those states, finance advice can still be given
 FINANCE_GIVEABLE_ADVICE_STATES = ('prevalidated_waiting_advices', )
 
-# additional advice types used for finances advice
-CHARLEROI_EXTRA_ADVICE_TYPES = ('positive_finance', 'positive_with_remarks_finance',
-                                'negative_finance', 'not_given_finance')
-PMconfig.EXTRA_ADVICE_TYPES = CHARLEROI_EXTRA_ADVICE_TYPES
-
 # comment used when a finance advice has been signed and so historized
 FINANCE_ADVICE_HISTORIZE_COMMENTS = 'financial_advice_signed_historized_comments'
 
