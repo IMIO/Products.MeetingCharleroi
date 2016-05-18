@@ -26,6 +26,10 @@ msgstr "Catégorie"
 msgid "MeetingCharleroi_label_advice_motivation_categories"
 msgstr "Catégories de la motivation"
 
+#. Default: "The completeness has been asked again by the application when the item has been proposed to the finances."
+msgid "completeness_asked_again_by_app"
+msgstr "La complétude a été remise automatiquement par l'application en 'Evaluation demandée à nouveau' lorsque le point a été proposé aux finances."
+
 #. Default: "Advice is still not giveable because item is not considered complete."
 msgid "finance_advice_not_giveable_because_item_not_complete"
 msgstr "Cet avis ne pourra être rendu que lorsque le point sera considéré 'complet'."
@@ -54,8 +58,8 @@ msgstr "Proposé au directeur"
 msgid "icon_help_proposed_to_refadmin"
 msgstr "Proposé au référent administratif"
 
-#. Default: "Waiting advices"
-msgid "icon_help_waiting_advices"
+#. Default: "Waiting finances advice"
+msgid "icon_help_waiting_advices_from_prevalidated"
 msgstr "En attente avis finances"
 
 #. Default: "Unfavorable opinion"
@@ -99,6 +103,18 @@ msgstr "Directeurs"
 msgid "searchitemstoprevalidate"
 msgstr "Points proposés au référent administratif"
 
+#. Default: "An item was automatically sent back to the administrative referent because the signed finances advice was not positive"
+msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice"
+msgstr "Un point a été automatiquement renvoyé aux référents administratifs parce que l'avis finances signé n'était pas 'Favorable'"
+
+#. Default: "The item is entitled '${itemTitle}'. You can access it here: ${objectUrl}."
+msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_body"
+msgstr "Le titre du point est '${itemTitle}'. Vous pouvez y accéder ici: ${objectUrl}."
+
+#. Default: "An item has been sent back to the administrative referent by the finances"
+msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_subject"
+msgstr "Un point a été renvoyé aux référents administratifs par les finances"
+
 # Suffix
 #. Default: "Service heads"
 msgid "serviceheads"
@@ -110,5 +126,5 @@ msgstr "Ajout du référent administratif"
 
 #. Default: "Wait advices"
 msgid "wa_waiting_advices"
-msgstr "Etat supplémentaire pour demander l'avis des finances"
+msgstr "Etats supplémentaires pour demander les avis ('en création', 'proposé au chef de service, 'aux finances')"
 

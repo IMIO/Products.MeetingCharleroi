@@ -304,9 +304,10 @@ collegeMeeting.maxShownMeetings = 5
 collegeMeeting.maxDaysDecisions = 60
 collegeMeeting.meetingAppDefaultView = 'searchmyitems'
 collegeMeeting.useAdvices = True
-collegeMeeting.itemAdviceStates = ('itemcreated_waiting_advices',)
-collegeMeeting.itemAdviceEditStates = ('itemcreated_waiting_advices',)
+collegeMeeting.itemAdviceStates = ('itemcreated_waiting_advices', 'proposed_waiting_advices',)
+collegeMeeting.itemAdviceEditStates = ('itemcreated_waiting_advices', 'proposed_waiting_advices',)
 collegeMeeting.itemAdviceViewStates = ('itemcreated_waiting_advices',
+                                       'proposed_waiting_advices',
                                        'presented',
                                        'itemfrozen',
                                        'accepted',

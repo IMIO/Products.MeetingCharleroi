@@ -26,6 +26,7 @@ from DateTime import DateTime
 from zope.i18n import translate
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
+from Products.CMFCore.permissions import DeleteObjects
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
@@ -131,10 +132,14 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # normal advices can be given when item in state 'itemcreated_waiting_advices',
         cfg = self.meetingConfig
         cfg.setUsedAdviceTypes(('asked_again', ) + cfg.getUsedAdviceTypes())
-        cfg.setItemAdviceStates(('itemcreated_waiting_advices', ))
-        cfg.setItemAdviceEditStates = (('itemcreated_waiting_advices', ))
-        cfg.setItemAdviceViewStates = (('itemcreated_waiting_advices', ))
+        # while an advice is given, adviser still keep access to item
         cfg.setKeepAccessToItemWhenAdviceIsGiven(True)
+        cfg.setItemAdviceStates(('itemcreated_waiting_advices',
+                                 'proposed_waiting_advices',))
+        cfg.setItemAdviceEditStates = (('itemcreated_waiting_advices',
+                                        'proposed_waiting_advices', ))
+        # not necessary as keepAccessToItemWhenAdviceIsGiven is True
+        cfg.setItemAdviceViewStates = (())
 
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')
@@ -149,7 +154,8 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # now ask 'vendors' advice
         item.setOptionalAdvisers(('vendors', ))
         item.at_post_edit_script()
-        self.assertEqual(self.transitions(item), ['propose', 'wait_advices_from_itemcreated'])
+        self.assertEqual(self.transitions(item),
+                         ['propose', 'wait_advices_from_itemcreated'])
         # give advice
         self.do(item, 'wait_advices_from_itemcreated')
         # no editable
@@ -168,6 +174,33 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertFalse(self.transitions(item))
         self.changeUser('pmCreator1')
         self.do(item, 'backTo_itemcreated_from_waiting_advices')
+
+        # advices may be asked when item is 'proposed'
+        self.do(item, 'propose')
+        self.assertFalse(self.transitions(item))
+        self.changeUser('pmReviewer1')
+        # no advice to ask
+        self.assertEqual(self.transitions(item),
+                         ['backToItemCreated', 'proposeToRefAdmin'])
+        self.assertEqual(item.wfConditions().mayWait_advices_from_proposed().msg,
+                         advice_required_to_ask_advices)
+        item.setOptionalAdvisers(('developers', 'vendors', ))
+        item.at_post_edit_script()
+        self.assertEqual(self.transitions(item),
+                         ['backToItemCreated', 'proposeToRefAdmin', 'wait_advices_from_proposed'])
+        self.do(item, 'wait_advices_from_proposed')
+        self.changeUser('pmAdviser1')
+        createContentInContainer(item,
+                                 'meetingadvice',
+                                 **{'advice_group': 'developers',
+                                    'advice_type': u'positive',
+                                    'advice_comment': RichTextValue(u'My comment developers')})
+        # no more advice to give
+        self.assertTrue(not item.hasAdvices(toGive=True))
+        # item may be taken back by 'pmReviewer1'
+        self.assertFalse(self.transitions(item))
+        self.changeUser('pmReviewer1')
+        self.do(item, 'backTo_proposed_from_waiting_advices')
 
     def test_CollegeProcessWithFinancesAdvice(self):
         '''How does the process behave when the 'finances' advice is asked.'''
@@ -318,3 +351,6 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmFinManager')
         self.do(advice, 'signFinancialAdvice')
         self.assertEquals(item.queryState(), 'validated')
+        # advice is no more editable/deletable by finances
+        self.assertFalse(self.hasPermission(ModifyPortalContent, advice))
+        self.assertFalse(self.hasPermission(DeleteObjects, advice))

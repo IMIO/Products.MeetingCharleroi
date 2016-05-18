@@ -85,6 +85,10 @@ adaptations.WAITING_ADVICES_FROM_STATES = (
      'back_states': ('itemcreated', ),
      'perm_cloned_states': ('itemcreated',),
      'remove_modify_access': True},
+    {'from_states': ('proposed', ),
+     'back_states': ('proposed', ),
+     'perm_cloned_states': ('proposed',),
+     'remove_modify_access': True},
     {'from_states': ('prevalidated', ),
      'back_states': ('proposed_to_refadmin', 'prevalidated', 'validated'),
      'perm_cloned_states': ('prevalidated',),
@@ -276,6 +280,13 @@ class CustomCharleroiMeetingConfig(CustomMeetingConfig):
 
     def __init__(self, item):
         self.context = item
+
+    def extraItemEvents(self):
+        '''See doc in interfaces.py.'''
+        return [("sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice",
+                 translate('sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice',
+                           domain='PloneMeeting',
+                           context=self.context.REQUEST))]
 
 
 class MeetingCharleroiCollegeWorkflowActions(MeetingCollegeWorkflowActions):

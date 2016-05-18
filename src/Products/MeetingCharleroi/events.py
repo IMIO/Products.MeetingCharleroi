@@ -11,6 +11,7 @@ __author__ = """Gauthier BASTIEN <gauthier.bastien@imio.be>"""
 __docformat__ = 'plaintext'
 
 from plone import api
+from Products.PloneMeeting.utils import sendMailIfRelevant
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 
 
@@ -66,6 +67,8 @@ def onAdviceTransition(advice, event):
                 wfTool.doActionFor(item,
                                    'backTo_proposed_to_refadmin_from_waiting_advices',
                                    comment='item_wf_changed_finance_advice_not_positive')
+                sendMailIfRelevant(item, 'sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice',
+                                   'MeetingReviewer', isRole=True)
         else:
             # we need to _updateAdvices so change to
             # 'advice_hide_during_redaction' is taken into account

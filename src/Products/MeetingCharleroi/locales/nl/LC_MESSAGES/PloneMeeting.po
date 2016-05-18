@@ -23,6 +23,10 @@ msgstr ""
 msgid "MeetingCharleroi_label_advice_motivation_categories"
 msgstr ""
 
+#. Default: "The completeness has been asked again by the application when the item has been proposed to the finances."
+msgid "completeness_asked_again_by_app"
+msgstr ""
+
 #. Default: "Advice is still not giveable because item is not considered complete."
 msgid "finance_advice_not_giveable_because_item_not_complete"
 msgstr ""
@@ -51,8 +55,8 @@ msgstr ""
 msgid "icon_help_proposed_to_refadmin"
 msgstr ""
 
-#. Default: "Waiting advices"
-msgid "icon_help_waiting_advices"
+#. Default: "Waiting finances advice"
+msgid "icon_help_waiting_advices_from_prevalidated"
 msgstr ""
 
 #. Default: "Unfavorable opinion"
@@ -94,6 +98,18 @@ msgstr ""
 
 #. Default: "Items to pre validate"
 msgid "searchitemstoprevalidate"
+msgstr ""
+
+#. Default: "An item was automatically sent back to the administrative referent because the signed finances advice was not positive"
+msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice"
+msgstr ""
+
+#. Default: "The item is entitled '${itemTitle}'. You can access it here: ${objectUrl}."
+msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_body"
+msgstr ""
+
+#. Default: "An item has been sent back to the administrative referent by the finances"
+msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_subject"
 msgstr ""
 
 # Suffix
