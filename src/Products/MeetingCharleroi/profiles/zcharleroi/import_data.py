@@ -26,13 +26,17 @@ annexeAvisLegal = MeetingFileTypeDescriptor('annexeAvisLegal', 'Extrait article 
 # Categories -------------------------------------------------------------------
 recurring = CategoryDescriptor('recurrents', 'Récurrents')
 categories = [recurring,
-              CategoryDescriptor('travaux', 'Travaux'),
-              CategoryDescriptor('urbanisme', 'Urbanisme'),
-              CategoryDescriptor('comptabilite', 'Comptabilité/Recettes'),
-              CategoryDescriptor('personnel', 'Personnel'),
-              CategoryDescriptor('population', 'Population/Etat-civil'),
-              CategoryDescriptor('locations', 'Locations'),
-              CategoryDescriptor('divers', 'Divers'),
+              CategoryDescriptor('affaires-juridiques', 'Affaires juridiques', description='Bourgmestre|P. Magnette'),
+              CategoryDescriptor('occupation-privative', 'Occupation privative', description='Bourgmestre|P. Magnette'),
+              CategoryDescriptor('dispenses-de-service', 'Dispenses de service', description='Bourgmestre|P. Magnette'),
+              CategoryDescriptor('remboursement', 'Remboursement', description='Bourgmestre|P. Magnette'),
+              CategoryDescriptor('pop-inscription-office', 'Population – Inscriptions d’office', description='L’Echevine|F. Daspremont'),
+              CategoryDescriptor('non-valeurs', 'Non-valeurs', description='L’Echevine|F. Daspremont'),
+              CategoryDescriptor('droits-contates', 'Droits constatés', description='L’Echevine|F. Daspremont'),
+              CategoryDescriptor('deplacements-etranger', 'Déplacement à l’étranger', description='L’Echevine|J. Patte'),
+              CategoryDescriptor('partenariat', 'Partenariat', description='L’Echevine|J. Patte'),
+              CategoryDescriptor('fin-de-bail', 'Fin de bail', description='L’Echevin|E. Goffart'),
+              CategoryDescriptor('droit-constates', 'Droits constatés', description='L’Echevin|E. Goffart'),
               ]
 
 # Pod templates ----------------------------------------------------------------
@@ -140,7 +144,8 @@ groups = [GroupDescriptor('dirgen', 'Directeur Général', 'DG'),
           GroupDescriptor('personnel', 'Service du personnel', 'Pers'),
           GroupDescriptor('dirfin', 'Directeur Financier', 'DF'),
           GroupDescriptor('comptabilite', 'Service comptabilité', 'Compt'),
-          GroupDescriptor('travaux', 'Service travaux', 'Trav'), ]
+          GroupDescriptor('travaux', 'Service travaux', 'Trav'),
+          GroupDescriptor('zone-de-police', 'Zone de Police', 'ZPL'), ]
 
 # MeetingManager
 groups[0].creators.append(dgen)
@@ -222,6 +227,13 @@ groups[6].observers.append(agentTrav)
 groups[6].observers.append(echevinTrav)
 groups[6].advisers.append(agentTrav)
 
+groups[7].creators.append(dgen)
+groups[7].serviceheads.append(dgen)
+groups[7].prereviewers.append(dgen)
+groups[7].reviewers.append(dgen)
+groups[7].observers.append(dgen)
+groups[7].advisers.append(dgen)
+
 # Meeting configurations -------------------------------------------------------
 # college
 collegeMeeting = MeetingConfigDescriptor(
@@ -286,6 +298,7 @@ collegeMeeting.decisionTopicStates = ('decided', 'closed')
 collegeMeeting.enforceAdviceMandatoriness = False
 collegeMeeting.insertingMethodsOnAddItem = ({'insertingMethod': 'on_proposing_groups',
                                              'reverse': '0'}, )
+collegeMeeting.useGroupsAsCategories = False
 collegeMeeting.recordItemHistoryStates = []
 collegeMeeting.maxShownMeetings = 5
 collegeMeeting.maxDaysDecisions = 60
