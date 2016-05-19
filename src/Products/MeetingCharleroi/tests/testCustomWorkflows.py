@@ -343,10 +343,13 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.request.set('new_completeness_value', 'completeness_complete')
         changeCompleteness()
         self.assertTrue(item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'])
-        # change advice_type to 'positive_finance'
-        advice.advice_type = u'positive_finance'
         self.do(advice, 'proposeToFinancialReviewer')
         self.changeUser('pmFinReviewer')
+        # advice may not be sent to financial manager if it is still asked_again
+        # change advice_type to 'positive_finance'
+        self.assertFalse('proposeToFinancialManager' in self.transitions(advice))
+        advice.advice_type = u'positive_finance'
+        self.assertTrue('proposeToFinancialManager' in self.transitions(advice))
         self.do(advice, 'proposeToFinancialManager')
         self.changeUser('pmFinManager')
         self.do(advice, 'signFinancialAdvice')
