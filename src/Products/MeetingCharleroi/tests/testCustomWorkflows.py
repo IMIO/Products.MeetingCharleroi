@@ -306,7 +306,8 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
             'meetingadvicefinances',
             **{'advice_group': FINANCE_GROUP_ID,
                'advice_type': u'negative_finance',
-               'advice_comment': RichTextValue(u'My comment finances')})
+               'advice_comment': RichTextValue(u'My comment finances'),
+               'advice_category': u'acquisitions'})
         # send item to finances reviewer
         self.assertEqual(self.transitions(advice), ['proposeToFinancialReviewer'])
         self.do(advice, 'proposeToFinancialReviewer')
