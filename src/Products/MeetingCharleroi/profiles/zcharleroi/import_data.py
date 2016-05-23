@@ -164,7 +164,9 @@ groups = [GroupDescriptor('dirgen', 'Directeur Général', 'DG'),
           GroupDescriptor('secretariat', 'Secrétariat communal', 'Secr'),
           GroupDescriptor('informatique', 'Service informatique', 'Info'),
           GroupDescriptor('personnel', 'Service du personnel', 'Pers'),
-          GroupDescriptor('dirfin', 'Directeur Financier', 'DF'),
+          GroupDescriptor('dirfin',
+                          'Directeur Financier',
+                          'DF'),
           GroupDescriptor('comptabilite', 'Service comptabilité', 'Compt'),
           GroupDescriptor('travaux', 'Service travaux', 'Trav'),
           GroupDescriptor('zone-de-police', 'Zone de Police', 'ZPL'), ]
@@ -214,6 +216,10 @@ groups[3].advisers.append(dirPers)
 groups[3].observers.append(echevinPers)
 groups[3].advisers.append(emetteuravisPers)
 
+# dirfin
+groups[4].itemAdviceStates = ('meeting-config-college__state__prevalidated_waiting_advices',)
+groups[4].itemAdviceEditStates = ('meeting-config-college__state__prevalidated_waiting_advices',)
+groups[4].keepAccessToItemWhenAdviceIsGiven = True
 groups[4].creators.append(dfin)
 groups[4].serviceheads.append(dfin)
 groups[4].prereviewers.append(dfin)
@@ -330,19 +336,25 @@ collegeMeeting.itemAdviceStates = ('itemcreated_waiting_advices', 'proposed_wait
 collegeMeeting.itemAdviceEditStates = ('itemcreated_waiting_advices', 'proposed_waiting_advices',)
 collegeMeeting.itemAdviceViewStates = ('itemcreated_waiting_advices',
                                        'proposed_waiting_advices',
+                                       'proposed',
+                                       'proposed_to_refadmin',
+                                       'prevalidated',
+                                       'prevalidated_waiting_advices',
+                                       'validated',
                                        'presented',
                                        'itemfrozen',
+                                       'returned_to_proposing_group',
+                                       'pre_accepted',
                                        'accepted',
-                                       'refused',
                                        'accepted_but_modified',
-                                       'delayed',
-                                       'pre_accepted',)
+                                       'refused',
+                                       'delayed',)
 collegeMeeting.usedAdviceTypes = ['positive', 'positive_with_remarks', 'negative', 'nil',
                                   'positive_finance', 'positive_with_remarks_finance',
                                   'negative_finance', 'not_given_finance']
 collegeMeeting.enableAdviceInvalidation = False
 collegeMeeting.itemAdviceInvalidateStates = []
-collegeMeeting.keepAccessToItemWhenAdviceIsGiven = True
+collegeMeeting.keepAccessToItemWhenAdviceIsGiven = False
 collegeMeeting.customAdvisers = [
     {'row_id': 'unique_id_001',
      'group': 'comptabilite',

@@ -1,0 +1,7 @@
+/* finances advisers specific styling */
+/* show the finances category faceted widget */
+
+/* cacher le widget 'categorie finances' pour les utilisateurs hor finances */
+div#c50_widget {
+    display: none !important;
+}

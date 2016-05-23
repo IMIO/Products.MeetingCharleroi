@@ -75,4 +75,7 @@
   <utility component=".vocabularies.AdviceMotivationCategoriesVocabularyFactory"
            name="Products.MeetingCharleroi.vocabularies.advicemotivationcategoriesvocabulary" />
 
+  <!-- Indexes -->
+  <adapter name="financesAdviceCategory" factory=".indexes.financesAdviceCategory" />
+
 </configure>

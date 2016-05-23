@@ -450,6 +450,18 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
     implements(IToolPloneMeetingCustom)
     security = ClassSecurityInfo()
 
+    def __init__(self, item):
+        self.context = item
+
+    def enableNonFinancesStyles(self, context):
+        """Condition for enabling the meetingcharleroi_non_finances.css
+           made especially to hide/show the 'Finances category' faceted widget."""
+        member = api.user.get_current()
+        if '{0}_advisers'.format(FINANCE_GROUP_ID) in member.getGroups() or \
+           self.context.isManager(context):
+            return False
+        return True
+
     def performCustomWFAdaptations(self,
                                    meetingConfig,
                                    wfAdaptation,

@@ -19,6 +19,7 @@ logger = logging.getLogger('MeetingCharleroi: setuphandlers')
 from DateTime import DateTime
 from plone import api
 from Products.CMFPlone.utils import _createObjectByType
+from imio.helpers.catalog import addOrUpdateIndexes
 from Products.PloneMeeting.exportimport.content import ToolInitializer
 from Products.PloneMeeting.model.adaptations import performWorkflowAdaptations
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
@@ -49,6 +50,10 @@ def postInstall(context):
     reinstallPloneMeeting(context, site)
     showHomeTab(context, site)
     reorderSkinsLayers(context, site)
+    # add the groupsOfMatter index
+    addOrUpdateIndexes(site, {'financesAdviceCategory': ('FieldIndex', {})})
+    # add our own faceted criteria
+    addFacetedCriteria(context, site)
 
 
 def logStep(method, context):
@@ -144,6 +149,16 @@ def reorderSkinsLayers(context, site):
 
     logStep("reorderSkinsLayers", context)
     site.portal_setup.runImportStepFromProfile(u'profile-Products.MeetingCharleroi:default', 'skins')
+
+
+def addFacetedCriteria(context, site):
+    """ """
+    logStep("addFacetedCriteria", context)
+    tool = api.portal.get_tool('portal_plonemeeting')
+    for cfg in tool.objectValues('MeetingConfig'):
+        tool._enableFacetedDashboardFor(cfg.searches.searches_items,
+                                        os.path.dirname(__file__) +
+                                        '/faceted_conf/meetingcharleroi_dashboard_items_widgets.xml')
 
 
 def finalizeExampleInstance(context):
