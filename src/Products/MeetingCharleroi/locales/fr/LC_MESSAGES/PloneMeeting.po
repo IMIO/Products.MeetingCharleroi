@@ -92,7 +92,6 @@ msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice"
 msgstr "Un point a été automatiquement renvoyé aux référents administratifs parce que l'avis finances signé n'était pas 'Favorable'"
 
 #. Default: "The item is entitled '${itemTitle}'. You can access it here: ${objectUrl}."
-#, fuzzy
 msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_body"
 msgstr "Le titre du point est '${itemTitle}'. Vous pouvez y accéder ici: ${objectUrl}."
 

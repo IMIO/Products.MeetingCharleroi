@@ -160,16 +160,14 @@ conseiller = UserDescriptor('conseiller', [], email="test@test.be", fullname="Co
 
 emetteuravisPers = UserDescriptor('emetteuravisPers', [], email="test@test.be", fullname="Emetteur avis Personnel")
 
-groups = [GroupDescriptor('dirgen', 'Directeur Général', 'DG'),
+groups = [GroupDescriptor('zone-de-police', 'Zone de Police', 'ZPL'),
+          GroupDescriptor('dirgen', 'Directeur Général', 'DG'),
           GroupDescriptor('secretariat', 'Secrétariat communal', 'Secr'),
           GroupDescriptor('informatique', 'Service informatique', 'Info'),
           GroupDescriptor('personnel', 'Service du personnel', 'Pers'),
-          GroupDescriptor('dirfin',
-                          'Directeur Financier',
-                          'DF'),
+          GroupDescriptor('dirfin', 'Directeur Financier', 'DF'),
           GroupDescriptor('comptabilite', 'Service comptabilité', 'Compt'),
-          GroupDescriptor('travaux', 'Service travaux', 'Trav'),
-          GroupDescriptor('zone-de-police', 'Zone de Police', 'ZPL'), ]
+          GroupDescriptor('travaux', 'Service travaux', 'Trav')]
 
 # MeetingManager
 groups[0].creators.append(dgen)

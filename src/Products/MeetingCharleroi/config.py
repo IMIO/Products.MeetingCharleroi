@@ -83,6 +83,8 @@ FINANCE_ADVICE_LEGAL_TEXT_NOT_GIVEN = "<p>Attendu l'absence d'avis du "\
 
 FINANCE_GROUP_ID = "dirfin"
 
+POLICE_GROUP_ID = "zone-de-police"
+
 CHARLEROI_ADVICE_STATES_ALIVE = ('advice_under_edit',
                                  'proposed_to_financial_controller',
                                  'proposed_to_financial_reviewer',
