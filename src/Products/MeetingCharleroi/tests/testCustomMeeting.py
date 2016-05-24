@@ -24,6 +24,7 @@
 
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 from Products.MeetingCommunes.tests.testCustomMeeting import testCustomMeeting as mctcm
+from Products.PloneMeeting.profiles import GroupDescriptor
 
 
 class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
@@ -177,6 +178,39 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         # we have so 0 normal item using the 'development' category
         self.assertEquals(meeting.adapted().getNumberOfItems(itemUids, categories=['development', ],
                                                              listTypes=['normal']), 0)
+
+    def test_GetPrintableItemsForAgenda(self):
+        '''
+        Return the items for agenda.
+        '''
+        self.changeUser('admin')
+        police = GroupDescriptor('zone-de-police', 'Police', 'La police.')
+        # make categories available
+        self.setMeetingConfig(self.meetingConfig2.getId())
+        self.changeUser('pmManager')
+        meeting = self._createMeetingWithItems()
+        orderedItems = meeting.getItems(ordered=True)
+        itemUids = [item.UID() for item in orderedItems]
+        item1 = orderedItems[0]
+        item1.setToDiscuss(False)
+        item2 = orderedItems[1]
+        item2.setToDiscuss(False)
+        item3 = orderedItems[2]
+        item3.setToDiscuss(False)
+        item3.setOtherMeetingConfigsClonableTo('meeting-config-council')
+        item4 = orderedItems[3]
+        item4.setToDiscuss(False)
+        item4.setOtherMeetingConfigsClonableTo('meeting-config-council')
+        item5 = orderedItems[4]
+        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids, standard=True, itemType='prescriptive')[0]),3)
+        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids, standard=True, itemType='toCouncil')[0]),3)
+        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids, standard=True, itemType='communication')[0]),2)
+        # Every item in the meeting is now from the police group
+        for item in meeting.getItems():
+            item.setProposingGroup('zone-de-police')
+        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids, standard=False, itemType='prescriptive')[0]),3)
+        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids, standard=False, itemType='toCouncil')[0]),3)
+        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids, standard=False, itemType='communication')[0]),2)
 
 
 def test_suite():
