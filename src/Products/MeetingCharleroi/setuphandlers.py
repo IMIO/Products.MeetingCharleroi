@@ -23,6 +23,7 @@ from imio.helpers.catalog import addOrUpdateIndexes
 from Products.PloneMeeting.exportimport.content import ToolInitializer
 from Products.PloneMeeting.model.adaptations import performWorkflowAdaptations
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
+from Products.MeetingCharleroi.config import POLICE_GROUP_ID
 from Products.MeetingCharleroi.config import PROJECTNAME
 
 
@@ -54,6 +55,8 @@ def postInstall(context):
     addOrUpdateIndexes(site, {'financesAdviceCategory': ('FieldIndex', {})})
     # add our own faceted criteria
     addFacetedCriteria(context, site)
+    # add demo data
+    addDemoData(context)
 
 
 def logStep(method, context):
@@ -335,7 +338,11 @@ def addDemoData(context):
     if isNotMeetingCharleroiDemoProfile(context):
         return
 
-    site = context.getSite()
+    _demoData(context.getSite())
+
+
+def _demoData(site):
+    """ """
     tool = api.portal.get_tool('portal_plonemeeting')
     cfg = getattr(tool, 'meeting-config-college')
     wfTool = api.portal.get_tool('portal_workflow')
@@ -352,9 +359,6 @@ def addDemoData(context):
     members = mTool.getMembersFolder()
     if members is None:
         _createObjectByType('Folder', site, id='Members')
-    mTool.createMemberArea('agentPers')
-    mTool.createMemberArea('agentInfo')
-    mTool.createMemberArea('agentCompta')
     # create 5 meetings : 2 passed, 1 current and 2 future
     today = DateTime()
     dates = [today-13, today-6, today+1, today+8, today+15]
@@ -380,78 +384,115 @@ def addDemoData(context):
 
     # items dict here : the key is the user we will create the item for
     # we use item templates so content is created for the demo
-    items = {'agentPers': ({'templateId': 'template3',
-                            'title': u'Engagement temporaire d\'un informaticien',
-                            'budgetRelated': False,
-                            'review_state': 'validated', },
-                           {'templateId': 'template2',
-                            'title': u'Contrôle médical de Mr Antonio',
-                            'budgetRelated': False,
-                            'review_state': 'proposed', },
-                           {'templateId': 'template2',
-                            'title': u'Contrôle médical de Mlle Debbeus',
-                            'budgetRelated': False,
-                            'review_state': 'proposed', },
-                           {'templateId': 'template2',
-                            'title': u'Contrôle médical de Mme Hanck',
-                            'budgetRelated': False,
-                            'review_state': 'validated', },
-                           {'templateId': 'template4',
-                            'title': u'Prestation réduite Mme Untelle, instritutrice maternelle',
-                            'budgetRelated': False,
-                            'review_state': 'validated', },),
-             'agentInfo': ({'templateId': 'template5',
-                            'title': u'Achat nouveaux serveurs',
-                            'budgetRelated': True,
-                            'review_state': 'validated',
-                            },
-                           {'templateId': 'template5',
-                            'title': u'Marché public, contestation entreprise Untelle SA',
-                            'budgetRelated': False,
-                            'review_state': 'validated',
-                            },),
-             'agentCompta': ({'templateId': 'template5',
-                              'title': u'Présentation budget 2014',
-                              'budgetRelated': True,
-                              'review_state': 'validated',
-                              },
-                             {'templateId': 'template5',
-                              'title': u'Plainte de Mme Daise, taxe immondice',
-                              'budgetRelated': False,
-                              'review_state': 'validated',
-                              },
-                             {'templateId': 'template5',
-                              'title': u'Plainte de Mme Uneautre, taxe piscine',
-                              'budgetRelated': False,
-                              'review_state': 'proposed',
-                              },),
-             'dgen': ({'templateId': 'template1',
-                                     'title': u'Tutelle CPAS : point 1 BP du 15 juin',
-                                     'budgetRelated': False,
-                                     'review_state': 'created', },
-                      {'templateId': 'template5',
-                       'title': u'Tutelle CPAS : point 2 BP du 15 juin',
-                       'budgetRelated': False,
-                       'review_state': 'proposed',
-                       },
-                      {'templateId': 'template5',
-                       'title': u'Tutelle CPAS : point 16 BP du 15 juin',
-                       'budgetRelated': True,
-                       'review_state': 'validated',
-                       },),
-             }
-    for userId in items:
-        userFolder = tool.getPloneMeetingFolder(cfg.getId(), userId)
-        for item in items[userId]:
-            # get the template then clone it
-            template = getattr(tool.getMeetingConfig(userFolder).itemtemplates, item['templateId'])
-            newItem = template.clone(newOwnerId=userId,
-                                     destFolder=userFolder,
-                                     newPortalType=cfg.getItemTypeName())
-            newItem.setTitle(item['title'])
-            newItem.setBudgetRelated(item['budgetRelated'])
-            if item['review_state'] in ['proposed', 'validated', ]:
-                wfTool.doActionFor(newItem, 'propose')
-            if item['review_state'] == 'validated':
-                wfTool.doActionFor(newItem, 'validate')
-            newItem.reindexObject()
+    items = (
+        # dirgen
+        {'templateId': 'template5',
+         'title': u'Exemple point 1',
+         'proposingGroup': 'dirgen',
+         'category': 'affaires-juridiques',
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+        {'templateId': 'template5',
+         'title': u'Exemple point 2',
+         'proposingGroup': 'dirgen',
+         'category': 'remboursement',
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+        {'templateId': 'template5',
+         'title': u'Exemple point 3',
+         'proposingGroup': 'dirgen',
+         'category': 'remboursement',
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ()},
+        {'templateId': 'template5',
+         'title': u'Exemple point 4',
+         'proposingGroup': 'dirgen',
+         'category': 'affaires-juridiques',
+         'toDiscuss': False,
+         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+        {'templateId': 'template5',
+         'title': u'Exemple point 5',
+         'proposingGroup': 'dirgen',
+         'category': 'remboursement',
+         'toDiscuss': False,
+         'otherMeetingConfigsClonableTo': ()},
+        # personnel
+        {'templateId': 'template5',
+         'title': u'Exemple point 6',
+         'proposingGroup': 'personnel',
+         'category': 'affaires-juridiques',
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+        {'templateId': 'template5',
+         'title': u'Exemple point 7',
+         'proposingGroup': 'personnel',
+         'category': 'remboursement',
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+        {'templateId': 'template5',
+         'title': u'Exemple point 8',
+         'proposingGroup': 'personnel',
+         'category': 'remboursement',
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ()},
+        {'templateId': 'template5',
+         'title': u'Exemple point 9',
+         'proposingGroup': 'personnel',
+         'category': 'affaires-juridiques',
+         'toDiscuss': False,
+         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+        {'templateId': 'template5',
+         'title': u'Exemple point 10',
+         'proposingGroup': 'personnel',
+         'category': 'remboursement',
+         'toDiscuss': False,
+         'otherMeetingConfigsClonableTo': ()},
+        # police
+        {'templateId': 'template5',
+         'title': u'Exemple point 11',
+         'proposingGroup': POLICE_GROUP_ID,
+         'category': 'affaires-juridiques',
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+        {'templateId': 'template5',
+         'title': u'Exemple point 12',
+         'proposingGroup': POLICE_GROUP_ID,
+         'category': 'remboursement',
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+        {'templateId': 'template5',
+         'title': u'Exemple point 13',
+         'proposingGroup': POLICE_GROUP_ID,
+         'category': 'remboursement',
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ()},
+        {'templateId': 'template5',
+         'title': u'Exemple point 14',
+         'proposingGroup': POLICE_GROUP_ID,
+         'category': 'affaires-juridiques',
+         'toDiscuss': False,
+         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+        {'templateId': 'template5',
+         'title': u'Exemple point 15',
+         'proposingGroup': POLICE_GROUP_ID,
+         'category': 'remboursement',
+         'toDiscuss': False,
+         'otherMeetingConfigsClonableTo': ()},
+        )
+
+    userFolder = tool.getPloneMeetingFolder(cfg.getId(), 'dgen')
+    wfTool = api.portal.get_tool('portal_workflow')
+    for item in items:
+        # get the template then clone it
+        template = getattr(tool.getMeetingConfig(userFolder).itemtemplates, item['templateId'])
+        newItem = template.clone(newOwnerId='dgen',
+                                 destFolder=userFolder,
+                                 newPortalType=cfg.getItemTypeName())
+        newItem.setTitle(item['title'])
+        newItem.setProposingGroup(item['proposingGroup'])
+        newItem.setCategory(item['category'])
+        newItem.setToDiscuss(item['toDiscuss'])
+        newItem.setOtherMeetingConfigsClonableTo(item['otherMeetingConfigsClonableTo'])
+        newItem.reindexObject()
+        for transition in cfg.getTransitionsForPresentingAnItem():
+            wfTool.doActionFor(newItem, transition)

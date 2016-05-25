@@ -23,6 +23,7 @@
 from plone import api
 from Products.PloneMeeting.tests.helpers import PloneMeetingTestingHelpers
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
+from Products.MeetingCharleroi.config import POLICE_GROUP_ID
 from Products.MeetingCharleroi.setuphandlers import _configureCollegeCustomAdvisers
 from Products.MeetingCharleroi.setuphandlers import _createFinancesGroup
 
@@ -139,3 +140,18 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         groupsTool.addPrincipalToGroup('pmFinController', '%s_financialcontrollers' % FINANCE_GROUP_ID)
         groupsTool.addPrincipalToGroup('pmFinReviewer', '%s_financialreviewers' % FINANCE_GROUP_ID)
         groupsTool.addPrincipalToGroup('pmFinManager', '%s_financialmanagers' % FINANCE_GROUP_ID)
+
+    def _setupPoliceGroup(self):
+        '''Configure police group.'''
+        self.changeUser('siteadmin')
+        self.create('MeetingGroup',
+                    id=POLICE_GROUP_ID,
+                    title="Zone de Police", acronym='ZPL')
+        # police is added at the end of existing groups
+        self.assertEquals(self.tool.objectIds('MeetingGroup'), ['developers',
+                                                                'vendors',
+                                                                # disabled
+                                                                'endUsers',
+                                                                POLICE_GROUP_ID])
+        # make 'pmManager' able to create items for police
+        self.portal.portal_groups.addPrincipalToGroup('pmManager', '{}_creators'.format(POLICE_GROUP_ID))

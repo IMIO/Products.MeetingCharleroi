@@ -10,6 +10,7 @@ from Products.PloneMeeting.profiles import PloneMeetingConfiguration
 from Products.PloneMeeting.profiles import PodTemplateDescriptor
 from Products.PloneMeeting.profiles import RecurringItemDescriptor
 from Products.PloneMeeting.profiles import UserDescriptor
+from Products.MeetingCharleroi.config import POLICE_GROUP_ID
 
 today = DateTime().strftime('%Y/%m/%d')
 
@@ -160,7 +161,7 @@ conseiller = UserDescriptor('conseiller', [], email="test@test.be", fullname="Co
 
 emetteuravisPers = UserDescriptor('emetteuravisPers', [], email="test@test.be", fullname="Emetteur avis Personnel")
 
-groups = [GroupDescriptor('zone-de-police', 'Zone de Police', 'ZPL'),
+groups = [GroupDescriptor(POLICE_GROUP_ID, 'Zone de Police', 'ZPL'),
           GroupDescriptor('dirgen', 'Directeur Général', 'DG'),
           GroupDescriptor('secretariat', 'Secrétariat communal', 'Secr'),
           GroupDescriptor('informatique', 'Service informatique', 'Info'),
@@ -322,9 +323,13 @@ collegeMeeting.transitionsToConfirm = ['MeetingItem.delay', ]
 collegeMeeting.meetingTopicStates = ('created', 'frozen')
 collegeMeeting.decisionTopicStates = ('decided', 'closed')
 collegeMeeting.enforceAdviceMandatoriness = False
-collegeMeeting.insertingMethodsOnAddItem = ({'insertingMethod': 'on_proposing_groups',
-                                             'reverse': '0'}, )
+collegeMeeting.insertingMethodsOnAddItem = (
+    {'insertingMethod': 'on_police_then_other_groups', 'reverse': '0'},
+    {'insertingMethod': 'on_to_discuss', 'reverse': '0'},
+    {'insertingMethod': 'on_other_mc_to_clone_to', 'reverse': '1'},
+    {'insertingMethod': 'on_categories', 'reverse': '0'})
 collegeMeeting.useGroupsAsCategories = False
+collegeMeeting.toDiscussSetOnItemInsert = False
 collegeMeeting.recordItemHistoryStates = []
 collegeMeeting.maxShownMeetings = 5
 collegeMeeting.maxDaysDecisions = 60
