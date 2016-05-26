@@ -25,8 +25,9 @@
 from DateTime import DateTime
 from Products.PloneMeeting.profiles import GroupDescriptor
 from Products.MeetingCommunes.tests.testCustomMeeting import testCustomMeeting as mctcm
-from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 from Products.MeetingCharleroi.config import POLICE_GROUP_ID
+from Products.MeetingCharleroi.setuphandlers import _demoData
+from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 
 
 class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
@@ -230,7 +231,9 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         itemPol1 = self.create('MeetingItem', proposingGroup=POLICE_GROUP_ID)
         itemPol2 = self.create('MeetingItem', proposingGroup=POLICE_GROUP_ID)
         meeting = self.create('Meeting', date=DateTime())
-        for item in [itemDev1, itemDev2, itemDev3, itemVen1, itemVen2, itemPol1, itemPol2, ]:
+        for item in [itemDev1, itemDev2, itemDev3,
+                     itemVen1, itemVen2,
+                     itemPol1, itemPol2, ]:
             self.presentItem(item)
 
         orderedItems = meeting.getItems(ordered=True)
@@ -250,10 +253,11 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         cfg.setInsertingMethodsOnAddItem(
             (
                 {'insertingMethod': 'on_police_then_other_groups', 'reverse': '0'},
-                {'insertingMethod': 'on_proposing_groups', 'reverse': '0'},
                 {'insertingMethod': 'on_to_discuss', 'reverse': '0'},
                 {'insertingMethod': 'on_other_mc_to_clone_to', 'reverse': '1'},
-                {'insertingMethod': 'on_categories', 'reverse': '0'})
+                {'insertingMethod': 'on_categories', 'reverse': '0'},
+                {'insertingMethod': 'on_proposing_groups', 'reverse': '0'},
+                )
             )
         cfg.setUseGroupsAsCategories(False)
         # let creators select the 'toDiscuss' value
@@ -261,108 +265,32 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         cfg.setMeetingConfigsToCloneTo(({'meeting_config': '%s' % cfg2Id,
                                          'trigger_workflow_transitions_until': '__nothing__'},))
         self.changeUser('pmManager')
-        # create items with various groups
-        itemDev1 = self.create('MeetingItem',
-                               category='deployment',
-                               toDiscuss=True)
-        itemDev2 = self.create('MeetingItem',
-                               category='deployment',
-                               toDiscuss=False)
-        itemDev3 = self.create('MeetingItem',
-                               category='research',
-                               toDiscuss=True)
-        itemDev4 = self.create('MeetingItem',
-                               category='research',
-                               toDiscuss=False)
-        itemDev5 = self.create('MeetingItem',
-                               category='research',
-                               toDiscuss=True,
-                               otherMeetingConfigsClonableTo=(cfg2Id, ))
-        itemDev6 = self.create('MeetingItem',
-                               category='research',
-                               toDiscuss=False,
-                               otherMeetingConfigsClonableTo=(cfg2Id, ))
-        itemVen1 = self.create('MeetingItem',
-                               proposingGroup='vendors',
-                               category='deployment',
-                               toDiscuss=True)
-        itemVen2 = self.create('MeetingItem',
-                               proposingGroup='vendors',
-                               category='deployment',
-                               toDiscuss=False)
-        itemVen3 = self.create('MeetingItem',
-                               proposingGroup='vendors',
-                               category='research',
-                               toDiscuss=True)
-        itemVen4 = self.create('MeetingItem',
-                               proposingGroup='vendors',
-                               category='research',
-                               toDiscuss=False)
-        itemVen5 = self.create('MeetingItem',
-                               proposingGroup='vendors',
-                               category='research',
-                               toDiscuss=True,
-                               otherMeetingConfigsClonableTo=(cfg2Id, ))
-        itemVen6 = self.create('MeetingItem',
-                               proposingGroup='vendors',
-                               category='research',
-                               toDiscuss=False,
-                               otherMeetingConfigsClonableTo=(cfg2Id, ))
-        itemPol1 = self.create('MeetingItem',
-                               proposingGroup=POLICE_GROUP_ID,
-                               category='deployment',
-                               toDiscuss=True)
-        itemPol2 = self.create('MeetingItem',
-                               proposingGroup=POLICE_GROUP_ID,
-                               category='deployment',
-                               toDiscuss=False)
-        itemPol3 = self.create('MeetingItem',
-                               proposingGroup=POLICE_GROUP_ID,
-                               category='research',
-                               toDiscuss=True)
-        itemPol4 = self.create('MeetingItem',
-                               proposingGroup=POLICE_GROUP_ID,
-                               category='research',
-                               toDiscuss=False)
-        itemPol5 = self.create('MeetingItem',
-                               proposingGroup=POLICE_GROUP_ID,
-                               category='research',
-                               toDiscuss=True,
-                               otherMeetingConfigsClonableTo=(cfg2Id, ))
-        itemPol6 = self.create('MeetingItem',
-                               proposingGroup=POLICE_GROUP_ID,
-                               category='research',
-                               toDiscuss=False,
-                               otherMeetingConfigsClonableTo=(cfg2Id, ))
-        meeting = self.create('Meeting', date=DateTime())
-        for item in [itemDev1, itemDev2, itemDev3, itemDev4, itemDev5, itemDev6,
-                     itemVen1, itemVen2, itemVen3, itemVen4, itemVen5, itemVen6,
-                     itemPol1, itemPol2, itemPol3, itemPol4, itemPol5, itemPol6]:
-            self.presentItem(item)
+
+        # create items and meetings using demo data
+        _demoData(self.portal, 'pmManager', ('developers', 'vendors'))
+        meeting = cfg.getMeetingsAcceptingItems()[-3].getObject()
         orderedItems = meeting.getItems(ordered=True)
         self.assertEquals(
             [(item.getProposingGroup(),
               item.getToDiscuss(),
               item.getOtherMeetingConfigsClonableTo(),
               item.getCategory()) for item in orderedItems],
-            [('zone-de-police', True, (), 'deployment'),
-             ('zone-de-police', True, (), 'research'),
-             ('zone-de-police', True, ('meeting-config-council',), 'research'),
-             ('zone-de-police', False, (), 'deployment'),
-             ('zone-de-police', False, (), 'research'),
-             ('zone-de-police', False, ('meeting-config-council',), 'research'),
-             ('developers', True, (), 'deployment'),
-             ('developers', True, (), 'research'),
-             ('developers', True, ('meeting-config-council',), 'research'),
-             ('developers', False, (), 'deployment'),
-             ('developers', False, (), 'research'),
-             ('developers', False, ('meeting-config-council',), 'research'),
-             ('vendors', True, (), 'deployment'),
-             ('vendors', True, (), 'research'),
-             ('vendors', True, ('meeting-config-council',), 'research'),
-             ('vendors', False, (), 'deployment'),
-             ('vendors', False, (), 'research'),
-             ('vendors', False, ('meeting-config-council',), 'research')])
+            [('zone-de-police', True, (), 'remboursement'),
+             ('zone-de-police', True, ('meeting-config-council',), 'affaires-juridiques'),
+             ('zone-de-police', True, ('meeting-config-council',), 'remboursement'),
+             ('zone-de-police', False, (), 'remboursement'),
+             ('zone-de-police', False, ('meeting-config-council',), 'affaires-juridiques'),
+             ('developers', True, (), 'remboursement'),
+             ('vendors', True, (), 'remboursement'),
+             ('developers', True, ('meeting-config-council',), 'affaires-juridiques'),
+             ('vendors', True, ('meeting-config-council',), 'affaires-juridiques'),
+             ('developers', True, ('meeting-config-council',), 'remboursement'),
+             ('vendors', True, ('meeting-config-council',), 'remboursement'),
+             ('developers', False, (), 'remboursement'),
+             ('vendors', False, (), 'remboursement'),
+             ('developers', False, ('meeting-config-council',), 'affaires-juridiques'),
+             ('vendors', False, ('meeting-config-council',), 'affaires-juridiques')]
+            )
 
 
 def test_suite():

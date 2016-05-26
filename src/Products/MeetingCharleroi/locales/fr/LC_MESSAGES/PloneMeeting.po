@@ -66,6 +66,10 @@ msgstr "En attente avis finances"
 msgid "no_finances_advice_asked"
 msgstr "L'avis des finances n'a pas été demandé sur ce point."
 
+#. Default: "First items of 'Police' then other groups items"
+msgid "on_police_then_other_groups"
+msgstr "Les points 'Zone de Police' puis les points des Services communaux"
+
 #. Default: "Pre-validator"
 msgid "prereviewer"
 msgstr "Référent administratif"
@@ -91,7 +95,8 @@ msgstr "Points proposés au référent administratif"
 msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice"
 msgstr "Un point a été automatiquement renvoyé aux référents administratifs parce que l'avis finances signé n'était pas 'Favorable'"
 
-#. Default: "The item is entitled '${itemTitle}'. You can access it here: ${objectUrl}."
+#. Default: "An item was automatically sent back to the administrative referent because it was signed with an advice that was not positive"
+#, fuzzy
 msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_body"
 msgstr "Le titre du point est '${itemTitle}'. Vous pouvez y accéder ici: ${objectUrl}."
 

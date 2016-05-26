@@ -55,8 +55,6 @@ def postInstall(context):
     addOrUpdateIndexes(site, {'financesAdviceCategory': ('FieldIndex', {})})
     # add our own faceted criteria
     addFacetedCriteria(context, site)
-    # add demo data
-    addDemoData(context)
 
 
 def logStep(method, context):
@@ -72,10 +70,6 @@ def isMeetingCharleroiConfigureProfile(context):
         context.readDataFile("MeetingCharleroi_ca_marker.txt") or \
         context.readDataFile("MeetingCharleroi_coges_marker.txt") or \
         context.readDataFile("MeetingCharleroi_testing_marker.txt")
-
-
-def isNotMeetingCharleroiDemoProfile(context):
-    return context.readDataFile("MeetingCharleroi_demo_marker.txt") is None
 
 
 def isMeetingCharleroiTestingProfile(context):
@@ -234,6 +228,9 @@ def finalizeExampleInstance(context):
         logStep("_createFinanceGroups", context)
         _createFinancesGroup(site)
 
+    # add demo data
+    addDemoData(context)
+
 
 def _configureCollegeCustomAdvisers(site):
     '''
@@ -335,13 +332,14 @@ def reorderCss(context):
 
 def addDemoData(context):
     ''' '''
-    if isNotMeetingCharleroiDemoProfile(context):
+    if isNotMeetingCharleroiProfile(context) and \
+       not isMeetingCharleroiConfigureProfile(context):
         return
 
-    _demoData(context.getSite())
+    _demoData(context.getSite(), 'dgen', ('dirgen', 'personnel'))
 
 
-def _demoData(site):
+def _demoData(site, userId, firstTwoGroupIds):
     """ """
     tool = api.portal.get_tool('portal_plonemeeting')
     cfg = getattr(tool, 'meeting-config-college')
@@ -362,14 +360,13 @@ def _demoData(site):
     # create 5 meetings : 2 passed, 1 current and 2 future
     today = DateTime()
     dates = [today-13, today-6, today+1, today+8, today+15]
-    # login as 'dgen'
-    mTool.createMemberArea('dgen')
-    secrFolder = tool.getPloneMeetingFolder(cfg.getId(), 'dgen')
+    mTool.createMemberArea(userId)
+    secrFolder = tool.getPloneMeetingFolder(cfg.getId(), userId)
     for date in dates:
         meetingId = secrFolder.invokeFactory('MeetingCollege', id=date.strftime('%Y%m%d'))
         meeting = getattr(secrFolder, meetingId)
         meeting.setDate(date)
-        pTool.changeOwnershipOf(meeting, 'dgen')
+        pTool.changeOwnershipOf(meeting, userId)
         meeting.processForm()
         # -13 meeting is closed
         if date == today-13:
@@ -380,7 +377,9 @@ def _demoData(site):
         if date == today-6:
             wfTool.doActionFor(meeting, 'freeze')
             wfTool.doActionFor(meeting, 'decide')
-        meeting.reindexObject()
+        # +1 is meeting we will insert items into
+        if date == today+1:
+            meetingForItems = meeting
 
     # items dict here : the key is the user we will create the item for
     # we use item templates so content is created for the demo
@@ -388,62 +387,62 @@ def _demoData(site):
         # dirgen
         {'templateId': 'template5',
          'title': u'Exemple point 1',
-         'proposingGroup': 'dirgen',
+         'proposingGroup': firstTwoGroupIds[0],
          'category': 'affaires-juridiques',
          'toDiscuss': True,
          'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
         {'templateId': 'template5',
          'title': u'Exemple point 2',
-         'proposingGroup': 'dirgen',
+         'proposingGroup': firstTwoGroupIds[0],
          'category': 'remboursement',
          'toDiscuss': True,
          'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
         {'templateId': 'template5',
          'title': u'Exemple point 3',
-         'proposingGroup': 'dirgen',
+         'proposingGroup': firstTwoGroupIds[0],
          'category': 'remboursement',
          'toDiscuss': True,
          'otherMeetingConfigsClonableTo': ()},
         {'templateId': 'template5',
          'title': u'Exemple point 4',
-         'proposingGroup': 'dirgen',
+         'proposingGroup': firstTwoGroupIds[0],
          'category': 'affaires-juridiques',
          'toDiscuss': False,
          'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
         {'templateId': 'template5',
          'title': u'Exemple point 5',
-         'proposingGroup': 'dirgen',
+         'proposingGroup': firstTwoGroupIds[0],
          'category': 'remboursement',
          'toDiscuss': False,
          'otherMeetingConfigsClonableTo': ()},
         # personnel
         {'templateId': 'template5',
          'title': u'Exemple point 6',
-         'proposingGroup': 'personnel',
+         'proposingGroup': firstTwoGroupIds[1],
          'category': 'affaires-juridiques',
          'toDiscuss': True,
          'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
         {'templateId': 'template5',
          'title': u'Exemple point 7',
-         'proposingGroup': 'personnel',
+         'proposingGroup': firstTwoGroupIds[1],
          'category': 'remboursement',
          'toDiscuss': True,
          'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
         {'templateId': 'template5',
          'title': u'Exemple point 8',
-         'proposingGroup': 'personnel',
+         'proposingGroup': firstTwoGroupIds[1],
          'category': 'remboursement',
          'toDiscuss': True,
          'otherMeetingConfigsClonableTo': ()},
         {'templateId': 'template5',
          'title': u'Exemple point 9',
-         'proposingGroup': 'personnel',
+         'proposingGroup': firstTwoGroupIds[1],
          'category': 'affaires-juridiques',
          'toDiscuss': False,
          'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
         {'templateId': 'template5',
          'title': u'Exemple point 10',
-         'proposingGroup': 'personnel',
+         'proposingGroup': firstTwoGroupIds[1],
          'category': 'remboursement',
          'toDiscuss': False,
          'otherMeetingConfigsClonableTo': ()},
@@ -480,12 +479,12 @@ def _demoData(site):
          'otherMeetingConfigsClonableTo': ()},
         )
 
-    userFolder = tool.getPloneMeetingFolder(cfg.getId(), 'dgen')
+    userFolder = tool.getPloneMeetingFolder(cfg.getId(), userId)
     wfTool = api.portal.get_tool('portal_workflow')
     for item in items:
         # get the template then clone it
         template = getattr(tool.getMeetingConfig(userFolder).itemtemplates, item['templateId'])
-        newItem = template.clone(newOwnerId='dgen',
+        newItem = template.clone(newOwnerId=userId,
                                  destFolder=userFolder,
                                  newPortalType=cfg.getItemTypeName())
         newItem.setTitle(item['title'])
@@ -493,6 +492,8 @@ def _demoData(site):
         newItem.setCategory(item['category'])
         newItem.setToDiscuss(item['toDiscuss'])
         newItem.setOtherMeetingConfigsClonableTo(item['otherMeetingConfigsClonableTo'])
+        newItem.setPreferredMeeting(meetingForItems.UID())
         newItem.reindexObject()
+        site.REQUEST['PUBLISHED'] = meetingForItems
         for transition in cfg.getTransitionsForPresentingAnItem():
             wfTool.doActionFor(newItem, transition)

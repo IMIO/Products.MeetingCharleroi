@@ -302,16 +302,20 @@ collegeMeeting.usedItemAttributes = ['detailedDescription',
                                      'itemIsSigned', ]
 collegeMeeting.usedMeetingAttributes = ['startDate', 'endDate', 'signatures', 'assembly', 'place', 'observations', ]
 collegeMeeting.recordMeetingHistoryStates = []
-collegeMeeting.itemsListVisibleColumns = ['Creator', 'CreationDate', 'review_state',
-                                          'getProposingGroup', 'advices', 'actions']
-collegeMeeting.itemColumns = ['Creator', 'CreationDate', 'ModificationDate', 'review_state',
-                              'getProposingGroup', 'advices', 'linkedMeetingDate',
-                              'getItemIsSigned', 'actions']
+collegeMeeting.itemsListVisibleColumns = ('Creator', 'CreationDate', 'review_state', 'getCategory',
+                                          'getProposingGroup', 'advices', 'toDiscuss', 'actions')
+collegeMeeting.itemColumns = ('Creator', 'CreationDate', 'ModificationDate', 'review_state',
+                              'getCategory', 'getProposingGroup', 'advices', 'toDiscuss',
+                              'getItemIsSigned', 'linkedMeetingDate', 'actions')
 collegeMeeting.xhtmlTransformFields = ('MeetingItem.description',
                                        'MeetingItem.detailedDescription',
                                        'MeetingItem.decision',
                                        'MeetingItem.observations',
                                        'Meeting.observations', )
+collegeMeeting.dashboardItemsListingsFilters = ('c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11',
+                                                'c12', 'c13', 'c14', 'c15', 'c16', 'c18')
+collegeMeeting.dashboardMeetingAvailableItemsFilters = ('c4', 'c5', 'c11', 'c16')
+collegeMeeting.dashboardMeetingLinkedItemsFilters = ('c4', 'c5', 'c6', 'c7', 'c11', 'c16')
 collegeMeeting.xhtmlTransformTypes = ('removeBlanks',)
 collegeMeeting.itemWorkflow = 'meetingitemcommunes_workflow'
 collegeMeeting.meetingWorkflow = 'meetingcommunes_workflow'
