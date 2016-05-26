@@ -7,3 +7,4 @@ Products.MeetingCharleroi Changelog
   automatically because the freshly signed finances advice was positive
 - Added 'Finances category' faceted widget only displayed to (Meeting)Managers
   and finances advisers
+- Added custom inserting order 'on_police_then_other_groups'

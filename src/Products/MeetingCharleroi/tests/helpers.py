@@ -21,8 +21,11 @@
 #
 
 from plone import api
+from Products.PloneMeeting.config import MEETING_GROUP_SUFFIXES
 from Products.PloneMeeting.tests.helpers import PloneMeetingTestingHelpers
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
+from Products.MeetingCharleroi.config import POLICE_GROUP_ID
+from Products.MeetingCharleroi.profiles.zcharleroi.import_data import collegeMeeting
 from Products.MeetingCharleroi.setuphandlers import _configureCollegeCustomAdvisers
 from Products.MeetingCharleroi.setuphandlers import _createFinancesGroup
 
@@ -139,3 +142,43 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         groupsTool.addPrincipalToGroup('pmFinController', '%s_financialcontrollers' % FINANCE_GROUP_ID)
         groupsTool.addPrincipalToGroup('pmFinReviewer', '%s_financialreviewers' % FINANCE_GROUP_ID)
         groupsTool.addPrincipalToGroup('pmFinManager', '%s_financialmanagers' % FINANCE_GROUP_ID)
+
+    def _setupPoliceGroup(self):
+        '''Configure police group.
+           - create 'zone-de-police' group;
+           - add 'pmManager' to the _creators group;
+           - add some default categories.'''
+        self.changeUser('siteadmin')
+        self.create('MeetingGroup',
+                    id=POLICE_GROUP_ID,
+                    title="Zone de Police", acronym='ZPL')
+        # police is added at the end of existing groups
+        self.assertEquals(self.tool.objectIds('MeetingGroup'), ['developers',
+                                                                'vendors',
+                                                                # disabled
+                                                                'endUsers',
+                                                                POLICE_GROUP_ID])
+        # make 'pmManager' able to manage everything for 'vendors' and 'police'
+        groupsTool = self.portal.portal_groups
+        for groupId in ('vendors', POLICE_GROUP_ID):
+            for suffix in MEETING_GROUP_SUFFIXES:
+                groupsTool.addPrincipalToGroup('pmManager', '{0}_{1}'.format(groupId, suffix))
+
+        # create categories
+        for cat in collegeMeeting.categories:
+            data = {'id': cat.id,
+                    'title': cat.title,
+                    'description': cat.description}
+            self.create('MeetingCategory', **data)
+
+        self._removeConfigObjectsFor(self.meetingConfig)
+        # create itemTemplates
+        for template in collegeMeeting.itemTemplates:
+            data = {'id': template.id,
+                    'title': template.title,
+                    'description': template.description,
+                    'category': template.category,
+                    'proposingGroup': template.proposingGroup == POLICE_GROUP_ID and POLICE_GROUP_ID or 'developers',
+                    #'templateUsingGroups': template.templateUsingGroups,
+                    'decision': template.decision}
+            self.create('MeetingItemTemplate', **data)

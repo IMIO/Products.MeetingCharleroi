@@ -10,6 +10,7 @@ from Products.PloneMeeting.profiles import PloneMeetingConfiguration
 from Products.PloneMeeting.profiles import PodTemplateDescriptor
 from Products.PloneMeeting.profiles import RecurringItemDescriptor
 from Products.PloneMeeting.profiles import UserDescriptor
+from Products.MeetingCharleroi.config import POLICE_GROUP_ID
 
 today = DateTime().strftime('%Y/%m/%d')
 
@@ -160,16 +161,14 @@ conseiller = UserDescriptor('conseiller', [], email="test@test.be", fullname="Co
 
 emetteuravisPers = UserDescriptor('emetteuravisPers', [], email="test@test.be", fullname="Emetteur avis Personnel")
 
-groups = [GroupDescriptor('dirgen', 'Directeur Général', 'DG'),
+groups = [GroupDescriptor(POLICE_GROUP_ID, 'Zone de Police', 'ZPL'),
+          GroupDescriptor('dirgen', 'Directeur Général', 'DG'),
           GroupDescriptor('secretariat', 'Secrétariat communal', 'Secr'),
           GroupDescriptor('informatique', 'Service informatique', 'Info'),
           GroupDescriptor('personnel', 'Service du personnel', 'Pers'),
-          GroupDescriptor('dirfin',
-                          'Directeur Financier',
-                          'DF'),
+          GroupDescriptor('dirfin', 'Directeur Financier', 'DF'),
           GroupDescriptor('comptabilite', 'Service comptabilité', 'Compt'),
-          GroupDescriptor('travaux', 'Service travaux', 'Trav'),
-          GroupDescriptor('zone-de-police', 'Zone de Police', 'ZPL'), ]
+          GroupDescriptor('travaux', 'Service travaux', 'Trav')]
 
 # MeetingManager
 groups[0].creators.append(dgen)
@@ -303,16 +302,20 @@ collegeMeeting.usedItemAttributes = ['detailedDescription',
                                      'itemIsSigned', ]
 collegeMeeting.usedMeetingAttributes = ['startDate', 'endDate', 'signatures', 'assembly', 'place', 'observations', ]
 collegeMeeting.recordMeetingHistoryStates = []
-collegeMeeting.itemsListVisibleColumns = ['Creator', 'CreationDate', 'review_state',
-                                          'getProposingGroup', 'advices', 'actions']
-collegeMeeting.itemColumns = ['Creator', 'CreationDate', 'ModificationDate', 'review_state',
-                              'getProposingGroup', 'advices', 'linkedMeetingDate',
-                              'getItemIsSigned', 'actions']
+collegeMeeting.itemsListVisibleColumns = ('Creator', 'CreationDate', 'review_state', 'getCategory',
+                                          'getProposingGroup', 'advices', 'toDiscuss', 'actions')
+collegeMeeting.itemColumns = ('Creator', 'CreationDate', 'ModificationDate', 'review_state',
+                              'getCategory', 'getProposingGroup', 'advices', 'toDiscuss',
+                              'getItemIsSigned', 'linkedMeetingDate', 'actions')
 collegeMeeting.xhtmlTransformFields = ('MeetingItem.description',
                                        'MeetingItem.detailedDescription',
                                        'MeetingItem.decision',
                                        'MeetingItem.observations',
                                        'Meeting.observations', )
+collegeMeeting.dashboardItemsListingsFilters = ('c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11',
+                                                'c12', 'c13', 'c14', 'c15', 'c16', 'c18')
+collegeMeeting.dashboardMeetingAvailableItemsFilters = ('c4', 'c5', 'c11', 'c16')
+collegeMeeting.dashboardMeetingLinkedItemsFilters = ('c4', 'c5', 'c6', 'c7', 'c11', 'c16')
 collegeMeeting.xhtmlTransformTypes = ('removeBlanks',)
 collegeMeeting.itemWorkflow = 'meetingitemcommunes_workflow'
 collegeMeeting.meetingWorkflow = 'meetingcommunes_workflow'
@@ -324,9 +327,13 @@ collegeMeeting.transitionsToConfirm = ['MeetingItem.delay', ]
 collegeMeeting.meetingTopicStates = ('created', 'frozen')
 collegeMeeting.decisionTopicStates = ('decided', 'closed')
 collegeMeeting.enforceAdviceMandatoriness = False
-collegeMeeting.insertingMethodsOnAddItem = ({'insertingMethod': 'on_proposing_groups',
-                                             'reverse': '0'}, )
+collegeMeeting.insertingMethodsOnAddItem = (
+    {'insertingMethod': 'on_police_then_other_groups', 'reverse': '0'},
+    {'insertingMethod': 'on_to_discuss', 'reverse': '0'},
+    {'insertingMethod': 'on_other_mc_to_clone_to', 'reverse': '1'},
+    {'insertingMethod': 'on_categories', 'reverse': '0'})
 collegeMeeting.useGroupsAsCategories = False
+collegeMeeting.toDiscussSetOnItemInsert = False
 collegeMeeting.recordItemHistoryStates = []
 collegeMeeting.maxShownMeetings = 5
 collegeMeeting.maxDaysDecisions = 60

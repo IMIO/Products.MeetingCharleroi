@@ -63,6 +63,7 @@ from Products.MeetingCharleroi.config import FINANCE_ADVICE_LEGAL_TEXT
 from Products.MeetingCharleroi.config import FINANCE_ADVICE_LEGAL_TEXT_NOT_GIVEN
 from Products.MeetingCharleroi.config import FINANCE_GIVEABLE_ADVICE_STATES
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
+from Products.MeetingCharleroi.config import POLICE_GROUP_ID
 
 # disable most of wfAdaptations
 customWfAdaptations = ('no_publication', 'no_global_observation',
@@ -388,6 +389,22 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
             return False
         return True
 
+    def _findCustomOneLevelFor(self, insertMethod):
+        '''Manage our custom inserting method 'on_police_then_other_groups'.'''
+        if insertMethod == 'on_police_then_other_groups':
+            return 2
+        raise NotImplementedError
+
+    def _findCustomOrderFor(self, insertMethod):
+        '''Manage our custom inserting method 'on_police_then_other_groups'.'''
+        item = self.getSelf()
+        if insertMethod == 'on_police_then_other_groups':
+            if item.getProposingGroup() == POLICE_GROUP_ID:
+                return 0
+            else:
+                return 1
+        raise NotImplementedError
+
 
 class CustomCharleroiMeetingGroup(CustomMeetingGroup):
     '''Adapter that adapts a meeting group implementing IMeetingGroup to the
@@ -412,10 +429,11 @@ class CustomCharleroiMeetingConfig(CustomMeetingConfig):
 
     def extraItemEvents(self):
         '''See doc in interfaces.py.'''
-        return [("sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice",
-                 translate('sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice',
-                           domain='PloneMeeting',
-                           context=self.context.REQUEST))]
+        return ['sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice']
+
+    def extraInsertingMethods(self):
+        '''See doc in interfaces.py.'''
+        return ['on_police_then_other_groups']
 
 
 class MeetingCharleroiCollegeWorkflowActions(MeetingCollegeWorkflowActions):
