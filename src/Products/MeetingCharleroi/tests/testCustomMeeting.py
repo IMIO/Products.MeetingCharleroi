@@ -218,8 +218,9 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
     def test_pm_InsertItemOnPoliceThenOtherGroups(self):
         '''Test inserting an item using the "on_police_then_other_groups" sorting method.'''
         self._setupPoliceGroup()
-        self.meetingConfig.setInsertingMethodsOnAddItem(({'insertingMethod': 'on_police_then_other_groups',
-                                                          'reverse': '0'}, ))
+        self.meetingConfig.setInsertingMethodsOnAddItem(
+            ({'insertingMethod': 'on_police_then_other_groups',
+              'reverse': '0'}, ))
 
         self.changeUser('pmManager')
         # create items with various groups
@@ -238,11 +239,11 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
 
         orderedItems = meeting.getItems(ordered=True)
         self.assertEquals([item.getId() for item in orderedItems],
-                          ['o6', 'o7', 'recItem1', 'recItem2', 'o1', 'o2', 'o3', 'o4', 'o5'])
+                          ['o6', 'o7', 'o1', 'o2', 'o3', 'o4', 'o5'])
         self.assertEquals([item.getProposingGroup() for item in orderedItems],
                           ['zone-de-police', 'zone-de-police',
                            'developers', 'developers', 'developers',
-                           'developers', 'developers', 'vendors', 'vendors'])
+                           'vendors', 'vendors'])
 
     def test_pm_FullInsertingProcess(self):
         '''Test inserting an item using the relevant inserting methods.'''
