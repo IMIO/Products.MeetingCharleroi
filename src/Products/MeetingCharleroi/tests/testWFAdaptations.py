@@ -38,37 +38,27 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
                           set(('no_global_observation',
                                'no_publication',
                                'pre_validation',
+                               'items_come_validated',
                                'return_to_proposing_group',
                                'waiting_advices',
                                'charleroi_add_refadmin',
                                )))
 
-    def test_subproduct_call_WFA_no_publication(self):
-        '''No sense...'''
-        pass
-
-    def test_subproduct_call_WFA_items_come_validated(self):
-        '''No sense...'''
-        pass
-
-    def test_subproduct_call_WFA_only_creator_may_delete(self):
-        '''No sense...'''
-        pass
-
-    def test_subproduct_call_WFA_everyone_reads_all(self):
-        '''No sense...'''
-        pass
-
-    def test_subproduct_call_WFA_creator_edits_unless_closed(self):
-        '''No sense...'''
-        pass
-
-    def test_subproduct_call_WFA_add_published_state(self):
-        '''No sense...tested in customWorkflow with ref-admin-wfa'''
-        pass
+    def test_pm_Validate_workflowAdaptations_added_items_come_validated(self):
+        """ """
+        # disable some wfAdaptations interferring with the test
+        cfg = self.meetingConfig
+        cfg.setWorkflowAdaptations(('no_publication', 'no_global_observation'))
+        cfg.at_post_edit_script()
+        # turn to proposed
+        original_proposed_state_mapping_value = self.WF_STATE_NAME_MAPPINGS['proposed']
+        self.WF_STATE_NAME_MAPPINGS['proposed'] = 'proposed'
+        super(testWFAdaptations, self).test_pm_Validate_workflowAdaptations_added_items_come_validated()
+        self.WF_STATE_NAME_MAPPINGS['proposed'] = original_proposed_state_mapping_value
 
     def test_pm_WFA_pre_validation(self):
-        '''No sense...'''
+        '''Will not work as we have also a state before...
+           Tested in testCustomWorkflows.py'''
         pass
 
     def _waiting_advices_with_prevalidation_active(self):

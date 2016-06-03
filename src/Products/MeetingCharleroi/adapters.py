@@ -67,8 +67,9 @@ from Products.MeetingCharleroi.config import POLICE_GROUP_ID
 
 # disable most of wfAdaptations
 customWfAdaptations = ('no_publication', 'no_global_observation',
-                       'pre_validation', 'return_to_proposing_group',
-                       'charleroi_add_refadmin', 'waiting_advices')
+                       'pre_validation', 'items_come_validated',
+                       'return_to_proposing_group', 'charleroi_add_refadmin',
+                       'waiting_advices')
 MeetingConfig.wfAdaptations = customWfAdaptations
 originalPerformWorkflowAdaptations = adaptations.performWorkflowAdaptations
 

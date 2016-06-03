@@ -27,6 +27,9 @@ annexeAvisLegal = MeetingFileTypeDescriptor('annexeAvisLegal', 'Extrait article 
 # Categories -------------------------------------------------------------------
 recurring = CategoryDescriptor('recurrents', 'Récurrents')
 categories = [recurring,
+              CategoryDescriptor('divers',
+                                 'Divers',
+                                 description='Bourgmestre|P. Magnette'),
               CategoryDescriptor('affaires-juridiques',
                                  'Affaires juridiques',
                                  description='Bourgmestre|P. Magnette'),
@@ -430,6 +433,7 @@ collegeMeeting.podTemplates = collegeTemplates
 collegeMeeting.meetingConfigsToCloneTo = [{'meeting_config': 'meeting-config-council',
                                            'trigger_workflow_transitions_until': '__nothing__'}, ]
 collegeMeeting.itemAutoSentToOtherMCStates = ('accepted', 'accepted_but_modified', )
+collegeMeeting.itemManualSentToOtherMCStates = ('itemfrozen', 'pre_accepted', )
 collegeMeeting.recurringItems = [
     RecurringItemDescriptor(
         id='recurringagenda1',
@@ -457,7 +461,7 @@ collegeMeeting.itemTemplates = [
         id='template1',
         title='Tutelle CPAS',
         description='Tutelle CPAS',
-        category='personnel',
+        category='divers',
         proposingGroup='secretariat',
         templateUsingGroups=['secretariat', 'dirgen', ],
         decision="""<p>Vu la loi du 8 juillet 1976 organique des centres publics d'action sociale et plus particulièrement son article 111;</p>
@@ -476,7 +480,7 @@ collegeMeeting.itemTemplates = [
         id='template2',
         title='Contrôle médical systématique agent contractuel',
         description='Contrôle médical systématique agent contractuel',
-        category='personnel',
+        category='divers',
         proposingGroup='personnel',
         templateUsingGroups=['personnel', ],
         decision="""
@@ -496,7 +500,7 @@ collegeMeeting.itemTemplates = [
         id='template3',
         title='Engagement temporaire',
         description='Engagement temporaire',
-        category='personnel',
+        category='divers',
         proposingGroup='personnel',
         templateUsingGroups=['personnel', ],
         decision="""<p>Considérant qu’il y a lieu de pourvoir au remplacement de Madame XXX, XXX bénéficiant d’une interruption de carrière pour convenances personnelles pour l’année scolaire 2009/2010. &nbsp;</p>
@@ -517,7 +521,7 @@ collegeMeeting.itemTemplates = [
         id='template4',
         title='Prestation réduite',
         description='Prestation réduite',
-        category='personnel',
+        category='divers',
         proposingGroup='personnel',
         templateUsingGroups=['personnel', ],
         decision="""<p>Vu la loi de redressement du 22 janvier 1985 (article 99 et suivants) et de l’Arrêté Royal du 12 août 1991 (tel que modifié) relatifs à l’interruption de carrière professionnelle dans l’enseignement;</p>
@@ -536,7 +540,7 @@ collegeMeeting.itemTemplates = [
         id='template5',
         title='Exemple modèle disponible pour tous',
         description='Exemple modèle disponible pour tous',
-        category='personnel',
+        category='divers',
         proposingGroup='',
         templateUsingGroups=[],
         decision="""<p>Vu la loi du XXX;</p>
@@ -582,6 +586,8 @@ Place2\n\r
 Place3\n\r"""
 councilMeeting.categories = categories
 councilMeeting.shortName = 'Council'
+councilMeeting.itemCreatedOnlyUsingTemplate = True
+councilMeeting.useGroupsAsCategories = False
 councilMeeting.meetingFileTypes = [annexe, annexeBudget, annexeCahier,
                                    annexeDecision, annexeAvis, annexeAvisLegal]
 councilMeeting.usedItemAttributes = ['detailedDescription',
@@ -684,6 +690,17 @@ dgen_mu = MeetingUserDescriptor('dgen',
                                 signatureIsDefault=True)
 
 councilMeeting.meetingUsers = [bourgmestre_mu, receveur_mu, echevinPers_mu, echevinTrav_mu, dgen_mu]
+
+councilMeeting.itemTemplates = [
+    ItemTemplateDescriptor(
+        id='template1',
+        title='Point Conseil',
+        description='',
+        category='divers',
+        proposingGroup='dirgen',
+        templateUsingGroups=['dirgen', ],
+        decision="""<p>&nbsp;</p>""")
+    ]
 
 councilMeeting.recurringItems = [
     RecurringItemDescriptor(
