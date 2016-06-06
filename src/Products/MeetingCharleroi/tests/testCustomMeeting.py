@@ -187,24 +187,18 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         Return the items for agenda.
         '''
         self.changeUser('admin')
-        police = GroupDescriptor('zone-de-police', 'Police', 'La police.')
         # make categories available
         self.setMeetingConfig(self.meetingConfig2.getId())
         self.changeUser('pmManager')
         meeting = self._createMeetingWithItems()
         orderedItems = meeting.getItems(ordered=True)
         itemUids = [item.UID() for item in orderedItems]
-        item1 = orderedItems[0]
-        item1.setToDiscuss(False)
-        item2 = orderedItems[1]
-        item2.setToDiscuss(False)
         item3 = orderedItems[2]
-        item3.setToDiscuss(False)
         item3.setOtherMeetingConfigsClonableTo('meeting-config-council')
         item4 = orderedItems[3]
-        item4.setToDiscuss(False)
         item4.setOtherMeetingConfigsClonableTo('meeting-config-council')
         item5 = orderedItems[4]
+        item5.setToDiscuss(False)
         self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids, standard=True, itemType='prescriptive')[0]),3)
         self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids, standard=True, itemType='toCouncil')[0]),3)
         self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids, standard=True, itemType='communication')[0]),2)
