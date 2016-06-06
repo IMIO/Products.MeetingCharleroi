@@ -145,7 +145,7 @@ class CustomCharleroiMeeting(CustomMeeting):
         Get all items from the group "Police" which are not to discuss
         and not supposed to go to Council.
         """
-        policeItems = self._getPoliceItems(itemUids, toDiscuss=False)
+        policeItems = self._getPoliceItems(itemUids, toDiscuss=True)
 
         return self._getItemsHeadedToAnotherMeetingConfig(policeItems, '')
 
@@ -154,13 +154,13 @@ class CustomCharleroiMeeting(CustomMeeting):
         Get all items from the group "Police" which are not to discuss
         and supposed to go to council.
         """
-        policeItems = self._getPoliceItems(itemUids, toDiscuss=False)
+        policeItems = self._getPoliceItems(itemUids, toDiscuss=True)
 
         return self._getItemsHeadedToAnotherMeetingConfig(policeItems, 'meeting-config-council')
 
     def _getPoliceCommunicationItems(self, itemUids):
         """Get all items from the group "Police" which are to discuss."""
-        return self._getPoliceItems(itemUids, toDiscuss=True)
+        return self._getPoliceItems(itemUids, toDiscuss=False)
 
     def _getStandardItems(self, itemUids, toDiscuss=False):
         """Get all items, except those from the group 'Police'."""
@@ -181,7 +181,7 @@ class CustomCharleroiMeeting(CustomMeeting):
             Get items which are not from the group Police and not to
             discuss and not supposed to go to coucil.
         '''
-        standardItems = self._getStandardItems(itemUids, toDiscuss=False)
+        standardItems = self._getStandardItems(itemUids, toDiscuss=True)
 
         return self._getItemsHeadedToAnotherMeetingConfig(standardItems, '')
 
@@ -190,7 +190,7 @@ class CustomCharleroiMeeting(CustomMeeting):
             Get items which are not from the group Police, not to discuss
             and supposed to go to council.
         '''
-        standardItems =self._getStandardItems(itemUids, toDiscuss=False)
+        standardItems =self._getStandardItems(itemUids, toDiscuss=True)
 
         return self._getItemsHeadedToAnotherMeetingConfig(standardItems, 'meeting-config-council')
 
@@ -198,7 +198,7 @@ class CustomCharleroiMeeting(CustomMeeting):
         '''
         Get all items not from the group "Police" which are to discuss.
         '''
-        return self._getStandardItems(itemUids, toDiscuss=True)
+        return self._getStandardItems(itemUids, toDiscuss=False)
 
     def getPrintableItemsForAgenda(self, itemUids, standard=True, itemType='prescriptive'):
         '''
