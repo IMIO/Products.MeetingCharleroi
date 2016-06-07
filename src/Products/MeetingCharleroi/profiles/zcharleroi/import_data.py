@@ -301,6 +301,7 @@ collegeMeeting.usedItemAttributes = ['detailedDescription',
                                      'budgetInfos',
                                      'observations',
                                      'toDiscuss',
+                                     'otherMeetingConfigsClonableToPrivacy',
                                      'itemAssembly',
                                      'itemIsSigned', ]
 collegeMeeting.usedMeetingAttributes = ['startDate', 'endDate', 'signatures', 'assembly', 'place', 'observations', ]
