@@ -111,10 +111,11 @@ class CustomCharleroiMeeting(CustomMeeting):
     def __init__(self, meeting):
         self.context = meeting
 
-    def _getPoliceItems(self, itemUids, toDiscuss=False):
+    def _getPoliceItems(self, itemUids, toDiscuss=False, listTypes=['normal']):
         """Get all items from the group 'Police'."""
         policeItems = self.getPrintableItemsByCategory(itemUids,
                                                        toDiscuss=toDiscuss,
+                                                       listTypes=listTypes,
                                                        groupIds=['zone-de-police'])
         if policeItems:
             return policeItems
@@ -140,31 +141,32 @@ class CustomCharleroiMeeting(CustomMeeting):
                 filteredGroupedItems.append(filteredItems)
         return filteredGroupedItems
 
-    def _getPolicePrescriptiveItems(self, itemUids):
+    def _getPolicePrescriptiveItems(self, itemUids, listTypes=['normal']):
         """
         Get all items from the group "Police" which are not to discuss
         and not supposed to go to Council.
         """
-        policeItems = self._getPoliceItems(itemUids, toDiscuss=True)
+        policeItems = self._getPoliceItems(itemUids, toDiscuss=True, listTypes=listTypes)
 
         return self._getItemsHeadedToAnotherMeetingConfig(policeItems, '')
 
-    def _getPoliceHeadedToCouncilItems(self, itemUids):
+    def _getPoliceHeadedToCouncilItems(self, itemUids, listTypes=['normal']):
         """
         Get all items from the group "Police" which are not to discuss
         and supposed to go to council.
         """
-        policeItems = self._getPoliceItems(itemUids, toDiscuss=True)
+        policeItems = self._getPoliceItems(itemUids, toDiscuss=True, listTypes=listTypes)
 
         return self._getItemsHeadedToAnotherMeetingConfig(policeItems, 'meeting-config-council')
 
-    def _getPoliceCommunicationItems(self, itemUids):
+    def _getPoliceCommunicationItems(self, itemUids, listTypes=['normal']):
         """Get all items from the group "Police" which are to discuss."""
-        return self._getPoliceItems(itemUids, toDiscuss=False)
+        return self._getPoliceItems(itemUids, toDiscuss=False, listTypes=listTypes)
 
-    def _getStandardItems(self, itemUids, toDiscuss=False):
+    def _getStandardItems(self, itemUids, toDiscuss=False, listTypes=['normal']):
         """Get all items, except those from the group 'Police'."""
         everyItems = self.getPrintableItemsByCategory(itemUids,
+                                                      listTypes=listTypes,
                                                       toDiscuss=toDiscuss)
         groupedStandardItems = []
         for groupedItems in everyItems:
@@ -176,31 +178,31 @@ class CustomCharleroiMeeting(CustomMeeting):
                 groupedStandardItems.append(standardItems)
         return groupedStandardItems
 
-    def _getStandardPrescriptiveItems(self, itemUids):
+    def _getStandardPrescriptiveItems(self, itemUids, listTypes=['normal']):
         '''
             Get items which are not from the group Police and not to
             discuss and not supposed to go to coucil.
         '''
-        standardItems = self._getStandardItems(itemUids, toDiscuss=True)
+        standardItems = self._getStandardItems(itemUids, toDiscuss=True, listTypes=listTypes)
 
         return self._getItemsHeadedToAnotherMeetingConfig(standardItems, '')
 
-    def _getStandardHeadedToCouncilItems(self, itemUids):
+    def _getStandardHeadedToCouncilItems(self, itemUids, listTypes=['normal']):
         '''
             Get items which are not from the group Police, not to discuss
             and supposed to go to council.
         '''
-        standardItems =self._getStandardItems(itemUids, toDiscuss=True)
+        standardItems =self._getStandardItems(itemUids, toDiscuss=True, listTypes=listTypes)
 
         return self._getItemsHeadedToAnotherMeetingConfig(standardItems, 'meeting-config-council')
 
-    def _getStandardCommunicationItems(self, itemUids):
+    def _getStandardCommunicationItems(self, itemUids, listTypes=['normal']):
         '''
         Get all items not from the group "Police" which are to discuss.
         '''
-        return self._getStandardItems(itemUids, toDiscuss=False)
+        return self._getStandardItems(itemUids, toDiscuss=False, listTypes=listTypes)
 
-    def getPrintableItemsForAgenda(self, itemUids, standard=True, itemType='prescriptive'):
+    def getPrintableItemsForAgenda(self, itemUids, standard=True, itemType='prescriptive', listTypes=['normal']):
         '''
         Return a list of items ordered by category. Items are filtered between
         "police items" and "standard items" thanks to p_standard. p_itemType is
@@ -211,29 +213,29 @@ class CustomCharleroiMeeting(CustomMeeting):
         '''
         if standard is True:
             if itemType == 'prescriptive':
-                return self._getStandardPrescriptiveItems(itemUids)
+                return self._getStandardPrescriptiveItems(itemUids, listTypes=listTypes)
             elif itemType == 'toCouncil':
-                return self._getStandardHeadedToCouncilItems(itemUids)
+                return self._getStandardHeadedToCouncilItems(itemUids, listTypes=listTypes)
             elif itemType == 'communication':
-                return self._getStandardCommunicationItems(itemUids)
+                return self._getStandardCommunicationItems(itemUids, listTypes=listTypes)
             else:
                 return 'The itemType given to getPrintableItemsForAgenda '\
                        'must be prescriptive, toCouncil or communication'
         else:
             if itemType == 'prescriptive':
-                return self._getPolicePrescriptiveItems(itemUids)
+                return self._getPolicePrescriptiveItems(itemUids, listTypes=listTypes)
             elif itemType == 'toCouncil':
-                return self._getPoliceHeadedToCouncilItems(itemUids)
+                return self._getPoliceHeadedToCouncilItems(itemUids, listTypes=listTypes)
             elif itemType == 'communication':
-                return self._getPoliceCommunicationItems(itemUids)
+                return self._getPoliceCommunicationItems(itemUids, listTypes=listTypes)
             else:
                 return 'The itemType given to getPrintableItemsForAgenda '\
                        'must be prescriptive, toCouncil or communication'
 
-    def getRepresentativeForAgenda(self, sublst, itemUids, standard=True, itemType='prescriptive'):
+    def getRepresentativeForAgenda(self, sublst, itemUids, standard=True, itemType='prescriptive', listTypes=['normal']):
         '''Checks if the given category is the same than the previous one. Return none if so and the new one if not.'''
         previousCat = ''
-        for sublist in self.getPrintableItemsForAgenda(itemUids, standard=standard, itemType=itemType):
+        for sublist in self.getPrintableItemsForAgenda(itemUids, standard=standard, itemType=itemType, listTypes=listTypes):
             if sublist == sublst:
                 if sublist[0].Description() != previousCat:
                     return sublist[0].Description()
