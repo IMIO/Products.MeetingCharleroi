@@ -23,7 +23,6 @@
 #
 
 from DateTime import DateTime
-from Products.PloneMeeting.profiles import GroupDescriptor
 from Products.MeetingCommunes.tests.testCustomMeeting import testCustomMeeting as mctcm
 from Products.MeetingCharleroi.config import POLICE_GROUP_ID
 from Products.MeetingCharleroi.setuphandlers import _demoData
@@ -199,15 +198,27 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         item4.setOtherMeetingConfigsClonableTo('meeting-config-council')
         item5 = orderedItems[4]
         item5.setToDiscuss(False)
-        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids, standard=True, itemType='prescriptive')[0]),3)
-        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids, standard=True, itemType='toCouncil')[0]),3)
-        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids, standard=True, itemType='communication')[0]),2)
+        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids,
+                                                                          standard=True,
+                                                                          itemType='prescriptive')[0]), 3)
+        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids,
+                                                                          standard=True,
+                                                                          itemType='toCouncil')[0]), 3)
+        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids,
+                                                                          standard=True,
+                                                                          itemType='communication')[0]), 2)
         # Every item in the meeting is now from the police group
         for item in meeting.getItems():
             item.setProposingGroup('zone-de-police')
-        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids, standard=False, itemType='prescriptive')[0]),3)
-        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids, standard=False, itemType='toCouncil')[0]),3)
-        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids, standard=False, itemType='communication')[0]),2)
+        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids,
+                                                                          standard=False,
+                                                                          itemType='prescriptive')[0]), 3)
+        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids,
+                                                                          standard=False,
+                                                                          itemType='toCouncil')[0]), 3)
+        self.assertEqual(len(meeting.adapted().getPrintableItemsForAgenda(itemUids,
+                                                                          standard=False,
+                                                                          itemType='communication')[0]), 2)
 
     def test_pm_InsertItemOnPoliceThenOtherGroups(self):
         '''Test inserting an item using the "on_police_then_other_groups" sorting method.'''
@@ -246,13 +257,10 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         cfg2 = self.meetingConfig2
         cfg2Id = cfg2.getId()
         cfg.setInsertingMethodsOnAddItem(
-            (
-                {'insertingMethod': 'on_police_then_other_groups', 'reverse': '0'},
-                {'insertingMethod': 'on_to_discuss', 'reverse': '0'},
-                {'insertingMethod': 'on_other_mc_to_clone_to', 'reverse': '1'},
-                {'insertingMethod': 'on_categories', 'reverse': '0'},
-                {'insertingMethod': 'on_proposing_groups', 'reverse': '0'},
-                )
+            ({'insertingMethod': 'on_police_then_other_groups_then_communications', 'reverse': '0'},
+             {'insertingMethod': 'on_other_mc_to_clone_to', 'reverse': '1'},
+             {'insertingMethod': 'on_groups_in_charge', 'reverse': '0'},
+             {'insertingMethod': 'on_categories', 'reverse': '0'})
             )
         cfg.setUseGroupsAsCategories(False)
         # let creators select the 'toDiscuss' value
@@ -267,24 +275,27 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         orderedItems = meeting.getItems(ordered=True)
         self.assertEquals(
             [(item.getProposingGroup(),
-              item.getToDiscuss(),
+              item.getProposingGroup(theObject=True).getGroupInChargeAt(meeting.getDate()).getId(),
               item.getOtherMeetingConfigsClonableTo(),
               item.getCategory()) for item in orderedItems],
-            [('zone-de-police', True, (), 'remboursement'),
-             ('zone-de-police', True, ('meeting-config-council',), 'affaires-juridiques'),
-             ('zone-de-police', True, ('meeting-config-council',), 'remboursement'),
-             ('zone-de-police', False, (), 'remboursement'),
-             ('zone-de-police', False, ('meeting-config-council',), 'affaires-juridiques'),
-             ('developers', True, (), 'remboursement'),
-             ('vendors', True, (), 'remboursement'),
-             ('developers', True, ('meeting-config-council',), 'affaires-juridiques'),
-             ('vendors', True, ('meeting-config-council',), 'affaires-juridiques'),
-             ('developers', True, ('meeting-config-council',), 'remboursement'),
-             ('vendors', True, ('meeting-config-council',), 'remboursement'),
-             ('developers', False, (), 'remboursement'),
-             ('vendors', False, (), 'remboursement'),
-             ('developers', False, ('meeting-config-council',), 'affaires-juridiques'),
-             ('vendors', False, ('meeting-config-council',), 'affaires-juridiques')]
+            [('zone-de-police', 'groupincharge1', (), 'remboursement'),
+             ('zone-de-police', 'groupincharge1', (), 'remboursement'),
+             ('zone-de-police', 'groupincharge1', ('meeting-config-council',), 'affaires-juridiques'),
+             ('zone-de-police', 'groupincharge1', ('meeting-config-council',), 'affaires-juridiques'),
+             ('zone-de-police', 'groupincharge1', ('meeting-config-council',), 'remboursement'),
+             ('vendors', 'groupincharge1', (), 'remboursement'),
+             ('vendors', 'groupincharge1', (), 'remboursement'),
+             ('developers', 'groupincharge2', (), 'remboursement'),
+             ('developers', 'groupincharge2', (), 'remboursement'),
+             ('vendors', 'groupincharge1', ('meeting-config-council',), 'affaires-juridiques'),
+             ('vendors', 'groupincharge1', ('meeting-config-council',), 'affaires-juridiques'),
+             ('vendors', 'groupincharge1', ('meeting-config-council',), 'remboursement'),
+             ('developers', 'groupincharge2', ('meeting-config-council',), 'affaires-juridiques'),
+             ('developers', 'groupincharge2', ('meeting-config-council',), 'affaires-juridiques'),
+             ('developers', 'groupincharge2', ('meeting-config-council',), 'remboursement'),
+             ('developers', 'groupincharge2', (), 'communication'),
+             ('developers', 'groupincharge2', (), 'communication'),
+             ('developers', 'groupincharge2', (), 'communication')]
             )
 
 

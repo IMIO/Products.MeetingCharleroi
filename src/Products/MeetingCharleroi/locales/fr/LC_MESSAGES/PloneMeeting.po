@@ -66,9 +66,9 @@ msgstr "En attente avis finances"
 msgid "no_finances_advice_asked"
 msgstr "L'avis des finances n'a pas été demandé sur ce point."
 
-#. Default: "First items of 'Police' then other groups items"
-msgid "on_police_then_other_groups"
-msgstr "Les points 'Zone de Police' puis les points des Services communaux"
+#. Default: "First items of 'Police' then other groups items then communications"
+msgid "on_police_then_other_groups_then_communications"
+msgstr "Points 'Zone de Police' puis points des Services communaux puis communications"
 
 #. Default: "Pre-validator"
 msgid "prereviewer"

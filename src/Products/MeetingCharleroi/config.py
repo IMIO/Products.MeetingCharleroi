@@ -67,7 +67,7 @@ setDefaultRoles(ReadDecision, ('Manager',))
 setDefaultRoles(WriteDecision, ('Manager',))
 
 STYLESHEETS = [{'id': 'meetingcharleroi.css',
-                'title': 'MeetingCharleroi CSS styles'}]
+                'title': "MeetingCharleroi CSS styles"}]
 
 # text about FD advice used in templates
 FINANCE_ADVICE_LEGAL_TEXT_PRE = "<p>Attendu la demande d'avis adressée sur "\
@@ -81,9 +81,11 @@ FINANCE_ADVICE_LEGAL_TEXT_NOT_GIVEN = "<p>Attendu l'absence d'avis du "\
     "Directeur financier rendu dans le délai prescrit à l'article L1124-40 "\
     "du Code de la démocratie locale et de la décentralisation,</p>"
 
-FINANCE_GROUP_ID = "dirfin"
+FINANCE_GROUP_ID = 'dirfin'
 
-POLICE_GROUP_ID = "zone-de-police"
+POLICE_GROUP_ID = 'zone-de-police'
+
+COMMUNICATION_CAT_ID = 'communication'
 
 CHARLEROI_ADVICE_STATES_ALIVE = ('advice_under_edit',
                                  'proposed_to_financial_controller',

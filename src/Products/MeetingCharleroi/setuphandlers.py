@@ -22,6 +22,7 @@ from Products.CMFPlone.utils import _createObjectByType
 from imio.helpers.catalog import addOrUpdateIndexes
 from Products.PloneMeeting.exportimport.content import ToolInitializer
 from Products.PloneMeeting.model.adaptations import performWorkflowAdaptations
+from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_ID
 from Products.MeetingCharleroi.config import PROJECTNAME
@@ -414,6 +415,25 @@ def _demoData(site, userId, firstTwoGroupIds):
          'proposingGroup': firstTwoGroupIds[0],
          'category': 'remboursement',
          'toDiscuss': False,
+         'otherMeetingConfigsClonableTo': ()},
+        # communication
+        {'templateId': 'template5',
+         'title': u'Communication 1',
+         'proposingGroup': firstTwoGroupIds[0],
+         'category': COMMUNICATION_CAT_ID,
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ()},
+        {'templateId': 'template5',
+         'title': u'Communication 2',
+         'proposingGroup': firstTwoGroupIds[0],
+         'category': COMMUNICATION_CAT_ID,
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ()},
+        {'templateId': 'template5',
+         'title': u'Communication 3',
+         'proposingGroup': firstTwoGroupIds[0],
+         'category': COMMUNICATION_CAT_ID,
+         'toDiscuss': True,
          'otherMeetingConfigsClonableTo': ()},
         # personnel
         {'templateId': 'template5',

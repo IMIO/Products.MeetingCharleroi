@@ -10,6 +10,7 @@ from Products.PloneMeeting.profiles import PloneMeetingConfiguration
 from Products.PloneMeeting.profiles import PodTemplateDescriptor
 from Products.PloneMeeting.profiles import RecurringItemDescriptor
 from Products.PloneMeeting.profiles import UserDescriptor
+from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_ID
 
 today = DateTime().strftime('%Y/%m/%d')
@@ -63,6 +64,9 @@ categories = [recurring,
               CategoryDescriptor('droit-constates',
                                  'Droits constatés',
                                  description='L’Echevin|E. Goffart'),
+              CategoryDescriptor(COMMUNICATION_CAT_ID,
+                                 'Communication',
+                                 description=''),
               ]
 
 # Pod templates ----------------------------------------------------------------
@@ -164,14 +168,27 @@ conseiller = UserDescriptor('conseiller', [], email="test@test.be", fullname="Co
 
 emetteuravisPers = UserDescriptor('emetteuravisPers', [], email="test@test.be", fullname="Emetteur avis Personnel")
 
-groups = [GroupDescriptor(POLICE_GROUP_ID, 'Zone de Police', 'ZPL'),
-          GroupDescriptor('dirgen', 'Directeur Général', 'DG'),
-          GroupDescriptor('secretariat', 'Secrétariat communal', 'Secr'),
-          GroupDescriptor('informatique', 'Service informatique', 'Info'),
-          GroupDescriptor('personnel', 'Service du personnel', 'Pers'),
-          GroupDescriptor('dirfin', 'Directeur Financier', 'DF'),
-          GroupDescriptor('comptabilite', 'Service comptabilité', 'Compt'),
-          GroupDescriptor('travaux', 'Service travaux', 'Trav')]
+groups = [GroupDescriptor(POLICE_GROUP_ID, 'Zone de Police', 'ZPL',
+                          groupInCharge=({'group_id': 'bourgmestre', 'date_to': ''},)),
+          GroupDescriptor('dirgen', 'Directeur Général', 'DG',
+                          groupInCharge=({'group_id': 'bourgmestre', 'date_to': ''},)),
+          GroupDescriptor('secretariat', 'Secrétariat communal', 'Secr',
+                          groupInCharge=({'group_id': 'bourgmestre', 'date_to': ''},)),
+          GroupDescriptor('personnel', 'Service du personnel', 'Pers',
+                          groupInCharge=({'group_id': 'echevin1', 'date_to': ''},)),
+          GroupDescriptor('informatique', 'Service informatique', 'Info',
+                          groupInCharge=({'group_id': 'echevin2', 'date_to': ''},)),
+          GroupDescriptor('dirfin', 'Directeur Financier', 'DF',
+                          groupInCharge=({'group_id': 'echevin2', 'date_to': ''},)),
+          GroupDescriptor('comptabilite', 'Service comptabilité', 'Compt',
+                          groupInCharge=({'group_id': 'echevin2', 'date_to': ''},)),
+          GroupDescriptor('travaux', 'Service travaux', 'Trav',
+                          groupInCharge=({'group_id': 'echevin3', 'date_to': ''},)),
+          GroupDescriptor('bourgmestre', 'Bourgmestre', 'BG'),
+          GroupDescriptor('echevin1', 'Echevin 1', 'Ech1'),
+          GroupDescriptor('echevin2', 'Echevin 2', 'Ech2'),
+          GroupDescriptor('echevin3', 'Echevin 3', 'Ech3'),
+          ]
 
 # MeetingManager
 groups[0].creators.append(dgen)
@@ -331,10 +348,10 @@ collegeMeeting.transitionsToConfirm = ['MeetingItem.delay', ]
 collegeMeeting.meetingTopicStates = ('created', 'frozen')
 collegeMeeting.decisionTopicStates = ('decided', 'closed')
 collegeMeeting.enforceAdviceMandatoriness = False
-collegeMeeting.insertingMethodsOnAddItem = (
-    {'insertingMethod': 'on_police_then_other_groups', 'reverse': '0'},
-    {'insertingMethod': 'on_to_discuss', 'reverse': '0'},
+collegeMeeting.insertingMethodsOnAddItem =(
+    {'insertingMethod': 'on_police_then_other_groups_then_communications', 'reverse': '0'},
     {'insertingMethod': 'on_other_mc_to_clone_to', 'reverse': '1'},
+    {'insertingMethod': 'on_groups_in_charge', 'reverse': '0'},
     {'insertingMethod': 'on_categories', 'reverse': '0'})
 collegeMeeting.useGroupsAsCategories = False
 collegeMeeting.toDiscussSetOnItemInsert = False

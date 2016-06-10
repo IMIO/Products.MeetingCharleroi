@@ -152,12 +152,27 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         self.create('MeetingGroup',
                     id=POLICE_GROUP_ID,
                     title="Zone de Police", acronym='ZPL')
+        self.create('MeetingGroup',
+                    id='groupincharge1',
+                    title="Group in charge 1", acronym='GIC1')
+        self.create('MeetingGroup',
+                    id='groupincharge2',
+                    title="Group in charge 2", acronym='GIC2')
         # police is added at the end of existing groups
         self.assertEquals(self.tool.objectIds('MeetingGroup'), ['developers',
                                                                 'vendors',
                                                                 # disabled
                                                                 'endUsers',
-                                                                POLICE_GROUP_ID])
+                                                                POLICE_GROUP_ID,
+                                                                'groupincharge1',
+                                                                'groupincharge2'])
+        # set groupsInCharge for 'vendors' and 'developers'
+        self.tool.get(POLICE_GROUP_ID).setGroupInCharge(
+            ({'date_to': '', 'group_id': 'groupincharge1', 'orderindex_': '1'},))
+        self.tool.vendors.setGroupInCharge(
+            ({'date_to': '', 'group_id': 'groupincharge1', 'orderindex_': '1'},))
+        self.tool.developers.setGroupInCharge(
+            ({'date_to': '', 'group_id': 'groupincharge2', 'orderindex_': '1'},))
         # make 'pmManager' able to manage everything for 'vendors' and 'police'
         groupsTool = self.portal.portal_groups
         for groupId in ('vendors', POLICE_GROUP_ID):

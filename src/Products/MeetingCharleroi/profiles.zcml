@@ -20,7 +20,7 @@
 
   <genericsetup:registerProfile
    name="zcharleroi"
-   title="PloneMeeting / Charleroi with french examples"
+   title="PloneMeeting / Demo profile for Charleroi with french examples"
    directory="profiles/zcharleroi"
    description="PloneMeeting for City of Charleroi (Belgium)"
    provides="Products.GenericSetup.interfaces.EXTENSION"

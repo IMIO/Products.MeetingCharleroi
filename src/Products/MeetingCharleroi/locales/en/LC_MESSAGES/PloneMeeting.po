@@ -20,54 +20,54 @@ msgstr ""
 
 #. Default: "Category"
 msgid "MeetingCharleroi_label_advice_category"
-msgstr ""
+msgstr "Category"
 
 #. Default: "Motivation categories"
 msgid "MeetingCharleroi_label_advice_motivation_categories"
-msgstr ""
+msgstr "Motivation categories"
 
 #. Default: "The completeness has been asked again by the application when the item has been proposed to the finances."
 msgid "completeness_asked_again_by_app"
-msgstr ""
+msgstr "The completeness has been asked again by the application when the item has been proposed to the finances."
 
 #. Default: "Advice is still not giveable because item is not considered complete."
 msgid "finance_advice_not_giveable_because_item_not_complete"
-msgstr ""
+msgstr "Advice is still not giveable because item is not considered complete."
 
 #. Default: "Advice is suspended because it was sent back to proposing group."
 msgid "finance_advice_suspended_because_item_sent_back_to_proposing_group"
-msgstr ""
+msgstr "Advice is suspended because it was sent back to proposing group."
 
 #. Default: "Financial controllers"
 msgid "financialcontrollers"
-msgstr ""
+msgstr "Financial controllers"
 
 #. Default: "Financial managers"
 msgid "financialmanagers"
-msgstr ""
+msgstr "Financial managers"
 
 #. Default: "Financial reviewers"
 msgid "financialreviewers"
-msgstr ""
+msgstr "Financial reviewers"
 
 #. Default: "Pre-validated"
 msgid "icon_help_prevalidated"
-msgstr ""
+msgstr "Pre-validated"
 
 #. Default: "Proposed to admin referent"
 msgid "icon_help_proposed_to_refadmin"
-msgstr ""
+msgstr "Proposed to admin referent"
 
 #. Default: "Waiting finances advice"
 msgid "icon_help_waiting_advices_from_prevalidated"
-msgstr ""
+msgstr "Waiting finances advice"
 
 #. Default: "The finances advice has not been selected on this item."
 msgid "no_finances_advice_asked"
-msgstr ""
+msgstr "The finances advice has not been selected on this item."
 
-#. Default: "First items of 'Police' then other groups items"
-msgid "on_police_then_other_groups"
+#. Default: "First items of 'Police' then other groups items then communications"
+msgid "on_police_then_other_groups_then_communications"
 msgstr ""
 
 #. Default: "Pre-validator"

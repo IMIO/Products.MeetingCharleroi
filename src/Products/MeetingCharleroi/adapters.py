@@ -58,6 +58,7 @@ from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCouncilWorkflo
 from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCouncilWorkflowConditions
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowActions
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowConditions
+from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import FINANCE_ADVICE_LEGAL_TEXT_PRE
 from Products.MeetingCharleroi.config import FINANCE_ADVICE_LEGAL_TEXT
 from Products.MeetingCharleroi.config import FINANCE_ADVICE_LEGAL_TEXT_NOT_GIVEN
@@ -132,9 +133,11 @@ class CustomCharleroiMeeting(CustomMeeting):
         for groupedItems in itemsList:
             filteredItems = [groupedItems[0]]
             if meetingConfigId == '':
-                filteredItems += [item for item in groupedItems[1:] if not item.getOtherMeetingConfigsClonableTo()]
+                filteredItems += [item for item in groupedItems[1:]
+                                  if not item.getOtherMeetingConfigsClonableTo()]
             else:
-                filteredItems += [item for item in groupedItems[1:] if meetingConfigId in item.getOtherMeetingConfigsClonableTo()]
+                filteredItems += [item for item in groupedItems[1:]
+                                  if meetingConfigId in item.getOtherMeetingConfigsClonableTo()]
 
             # if there is no item, do not keep the proposing group.
             if len(filteredItems) > 1:
@@ -171,7 +174,8 @@ class CustomCharleroiMeeting(CustomMeeting):
         groupedStandardItems = []
         for groupedItems in everyItems:
             standardItems = [groupedItems[0]]
-            standardItems += [item for item in groupedItems[1:] if item.getProposingGroup()!='zone-de-police']
+            standardItems += [item for item in groupedItems[1:]
+                              if item.getProposingGroup() != 'zone-de-police']
 
             # if there is no item, do not keep the proposing group.
             if len(standardItems) > 1:
@@ -192,7 +196,7 @@ class CustomCharleroiMeeting(CustomMeeting):
             Get items which are not from the group Police, not to discuss
             and supposed to go to council.
         '''
-        standardItems =self._getStandardItems(itemUids, toDiscuss=True, listTypes=listTypes)
+        standardItems = self._getStandardItems(itemUids, toDiscuss=True, listTypes=listTypes)
 
         return self._getItemsHeadedToAnotherMeetingConfig(standardItems, 'meeting-config-council')
 
@@ -232,10 +236,18 @@ class CustomCharleroiMeeting(CustomMeeting):
                 return 'The itemType given to getPrintableItemsForAgenda '\
                        'must be prescriptive, toCouncil or communication'
 
-    def getRepresentativeForAgenda(self, sublst, itemUids, standard=True, itemType='prescriptive', listTypes=['normal']):
+    def getRepresentativeForAgenda(self,
+                                   sublst,
+                                   itemUids,
+                                   standard=True,
+                                   itemType='prescriptive',
+                                   listTypes=['normal']):
         '''Checks if the given category is the same than the previous one. Return none if so and the new one if not.'''
         previousCat = ''
-        for sublist in self.getPrintableItemsForAgenda(itemUids, standard=standard, itemType=itemType, listTypes=listTypes):
+        for sublist in self.getPrintableItemsForAgenda(itemUids,
+                                                       standard=standard,
+                                                       itemType=itemType,
+                                                       listTypes=listTypes):
             if sublist == sublst:
                 if sublist[0].Description() != previousCat:
                     return sublist[0].Description()
@@ -393,17 +405,19 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         return True
 
     def _findCustomOneLevelFor(self, insertMethod):
-        '''Manage our custom inserting method 'on_police_then_other_groups'.'''
-        if insertMethod == 'on_police_then_other_groups':
-            return 2
+        '''Manage our custom inserting method 'on_police_then_other_groups_then_communications'.'''
+        if insertMethod == 'on_police_then_other_groups_then_communications':
+            return 3
         raise NotImplementedError
 
     def _findCustomOrderFor(self, insertMethod):
-        '''Manage our custom inserting method 'on_police_then_other_groups'.'''
+        '''Manage our custom inserting method 'on_police_then_other_groups_then_communications'.'''
         item = self.getSelf()
-        if insertMethod == 'on_police_then_other_groups':
+        if insertMethod == 'on_police_then_other_groups_then_communications':
             if item.getProposingGroup() == POLICE_GROUP_ID:
                 return 0
+            elif item.getCategory() == COMMUNICATION_CAT_ID:
+                return 2
             else:
                 return 1
         raise NotImplementedError
@@ -436,7 +450,7 @@ class CustomCharleroiMeetingConfig(CustomMeetingConfig):
 
     def extraInsertingMethods(self):
         '''See doc in interfaces.py.'''
-        return ['on_police_then_other_groups']
+        return ['on_police_then_other_groups_then_communications']
 
 
 class MeetingCharleroiCollegeWorkflowActions(MeetingCollegeWorkflowActions):
