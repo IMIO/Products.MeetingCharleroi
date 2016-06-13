@@ -26,6 +26,14 @@ msgstr ""
 msgid "MeetingCharleroi_label_advice_motivation_categories"
 msgstr ""
 
+#. Default: "Item presentation"
+msgid "PloneMeeting_label_detailedDescription"
+msgstr ""
+
+#. Default: "Item abstract"
+msgid "PloneMeeting_label_itemDescription"
+msgstr ""
+
 #. Default: "The completeness has been asked again by the application when the item has been proposed to the finances."
 msgid "completeness_asked_again_by_app"
 msgstr ""

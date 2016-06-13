@@ -220,11 +220,11 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
                                                                           standard=False,
                                                                           itemType='communication')[0]), 2)
 
-    def test_pm_InsertItemOnPoliceThenOtherGroups(self):
-        '''Test inserting an item using the "on_police_then_other_groups" sorting method.'''
+    def test_pm_InsertItemOnPoliceThenOtherGroupsThenCommunications(self):
+        '''Test inserting an item using the "on_police_then_other_groups_then_communications" sorting method.'''
         self._setupPoliceGroup()
         self.meetingConfig.setInsertingMethodsOnAddItem(
-            ({'insertingMethod': 'on_police_then_other_groups',
+            ({'insertingMethod': 'on_police_then_other_groups_then_communications',
               'reverse': '0'}, ))
 
         self.changeUser('pmManager')

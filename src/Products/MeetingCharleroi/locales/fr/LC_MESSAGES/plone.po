@@ -50,6 +50,10 @@ msgstr "Renvoyer au référent administratif"
 msgid "backTo_prevalidated_from_waiting_advices"
 msgstr "Renvoyer au directeur"
 
+#. Default: "Back to 'proposed'"
+msgid "backTo_proposed_from_waiting_advices"
+msgstr "Remettre en 'Proposé au chef de service'"
+
 #. Default: "Back to 'proposed to refadmin'"
 msgid "backTo_proposed_to_refadmin_from_waiting_advices"
 msgstr "Renvoyer au référent administratif"
@@ -85,6 +89,10 @@ msgstr "Proposé au chef de service"
 #. Default: "Proposed to admin referent"
 msgid "proposed_to_refadmin"
 msgstr "Proposé au référent administratif"
+
+#. Default: "Waiting advices (proposed)"
+msgid "proposed_waiting_advices"
+msgstr "En attente des avis (Proposé au chef de service)"
 
 #. Default: "Ask finances advices"
 msgid "wait_advices_from_prevalidated"

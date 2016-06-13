@@ -86,3 +86,11 @@ msgstr ""
 #. Default: "Waiting finances advices"
 msgid "prevalidated_waiting_advices"
 msgstr ""
+
+#. Default: "Waiting advices (proposed)"
+msgid "proposed_waiting_advices"
+msgstr ""
+
+#. Default: "Back to 'proposed'"
+msgid "backTo_proposed_from_waiting_advices"
+msgstr ""

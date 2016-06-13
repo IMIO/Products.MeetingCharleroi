@@ -109,3 +109,11 @@ msgstr ""
 #. Default: "First items of 'Police' then other groups items then communications"
 msgid "on_police_then_other_groups_then_communications"
 msgstr ""
+
+#. Default: "Item abstract"
+msgid "PloneMeeting_label_itemDescription"
+msgstr ""
+
+#. Default: "Item presentation"
+msgid "PloneMeeting_label_detailedDescription"
+msgstr ""

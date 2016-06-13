@@ -47,6 +47,10 @@ msgstr ""
 msgid "backTo_prevalidated_from_waiting_advices"
 msgstr ""
 
+#. Default: "Back to 'proposed'"
+msgid "backTo_proposed_from_waiting_advices"
+msgstr ""
+
 #. Default: "Back to 'proposed to refadmin'"
 msgid "backTo_proposed_to_refadmin_from_waiting_advices"
 msgstr ""
@@ -81,6 +85,10 @@ msgstr ""
 
 #. Default: "Proposed to admin referent"
 msgid "proposed_to_refadmin"
+msgstr ""
+
+#. Default: "Waiting advices (proposed)"
+msgid "proposed_waiting_advices"
 msgstr ""
 
 #. Default: "Ask finances advices"
