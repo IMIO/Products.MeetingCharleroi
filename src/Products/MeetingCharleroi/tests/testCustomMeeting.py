@@ -24,6 +24,7 @@
 
 from DateTime import DateTime
 from Products.MeetingCommunes.tests.testCustomMeeting import testCustomMeeting as mctcm
+from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_ID
 from Products.MeetingCharleroi.setuphandlers import _demoData
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
@@ -220,11 +221,11 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
                                                                           standard=False,
                                                                           itemType='communication')[0]), 2)
 
-    def test_pm_InsertItemOnPoliceThenOtherGroupsThenCommunications(self):
-        '''Test inserting an item using the "on_police_then_other_groups_then_communications" sorting method.'''
+    def test_pm_InsertItemOnPoliceThenOtherGroups(self):
+        '''Test inserting an item using the "on_police_then_other_groups" sorting method.'''
         self._setupPoliceGroup()
         self.meetingConfig.setInsertingMethodsOnAddItem(
-            ({'insertingMethod': 'on_police_then_other_groups_then_communications',
+            ({'insertingMethod': 'on_police_then_other_groups',
               'reverse': '0'}, ))
 
         self.changeUser('pmManager')
@@ -250,53 +251,95 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
                            'developers', 'developers', 'developers',
                            'vendors', 'vendors'])
 
+    def test_pm_InsertItemOnCommunication(self):
+        '''Test inserting an item using the "on_communication" sorting method.'''
+        self._setupPoliceGroup()
+        cfg = self.meetingConfig
+        cfg.setInsertingMethodsOnAddItem(
+            ({'insertingMethod': 'on_communication',
+              'reverse': '0'}, ))
+        cfg.setUseGroupsAsCategories(False)
+
+        self.changeUser('pmManager')
+        # create items with various categories
+        itemDev1 = self.create('MeetingItem', category='deployment')
+        itemDev2 = self.create('MeetingItem', category='deployment')
+        itemDev3 = self.create('MeetingItem', category=COMMUNICATION_CAT_ID)
+        itemVen1 = self.create('MeetingItem', proposingGroup='vendors', category='development')
+        itemVen2 = self.create('MeetingItem', proposingGroup='vendors', category='deployment')
+        itemVen3 = self.create('MeetingItem', proposingGroup='vendors', category=COMMUNICATION_CAT_ID)
+        meeting = self.create('Meeting', date=DateTime())
+        for item in [itemDev1, itemDev2, itemDev3,
+                     itemVen1, itemVen2, itemVen3]:
+            self.presentItem(item)
+
+        orderedItems = meeting.getItems(ordered=True)
+        self.assertEquals([item.getCategory() for item in orderedItems],
+                          [COMMUNICATION_CAT_ID, COMMUNICATION_CAT_ID,
+                           'deployment', 'deployment', 'development', 'deployment'])
+
     def test_pm_FullInsertingProcess(self):
         '''Test inserting an item using the relevant inserting methods.'''
         self._setupPoliceGroup()
         cfg = self.meetingConfig
         cfg2 = self.meetingConfig2
         cfg2Id = cfg2.getId()
+
         cfg.setInsertingMethodsOnAddItem(
-            ({'insertingMethod': 'on_police_then_other_groups_then_communications', 'reverse': '0'},
+            ({'insertingMethod': 'on_police_then_other_groups', 'reverse': '0'},
+             {'insertingMethod': 'on_communication', 'reverse': '1'},
              {'insertingMethod': 'on_other_mc_to_clone_to', 'reverse': '1'},
+             {'insertingMethod': 'on_list_type', 'reverse': '0'},
              {'insertingMethod': 'on_groups_in_charge', 'reverse': '0'},
-             {'insertingMethod': 'on_categories', 'reverse': '0'})
-            )
+             {'insertingMethod': 'on_categories', 'reverse': '0'}))
+
         cfg.setUseGroupsAsCategories(False)
         # let creators select the 'toDiscuss' value
         cfg.setToDiscussSetOnItemInsert(False)
         cfg.setMeetingConfigsToCloneTo(({'meeting_config': '%s' % cfg2Id,
                                          'trigger_workflow_transitions_until': '__nothing__'},))
-        self.changeUser('pmManager')
 
         # create items and meetings using demo data
+        self.changeUser('pmManager')
         _demoData(self.portal, 'pmManager', ('developers', 'vendors'))
         meeting = cfg.getMeetingsAcceptingItems()[-3].getObject()
         orderedItems = meeting.getItems(ordered=True)
         self.assertEquals(
-            [(item.getProposingGroup(),
+            [(item.getListType(),
+              item.getProposingGroup(),
               item.getProposingGroup(theObject=True).getGroupInChargeAt(meeting.getDate()).getId(),
               item.getOtherMeetingConfigsClonableTo(),
               item.getCategory()) for item in orderedItems],
-            [('zone-de-police', 'groupincharge1', (), 'remboursement'),
-             ('zone-de-police', 'groupincharge1', (), 'remboursement'),
-             ('zone-de-police', 'groupincharge1', ('meeting-config-council',), 'affaires-juridiques'),
-             ('zone-de-police', 'groupincharge1', ('meeting-config-council',), 'affaires-juridiques'),
-             ('zone-de-police', 'groupincharge1', ('meeting-config-council',), 'remboursement'),
-             ('vendors', 'groupincharge1', (), 'remboursement'),
-             ('vendors', 'groupincharge1', (), 'remboursement'),
-             ('developers', 'groupincharge2', (), 'remboursement'),
-             ('developers', 'groupincharge2', (), 'remboursement'),
-             ('vendors', 'groupincharge1', ('meeting-config-council',), 'affaires-juridiques'),
-             ('vendors', 'groupincharge1', ('meeting-config-council',), 'affaires-juridiques'),
-             ('vendors', 'groupincharge1', ('meeting-config-council',), 'remboursement'),
-             ('developers', 'groupincharge2', ('meeting-config-council',), 'affaires-juridiques'),
-             ('developers', 'groupincharge2', ('meeting-config-council',), 'affaires-juridiques'),
-             ('developers', 'groupincharge2', ('meeting-config-council',), 'remboursement'),
-             ('developers', 'groupincharge2', (), 'communication'),
-             ('developers', 'groupincharge2', (), 'communication'),
-             ('developers', 'groupincharge2', (), 'communication')]
-            )
+            [('normal', 'zone-de-police', 'groupincharge1', (), 'remboursement'),
+             ('normal', 'zone-de-police', 'groupincharge1', (), 'remboursement'),
+             ('late', 'zone-de-police', 'groupincharge1', (), 'remboursement'),
+             ('late', 'zone-de-police', 'groupincharge1', (), 'remboursement'),
+             ('normal', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), 'affaires-juridiques'),
+             ('normal', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), 'affaires-juridiques'),
+             ('normal', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), 'remboursement'),
+             ('late', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), 'affaires-juridiques'),
+             ('late', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), 'affaires-juridiques'),
+             ('late', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), 'remboursement'),
+             ('normal', 'zone-de-police', 'groupincharge1', (), 'communication'),
+             ('normal', 'zone-de-police', 'groupincharge1', (), 'communication'),
+             ('normal', 'zone-de-police', 'groupincharge1', (), 'communication'),
+             ('normal', 'vendors', 'groupincharge1', (), 'remboursement'),
+             ('normal', 'vendors', 'groupincharge1', (), 'remboursement'),
+             ('normal', 'developers', 'groupincharge2', (), 'remboursement'),
+             ('normal', 'developers', 'groupincharge2', (), 'remboursement'),
+             ('late', 'vendors', 'groupincharge1', (), 'remboursement'),
+             ('late', 'vendors', 'groupincharge1', (), 'remboursement'),
+             ('normal', 'vendors', 'groupincharge1', ('meeting-config-council',), 'affaires-juridiques'),
+             ('normal', 'vendors', 'groupincharge1', ('meeting-config-council',), 'affaires-juridiques'),
+             ('normal', 'vendors', 'groupincharge1', ('meeting-config-council',), 'remboursement'),
+             ('normal', 'developers', 'groupincharge2', ('meeting-config-council',), 'affaires-juridiques'),
+             ('normal', 'developers', 'groupincharge2', ('meeting-config-council',), 'affaires-juridiques'),
+             ('normal', 'developers', 'groupincharge2', ('meeting-config-council',), 'remboursement'),
+             ('late', 'developers', 'groupincharge2', ('meeting-config-council',), 'affaires-juridiques'),
+             ('late', 'developers', 'groupincharge2', ('meeting-config-council',), 'remboursement'),
+             ('normal', 'developers', 'groupincharge2', (), 'communication'),
+             ('normal', 'developers', 'groupincharge2', (), 'communication'),
+             ('normal', 'developers', 'groupincharge2', (), 'communication')])
 
 
 def test_suite():

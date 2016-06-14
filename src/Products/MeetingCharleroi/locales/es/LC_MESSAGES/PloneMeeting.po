@@ -74,8 +74,12 @@ msgstr ""
 msgid "no_finances_advice_asked"
 msgstr ""
 
-#. Default: "First items of 'Police' then other groups items then communications"
-msgid "on_police_then_other_groups_then_communications"
+#. Default: "On 'Communication' (communication items then items that are not communications)"
+msgid "on_communication"
+msgstr ""
+
+#. Default: "First items of 'Police' then other groups items"
+msgid "on_police_then_other_groups"
 msgstr ""
 
 #. Default: "Pre-validator"

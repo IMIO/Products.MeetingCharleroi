@@ -325,9 +325,9 @@ collegeMeeting.usedItemAttributes = ['detailedDescription',
 collegeMeeting.usedMeetingAttributes = ['startDate', 'endDate', 'signatures', 'assembly', 'place', 'observations', ]
 collegeMeeting.recordMeetingHistoryStates = []
 collegeMeeting.itemsListVisibleColumns = ('Creator', 'CreationDate', 'review_state', 'getCategory',
-                                          'getProposingGroup', 'advices', 'toDiscuss', 'actions')
+                                          'proposing_group_acronym', 'advices', 'toDiscuss', 'actions')
 collegeMeeting.itemColumns = ('Creator', 'CreationDate', 'ModificationDate', 'review_state',
-                              'getCategory', 'getProposingGroup', 'advices', 'toDiscuss',
+                              'getCategory', 'proposing_group_acronym', 'advices', 'toDiscuss',
                               'getItemIsSigned', 'linkedMeetingDate', 'actions')
 collegeMeeting.xhtmlTransformFields = ('MeetingItem.description',
                                        'MeetingItem.detailedDescription',
@@ -349,9 +349,11 @@ collegeMeeting.transitionsToConfirm = ['MeetingItem.delay', ]
 collegeMeeting.meetingTopicStates = ('created', 'frozen')
 collegeMeeting.decisionTopicStates = ('decided', 'closed')
 collegeMeeting.enforceAdviceMandatoriness = False
-collegeMeeting.insertingMethodsOnAddItem =(
-    {'insertingMethod': 'on_police_then_other_groups_then_communications', 'reverse': '0'},
+collegeMeeting.insertingMethodsOnAddItem = (
+    {'insertingMethod': 'on_police_then_other_groups', 'reverse': '0'},
+    {'insertingMethod': 'on_communication', 'reverse': '1'},
     {'insertingMethod': 'on_other_mc_to_clone_to', 'reverse': '1'},
+    {'insertingMethod': 'on_list_type', 'reverse': '0'},
     {'insertingMethod': 'on_groups_in_charge', 'reverse': '0'},
     {'insertingMethod': 'on_categories', 'reverse': '0'})
 collegeMeeting.useGroupsAsCategories = False

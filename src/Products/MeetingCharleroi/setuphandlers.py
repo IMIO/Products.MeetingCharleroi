@@ -468,6 +468,24 @@ def _demoData(site, userId, firstTwoGroupIds):
          'otherMeetingConfigsClonableTo': ()},
         # police
         {'templateId': 'template5',
+         'title': u'Communication Police 1',
+         'proposingGroup': POLICE_GROUP_ID,
+         'category': COMMUNICATION_CAT_ID,
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ()},
+        {'templateId': 'template5',
+         'title': u'Communication Police 2',
+         'proposingGroup': POLICE_GROUP_ID,
+         'category': COMMUNICATION_CAT_ID,
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ()},
+        {'templateId': 'template5',
+         'title': u'Communication Police 3',
+         'proposingGroup': POLICE_GROUP_ID,
+         'category': COMMUNICATION_CAT_ID,
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ()},
+        {'templateId': 'template5',
          'title': u'Exemple point 11',
          'proposingGroup': POLICE_GROUP_ID,
          'category': 'affaires-juridiques',
@@ -496,24 +514,87 @@ def _demoData(site, userId, firstTwoGroupIds):
          'proposingGroup': POLICE_GROUP_ID,
          'category': 'remboursement',
          'toDiscuss': False,
+         'otherMeetingConfigsClonableTo': ()},)
+
+    lateItems = (
+        # dirgen
+        {'templateId': 'template5',
+         'title': u'Point urgent 1',
+         'proposingGroup': firstTwoGroupIds[0],
+         'category': 'affaires-juridiques',
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+        {'templateId': 'template5',
+         'title': u'Point urgent 2',
+         'proposingGroup': firstTwoGroupIds[0],
+         'category': 'remboursement',
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+        # police
+        {'templateId': 'template5',
+         'title': u'Point urgent Police 1',
+         'proposingGroup': POLICE_GROUP_ID,
+         'category': 'affaires-juridiques',
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+        {'templateId': 'template5',
+         'title': u'Point urgent Police 2',
+         'proposingGroup': POLICE_GROUP_ID,
+         'category': 'remboursement',
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+        {'templateId': 'template5',
+         'title': u'Point urgent Police 3',
+         'proposingGroup': POLICE_GROUP_ID,
+         'category': 'remboursement',
+         'toDiscuss': True,
+         'otherMeetingConfigsClonableTo': ()},
+        {'templateId': 'template5',
+         'title': u'Point urgent Police 4',
+         'proposingGroup': POLICE_GROUP_ID,
+         'category': 'affaires-juridiques',
+         'toDiscuss': False,
+         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+        {'templateId': 'template5',
+         'title': u'Point urgent Police 5',
+         'proposingGroup': POLICE_GROUP_ID,
+         'category': 'remboursement',
+         'toDiscuss': False,
+         'otherMeetingConfigsClonableTo': ()},
+        {'templateId': 'template5',
+         'title': u'Exemple point 5',
+         'proposingGroup': firstTwoGroupIds[1],
+         'category': 'remboursement',
+         'toDiscuss': False,
+         'otherMeetingConfigsClonableTo': ()},
+        {'templateId': 'template5',
+         'title': u'Exemple point 5',
+         'proposingGroup': firstTwoGroupIds[1],
+         'category': 'remboursement',
+         'toDiscuss': False,
          'otherMeetingConfigsClonableTo': ()},
         )
 
     userFolder = tool.getPloneMeetingFolder(cfg.getId(), userId)
     wfTool = api.portal.get_tool('portal_workflow')
-    for item in items:
-        # get the template then clone it
-        template = getattr(tool.getMeetingConfig(userFolder).itemtemplates, item['templateId'])
-        newItem = template.clone(newOwnerId=userId,
-                                 destFolder=userFolder,
-                                 newPortalType=cfg.getItemTypeName())
-        newItem.setTitle(item['title'])
-        newItem.setProposingGroup(item['proposingGroup'])
-        newItem.setCategory(item['category'])
-        newItem.setToDiscuss(item['toDiscuss'])
-        newItem.setOtherMeetingConfigsClonableTo(item['otherMeetingConfigsClonableTo'])
-        newItem.setPreferredMeeting(meetingForItems.UID())
-        newItem.reindexObject()
-        site.REQUEST['PUBLISHED'] = meetingForItems
-        for transition in cfg.getTransitionsForPresentingAnItem():
-            wfTool.doActionFor(newItem, transition)
+
+    for state in ('normal', 'late'):
+        if state == 'late':
+            wfTool.doActionFor(meetingForItems, 'freeze')
+            items = lateItems
+        for item in items:
+            # get the template then clone it
+            template = getattr(tool.getMeetingConfig(userFolder).itemtemplates, item['templateId'])
+            newItem = template.clone(newOwnerId=userId,
+                                     destFolder=userFolder,
+                                     newPortalType=cfg.getItemTypeName())
+            newItem.setTitle(item['title'])
+            newItem.setProposingGroup(item['proposingGroup'])
+            newItem.setCategory(item['category'])
+            newItem.setToDiscuss(item['toDiscuss'])
+            newItem.setOtherMeetingConfigsClonableTo(item['otherMeetingConfigsClonableTo'])
+            newItem.setPreferredMeeting(meetingForItems.UID())
+            newItem.reindexObject()
+            site.REQUEST['PUBLISHED'] = meetingForItems
+            for transition in cfg.getTransitionsForPresentingAnItem():
+                wfTool.doActionFor(newItem, transition)

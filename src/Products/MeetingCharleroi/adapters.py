@@ -405,19 +405,25 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         return True
 
     def _findCustomOneLevelFor(self, insertMethod):
-        '''Manage our custom inserting method 'on_police_then_other_groups_then_communications'.'''
-        if insertMethod == 'on_police_then_other_groups_then_communications':
-            return 3
+        '''Manage our custom inserting method 'on_police_then_other_groups'.'''
+        if insertMethod == 'on_police_then_other_groups':
+            return 2
+        if insertMethod == 'on_communication':
+            return 2
         raise NotImplementedError
 
     def _findCustomOrderFor(self, insertMethod):
-        '''Manage our custom inserting method 'on_police_then_other_groups_then_communications'.'''
+        '''Manage our custom inserting methods 'on_communication'
+           and 'on_police_then_other_groups'.'''
         item = self.getSelf()
-        if insertMethod == 'on_police_then_other_groups_then_communications':
+        if insertMethod == 'on_police_then_other_groups':
             if item.getProposingGroup() == POLICE_GROUP_ID:
                 return 0
-            elif item.getCategory() == COMMUNICATION_CAT_ID:
-                return 2
+            else:
+                return 1
+        elif insertMethod == 'on_communication':
+            if item.getCategory() == COMMUNICATION_CAT_ID:
+                return 0
             else:
                 return 1
         raise NotImplementedError
@@ -450,7 +456,7 @@ class CustomCharleroiMeetingConfig(CustomMeetingConfig):
 
     def extraInsertingMethods(self):
         '''See doc in interfaces.py.'''
-        return ['on_police_then_other_groups_then_communications']
+        return ['on_communication', 'on_police_then_other_groups']
 
 
 class MeetingCharleroiCollegeWorkflowActions(MeetingCollegeWorkflowActions):
