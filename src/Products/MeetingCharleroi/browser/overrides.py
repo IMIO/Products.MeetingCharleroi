@@ -43,10 +43,10 @@ class MCHItemDocumentGenerationHelperView(ItemDocumentGenerationHelperView):
         body += self.context.getObservations() and self.context.getObservations() or ''
         return body
 
-    def returnFormatedItemType(self):
-        """return type of item : NORMATIF - CONSEIL - COMMUNICATION - ENVOI TUTELLE"""
+    def printFormatedItemType(self):
+        """print type of item : NORMATIF - CONSEIL - COMMUNICATION - ENVOI TUTELLE"""
         item = self.context
-        body = ""
+        body = '<p style="text-align: center;">'
         if item.getOtherMeetingConfigsClonableTo():
             body += '<s>NORMATIF</s> - CONSEIL'
         else:
@@ -59,6 +59,7 @@ class MCHItemDocumentGenerationHelperView(ItemDocumentGenerationHelperView):
             body += ' - ENVOI TUTELLE'
         else:
             body += ' - <s>ENVOI TUTELLE</s>'
+        body += '</p>'
         return body
 
 
