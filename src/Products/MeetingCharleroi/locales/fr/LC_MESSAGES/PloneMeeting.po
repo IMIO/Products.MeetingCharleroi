@@ -26,6 +26,10 @@ msgstr "Catégorie"
 msgid "MeetingCharleroi_label_advice_motivation_categories"
 msgstr "Catégories de la motivation"
 
+#. Default: "Assembly for Police"
+msgid "PloneMeeting_label_assemblyPolice"
+msgstr "Présents pour la Zone de Police"
+
 #. Default: "Item presentation"
 msgid "PloneMeeting_label_detailedDescription"
 msgstr "Exposé du point"
@@ -107,8 +111,7 @@ msgstr "Points proposés au référent administratif"
 msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice"
 msgstr "Un point a été automatiquement renvoyé aux référents administratifs parce que l'avis finances signé n'était pas 'Favorable'"
 
-#. Default: "An item was automatically sent back to the administrative referent because it was signed with an advice that was not positive"
-#, fuzzy
+#. Default: "The item is entitled '${itemTitle}'. You can access it here: ${objectUrl}."
 msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_body"
 msgstr "Le titre du point est '${itemTitle}'. Vous pouvez y accéder ici: ${objectUrl}."
 

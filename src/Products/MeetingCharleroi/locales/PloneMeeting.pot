@@ -102,7 +102,6 @@ msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_subject"
 msgstr ""
 
 #. Default: "The item is entitled '${itemTitle}'. You can access it here: ${objectUrl}."
-#. Default: "An item was automatically sent back to the administrative referent because it was signed with an advice that was not positive"
 msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_body"
 msgstr ""
 
@@ -120,4 +119,8 @@ msgstr ""
 
 #. Default: "Item presentation"
 msgid "PloneMeeting_label_detailedDescription"
+msgstr ""
+
+#. Default: "Assembly for Police"
+msgid "PloneMeeting_label_assemblyPolice"
 msgstr ""

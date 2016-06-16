@@ -24,4 +24,13 @@
         name="document_generation_helper_view"
      />
 
+    <!-- before faceted infos on the meeting_view -->
+    <browser:page
+      for="Products.PloneMeeting.interfaces.IMeeting"
+      name="meeting-before-faceted-infos"
+      template="browser/templates/meeting_before_faceted_infos.pt"
+      class=".browser.overrides.MCHMeetingBeforeFacetedInfosView"
+      permission="zope2.View"
+      />
+
 </configure>

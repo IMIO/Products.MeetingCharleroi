@@ -8,6 +8,7 @@
 #
 
 from plone.indexer import indexer
+from Products.PluginIndexes.common.UnIndex import _marker
 from Products.PloneMeeting.interfaces import IMeetingItem
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 
@@ -19,6 +20,6 @@ def financesAdviceCategory(item):
     """
     advice = item.getAdviceObj(FINANCE_GROUP_ID)
     if not advice:
-        return []
+        return _marker
     else:
         return advice.advice_category

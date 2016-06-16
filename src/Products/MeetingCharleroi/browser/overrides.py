@@ -10,7 +10,12 @@
 from plone import api
 from Products.PloneMeeting.browser.views import ItemDocumentGenerationHelperView
 from Products.PloneMeeting.browser.views import FolderDocumentGenerationHelperView
+from Products.PloneMeeting.browser.views import MeetingBeforeFacetedInfosView
 from Products.PloneMeeting.utils import getLastEvent
+
+
+class MCHMeetingBeforeFacetedInfosView(MeetingBeforeFacetedInfosView):
+    """ """
 
 
 class MCHItemDocumentGenerationHelperView(ItemDocumentGenerationHelperView):

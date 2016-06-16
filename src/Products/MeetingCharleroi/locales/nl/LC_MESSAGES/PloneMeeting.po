@@ -23,6 +23,10 @@ msgstr ""
 msgid "MeetingCharleroi_label_advice_motivation_categories"
 msgstr ""
 
+#. Default: "Assembly for Police"
+msgid "PloneMeeting_label_assemblyPolice"
+msgstr ""
+
 #. Default: "Item presentation"
 msgid "PloneMeeting_label_detailedDescription"
 msgstr ""
@@ -104,7 +108,7 @@ msgstr ""
 msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice"
 msgstr ""
 
-#. Default: "An item was automatically sent back to the administrative referent because it was signed with an advice that was not positive"
+#. Default: "The item is entitled '${itemTitle}'. You can access it here: ${objectUrl}."
 msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_body"
 msgstr ""
 

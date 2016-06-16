@@ -322,7 +322,15 @@ collegeMeeting.usedItemAttributes = ['detailedDescription',
                                      'otherMeetingConfigsClonableToPrivacy',
                                      'itemAssembly',
                                      'itemIsSigned', ]
-collegeMeeting.usedMeetingAttributes = ['startDate', 'endDate', 'signatures', 'assembly', 'place', 'observations', ]
+collegeMeeting.usedMeetingAttributes = ['startDate',
+                                        'endDate',
+                                        'signatures',
+                                        'assembly',
+                                        'assemblyAbsents',
+                                        'assemblyGuests',
+                                        'assemblyStaves',
+                                        'place',
+                                        'observations', ]
 collegeMeeting.recordMeetingHistoryStates = []
 collegeMeeting.itemsListVisibleColumns = ('Creator', 'CreationDate', 'review_state', 'getCategory',
                                           'proposing_group_acronym', 'advices', 'toDiscuss', 'actions')
