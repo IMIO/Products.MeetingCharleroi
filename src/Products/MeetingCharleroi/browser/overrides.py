@@ -7,8 +7,10 @@
 # GNU General Public License (GPL)
 #
 
+from plone import api
 from Products.PloneMeeting.browser.views import ItemDocumentGenerationHelperView
 from Products.PloneMeeting.browser.views import FolderDocumentGenerationHelperView
+from Products.PloneMeeting.utils import getLastEvent
 
 
 class MCHItemDocumentGenerationHelperView(ItemDocumentGenerationHelperView):
@@ -61,6 +63,15 @@ class MCHItemDocumentGenerationHelperView(ItemDocumentGenerationHelperView):
             body += ' - <s>ENVOI TUTELLE</s>'
         body += '</p>'
         return body
+
+    def printLastEventFor(self, transition):
+        """print user who have the last action for this item"""
+        lastEvent = getLastEvent(self.context, transition=transition)
+        if lastEvent:
+            mTool = api.portal.get_tool('portal_membership')
+            return {'author': mTool.getMemberById(str(lastEvent['actor'])).getProperty('fullname'),
+                    'date': lastEvent['time'].strftime('%d/%m/%Y %H:%M')}
+        return ''
 
 
 class MCHMeetingDocumentGenerationHelperView(FolderDocumentGenerationHelperView):
