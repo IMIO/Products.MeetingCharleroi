@@ -308,6 +308,11 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
                'advice_type': u'negative_finance',
                'advice_comment': RichTextValue(u'My comment finances'),
                'advice_category': u'acquisitions'})
+
+        # a meetingadvicefinances will be automatically hidden during redaction
+        self.assertFalse(cfg.getDefaultAdviceHiddenDuringRedaction())
+        self.assertTrue(advice.advice_hide_during_redaction)
+
         # send item to finances reviewer
         self.assertEqual(self.transitions(advice), ['proposeToFinancialReviewer'])
         self.do(advice, 'proposeToFinancialReviewer')
@@ -327,6 +332,8 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # it will be automatically sent back to the refadmin
         self.do(advice, 'signFinancialAdvice')
         self.assertEquals(item.queryState(), 'proposed_to_refadmin')
+        # advice was automatically shown
+        self.assertFalse(advice.advice_hide_during_redaction)
 
         # sign the advice as 'positive_finance' it will be automatically 'validated'
         self.changeUser('pmReviewer1')
@@ -338,6 +345,8 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertEquals(advice.advice_type, 'asked_again')
         self.do(item, 'wait_advices_from_prevalidated')
         self.changeUser('pmFinController')
+        # advice was automatically hidden
+        self.assertTrue(advice.advice_hide_during_redaction)
         # delay is not started
         self.assertIsNone(item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'])
         self.assertEqual(item.getCompleteness(), 'completeness_evaluation_asked_again')
@@ -355,6 +364,8 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmFinManager')
         self.do(advice, 'signFinancialAdvice')
         self.assertEquals(item.queryState(), 'validated')
+        # advice was automatically shown
+        self.assertFalse(advice.advice_hide_during_redaction)
         # advice is no more editable/deletable by finances
         self.assertFalse(self.hasPermission(ModifyPortalContent, advice))
         self.assertFalse(self.hasPermission(DeleteObjects, advice))

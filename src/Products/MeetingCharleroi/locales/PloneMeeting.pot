@@ -29,10 +29,6 @@ msgstr ""
 msgid "icon_help_proposed_to_refadmin"
 msgstr ""
 
-#. Default: "Items to pre validate"
-msgid "searchitemstoprevalidate"
-msgstr ""
-
 #. Default: "Pre-validated"
 msgid "icon_help_prevalidated"
 msgstr ""

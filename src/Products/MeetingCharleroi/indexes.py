@@ -19,7 +19,6 @@ def financesAdviceCategory(item):
       Indexes the 'advice_category' field defined on the contained 'meetingadvicefinances'.
     """
     advice = item.getAdviceObj(FINANCE_GROUP_ID)
-    if not advice:
-        return _marker
-    else:
+    if advice and advice.advice_category:
         return advice.advice_category
+    return _marker

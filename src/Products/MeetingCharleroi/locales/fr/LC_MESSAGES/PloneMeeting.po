@@ -103,10 +103,6 @@ msgstr "Directeur"
 msgid "reviewers"
 msgstr "Directeurs"
 
-#. Default: "Items to pre validate"
-msgid "searchitemstoprevalidate"
-msgstr "Points proposés au référent administratif"
-
 #. Default: "An item was automatically sent back to the administrative referent because the signed finances advice was not positive"
 msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice"
 msgstr "Un point a été automatiquement renvoyé aux référents administratifs parce que l'avis finances signé n'était pas 'Favorable'"
