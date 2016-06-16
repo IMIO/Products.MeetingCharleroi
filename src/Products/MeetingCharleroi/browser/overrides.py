@@ -19,8 +19,6 @@ class MCHItemDocumentGenerationHelperView(ItemDocumentGenerationHelperView):
         body = self.context.getMotivation() and self.context.getMotivation() + '<p></p>' or ''
         if self.context.adapted().getLegalTextForFDAdvice():
             body += self.context.adapted().getLegalTextForFDAdvice() + '<p></p>'
-        representative = self.context.getCategory(theObject=True).Description().split('|')[1]
-        body += "<p>Sur proposition de %s <br/></p>" % representative
         body += "<p><strong>Décide:</strong> <br/></p>"
         body += self.context.getDecision() + '<p></p>'
         if self.context.getSendToAuthority():
