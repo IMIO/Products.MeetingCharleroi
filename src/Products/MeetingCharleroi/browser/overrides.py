@@ -43,6 +43,24 @@ class MCHItemDocumentGenerationHelperView(ItemDocumentGenerationHelperView):
         body += self.context.getObservations() and self.context.getObservations() or ''
         return body
 
+    def returnFormatedItemType(self):
+        """return type of item : NORMATIF - CONSEIL - COMMUNICATION - ENVOI TUTELLE"""
+        item = self.context
+        body = ""
+        if item.getOtherMeetingConfigsClonableTo():
+            body += '<s>NORMATIF</s> - CONSEIL'
+        else:
+            body += 'NORMATIF - <s>CONSEIL</s>'
+        if item.getCategory() == 'communication':
+            body += ' - COMMUNICATION'
+        else:
+            body += ' - <s>COMMUNICATION</s>'
+        if item.getSendToAuthority():
+            body += ' - ENVOI TUTELLE'
+        else:
+            body += ' - <s>ENVOI TUTELLE</s>'
+        return body
+
 
 class MCHMeetingDocumentGenerationHelperView(FolderDocumentGenerationHelperView):
     """Specific printing methods used for meeting."""
