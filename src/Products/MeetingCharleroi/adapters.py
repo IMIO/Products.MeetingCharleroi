@@ -549,6 +549,18 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
         """ """
         return self._mayWaitAdvices(self._getWaitingAdvicesStateFrom('proposed_to_refadmin'))
 
+    security.declarePublic('mayValidate')
+
+    def mayValidate(self):
+        res = MeetingItemCollegeWorkflowConditions.mayValidate(self)
+        if res:
+            # if finances advice is asked, item may only be validated
+            # if the advice have actually be given
+            if FINANCE_GROUP_ID in self.context.adviceIndex and \
+               not self.context.adviceIndex[FINANCE_GROUP_ID]['type'].endswith('_finance'):
+                res = False
+        return res
+
     security.declarePublic('mayCorrect')
 
     def mayCorrect(self, destinationState=None):

@@ -229,10 +229,16 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(item, 'prevalidate')
         self.assertFalse(self.transitions(item))
         self.changeUser('pmReviewer1')
+        # may only validate if no finances advice or finances advice is given
         self.assertEqual(self.transitions(item),
                          ['backToProposedToRefAdmin',
-                          'validate',
                           'wait_advices_from_prevalidated'])
+        # remove fact that finances advice was asked
+        item.setOptionalAdvisers(())
+        self.assertEqual(self.transitions(item),
+                         ['backToProposedToRefAdmin',
+                          'wait_advices_from_prevalidated'])
+        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
 
         # ask finances advice
         self.do(item, 'wait_advices_from_prevalidated')
@@ -242,6 +248,43 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertEqual(self.transitions(item),
                          ['backTo_prevalidated_from_waiting_advices',
                           'backTo_proposed_to_refadmin_from_waiting_advices'])
+        self.changeUser('pmReviewer1')
+        self.assertEquals(self.transitions(item), [])
+
+        # give advice positive with remarks
+        # finances advice WF is tested in test_CollegeFinancesAdviceWF
+        self.changeUser('pmFinController')
+        advice = createContentInContainer(
+            item,
+            'meetingadvicefinances',
+            **{'advice_group': FINANCE_GROUP_ID,
+               'advice_type': u'negative_finance',
+               'advice_comment': RichTextValue(u'My comment finances'),
+               'advice_category': u'acquisitions'})
+        self.do(advice, 'proposeToFinancialReviewer')
+        self.changeUser('pmFinReviewer')
+        self.do(advice, 'proposeToFinancialManager')
+        self.changeUser('pmFinManager')
+        self.do(advice, 'signFinancialAdvice')
+
+        # item was sent back to administrative referent
+        self.assertEquals(item.queryState(), 'proposed_to_refadmin')
+        # now if it goes to director, director is able to validate the item
+        self.changeUser('pmRefAdmin1')
+        self.do(item, 'prevalidate')
+        self.changeUser('pmReviewer1')
+        # now item may be validated but finances advice may not be asked
+        # anymore as it was already given
+        self.assertEqual(self.transitions(item),
+                         ['backToProposedToRefAdmin',
+                          'validate'])
+        # if finances advice is 'asked_again', it is giveable again
+        changeView = advice.restrictedTraverse('@@change-advice-asked-again')
+        changeView()
+        self.assertEquals(advice.advice_type, 'asked_again')
+        self.assertEqual(self.transitions(item),
+                         ['backToProposedToRefAdmin',
+                          'wait_advices_from_prevalidated'])
 
     def test_CollegeFinancesAdviceWF(self):
         '''Test the finances advice workflow.'''
