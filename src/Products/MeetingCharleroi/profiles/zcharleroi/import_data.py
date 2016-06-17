@@ -369,9 +369,10 @@ collegeMeeting.insertingMethodsOnAddItem = (
     {'insertingMethod': 'on_groups_in_charge', 'reverse': '0'},
     {'insertingMethod': 'on_categories', 'reverse': '0'})
 collegeMeeting.listTypes = DEFAULT_LIST_TYPES + \
-    [{'identifier': 'depose', 'label': u'Déposé', 'used_in_inserting_method': '0'},]
+    [{'identifier': 'depose', 'label': u'Déposé', 'used_in_inserting_method': '0'}]
 collegeMeeting.useGroupsAsCategories = False
-collegeMeeting.toDiscussSetOnItemInsert = False
+collegeMeeting.toDiscussSetOnItemInsert = True
+collegeMeeting.toDiscussDefault = False
 collegeMeeting.recordItemHistoryStates = []
 collegeMeeting.maxShownMeetings = 5
 collegeMeeting.maxDaysDecisions = 60
