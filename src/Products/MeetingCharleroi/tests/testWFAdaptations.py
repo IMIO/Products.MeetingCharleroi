@@ -100,7 +100,7 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
     def _userAbleToBackFromWaitingAdvices(self, currentState):
         """Return username able to back from waiting advices."""
         if currentState == 'prevalidated_waiting_advices':
-            return 'pmFinManager'
+            return 'pmManager'
         else:
             return super(testWFAdaptations, self)._userAbleToBackFromWaitingAdvices(currentState)
 
