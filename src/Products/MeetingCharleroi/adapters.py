@@ -187,6 +187,7 @@ class CustomCharleroiMeeting(CustomMeeting):
 
         filteredItems = self._getItemsHeadedToAnotherMeetingConfig(policeItems, '')
         return self._sortByGroupInCharge(filteredItems)
+
     def _getPoliceHeadedToCouncilItems(self, itemUids, listTypes=['normal']):
         """
         Get all items from the group "Police" which are not from the
@@ -622,6 +623,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
     def mayCorrect(self, destinationState=None):
         '''See docstring in interfaces.py'''
         res = MeetingItemCollegeWorkflowConditions(self.context).mayCorrect(destinationState)
+        tool = api.portal.get_tool('portal_plonemeeting')
         # if item is sent to finances, only finances advisers and MeetingManagers may send it back
         if self.context.queryState() == 'prevalidated_waiting_advices':
             res = False
@@ -629,11 +631,16 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
                 # in this case, we need the 'mayValidate' to True in the REQUEST
                 if self.context.REQUEST.get('mayValidate', False):
                     res = True
-            else:
-                member = api.user.get_current()
-                tool = api.portal.get_tool('portal_plonemeeting')
-                if tool.isManager(self.context) or \
-                   '{0}_advisers'.format(FINANCE_GROUP_ID) in member.getGroups():
+            elif destinationState == 'proposed_to_refadmin':
+                # when advice is not 'positive', it is sent back to ref admin
+                # in this case, we need the 'maybackTo_proposed_to_refadmin_from_waiting_advices'
+                # to True in the REQUEST
+                if self.context.REQUEST.get('maybackTo_proposed_to_refadmin_from_waiting_advices', False):
+                    res = True
+                elif tool.adapted().isFinancialUser() and \
+                    self.context.getCompleteness() in ('completeness_incomplete',
+                                                       'completeness_not_yet_evaluated',
+                                                       'completeness_evaluation_asked_again'):
                     res = True
         return res
 

@@ -23,13 +23,13 @@
 #
 
 from DateTime import DateTime
-from zope.i18n import translate
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from Products.CMFCore.permissions import DeleteObjects
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
+from zope.i18n import translate
 
 
 class testCustomWorkflows(MeetingCharleroiTestCase):
@@ -244,12 +244,19 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(item, 'wait_advices_from_prevalidated')
         # when item is sent to finances, even the reviewer may not change it's state
         self.assertFalse(self.transitions(item))
+        # item may be returned to RefAdmin if completeness not evaluated/incomplete
         self.changeUser('pmFinController')
-        self.assertEqual(self.transitions(item),
-                         ['backTo_prevalidated_from_waiting_advices',
-                          'backTo_proposed_to_refadmin_from_waiting_advices'])
-        self.changeUser('pmReviewer1')
-        self.assertEquals(self.transitions(item), [])
+        self.assertEqual(item.getCompleteness(), 'completeness_not_yet_evaluated')
+        self.assertEqual(self.transitions(item), ['backTo_proposed_to_refadmin_from_waiting_advices'])
+        changeCompleteness = item.restrictedTraverse('@@change-item-completeness')
+        self.request.set('new_completeness_value', 'completeness_incomplete')
+        self.request.form['form.submitted'] = True
+        changeCompleteness()
+        self.assertEqual(self.transitions(item), ['backTo_proposed_to_refadmin_from_waiting_advices'])
+        # once 'complete' item may not be returned to refAdmin anymore
+        self.request.set('new_completeness_value', 'completeness_complete')
+        changeCompleteness()
+        self.assertEqual(self.transitions(item), [])
 
         # give advice positive with remarks
         # finances advice WF is tested in test_CollegeFinancesAdviceWF
@@ -305,8 +312,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # advice may be added/edit when item is considered 'complete'
         self.changeUser('pmFinController')
         self.assertEqual(self.transitions(item),
-                         ['backTo_prevalidated_from_waiting_advices',
-                          'backTo_proposed_to_refadmin_from_waiting_advices'])
+                         ['backTo_proposed_to_refadmin_from_waiting_advices'])
         toAdd, toEdit = item.getAdvicesGroupsInfosForUser()
         self.assertFalse(toAdd or toEdit)
 
@@ -321,14 +327,15 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertEqual(item.getCompleteness(), 'completeness_incomplete')
         # can be sent back even if considered incomplete
         self.assertEqual(self.transitions(item),
-                         ['backTo_prevalidated_from_waiting_advices',
-                          'backTo_proposed_to_refadmin_from_waiting_advices'])
+                         ['backTo_proposed_to_refadmin_from_waiting_advices'])
         toAdd, toEdit = item.getAdvicesGroupsInfosForUser()
         self.assertFalse(toAdd or toEdit)
-        # back to reviewer
-        self.do(item, 'backTo_prevalidated_from_waiting_advices')
+        # back to refadmin
+        self.do(item, 'backTo_proposed_to_refadmin_from_waiting_advices')
 
         # now do item complete
+        self.changeUser('pmRefAdmin1')
+        self.do(item, 'prevalidate')
         self.changeUser('pmReviewer1')
         self.do(item, 'wait_advices_from_prevalidated')
         self.changeUser('pmFinController')

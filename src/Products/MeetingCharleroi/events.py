@@ -64,9 +64,11 @@ def onAdviceTransition(advice, event):
                                    comment='item_wf_changed_finance_advice_positive')
                 item.REQUEST.set('mayValidate', False)
             else:
+                item.REQUEST.set('maybackTo_proposed_to_refadmin_from_waiting_advices', True)
                 wfTool.doActionFor(item,
                                    'backTo_proposed_to_refadmin_from_waiting_advices',
                                    comment='item_wf_changed_finance_advice_not_positive')
+                item.REQUEST.set('maybackTo_proposed_to_refadmin_from_waiting_advices', False)
                 sendMailIfRelevant(item, 'sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice',
                                    'MeetingReviewer', isRole=True)
         else:
