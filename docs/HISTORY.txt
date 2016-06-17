@@ -9,4 +9,4 @@ Products.MeetingCharleroi Changelog
   and finances advisers
 - Added custom inserting order 'on_police_then_other_groups_then_communications'
 - Rely on inserting order 'on_groups_in_charge'
-
+- Added listType 'depose'

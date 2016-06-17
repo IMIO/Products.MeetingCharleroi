@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+
 from DateTime import DateTime
+
+from Products.PloneMeeting.config import DEFAULT_LIST_TYPES
 from Products.PloneMeeting.profiles import CategoryDescriptor
 from Products.PloneMeeting.profiles import GroupDescriptor
 from Products.PloneMeeting.profiles import ItemTemplateDescriptor
@@ -10,6 +13,7 @@ from Products.PloneMeeting.profiles import PloneMeetingConfiguration
 from Products.PloneMeeting.profiles import PodTemplateDescriptor
 from Products.PloneMeeting.profiles import RecurringItemDescriptor
 from Products.PloneMeeting.profiles import UserDescriptor
+
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_ID
 
@@ -364,6 +368,8 @@ collegeMeeting.insertingMethodsOnAddItem = (
     {'insertingMethod': 'on_list_type', 'reverse': '0'},
     {'insertingMethod': 'on_groups_in_charge', 'reverse': '0'},
     {'insertingMethod': 'on_categories', 'reverse': '0'})
+collegeMeeting.listTypes = DEFAULT_LIST_TYPES + \
+    [{'identifier': 'depose', 'label': u'Déposé', 'used_in_inserting_method': '0'},]
 collegeMeeting.useGroupsAsCategories = False
 collegeMeeting.toDiscussSetOnItemInsert = False
 collegeMeeting.recordItemHistoryStates = []
@@ -391,6 +397,8 @@ collegeMeeting.itemAdviceViewStates = ('itemcreated_waiting_advices',
 collegeMeeting.usedAdviceTypes = ('asked_again', 'positive', 'positive_with_remarks',
                                   'negative', 'nil', 'positive_finance', 'positive_with_remarks_finance',
                                   'cautious_finance', 'negative_finance', 'not_given_finance')
+collegeMeeting.transitionsReinitializingDelays = ('backTo_prevalidated_from_waiting_advices',
+                                                  'backTo_proposed_to_refadmin_from_waiting_advices')
 collegeMeeting.enableAdviceInvalidation = False
 collegeMeeting.itemAdviceInvalidateStates = []
 collegeMeeting.keepAccessToItemWhenAdviceIsGiven = False
