@@ -26,6 +26,7 @@ from Globals import InitializeClass
 from zope.interface import implements
 from zope.i18n import translate
 
+from collections import OrderedDict
 from plone import api
 
 from Products.CMFCore.permissions import ReviewPortalContent
@@ -112,10 +113,11 @@ class CustomCharleroiMeeting(CustomMeeting):
     def __init__(self, meeting):
         self.context = meeting
 
-    def _getPoliceItems(self, itemUids, toDiscuss=False, listTypes=['normal']):
+    def _getPoliceItems(self, itemUids, categories=[], excludedCategories=[], listTypes=['normal']):
         """Get all items from the group 'Police'."""
         policeItems = self.getPrintableItemsByCategory(itemUids,
-                                                       toDiscuss=toDiscuss,
+                                                       categories=categories,
+                                                       excludedCategories=excludedCategories,
                                                        listTypes=listTypes,
                                                        groupIds=['zone-de-police'])
         if policeItems:
@@ -144,33 +146,75 @@ class CustomCharleroiMeeting(CustomMeeting):
                 filteredGroupedItems.append(filteredItems)
         return filteredGroupedItems
 
+    def _sortByGroupInCharge(self, itemsList):
+        """
+        Sort the item list p_itemsList by group in charge and
+        return an ordered dict with group in charge as key and
+        an another ordered dict as value containing the item's
+        category as key and the list of all items having that
+        group in charge and that category as value.
+        """
+        groupsInChargeItems = OrderedDict()
+        for categorizedItems in itemsList:
+            for item in categorizedItems[1:]:
+                groupInCharge = item.getProposingGroup(theObject=True).getGroupInChargeAt(self.context.getDate())
+                # if we already have the group in charge in the dict.
+                if groupInCharge in groupsInChargeItems:
+                    # if we already have the category for that group in charge.
+                    if categorizedItems[0] in groupsInChargeItems[groupInCharge]:
+                        # add the item to the list of items for that category
+                        # and that group in charge.
+                        groupsInChargeItems[groupInCharge][categorizedItems[0]].append(item)
+                    else:
+                        # create the list with item in it
+                        groupsInChargeItems[groupInCharge][categorizedItems[0]] = [item]
+                else:
+                    # create the ordereddict for categ and add the list of
+                    # items of that categ in it.
+                    categDict = OrderedDict()
+                    categDict[categorizedItems[0]] = [item]
+                    groupsInChargeItems[groupInCharge] = categDict
+        return groupsInChargeItems
+
     def _getPolicePrescriptiveItems(self, itemUids, listTypes=['normal']):
         """
-        Get all items from the group "Police" which are not to discuss
-        and not supposed to go to Council.
+        Get all items from the group "Police" which are not from the
+        communication category and not supposed to go to Council.
         """
-        policeItems = self._getPoliceItems(itemUids, toDiscuss=True, listTypes=listTypes)
+        policeItems = self._getPoliceItems(itemUids,
+                                           excludedCategories=['communication'],
+                                           listTypes=listTypes)
 
-        return self._getItemsHeadedToAnotherMeetingConfig(policeItems, '')
-
+        filteredItems = self._getItemsHeadedToAnotherMeetingConfig(policeItems, '')
+        return self._sortByGroupInCharge(filteredItems)
     def _getPoliceHeadedToCouncilItems(self, itemUids, listTypes=['normal']):
         """
-        Get all items from the group "Police" which are not to discuss
-        and supposed to go to council.
+        Get all items from the group "Police" which are not from the
+        communication category and supposed to go to council.
         """
-        policeItems = self._getPoliceItems(itemUids, toDiscuss=True, listTypes=listTypes)
+        policeItems = self._getPoliceItems(itemUids,
+                                           excludedCategories=['communication'],
+                                           listTypes=listTypes)
 
-        return self._getItemsHeadedToAnotherMeetingConfig(policeItems, 'meeting-config-council')
+        filteredItems = self._getItemsHeadedToAnotherMeetingConfig(policeItems,
+                                                                   'meeting-config-council')
+        return self._sortByGroupInCharge(filteredItems)
 
     def _getPoliceCommunicationItems(self, itemUids, listTypes=['normal']):
-        """Get all items from the group "Police" which are to discuss."""
-        return self._getPoliceItems(itemUids, toDiscuss=False, listTypes=listTypes)
+        """
+        Get all items from the group "Police" which are from the
+        communication category.
+        """
+        return self._getPoliceItems(itemUids,
+                                    categories=['communication'],
+                                    listTypes=listTypes)
 
-    def _getStandardItems(self, itemUids, toDiscuss=False, listTypes=['normal']):
+    def _getStandardItems(self, itemUids, categories=[], excludedCategories=[], listTypes=['normal']):
         """Get all items, except those from the group 'Police'."""
         everyItems = self.getPrintableItemsByCategory(itemUids,
                                                       listTypes=listTypes,
-                                                      toDiscuss=toDiscuss)
+                                                      categories=categories,
+                                                      excludedCategories=excludedCategories)
         groupedStandardItems = []
         for groupedItems in everyItems:
             standardItems = [groupedItems[0]]
@@ -184,35 +228,47 @@ class CustomCharleroiMeeting(CustomMeeting):
 
     def _getStandardPrescriptiveItems(self, itemUids, listTypes=['normal']):
         '''
-            Get items which are not from the group Police and not to
-            discuss and not supposed to go to coucil.
+        Get items which are not from the group Police, not from the
+        communication category and not supposed to go to coucil.
         '''
-        standardItems = self._getStandardItems(itemUids, toDiscuss=True, listTypes=listTypes)
+        standardItems = self._getStandardItems(itemUids,
+                                               excludedCategories=['communication'],
+                                               listTypes=listTypes)
 
-        return self._getItemsHeadedToAnotherMeetingConfig(standardItems, '')
+        filteredItems = self._getItemsHeadedToAnotherMeetingConfig(standardItems, '')
+        return self._sortByGroupInCharge(filteredItems)
 
     def _getStandardHeadedToCouncilItems(self, itemUids, listTypes=['normal']):
         '''
-            Get items which are not from the group Police, not to discuss
-            and supposed to go to council.
+        Get items which are not from the group Police, not from the
+        communication category and supposed to go to council.
         '''
-        standardItems = self._getStandardItems(itemUids, toDiscuss=True, listTypes=listTypes)
+        standardItems = self._getStandardItems(itemUids,
+                                               excludedCategories=['communication'],
+                                               listTypes=listTypes)
 
-        return self._getItemsHeadedToAnotherMeetingConfig(standardItems, 'meeting-config-council')
+        filteredItems = self._getItemsHeadedToAnotherMeetingConfig(standardItems,
+                                                                   'meeting-config-council')
+        return self._sortByGroupInCharge(filteredItems)
 
     def _getStandardCommunicationItems(self, itemUids, listTypes=['normal']):
         '''
-        Get all items not from the group "Police" which are to discuss.
+        Get all items not from the group "Police" which are from the
+        communication category..
         '''
-        return self._getStandardItems(itemUids, toDiscuss=False, listTypes=listTypes)
+        return self._getStandardItems(itemUids,
+                                      categories=['communication'],
+                                      listTypes=listTypes)
 
     def getPrintableItemsForAgenda(self, itemUids, standard=True, itemType='prescriptive', listTypes=['normal']):
         '''
-        Return a list of items ordered by category. Items are filtered between
-        "police items" and "standard items" thanks to p_standard. p_itemType is
-        expecting 'prescriptive', 'toCouncil' or 'communication' and return
-        respectively prescriptives, headed to council and communication
-        items.
+        Return an ordered dict with the items' group in charge as key and another
+        ordered dict as value. The second ordered dict has the items' categories as
+        keys and the list of items as value.
+        Items are filtered between "police items" and "standard items" thanks
+        to p_standard. p_itemType is expecting 'prescriptive', 'toCouncil' or
+        'communication' and return respectively prescriptives, headed to
+        council and communication items.
 
         '''
         if standard is True:
