@@ -415,6 +415,7 @@ collegeMeeting.customAdvisers = [
      'delay': '5',
      'delay_left_alert': '2',
      'delay_label': 'Incidence financière >= 22.000€',
+     'available_on': 'python: item.adapted().mayChangeDelayTo(5)',
      'is_linked_to_previous_row': '0'},
     {'row_id': 'unique_id_003',
      'group': 'dirfin',
@@ -422,6 +423,7 @@ collegeMeeting.customAdvisers = [
      'delay': '10',
      'delay_left_alert': '4',
      'delay_label': 'Incidence financière >= 22.000€',
+     'available_on': 'python: item.adapted().mayChangeDelayTo(10)',
      'is_linked_to_previous_row': '1'},
     {'row_id': 'unique_id_004',
      'group': 'dirfin',
@@ -429,6 +431,7 @@ collegeMeeting.customAdvisers = [
      'delay': '20',
      'delay_left_alert': '4',
      'delay_label': 'Incidence financière >= 22.000€',
+     'available_on': 'python: item.adapted().mayChangeDelayTo(20)',
      'is_linked_to_previous_row': '1'}, ]
 collegeMeeting.itemPowerObserversStates = ('itemfrozen',
                                            'accepted',

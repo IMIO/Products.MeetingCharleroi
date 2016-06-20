@@ -248,6 +248,7 @@ def _configureCollegeCustomAdvisers(site):
          'delay_left_alert': '3',
          'is_linked_to_previous_row': '0',
          'for_item_created_from': '2016/05/01',
+         'available_on': 'python: item.adapted().mayChangeDelayTo(10)',
          'row_id': '2016-05-01.0'},
         {'delay_label': 'Incidence financi\xc3\xa8re (urgence)',
          'for_item_created_until': '',
@@ -259,6 +260,7 @@ def _configureCollegeCustomAdvisers(site):
          'delay_left_alert': '3',
          'is_linked_to_previous_row': '1',
          'for_item_created_from': '2016/05/01',
+         'available_on': 'python: item.adapted().mayChangeDelayTo(5)',
          'row_id': '2016-05-01.1'},
         {'delay_label': 'Incidence financi\xc3\xa8re (prolongation)',
          'for_item_created_until': '',
@@ -270,6 +272,7 @@ def _configureCollegeCustomAdvisers(site):
          'delay_left_alert': '3',
          'is_linked_to_previous_row': '1',
          'for_item_created_from': '2016/05/01',
+         'available_on': 'python: item.adapted().mayChangeDelayTo(20)',
          'row_id': '2016-05-01.2'},))
 
 

@@ -29,6 +29,7 @@ from zope.i18n import translate
 from collections import OrderedDict
 from plone import api
 
+from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.permissions import ReviewPortalContent
 from Products.PloneMeeting.adapters import ItemPrettyLinkAdapter
 from Products.PloneMeeting.MeetingConfig import MeetingConfig
@@ -484,6 +485,39 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
             else:
                 return 1
         raise NotImplementedError
+
+    def mayChangeDelayTo(self, days):
+        """May current used change finance advice delay to given p_days?
+           Given p_days could be :
+           - 5 : in this case, only the proposingGroup (while having edit permission) may change to this delay;
+           - 20 : in this case, only finance advisers may change to this delay;
+           - 10 : come back from 5 or 20 : if from 20, only finance advisers may come back,
+                  if from 5, only proposingGroup (while having edit permission).
+           In every case, 5 and 20 days are only available thru the popup widget, not from the item edit form,
+           we check that 'managing_available_delays' is in the REQUEST."""
+        res = False
+        tool = api.portal.get_tool('portal_plonemeeting')
+        is20DaysDelay = self.context.adviceIndex[FINANCE_GROUP_ID]['delay'] == '20'
+        # bypass for Managers
+        isManager = tool.isManager(self.context)
+        if days == 10 and checkPermission(ModifyPortalContent, self.context) and not is20DaysDelay:
+            res = True
+        # change delay widget
+        elif self.context.REQUEST.get('managing_available_delays', None):
+            if isManager:
+                res = True
+            # to 20 or back from 20
+            elif days == 20 or (days == 10 and is20DaysDelay):
+                itemState = self.context.queryState()
+                if itemState == 'prevalidated_waiting_advices' and \
+                   tool.adapted().isFinancialUser():
+                    res = True
+            # to 5, only available thru change delay widget
+            elif days == 5 and not is20DaysDelay:
+                if checkPermission(ModifyPortalContent, self.context):
+                    res = True
+
+        return res
 
 
 class CustomCharleroiMeetingGroup(CustomMeetingGroup):
