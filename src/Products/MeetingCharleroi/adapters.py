@@ -147,34 +147,44 @@ class CustomCharleroiMeeting(CustomMeeting):
                 filteredGroupedItems.append(filteredItems)
         return filteredGroupedItems
 
-    def _sortByGroupInCharge(self, itemsList):
+    def _sortByGroupInCharge(self, itemsList, councilEmergency=False):
         """
         Sort the item list p_itemsList by group in charge and
         return an ordered dict with group in charge as key and
         an another ordered dict as value containing the item's
         category as key and the list of all items having that
         group in charge and that category as value.
+        p_councilEmergency expects a boolean and determines
+        meeting-config-value.
         """
         groupsInChargeItems = OrderedDict()
         for categorizedItems in itemsList:
             for item in categorizedItems[1:]:
-                groupInCharge = item.getProposingGroup(theObject=True).getGroupInChargeAt(self.context.getDate())
-                # if we already have the group in charge in the dict.
-                if groupInCharge in groupsInChargeItems:
-                    # if we already have the category for that group in charge.
-                    if categorizedItems[0] in groupsInChargeItems[groupInCharge]:
-                        # add the item to the list of items for that category
-                        # and that group in charge.
-                        groupsInChargeItems[groupInCharge][categorizedItems[0]].append(item)
-                    else:
-                        # create the list with item in it
-                        groupsInChargeItems[groupInCharge][categorizedItems[0]] = [item]
+                # if we look for emergency items and the item is not asked to
+                # be sent in emergency, pick the next item.
+                if (councilEmergency and
+                    u'meeting-config-council' not in item.getOtherMeetingConfigsClonableToEmergency()) or\
+                   (not councilEmergency and
+                    u'meeting-config-council' in item.getOtherMeetingConfigsClonableToEmergency()):
+                    continue
                 else:
-                    # create the ordereddict for categ and add the list of
-                    # items of that categ in it.
-                    categDict = OrderedDict()
-                    categDict[categorizedItems[0]] = [item]
-                    groupsInChargeItems[groupInCharge] = categDict
+                    groupInCharge = item.getProposingGroup(theObject=True).getGroupInChargeAt(self.context.getDate())
+                    # if we already have the group in charge in the dict.
+                    if groupInCharge in groupsInChargeItems:
+                        # if we already have the category for that group in charge.
+                        if categorizedItems[0] in groupsInChargeItems[groupInCharge]:
+                            # add the item to the list of items for that category
+                            # and that group in charge.
+                            groupsInChargeItems[groupInCharge][categorizedItems[0]].append(item)
+                        else:
+                            # create the list with item in it
+                            groupsInChargeItems[groupInCharge][categorizedItems[0]] = [item]
+                    else:
+                        # create the ordereddict for categ and add the list of
+                        # items of that categ in it.
+                        categDict = OrderedDict()
+                        categDict[categorizedItems[0]] = [item]
+                        groupsInChargeItems[groupInCharge] = categDict
         return groupsInChargeItems
 
     def _getPolicePrescriptiveItems(self, itemUids, listTypes=['normal']):
@@ -189,7 +199,7 @@ class CustomCharleroiMeeting(CustomMeeting):
         filteredItems = self._getItemsHeadedToAnotherMeetingConfig(policeItems, '')
         return self._sortByGroupInCharge(filteredItems)
 
-    def _getPoliceHeadedToCouncilItems(self, itemUids, listTypes=['normal']):
+    def _getPoliceHeadedToCouncilItems(self, itemUids, listTypes=['normal'], councilEmergency=False):
         """
         Get all items from the group "Police" which are not from the
         communication category and supposed to go to council.
@@ -200,7 +210,7 @@ class CustomCharleroiMeeting(CustomMeeting):
 
         filteredItems = self._getItemsHeadedToAnotherMeetingConfig(policeItems,
                                                                    'meeting-config-council')
-        return self._sortByGroupInCharge(filteredItems)
+        return self._sortByGroupInCharge(filteredItems, councilEmergency)
 
     def _getPoliceCommunicationItems(self, itemUids, listTypes=['normal']):
         """
@@ -231,7 +241,7 @@ class CustomCharleroiMeeting(CustomMeeting):
     def _getStandardPrescriptiveItems(self, itemUids, listTypes=['normal']):
         '''
         Get items which are not from the group Police, not from the
-        communication category and not supposed to go to coucil.
+        communication category and not supposed to go to council.
         '''
         standardItems = self._getStandardItems(itemUids,
                                                excludedCategories=['communication'],
@@ -240,7 +250,7 @@ class CustomCharleroiMeeting(CustomMeeting):
         filteredItems = self._getItemsHeadedToAnotherMeetingConfig(standardItems, '')
         return self._sortByGroupInCharge(filteredItems)
 
-    def _getStandardHeadedToCouncilItems(self, itemUids, listTypes=['normal']):
+    def _getStandardHeadedToCouncilItems(self, itemUids, listTypes=['normal'], councilEmergency=False):
         '''
         Get items which are not from the group Police, not from the
         communication category and supposed to go to council.
@@ -251,7 +261,7 @@ class CustomCharleroiMeeting(CustomMeeting):
 
         filteredItems = self._getItemsHeadedToAnotherMeetingConfig(standardItems,
                                                                    'meeting-config-council')
-        return self._sortByGroupInCharge(filteredItems)
+        return self._sortByGroupInCharge(filteredItems, councilEmergency)
 
     def _getStandardCommunicationItems(self, itemUids, listTypes=['normal']):
         '''
@@ -262,7 +272,8 @@ class CustomCharleroiMeeting(CustomMeeting):
                                       categories=['communication'],
                                       listTypes=listTypes)
 
-    def getPrintableItemsForAgenda(self, itemUids, standard=True, itemType='prescriptive', listTypes=['normal']):
+    def getPrintableItemsForAgenda(self, itemUids, standard=True, itemType='prescriptive',
+                                   listTypes=['normal'], councilEmergency=False):
         '''
         Return an ordered dict with the items' group in charge as key and another
         ordered dict as value. The second ordered dict has the items' categories as
@@ -270,14 +281,17 @@ class CustomCharleroiMeeting(CustomMeeting):
         Items are filtered between "police items" and "standard items" thanks
         to p_standard. p_itemType is expecting 'prescriptive', 'toCouncil' or
         'communication' and return respectively prescriptives, headed to
-        council and communication items.
+        council and communication items. p_councilEmergency is a boolean
+        used to get items with the emergency requested when sent to Council, or not.
 
         '''
         if standard is True:
             if itemType == 'prescriptive':
                 return self._getStandardPrescriptiveItems(itemUids, listTypes=listTypes)
             elif itemType == 'toCouncil':
-                return self._getStandardHeadedToCouncilItems(itemUids, listTypes=listTypes)
+                return self._getStandardHeadedToCouncilItems(itemUids,
+                                                             listTypes=listTypes,
+                                                             councilEmergency=councilEmergency)
             elif itemType == 'communication':
                 return self._getStandardCommunicationItems(itemUids, listTypes=listTypes)
             else:
@@ -287,7 +301,9 @@ class CustomCharleroiMeeting(CustomMeeting):
             if itemType == 'prescriptive':
                 return self._getPolicePrescriptiveItems(itemUids, listTypes=listTypes)
             elif itemType == 'toCouncil':
-                return self._getPoliceHeadedToCouncilItems(itemUids, listTypes=listTypes)
+                return self._getPoliceHeadedToCouncilItems(itemUids,
+                                                           listTypes=listTypes,
+                                                           councilEmergency=councilEmergency)
             elif itemType == 'communication':
                 return self._getPoliceCommunicationItems(itemUids, listTypes=listTypes)
             else:
