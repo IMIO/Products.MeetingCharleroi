@@ -310,24 +310,6 @@ class CustomCharleroiMeeting(CustomMeeting):
                 return 'The itemType given to getPrintableItemsForAgenda '\
                        'must be prescriptive, toCouncil or communication'
 
-    def getRepresentativeForAgenda(self,
-                                   sublst,
-                                   itemUids,
-                                   standard=True,
-                                   itemType='prescriptive',
-                                   listTypes=['normal']):
-        '''Checks if the given category is the same than the previous one. Return none if so and the new one if not.'''
-        previousCat = ''
-        for sublist in self.getPrintableItemsForAgenda(itemUids,
-                                                       standard=standard,
-                                                       itemType=itemType,
-                                                       listTypes=listTypes):
-            if sublist == sublst:
-                if sublist[0].Description() != previousCat:
-                    return sublist[0].Description()
-            previousCat = sublist[0].Description()
-        return None
-
 
 class CustomCharleroiMeetingItem(CustomMeetingItem):
     '''Adapter that adapts a custom meeting item implementing IMeetingItem to the
