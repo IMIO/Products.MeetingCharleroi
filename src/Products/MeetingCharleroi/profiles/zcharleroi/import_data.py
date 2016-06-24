@@ -331,11 +331,13 @@ collegeMeeting.usedMeetingAttributes = ['startDate',
                                         'approvalDate',
                                         'signatures',
                                         'assembly',
-                                        'assemblyAbsents',
+                                        'assemblyExcused',
                                         'assemblyGuests',
+                                        'assemblyProxies',
                                         'assemblyStaves',
                                         'place',
-                                        'observations', ]
+                                        'observations',
+                                        'assemblyPolice']
 collegeMeeting.recordMeetingHistoryStates = []
 collegeMeeting.itemsListVisibleColumns = ('Creator', 'CreationDate', 'review_state', 'getCategory',
                                           'proposing_group_acronym', 'advices', 'toDiscuss', 'actions')
