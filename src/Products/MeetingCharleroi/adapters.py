@@ -72,7 +72,7 @@ from Products.MeetingCharleroi.config import POLICE_GROUP_ID
 customWfAdaptations = ('no_publication', 'no_global_observation',
                        'pre_validation', 'items_come_validated',
                        'return_to_proposing_group', 'charleroi_add_refadmin',
-                       'waiting_advices')
+                       'waiting_advices', 'postpone_next_meeting', 'mark_not_applicable')
 MeetingConfig.wfAdaptations = customWfAdaptations
 originalPerformWorkflowAdaptations = adaptations.performWorkflowAdaptations
 

@@ -42,6 +42,8 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
                                'return_to_proposing_group',
                                'waiting_advices',
                                'charleroi_add_refadmin',
+                               'postpone_next_meeting',
+                               'mark_not_applicable',
                                )))
 
     def test_pm_Validate_workflowAdaptations_added_items_come_validated(self):

@@ -283,7 +283,8 @@ collegeMeeting.enforceAdviceMandatoriness = False
 collegeMeeting.itemPowerObserversStates = ('itemcreated', 'presented', 'accepted', 'delayed', 'refused')
 collegeMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed', 'accepted_but_modified', 'pre_accepted']
 collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
-                                      'pre_validation', 'charleroi_add_refadmin', 'waiting_advices']
+                                      'pre_validation', 'charleroi_add_refadmin',
+                                      'waiting_advices']
 collegeMeeting.insertingMethodsOnAddItem = ({'insertingMethod': 'on_proposing_groups',
                                              'reverse': '0'}, )
 collegeMeeting.useGroupsAsCategories = True
