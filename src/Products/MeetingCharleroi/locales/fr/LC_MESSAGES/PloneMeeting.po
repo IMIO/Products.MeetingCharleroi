@@ -30,6 +30,10 @@ msgstr "Catégories de la motivation"
 msgid "PloneMeeting_label_assemblyPolice"
 msgstr "Présents pour la Zone de Police"
 
+#. Default: "Absents for the secret meeting"
+msgid "PloneMeeting_label_assemblyPrivacySecretAbsents"
+msgstr "Absents pour la séance à huis clos"
+
 #. Default: "Item presentation"
 msgid "PloneMeeting_label_detailedDescription"
 msgstr "Exposé du point"

@@ -649,9 +649,10 @@ councilMeeting.usedItemAttributes = ['detailedDescription',
 councilMeeting.usedMeetingAttributes = ['startDate',
                                         'midDate',
                                         'endDate',
-                                        'approvalDate',
                                         'signatures',
                                         'assembly',
+                                        'assemblyExcused',
+                                        'assemblyPrivacySecretAbsents',
                                         'place',
                                         'observations', ]
 councilMeeting.recordMeetingHistoryStates = []

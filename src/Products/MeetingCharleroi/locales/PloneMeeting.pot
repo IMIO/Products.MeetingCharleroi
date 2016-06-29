@@ -120,3 +120,7 @@ msgstr ""
 #. Default: "Assembly for Police"
 msgid "PloneMeeting_label_assemblyPolice"
 msgstr ""
+
+#. Default: "Absents for the secret meeting"
+msgid "PloneMeeting_label_assemblyPrivacySecretAbsents"
+msgstr ""

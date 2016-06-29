@@ -20,6 +20,20 @@ def update_meeting_schema(baseSchema):
             default_output_type="text/html",
             default_content_type="text/plain",
         ),
+        TextField(
+            name='assemblyPrivacySecretAbsents',
+            allowable_content_types="text/plain",
+            optional=True,
+            widget=TextAreaWidget(
+                condition="python: here.attributeIsUsed('assemblyPrivacySecretAbsents')",
+                label='Assemblyprivacysecretabsents',
+                label_msgid='PloneMeeting_label_assemblyPrivacySecretAbsents',
+                i18n_domain='PloneMeeting',
+            ),
+            default_output_type="text/html",
+            default_content_type="text/plain",
+        ),
+
     ),)
 
     completeConfigSchema = baseSchema + specificSchema.copy()

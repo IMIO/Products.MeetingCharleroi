@@ -29,6 +29,10 @@ msgstr ""
 msgid "PloneMeeting_label_assemblyPolice"
 msgstr ""
 
+#. Default: "Absents for the secret meeting"
+msgid "PloneMeeting_label_assemblyPrivacySecretAbsents"
+msgstr ""
+
 #. Default: "Item presentation"
 msgid "PloneMeeting_label_detailedDescription"
 msgstr ""

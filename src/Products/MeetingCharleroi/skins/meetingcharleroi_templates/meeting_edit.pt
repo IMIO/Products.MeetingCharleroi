@@ -162,6 +162,7 @@
         <metal:field use-macro="python:here.widget('assembly', mode='edit')"/>
         <metal:field use-macro="python:here.widget('assemblyExcused', mode='edit')"/>
         <metal:field use-macro="python:here.widget('assemblyAbsents', mode='edit')"/>
+        <metal:field use-macro="python:here.widget('assemblyPrivacySecretAbsents', mode='edit')"/>
         <metal:field use-macro="python:here.widget('assemblyGuests', mode='edit')"/>
         <metal:field use-macro="python:here.widget('assemblyProxies', mode='edit')"/>
         <metal:field use-macro="python:here.widget('assemblyStaves', mode='edit')"/>

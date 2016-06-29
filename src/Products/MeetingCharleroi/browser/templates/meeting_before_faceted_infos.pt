@@ -65,15 +65,15 @@
           </span>
       </dt>
       <dd class="collapsibleContent"
-               tal:define="usedAssemblyFields python: ((context.getAssembly() and 'assembly') or 'assembly' in usedAttrs and 'assembly',
-                                                       (context.getAssemblyExcused() and 'assemblyExcused') or 'assemblyExcused' in usedAttrs and 'assemblyExcused',
-                                                       (context.getAssemblyAbsents() and 'assemblyAbsents') or 'assemblyAbsents' in usedAttrs and 'assemblyAbsents',
-                                                       (context.getAssemblyGuests() and 'assemblyGuests') or 'assemblyGuests' in usedAttrs and 'assemblyGuests',
-                                                       (context.getAssemblyProxies() and 'assemblyProxies') or 'assemblyProxies' in usedAttrs and 'assemblyProxies',
-                                                       (context.getAssemblyStaves() and 'assemblyStaves') or 'assemblyStaves' in usedAttrs and 'assemblyStaves',
-                                                       (context.getAssemblyPolice() and 'assemblyPolice') or 'assemblyPolice' in usedAttrs and 'assemblyPolice',
-                                                       (context.getSignatures() and 'signatures') or 'signatures' in usedAttrs and 'signatures',);
-                           colWidthPercentage python: int(100/len(usedAssemblyFields));">
+               tal:define="usedAssemblyFields python: ((context.getAssembly() or 'assembly' in usedAttrs) and 'assembly',
+                                                       (context.getAssemblyExcused() or 'assemblyExcused' in usedAttrs) and 'assemblyExcused',
+                                                       (context.getAssemblyAbsents() or 'assemblyAbsents' in usedAttrs) and 'assemblyAbsents',
+                                                       (context.getAssemblyPrivacySecretAbsents() or 'assemblyPrivacySecretAbsents' in usedAttrs) and 'assemblyPrivacySecretAbsents',
+                                                       (context.getAssemblyGuests() or 'assemblyGuests' in usedAttrs) and 'assemblyGuests',
+                                                       (context.getAssemblyProxies() or 'assemblyProxies' in usedAttrs) and 'assemblyProxies',
+                                                       (context.getAssemblyStaves() or 'assemblyStaves' in usedAttrs) and 'assemblyStaves',
+                                                       (context.getAssemblyPolice() or 'assemblyPolice' in usedAttrs) and 'assemblyPolice',
+                                                       (context.getSignatures() or 'signatures' in usedAttrs) and 'signatures',);">
         <fieldset tal:condition="python: 'assembly' in usedAssemblyFields">
             <legend tal:content="context/getLabelAssembly">Assembly</legend>
             <span tal:replace="structure python: context.getRawAssembly() and context.getStrikedAssembly() or '<p>-</p>'"/>
@@ -85,6 +85,10 @@
         <fieldset tal:condition="python: 'assemblyAbsents' in usedAssemblyFields">
             <legend i18n:translate="PloneMeeting_label_assemblyAbsents">Absents</legend>
             <span tal:replace="structure python: context.getAssemblyAbsents() or '<p>-</p>'"/>
+        </fieldset>
+        <fieldset tal:condition="python: 'assemblyPrivacySecretAbsents' in usedAssemblyFields">
+            <legend i18n:translate="PloneMeeting_label_assemblyPrivacySecretAbsents">Absents for secret meeting</legend>
+            <span tal:replace="structure python: context.getAssemblyPrivacySecretAbsents() or '<p>-</p>'"/>
         </fieldset>
         <fieldset tal:condition="python: 'assemblyGuests' in usedAssemblyFields">
             <legend i18n:translate="PloneMeeting_label_assemblyGuests">Guests</legend>
