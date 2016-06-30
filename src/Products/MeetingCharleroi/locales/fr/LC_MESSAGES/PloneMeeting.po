@@ -78,6 +78,10 @@ msgstr "Proposé au référent administratif"
 msgid "icon_help_waiting_advices_from_prevalidated"
 msgstr "En attente avis finances"
 
+#. Default: "Waiting advices (Proposed to service head)"
+msgid "icon_help_waiting_advices_from_proposed"
+msgstr "En attente des avis (Proposé au chef de service)"
+
 #. Default: "The finances advice has not been selected on this item."
 msgid "no_finances_advice_asked"
 msgstr "L'avis des finances n'a pas été demandé sur ce point."

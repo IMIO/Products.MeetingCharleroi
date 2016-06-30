@@ -124,3 +124,7 @@ msgstr ""
 #. Default: "Absents for the secret meeting"
 msgid "PloneMeeting_label_assemblyPrivacySecretAbsents"
 msgstr ""
+
+#. Default: "Waiting advices (Proposed to service head)"
+msgid "icon_help_waiting_advices_from_proposed"
+msgstr ""
