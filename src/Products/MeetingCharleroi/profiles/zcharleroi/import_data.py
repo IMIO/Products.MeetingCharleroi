@@ -654,6 +654,7 @@ councilMeeting.usedMeetingAttributes = ['startDate',
                                         'assemblyExcused',
                                         'assemblyPrivacySecretAbsents',
                                         'place',
+                                        'authorityNotice',
                                         'observations', ]
 councilMeeting.recordMeetingHistoryStates = []
 councilMeeting.xhtmlTransformFields = ('MeetingItem.description',
