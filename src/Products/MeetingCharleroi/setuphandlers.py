@@ -343,7 +343,7 @@ def addDemoData(context):
     _demoData(context.getSite(), 'dgen', ('dirgen', 'personnel'))
 
 
-def _demoData(site, userId, firstTwoGroupIds, dates=[]):
+def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None):
     """ """
     tool = api.portal.get_tool('portal_plonemeeting')
     cfg = getattr(tool, 'meeting-config-college')
@@ -363,8 +363,8 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[]):
         _createObjectByType('Folder', site, id='Members')
     # create 5 meetings : 2 passed, 1 current and 2 future
     if not dates:
-        today = DateTime()
-        dates = [today-13, today-6, today+1, today+8, today+15]
+        baseDate = DateTime()
+        dates = [baseDate-13, baseDate-6, baseDate+1, baseDate+8, baseDate+15]
     mTool.createMemberArea(userId)
     secrFolder = tool.getPloneMeetingFolder(cfg.getId(), userId)
     for date in dates:
@@ -374,16 +374,16 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[]):
         pTool.changeOwnershipOf(meeting, userId)
         meeting.processForm()
         # -13 meeting is closed
-        if date == today-13:
+        if date == baseDate-13:
             wfTool.doActionFor(meeting, 'freeze')
             wfTool.doActionFor(meeting, 'decide')
             wfTool.doActionFor(meeting, 'close')
         # -6 meeting is frozen
-        if date == today-6:
+        if date == baseDate-6:
             wfTool.doActionFor(meeting, 'freeze')
             wfTool.doActionFor(meeting, 'decide')
         # +1 is meeting we will insert items into
-        if date == today+1:
+        if date == baseDate+1:
             meetingForItems = meeting
 
     # items dict here : the key is the user we will create the item for
