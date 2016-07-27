@@ -705,7 +705,9 @@ councilMeeting.itemPowerObserversStates = ('itemfrozen',
                                            'accepted', 'delayed',
                                            'refused',
                                            'accepted_but_modified', 'pre_accepted')
+councilMeeting.itemRestrictedPowerObserversStates = councilMeeting.itemPowerObserversStates
 councilMeeting.meetingPowerObserversStates = ('frozen', 'decided', 'closed')
+councilMeeting.meetingRestrictedPowerObserversStates = councilMeeting.meetingPowerObserversStates
 councilMeeting.powerAdvisersGroups = ()
 councilMeeting.itemBudgetInfosStates = ('proposed', 'validated', 'presented')
 councilMeeting.useCopies = True
