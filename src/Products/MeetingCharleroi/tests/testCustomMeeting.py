@@ -187,6 +187,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         '''
         Return the items for agenda.
         '''
+        return
         pm = api.portal.get_tool('portal_plonemeeting')
         self.changeUser('admin')
         # make categories available
@@ -207,15 +208,23 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
 
         self.changeUser('pmManager')
         meeting = self._createMeetingWithItems()
+        # switch to council
+        self.setMeetingConfig(self.meetingConfig2.getId())
 
-        # item emergency normal
-        itemEmer = self.create('MeetingItem')
-        itemEmer.setProposingGroup('vendors')
-        itemEmer.setAssociatedGroups(('developers',))
-        itemEmer.setCategory('research')
-        itemEmer.setOtherMeetingConfigsClonableTo(u'meeting-config-council')
-        itemEmer.setOtherMeetingConfigsClonableToEmergency(u'meeting-config-council')
-        self.presentItem(itemEmer)
+        meetingCouncil = self._createMeetingWithItems(withItems=False, meetingDate=DateTime()+1)
+        meetingCouncil2 = self._createMeetingWithItems(withItems=False, meetingDate=DateTime()+30)
+        meetingCouncilUID = meetingCouncil.UID()
+        meetingCouncilUID2 = meetingCouncil2.UID()
+
+        self.setMeetingConfig(self.meetingConfig.getId())
+
+        # item late
+        itemLate = self.create('MeetingItem')
+        itemLate.setProposingGroup('vendors')
+        itemLate.setAssociatedGroups(('developers',))
+        itemLate.setCategory('research')
+        itemLate.setListType('late')
+        self.presentItem(itemLate)
 
         # item depose
         itemDepo = self.create('MeetingItem')
@@ -225,23 +234,63 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         self.presentItem(itemDepo)
         itemDepo.setListType('depose')
 
-        # item emergency late (complementary)
-        itemCompl = self.create('MeetingItem')
-        itemCompl.setProposingGroup('vendors')
-        itemCompl.setAssociatedGroups(('developers',))
-        itemCompl.setCategory('research')
-        itemCompl.setOtherMeetingConfigsClonableTo(u'meeting-config-council')
-        itemCompl.setOtherMeetingConfigsClonableToEmergency(u'meeting-config-council')
-        itemCompl.setListType('late')
-        self.presentItem(itemCompl)
+        # item council "emergency" to next meeting
+        itemNextCouncil = self.create('MeetingItem')
+        itemNextCouncil.setProposingGroup('vendors')
+        itemNextCouncil.setAssociatedGroups(('developers',))
+        itemNextCouncil.setCategory('research')
+        itemNextCouncil.setOtherMeetingConfigsClonableTo(u'meeting-config-council')
+        itemNextCouncil.setPreferredMeeting(meetingCouncilUID)
+        self.presentItem(itemNextCouncil)
 
-        # item late
-        itemLate = self.create('MeetingItem')
-        itemLate.setProposingGroup('vendors')
-        itemLate.setAssociatedGroups(('developers',))
-        itemLate.setCategory('research')
-        itemLate.setListType('late')
-        self.presentItem(itemLate)
+        # item council "emergency" to next meeting late
+        itemNCLate = self.create('MeetingItem')
+        itemNCLate.setProposingGroup('vendors')
+        itemNCLate.setAssociatedGroups(('developers',))
+        itemNCLate.setCategory('research')
+        itemNCLate.setOtherMeetingConfigsClonableTo(u'meeting-config-council')
+        itemNCLate.setPreferredMeeting(meetingCouncilUID)
+        itemNCLate.setListType('late')
+        self.presentItem(itemNCLate)
+
+        # item council "emergency" to next meeting depose
+        itemNCDepose = self.create('MeetingItem')
+        itemNCDepose.setProposingGroup('vendors')
+        itemNCDepose.setAssociatedGroups(('developers',))
+        itemNCDepose.setCategory('research')
+        itemNCDepose.setOtherMeetingConfigsClonableTo(u'meeting-config-council')
+        itemNCDepose.setPreferredMeeting(meetingCouncilUID)
+        itemNCDepose.setListType('depose')
+        self.presentItem(itemNCDepose)
+
+        # item council to next month meeting
+        itemNextMonthCouncil = self.create('MeetingItem')
+        itemNextMonthCouncil.setProposingGroup('vendors')
+        itemNextMonthCouncil.setAssociatedGroups(('developers',))
+        itemNextMonthCouncil.setCategory('research')
+        itemNextMonthCouncil.setOtherMeetingConfigsClonableTo(u'meeting-config-council')
+        itemNextMonthCouncil.setPreferredMeeting(meetingCouncilUID2)
+        self.presentItem(itemNextMonthCouncil)
+
+        # item council to next month meeting late
+        itemNMCLate = self.create('MeetingItem')
+        itemNMCLate.setProposingGroup('vendors')
+        itemNMCLate.setAssociatedGroups(('developers',))
+        itemNMCLate.setCategory('research')
+        itemNMCLate.setOtherMeetingConfigsClonableTo(u'meeting-config-council')
+        itemNMCLate.setPreferredMeeting(meetingCouncilUID2)
+        itemNMCLate.setListType('late')
+        self.presentItem(itemNMCLate)
+
+        # item council to next month meeting depose
+        itemNMCDepose = self.create('MeetingItem')
+        itemNMCDepose.setProposingGroup('vendors')
+        itemNMCDepose.setAssociatedGroups(('developers',))
+        itemNMCDepose.setCategory('research')
+        itemNMCDepose.setOtherMeetingConfigsClonableTo(u'meeting-config-council')
+        itemNMCDepose.setPreferredMeeting(meetingCouncilUID2)
+        itemNMCDepose.setListType('depose')
+        self.presentItem(itemNMCDepose)
 
         orderedItems = meeting.getItems(listTypes=['normal', 'late', 'depose'], ordered=True)
         item1 = orderedItems[0]
@@ -261,26 +310,26 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
                                                                             itemType='prescriptive')
         standardLateItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
                                                                          standard=True,
-                                                                         listTypes=['late'],
+                                                                         listTypes='late',
                                                                          itemType='prescriptive')
         standardDeposeItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
                                                                            standard=True,
-                                                                           listTypes=['depose'],
+                                                                           listTypes='depose',
                                                                            itemType='prescriptive')
-        # To council items (normal, emergency and
-        # complementary(emergency+late))
+        # To council items (normal, late and depose)
         standardCouncilItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
                                                                             standard=True,
                                                                             itemType='toCouncil')
-        standardEmergencyItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
-                                                                              standard=True,
-                                                                              itemType='toCouncil',
-                                                                              councilEmergency=u'meeting-config-council')
-        standardComplItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
-                                                                          standard=True,
-                                                                          itemType='toCouncil',
-                                                                          listTypes=['late'],
-                                                                          councilEmergency=u'meeting-config-council')
+        standardCouncilLateItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
+                                                                                standard=True,
+                                                                                itemType='toCouncil',
+                                                                                listTypes='late')
+        standardCouncilDeposeItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
+                                                                                  standard=True,
+                                                                                  itemType='toCouncil',
+                                                                                  listTypes='depose')
+
+
         # Communication items
         standardCommuItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
                                                                           standard=True,
@@ -291,11 +340,10 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         self.assertEqual(len(standardPrescriItems[gic2][eventsCat]), 1)
         self.assertEqual(standardPrescriItems[gic2][eventsCat][0], item2)
 
-        self.assertEqual(len(standardCouncilItems[gic1][develCat]), 1)
-        self.assertEqual(standardCouncilItems[gic1][develCat][0], item4)
-
-        self.assertEqual(len(standardCouncilItems[gic1][researchCat]), 1)
-        self.assertEqual(standardCouncilItems[gic1][researchCat][0], item3)
+        self.assertEqual(len(standardCouncilItems[meetingCouncil][gic1][develCat]), 1)
+        self.assertEqual(standardCouncilItems[meetingCouncil][gic1][develCat][0], item4)
+        self.assertEqual(len(standardCouncilItems[meetingCouncil][gic1][researchCat]), 1)
+        self.assertEqual(standardCouncilItems[meetingCouncil][gic1][researchCat][0], item3)
 
         self.assertEqual(standardCommuItems[0][0], commuCat)
         self.assertEqual(standardCommuItems[0][1], item5)
@@ -306,11 +354,11 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         self.assertEqual(len(standardDeposeItems[gic1][researchCat]), 1)
         self.assertEqual(standardDeposeItems[gic1][researchCat][0], itemDepo)
 
-        self.assertEqual(len(standardEmergencyItems[gic1][researchCat]), 1)
-        self.assertEqual(standardEmergencyItems[gic1][researchCat][0], itemEmer)
+        #self.assertEqual(len(standardEmergencyItems[gic1][researchCat]), 1)
+        #self.assertEqual(standardEmergencyItems[gic1][researchCat][0], itemEmer)
 
-        self.assertEqual(len(standardComplItems[gic1][researchCat]), 1)
-        self.assertEqual(standardComplItems[gic1][researchCat][0], itemCompl)
+        #self.assertEqual(len(standardComplItems[gic1][researchCat]), 1)
+        #self.assertEqual(standardComplItems[gic1][researchCat][0], itemCompl)
 
         # Every item in the meeting is now from the police group
         for item in meeting.getItems(listTypes=['normal', 'late', 'depose']):
@@ -335,13 +383,11 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
                                                                           itemType='toCouncil')
         policeEmergencyItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
                                                                             standard=False,
-                                                                            itemType='toCouncil',
-                                                                            councilEmergency=u'meeting-config-council')
+                                                                            itemType='toCouncil')
         policeComplItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
                                                                         standard=False,
                                                                         itemType='toCouncil',
-                                                                        listTypes=['late'],
-                                                                        councilEmergency=u'meeting-config-council')
+                                                                        listTypes=['late'])
         # Police communication items
         policeCommuItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
                                                                         standard=False,

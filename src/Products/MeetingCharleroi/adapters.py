@@ -31,6 +31,7 @@ from plone import api
 
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.permissions import ReviewPortalContent
+from Products.CMFCore.utils import getToolByName
 from Products.PloneMeeting.adapters import ItemPrettyLinkAdapter
 from Products.PloneMeeting.MeetingConfig import MeetingConfig
 from Products.PloneMeeting.interfaces import IMeetingConfigCustom
@@ -118,6 +119,7 @@ class CustomCharleroiMeeting(CustomMeeting):
     def _getPoliceItems(self, itemUids, categories=[], excludedCategories=[], listTypes=['normal']):
         """Get all items from the group 'Police'."""
         policeItems = self.getPrintableItemsByCategory(itemUids,
+                                                       forceCategOrderFromConfig=True,
                                                        categories=categories,
                                                        excludedCategories=excludedCategories,
                                                        listTypes=listTypes,
@@ -131,62 +133,99 @@ class CustomCharleroiMeeting(CustomMeeting):
         """
         Get all items which are supposed to go to the meeting config
         given by p_meetingConfigId. Just pass an empty string to get items
-        which are not supposed to go to other MC.
+        which are not supposed to go to other MC. p_byDate sorts
+        the items between the different meeting they are sent to.
         """
         filteredGroupedItems = []
         for groupedItems in itemsList:
+            # store the group name as first element of the list
             filteredItems = [groupedItems[0]]
+            # items not headed to another meeting config
             if meetingConfigId == '':
                 filteredItems += [item for item in groupedItems[1:]
                                   if not item.getOtherMeetingConfigsClonableTo()]
+            # items headed to another meeting config
             else:
                 filteredItems += [item for item in groupedItems[1:]
-                                  if meetingConfigId in item.getOtherMeetingConfigsClonableTo()]
-
+                                if meetingConfigId in item.getOtherMeetingConfigsClonableTo()]
             # if there is no item, do not keep the proposing group.
             if len(filteredItems) > 1:
                 filteredGroupedItems.append(filteredItems)
         return filteredGroupedItems
 
-    def _sortByGroupInCharge(self, itemsList, councilEmergency=False):
+    def _sortByGroupInCharge(self, itemsList):
         """
         Sort the item list p_itemsList by group in charge and
         return an ordered dict with group in charge as key and
         an another ordered dict as value containing the item's
         category as key and the list of all items having that
         group in charge and that category as value.
-        p_councilEmergency expects a boolean and determines
-        meeting-config-value.
         """
         groupsInChargeItems = OrderedDict()
         for categorizedItems in itemsList:
             for item in categorizedItems[1:]:
-                # if we look for emergency items and the item is not asked to
-                # be sent in emergency, pick the next item.
-                if (councilEmergency and
-                    u'meeting-config-council' not in item.getOtherMeetingConfigsClonableToEmergency()) or\
-                   (not councilEmergency and
-                    u'meeting-config-council' in item.getOtherMeetingConfigsClonableToEmergency()):
-                    continue
+                groupInCharge = item.getProposingGroup(theObject=True).getGroupInChargeAt(self.context.getDate())
+                # if we already have the group in charge in the dict.
+                if groupInCharge in groupsInChargeItems:
+                    # if we already have the category for that group in charge.
+                    if categorizedItems[0] in groupsInChargeItems[groupInCharge]:
+                        # add the item to the list of items for that category
+                        # and that group in charge.
+                        groupsInChargeItems[groupInCharge][categorizedItems[0]].append(item)
+                    else:
+                        # create the list with item in it
+                        groupsInChargeItems[groupInCharge][categorizedItems[0]] = [item]
                 else:
-                    groupInCharge = item.getProposingGroup(theObject=True).getGroupInChargeAt(self.context.getDate())
+                    # create the ordereddict for categ and add the list of
+                    # items of that categ in it.
+                    categDict = OrderedDict()
+                    categDict[categorizedItems[0]] = [item]
+                    groupsInChargeItems[groupInCharge] = categDict
+        return groupsInChargeItems
+
+    def _sortByGroupInChargeByDate(self, itemsList):
+        """
+        Sort the item list p_itemsList by group in charge and
+        return an ordered dict with group in charge as key and
+        an another ordered dict as value containing the item's
+        category as key and the list of all items having that
+        group in charge and that category as value.
+        """
+        byDateItems = {}
+        tool = api.portal.get_tool('portal_plonemeeting')
+        councilMC = getattr(tool, 'meeting-config-council')
+
+        for categorizedItems in itemsList:
+            for item in categorizedItems[1:]:
+                nextMeetingDate = item._otherMCMeetingToBePresentedIn(councilMC)
+                groupInCharge = item.getProposingGroup(theObject=True).getGroupInChargeAt(self.context.getDate())
+                # if we already have the next meeting date in the dict.
+                if nextMeetingDate in byDateItems:
                     # if we already have the group in charge in the dict.
-                    if groupInCharge in groupsInChargeItems:
+                    if groupInCharge in byDateItems[nextMeetingDate]:
                         # if we already have the category for that group in charge.
-                        if categorizedItems[0] in groupsInChargeItems[groupInCharge]:
+                        if categorizedItems[0] in byDateItems[nextMeetingDate][groupInCharge]:
                             # add the item to the list of items for that category
-                            # and that group in charge.
-                            groupsInChargeItems[groupInCharge][categorizedItems[0]].append(item)
+                            # and that group in charge and that date.
+                            byDateItems[nextMeetingDate][groupInCharge][categorizedItems[0]].append(item)
                         else:
                             # create the list with item in it
-                            groupsInChargeItems[groupInCharge][categorizedItems[0]] = [item]
+                            byDateItems[nextMeetingDate][groupInCharge][categorizedItems[0]] = [item]
                     else:
-                        # create the ordereddict for categ and add the list of
-                        # items of that categ in it.
-                        categDict = OrderedDict()
+                        # create the key for that group in charge and add the
+                        # item list in it.
                         categDict[categorizedItems[0]] = [item]
-                        groupsInChargeItems[groupInCharge] = categDict
-        return groupsInChargeItems
+                        byDateItems[nextMeetingDate][groupInCharge] = categDict.copy()
+                else:
+                    # create the keys for categ, groups in charge and date
+                    # and add the items list in it.
+                    categDict = OrderedDict()
+                    categDict[categorizedItems[0]] = [item]
+                    groupsInChargeItems = OrderedDict()
+                    groupsInChargeItems[groupInCharge] = categDict.copy()
+                    byDateItems[nextMeetingDate] = groupsInChargeItems.copy()
+
+        return OrderedDict(sorted(byDateItems.items(), key=lambda t: t[0].getDate().strftime('%Y%m%d')))
 
     def _getPolicePrescriptiveItems(self, itemUids, listTypes=['normal']):
         """
@@ -200,7 +239,7 @@ class CustomCharleroiMeeting(CustomMeeting):
         filteredItems = self._getItemsHeadedToAnotherMeetingConfig(policeItems, '')
         return self._sortByGroupInCharge(filteredItems)
 
-    def _getPoliceHeadedToCouncilItems(self, itemUids, listTypes=['normal'], councilEmergency=False):
+    def _getPoliceHeadedToCouncilItems(self, itemUids, listTypes=['normal']):
         """
         Get all items from the group "Police" which are not from the
         communication category and supposed to go to council.
@@ -211,7 +250,7 @@ class CustomCharleroiMeeting(CustomMeeting):
 
         filteredItems = self._getItemsHeadedToAnotherMeetingConfig(policeItems,
                                                                    'meeting-config-council')
-        return self._sortByGroupInCharge(filteredItems, councilEmergency)
+        return self._sortByGroupInChargeByDate(filteredItems)
 
     def _getPoliceCommunicationItems(self, itemUids, listTypes=['normal']):
         """
@@ -225,6 +264,7 @@ class CustomCharleroiMeeting(CustomMeeting):
     def _getStandardItems(self, itemUids, categories=[], excludedCategories=[], listTypes=['normal']):
         """Get all items, except those from the group 'Police'."""
         everyItems = self.getPrintableItemsByCategory(itemUids,
+                                                      forceCategOrderFromConfig=True,
                                                       listTypes=listTypes,
                                                       categories=categories,
                                                       excludedCategories=excludedCategories)
@@ -251,7 +291,7 @@ class CustomCharleroiMeeting(CustomMeeting):
         filteredItems = self._getItemsHeadedToAnotherMeetingConfig(standardItems, '')
         return self._sortByGroupInCharge(filteredItems)
 
-    def _getStandardHeadedToCouncilItems(self, itemUids, listTypes=['normal'], councilEmergency=False):
+    def _getStandardHeadedToCouncilItems(self, itemUids, listTypes=['normal']):
         '''
         Get items which are not from the group Police, not from the
         communication category and supposed to go to council.
@@ -262,7 +302,7 @@ class CustomCharleroiMeeting(CustomMeeting):
 
         filteredItems = self._getItemsHeadedToAnotherMeetingConfig(standardItems,
                                                                    'meeting-config-council')
-        return self._sortByGroupInCharge(filteredItems, councilEmergency)
+        return self._sortByGroupInChargeByDate(filteredItems)
 
     def _getStandardCommunicationItems(self, itemUids, listTypes=['normal']):
         '''
@@ -274,7 +314,7 @@ class CustomCharleroiMeeting(CustomMeeting):
                                       listTypes=listTypes)
 
     def getPrintableItemsForAgenda(self, itemUids, standard=True, itemType='prescriptive',
-                                   listTypes=['normal'], councilEmergency=False):
+                                   listTypes=['normal']):
         '''
         Return an ordered dict with the items' group in charge as key and another
         ordered dict as value. The second ordered dict has the items' categories as
@@ -282,17 +322,14 @@ class CustomCharleroiMeeting(CustomMeeting):
         Items are filtered between "police items" and "standard items" thanks
         to p_standard. p_itemType is expecting 'prescriptive', 'toCouncil' or
         'communication' and return respectively prescriptives, headed to
-        council and communication items. p_councilEmergency is a boolean
-        used to get items with the emergency requested when sent to Council, or not.
-
+        council and communication items.
         '''
         if standard is True:
             if itemType == 'prescriptive':
                 return self._getStandardPrescriptiveItems(itemUids, listTypes=listTypes)
             elif itemType == 'toCouncil':
                 return self._getStandardHeadedToCouncilItems(itemUids,
-                                                             listTypes=listTypes,
-                                                             councilEmergency=councilEmergency)
+                                                             listTypes=listTypes)
             elif itemType == 'communication':
                 return self._getStandardCommunicationItems(itemUids, listTypes=listTypes)
             else:
@@ -303,8 +340,7 @@ class CustomCharleroiMeeting(CustomMeeting):
                 return self._getPolicePrescriptiveItems(itemUids, listTypes=listTypes)
             elif itemType == 'toCouncil':
                 return self._getPoliceHeadedToCouncilItems(itemUids,
-                                                           listTypes=listTypes,
-                                                           councilEmergency=councilEmergency)
+                                                           listTypes=listTypes)
             elif itemType == 'communication':
                 return self._getPoliceCommunicationItems(itemUids, listTypes=listTypes)
             else:
@@ -517,6 +553,72 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
                     res = True
 
         return res
+
+    def getItemRefForActe(self, oj=False):
+        '''Compute the item number for PV'''
+        item = self.getSelf()
+        isPoliceItem = item.getProposingGroup()=='zone-de-police' and True or False
+        isCommuItem = item.getCategory()=='communication' and True or False
+        toSendToCouncil = 'meeting-config-council' in item.getOtherMeetingConfigsClonableTo() and True or False
+        meeting = item.getMeeting()
+        year = meeting.getDate().strftime('%Y')
+        meetingNumber = meeting.getMeetingNumber()
+        ref = str(year) + '/' + str(meetingNumber)
+
+        additionalQuery = {}
+        policeItems = {'getProposingGroup': {'query': 'zone-de-police'}}
+        notPoliceItems = {'getProposingGroup': {'not': 'zone-de-police'}}
+        toSendToCouncilItems = {'sentToInfos': {'query': ['meeting-config-council__clonable_to',
+                                                          'meeting-config-council__clonable_to_emergency',
+                                                          'meeting-config-council__cloned_to']}}
+        notToSendToCouncilItems = {'sentToInfos': {'query': 'not_to_be_cloned_to'}}
+        notCommunicationItems = {'getCategory': {'not': 'communication'}}
+
+        if not isCommuItem:
+            additionalQuery.update(notCommunicationItems)
+            if isPoliceItem:
+                additionalQuery.update(policeItems)
+                if not toSendToCouncil:
+                    additionalQuery.update(notToSendToCouncilItems)
+                    ref = ref + '/ZP'
+                else:
+                    ref = ref + '/ZP/C'
+                    additionalQuery.update(toSendToCouncilItems)
+            if not isPoliceItem:
+                additionalQuery.update(notPoliceItems)
+                if not toSendToCouncil:
+                    ref = ref
+                    additionalQuery.update(notToSendToCouncilItems)
+                else:
+                    ref = ref + '/C'
+                    additionalQuery.update(toSendToCouncilItems)
+
+        itemNumber = self._itemNumberCalculation(item, meeting, additionalQuery)
+        ref = ref + '/' +  str(itemNumber)
+        # if for oj, manage the A and B items.
+        if oj:
+            if item.getToDiscuss():
+                ref = ref + 'B'
+            else:
+                ref = ref + 'A'
+
+        return ref
+
+    def _itemNumberCalculation(self, item, meeting, additionalQuery={}):
+        '''Compute the item number for PV '''
+        brains = meeting.getItems(useCatalog=True,
+                                  ordered=True,
+                                  additional_catalog_query=additionalQuery)
+        number = 0
+        for brain in brains:
+            number+=1
+            if brain.UID == item.UID():
+                found = True
+                break
+        if not found:
+            return ''
+        else:
+            return number
 
 
 class CustomCharleroiMeetingGroup(CustomMeetingGroup):
