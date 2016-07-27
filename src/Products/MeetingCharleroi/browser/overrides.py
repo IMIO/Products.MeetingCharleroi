@@ -99,3 +99,9 @@ class MCHMeetingDocumentGenerationHelperView(FolderDocumentGenerationHelperView)
         view = item.restrictedTraverse("@@document-generation")
         helper = view.get_generation_context_helper()
         return helper.printDelibeContentForCouncil()
+
+    def printItemContentForCollegePV(self, item):
+        """Printed on a College item, get the whole body of the item for the PV."""
+        body = item.getMotivation() and item.getMotivation() + '<p></p>' or ''
+        body += item.getDecision() + '<p></p>'
+        return body
