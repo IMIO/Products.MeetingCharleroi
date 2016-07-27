@@ -434,12 +434,14 @@ collegeMeeting.customAdvisers = [
      'delay_label': 'Incidence financière >= 22.000€',
      'available_on': 'python: item.adapted().mayChangeDelayTo(20)',
      'is_linked_to_previous_row': '1'}, ]
+
 collegeMeeting.itemPowerObserversStates = ('itemfrozen',
                                            'accepted',
                                            'delayed',
                                            'refused',
                                            'accepted_but_modified',
                                            'pre_accepted')
+collegeMeeting.itemGroupInChargeStates = collegeMeeting.itemPowerObserversStates + ('validated', 'presented')
 collegeMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed', 'accepted_but_modified', 'pre_accepted']
 collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
                                       'only_creator_may_delete', 'return_to_proposing_group',
