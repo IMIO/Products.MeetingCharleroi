@@ -317,8 +317,7 @@ collegeMeeting.categories = categories
 collegeMeeting.shortName = 'College'
 collegeMeeting.meetingFileTypes = [annexe, annexeBudget, annexeCahier,
                                    annexeDecision, annexeAvis, annexeAvisLegal]
-collegeMeeting.usedItemAttributes = ['detailedDescription',
-                                     'completeness',
+collegeMeeting.usedItemAttributes = ['completeness',
                                      'budgetInfos',
                                      'motivation',
                                      'observations',
@@ -345,7 +344,6 @@ collegeMeeting.itemColumns = ('Creator', 'CreationDate', 'ModificationDate', 're
                               'getCategory', 'proposing_group_acronym', 'advices', 'toDiscuss',
                               'getItemIsSigned', 'linkedMeetingDate', 'actions')
 collegeMeeting.xhtmlTransformFields = ('MeetingItem.description',
-                                       'MeetingItem.detailedDescription',
                                        'MeetingItem.decision',
                                        'MeetingItem.observations',
                                        'Meeting.observations', )
@@ -634,8 +632,7 @@ councilMeeting.itemCreatedOnlyUsingTemplate = True
 councilMeeting.useGroupsAsCategories = False
 councilMeeting.meetingFileTypes = [annexe, annexeBudget, annexeCahier,
                                    annexeDecision, annexeAvis, annexeAvisLegal]
-councilMeeting.usedItemAttributes = ['detailedDescription',
-                                     'motivation',
+councilMeeting.usedItemAttributes = ['motivation',
                                      'observations',
                                      'privacy',
                                      'itemAssembly',
@@ -653,7 +650,6 @@ councilMeeting.usedMeetingAttributes = ['startDate',
                                         'observations', ]
 councilMeeting.recordMeetingHistoryStates = []
 councilMeeting.xhtmlTransformFields = ('MeetingItem.description',
-                                       'MeetingItem.detailedDescription',
                                        'MeetingItem.decision',
                                        'MeetingItem.observations',
                                        'Meeting.observations', )

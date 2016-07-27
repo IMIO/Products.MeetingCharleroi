@@ -38,10 +38,6 @@ msgid "PloneMeeting_label_decision"
 msgstr ""
 
 #. Default: "Item presentation"
-msgid "PloneMeeting_label_detailedDescription"
-msgstr ""
-
-#. Default: "Item abstract"
 msgid "PloneMeeting_label_itemDescription"
 msgstr ""
 

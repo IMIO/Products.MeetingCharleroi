@@ -109,12 +109,8 @@ msgstr ""
 msgid "on_communication"
 msgstr ""
 
-#. Default: "Item abstract"
-msgid "PloneMeeting_label_itemDescription"
-msgstr ""
-
 #. Default: "Item presentation"
-msgid "PloneMeeting_label_detailedDescription"
+msgid "PloneMeeting_label_itemDescription"
 msgstr ""
 
 #. Default: "Assembly for Police"

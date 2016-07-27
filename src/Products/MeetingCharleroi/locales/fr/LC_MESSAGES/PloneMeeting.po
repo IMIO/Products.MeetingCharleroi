@@ -39,12 +39,8 @@ msgid "PloneMeeting_label_decision"
 msgstr "Dispositif"
 
 #. Default: "Item presentation"
-msgid "PloneMeeting_label_detailedDescription"
-msgstr "Exposé du point"
-
-#. Default: "Item abstract"
 msgid "PloneMeeting_label_itemDescription"
-msgstr "Résumé du point"
+msgstr "Exposé du point"
 
 #. Default: "Preamble"
 msgid "PloneMeeting_label_motivation"
