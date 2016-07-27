@@ -343,7 +343,7 @@ def addDemoData(context):
     _demoData(context.getSite(), 'dgen', ('dirgen', 'personnel'))
 
 
-def _demoData(site, userId, firstTwoGroupIds):
+def _demoData(site, userId, firstTwoGroupIds, dates=[]):
     """ """
     tool = api.portal.get_tool('portal_plonemeeting')
     cfg = getattr(tool, 'meeting-config-college')
@@ -362,8 +362,9 @@ def _demoData(site, userId, firstTwoGroupIds):
     if members is None:
         _createObjectByType('Folder', site, id='Members')
     # create 5 meetings : 2 passed, 1 current and 2 future
-    today = DateTime()
-    dates = [today-13, today-6, today+1, today+8, today+15]
+    if not dates:
+        today = DateTime()
+        dates = [today-13, today-6, today+1, today+8, today+15]
     mTool.createMemberArea(userId)
     secrFolder = tool.getPloneMeetingFolder(cfg.getId(), userId)
     for date in dates:
