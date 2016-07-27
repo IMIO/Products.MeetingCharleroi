@@ -128,3 +128,12 @@ msgstr ""
 #. Default: "Waiting advices (Proposed to service head)"
 msgid "icon_help_waiting_advices_from_proposed"
 msgstr ""
+
+#. Default: "Preamble"
+msgid "PloneMeeting_label_motivation"
+msgstr ""
+
+#. Default: "Plan"
+msgid "PloneMeeting_label_decision"
+msgstr ""
+

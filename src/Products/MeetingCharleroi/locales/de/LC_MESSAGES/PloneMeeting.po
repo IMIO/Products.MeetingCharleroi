@@ -33,12 +33,20 @@ msgstr ""
 msgid "PloneMeeting_label_assemblyPrivacySecretAbsents"
 msgstr ""
 
+#. Default: "Plan"
+msgid "PloneMeeting_label_decision"
+msgstr ""
+
 #. Default: "Item presentation"
 msgid "PloneMeeting_label_detailedDescription"
 msgstr ""
 
 #. Default: "Item abstract"
 msgid "PloneMeeting_label_itemDescription"
+msgstr ""
+
+#. Default: "Preamble"
+msgid "PloneMeeting_label_motivation"
 msgstr ""
 
 #. Default: "The completeness has been asked again by the application when the item has been proposed to the finances."

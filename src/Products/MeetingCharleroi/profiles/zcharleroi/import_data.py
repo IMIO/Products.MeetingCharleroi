@@ -635,16 +635,11 @@ councilMeeting.useGroupsAsCategories = False
 councilMeeting.meetingFileTypes = [annexe, annexeBudget, annexeCahier,
                                    annexeDecision, annexeAvis, annexeAvisLegal]
 councilMeeting.usedItemAttributes = ['detailedDescription',
-                                     'oralQuestion',
-                                     'itemInitiator',
                                      'motivation',
                                      'observations',
                                      'privacy',
                                      'itemAssembly',
-                                     'completeness',
-                                     'emergency',
                                      'budgetInfos',
-                                     'toDiscuss',
                                      'manuallyLinkedItems']
 councilMeeting.usedMeetingAttributes = ['startDate',
                                         'midDate',
