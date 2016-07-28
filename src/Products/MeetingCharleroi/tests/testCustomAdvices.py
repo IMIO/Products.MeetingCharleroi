@@ -95,6 +95,13 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         self._setupFinancesGroup()
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem')
+        # by default, only the 10 days delay is selectable
+        self.assertEqual(item.listOptionalAdvisers().keys(),
+                         ['not_selectable_value_delay_aware_optional_advisers',
+                          '%s__rowid__2016-05-01.0' % FINANCE_GROUP_ID,
+                          'not_selectable_value_non_delay_aware_optional_advisers',
+                          'developers',
+                          'vendors'])
         # select the 10 days delay
         item.setOptionalAdvisers(('%s__rowid__2016-05-01.0' % FINANCE_GROUP_ID, ))
         item.at_post_edit_script()

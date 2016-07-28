@@ -538,6 +538,14 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
                   if from 5, only proposingGroup (while having edit permission).
            In every case, 5 and 20 days are only available thru the popup widget, not from the item edit form,
            we check that 'managing_available_delays' is in the REQUEST."""
+        # in case nothing was already selected
+        # the only available value is 10
+        if not FINANCE_GROUP_ID in self.context.adviceIndex:
+            if days == 10:
+                return True
+            else:
+                return False
+
         res = False
         tool = api.portal.get_tool('portal_plonemeeting')
         is20DaysDelay = self.context.adviceIndex[FINANCE_GROUP_ID]['delay'] == '20'
