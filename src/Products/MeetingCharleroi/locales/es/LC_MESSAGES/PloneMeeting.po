@@ -26,7 +26,7 @@ msgstr ""
 msgid "MeetingCharleroi_label_advice_motivation_categories"
 msgstr ""
 
-#. Default: "Assembly for Police"
+#. Default: "Default assembly police"
 msgid "PloneMeeting_label_assemblyPolice"
 msgstr ""
 
@@ -44,6 +44,10 @@ msgstr ""
 
 #. Default: "Preamble"
 msgid "PloneMeeting_label_motivation"
+msgstr ""
+
+#. Default: "Define here the default assembly police (for example you may type a list of names and first names separated by colons or new lines) that will be automatically selected on newly created meetings."
+msgid "assembly_police_descr"
 msgstr ""
 
 #. Default: "The completeness has been asked again by the application when the item has been proposed to the finances."
@@ -84,6 +88,10 @@ msgstr ""
 
 #. Default: "Waiting advices (Proposed to service head)"
 msgid "icon_help_waiting_advices_from_proposed"
+msgstr ""
+
+#. Default: "Assembly for Police"
+msgid "meeting_assemblyPolice"
 msgstr ""
 
 #. Default: "The finances advice has not been selected on this item."

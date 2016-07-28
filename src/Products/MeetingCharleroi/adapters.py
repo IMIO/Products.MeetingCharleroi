@@ -31,8 +31,8 @@ from plone import api
 
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.permissions import ReviewPortalContent
-from Products.CMFCore.utils import getToolByName
 from Products.PloneMeeting.adapters import ItemPrettyLinkAdapter
+from Products.PloneMeeting.Meeting import Meeting
 from Products.PloneMeeting.MeetingConfig import MeetingConfig
 from Products.PloneMeeting.interfaces import IMeetingConfigCustom
 from Products.PloneMeeting.interfaces import IMeetingCustom
@@ -115,6 +115,14 @@ class CustomCharleroiMeeting(CustomMeeting):
 
     def __init__(self, meeting):
         self.context = meeting
+
+    def getDefaultAssemblyPolice(self):
+        """ """
+        if self.attributeIsUsed('assemblyPolice'):
+            tool = api.portal.get_tool('portal_plonemeeting')
+            return tool.getMeetingConfig(self).getAssemblyPolice()
+        return ''
+    Meeting.getDefaultAssemblyPolice = getDefaultAssemblyPolice
 
     def _getPoliceItems(self, itemUids, categories=[], excludedCategories=[], listTypes=['normal']):
         """Get all items from the group 'Police'."""
