@@ -155,7 +155,7 @@ class CustomCharleroiMeeting(CustomMeeting):
             # items headed to another meeting config
             else:
                 filteredItems += [item for item in groupedItems[1:]
-                                if meetingConfigId in item.getOtherMeetingConfigsClonableTo()]
+                                  if meetingConfigId in item.getOtherMeetingConfigsClonableTo()]
             # if there is no item, do not keep the proposing group.
             if len(filteredItems) > 1:
                 filteredGroupedItems.append(filteredItems)
@@ -573,13 +573,9 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
     def getItemRefForActe(self, oj=False):
         '''Compute the item number for PV'''
         item = self.getSelf()
-        isPoliceItem = item.getProposingGroup()=='zone-de-police' and True or False
-        isCommuItem = item.getCategory()=='communication' and True or False
-        toSendToCouncil = 'meeting-config-council' in item.getOtherMeetingConfigsClonableTo() and True or False
-        meeting = item.getMeeting()
-        year = meeting.getDate().strftime('%Y')
-        meetingNumber = meeting.getMeetingNumber()
-        ref = str(year) + '/' + str(meetingNumber)
+        isPoliceItem = bool(item.getProposingGroup() == 'zone-de-police')
+        isCommuItem = bool(item.getCategory() == 'communication')
+        toSendToCouncil = bool('meeting-config-council' in item.getOtherMeetingConfigsClonableTo())
 
         additionalQuery = {}
         policeItems = {'getProposingGroup': {'query': 'zone-de-police'}}
@@ -590,7 +586,12 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         notToSendToCouncilItems = {'sentToInfos': {'query': 'not_to_be_cloned_to'}}
         notCommunicationItems = {'getCategory': {'not': 'communication'}}
 
+        ref = '-'
         if not isCommuItem:
+            meeting = item.getMeeting()
+            year = meeting.getDate().strftime('%Y')
+            meetingNumber = meeting.getMeetingNumber()
+            ref = str(year) + '/' + str(meetingNumber)
             additionalQuery.update(notCommunicationItems)
             if isPoliceItem:
                 additionalQuery.update(policeItems)
@@ -608,9 +609,9 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
                 else:
                     ref = ref + '/C'
                     additionalQuery.update(toSendToCouncilItems)
+            itemNumber = self._itemNumberCalculation(item, meeting, additionalQuery)
+            ref = ref + '/' + str(itemNumber)
 
-        itemNumber = self._itemNumberCalculation(item, meeting, additionalQuery)
-        ref = ref + '/' +  str(itemNumber)
         # if for oj, manage the A and B items.
         if oj:
             if item.getToDiscuss():
@@ -627,7 +628,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
                                   additional_catalog_query=additionalQuery)
         number = 0
         for brain in brains:
-            number+=1
+            number += 1
             if brain.UID == item.UID():
                 found = True
                 break
