@@ -8,8 +8,8 @@
 #
 
 from plone import api
-from Products.PloneMeeting.browser.views import ItemDocumentGenerationHelperView
-from Products.PloneMeeting.browser.views import FolderDocumentGenerationHelperView
+from Products.MeetingCommunes.browser.overrides import MCItemDocumentGenerationHelperView
+from Products.MeetingCommunes.browser.overrides import MCMeetingDocumentGenerationHelperView
 from Products.PloneMeeting.browser.views import MeetingBeforeFacetedInfosView
 from Products.PloneMeeting.utils import getLastEvent
 
@@ -18,14 +18,14 @@ class MCHMeetingBeforeFacetedInfosView(MeetingBeforeFacetedInfosView):
     """ """
 
 
-class MCHItemDocumentGenerationHelperView(ItemDocumentGenerationHelperView):
+class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
     """Specific printing methods used for item."""
 
     def printDelibeContentForCollege(self):
         """Printed on a College item, get the whole body of the delibe in one shot."""
         body = self.context.getMotivation() and self.context.getMotivation() + '<p></p>' or ''
-        if self.context.adapted().getLegalTextForFDAdvice():
-            body += self.context.adapted().getLegalTextForFDAdvice() + '<p></p>'
+        if self.getLegalTextForFDAdvice():
+            body += self.getLegalTextForFDAdvice() + '<p></p>'
         body += "<p><strong>Décide:</strong> <br/></p>"
         body += self.context.getDecision() + '<p></p>'
         if self.context.getSendToAuthority():
@@ -38,8 +38,8 @@ class MCHItemDocumentGenerationHelperView(ItemDocumentGenerationHelperView):
     def printDelibeContentForCouncil(self):
         """Printed on a Council item, get the whole body of the delibe in one shot."""
         body = self.context.getMotivation() and self.context.getMotivation() + '<p></p>' or ''
-        if self.context.adapted().getLegalTextForFDAdvice():
-            body += self.context.adapted().getLegalTextForFDAdvice() + '<p></p>'
+        if self.getLegalTextForFDAdvice():
+            body += self.getLegalTextForFDAdvice() + '<p></p>'
         #body += self.printCollegeProposalInfos().encode("utf-8")
         body += self.context.getDecision() + '<p></p>'
         if self.context.getSendToAuthority():
@@ -79,7 +79,7 @@ class MCHItemDocumentGenerationHelperView(ItemDocumentGenerationHelperView):
         return ''
 
 
-class MCHMeetingDocumentGenerationHelperView(FolderDocumentGenerationHelperView):
+class MCHMeetingDocumentGenerationHelperView(MCMeetingDocumentGenerationHelperView):
     """Specific printing methods used for meeting."""
 
     def printItemDelibeContentForCollege(self, item):
@@ -102,6 +102,6 @@ class MCHMeetingDocumentGenerationHelperView(FolderDocumentGenerationHelperView)
 
     def printItemContentForCollegePV(self, item):
         """Printed on a College item, get the whole body of the item for the PV."""
-        body = item.getMotivation() and item.getMotivation() + '<p></p>' or ''
-        body += item.getDecision() + '<p></p>'
-        return body
+        view = item.restrictedTraverse("@@document-generation")
+        helper = view.get_generation_context_helper()
+        return helper.printDelibeContentForCollege()

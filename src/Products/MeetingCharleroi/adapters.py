@@ -365,56 +365,6 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
     def __init__(self, item):
         self.context = item
 
-    def getLegalTextForFDAdvice(self, isMeeting=False):
-        '''
-        Helper method. Return legal text for each advice type.
-        '''
-        if not 'dirfin' in self.context.getAdviceDataFor(self.context):
-            return ''
-
-        advice = self.context.getAdviceDataFor(self.context, 'dirfin')()
-        hidden = advice['hidden_during_redaction']
-        statusWhenStopped = advice['delay_infos']['delay_status_when_stopped']
-        adviceType = advice['type']
-        comment = advice['comment']
-        adviceGivenOnLocalized = advice['advice_given_on_localized']
-        delayStartedOnLocalized = advice['delay_infos']['delay_started_on_localized']
-        delayStatus = advice['delay_infos']['delay_status']
-        outOfFinancialdptLocalized = advice['out_of_financial_dpt_localized']
-        limitDateLocalized = advice['delay_infos']['limit_date_localized']
-
-        if not isMeeting:
-            res = FINANCE_ADVICE_LEGAL_TEXT_PRE.format(delayStartedOnLocalized)
-
-        if not hidden and \
-           adviceGivenOnLocalized and \
-           (adviceType in (u'positive_finance', u'positive_with_remarks_finance', u'negative_finance')):
-            if adviceType in (u'positive_finance', u'positive_with_remarks_finance'):
-                adviceTypeFr = 'favorable'
-            else:
-                adviceTypeFr = 'défavorable'
-            #if it's a meetingItem, return the legal bullshit.
-            if not isMeeting:
-                res = res + FINANCE_ADVICE_LEGAL_TEXT.format(
-                    adviceTypeFr,
-                    outOfFinancialdptLocalized
-                )
-            #if it's a meeting, returns only the type and date of the advice.
-            else:
-                res = "<p>Avis {0} du Directeur Financier du {1}</p>".format(
-                    adviceTypeFr, outOfFinancialdptLocalized)
-
-            if comment and adviceType == u'negative_finance':
-                res = res + "<p>{0}</p>".format(comment)
-        elif statusWhenStopped == 'stopped_timed_out' or delayStatus == 'timed_out':
-            if not isMeeting:
-                res = res + FINANCE_ADVICE_LEGAL_TEXT_NOT_GIVEN
-            else:
-                res = "<p>Avis du Directeur financier expiré le {0}</p>".format(limitDateLocalized)
-        else:
-            res = ''
-        return res
-
     def getCustomAdviceMessageFor(self, advice):
         '''If we are on a finance advice that is still not giveable because
            the item is not 'complete', we display a clear message.'''
