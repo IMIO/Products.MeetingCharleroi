@@ -13,6 +13,11 @@ from Products.MeetingCommunes.browser.overrides import MCMeetingDocumentGenerati
 from Products.PloneMeeting.browser.views import MeetingBeforeFacetedInfosView
 from Products.PloneMeeting.utils import getLastEvent
 
+FIN_ADVICE_LINE1 = "<p>Considérant la communication du dossier au Directeur financier faite en date du {0}, " \
+    "conformément à l'article L1124-40 §1er, 3° et 4° du " \
+    "Code de la Démocratie locale et de la Décentralisation ;</p>"
+FIN_ADVICE_LINE2 = "<p>Considérant son avis {0} du {1} joint en annexe ;</p>"
+
 
 class MCHMeetingBeforeFacetedInfosView(MeetingBeforeFacetedInfosView):
     """ """
@@ -21,11 +26,50 @@ class MCHMeetingBeforeFacetedInfosView(MeetingBeforeFacetedInfosView):
 class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
     """Specific printing methods used for item."""
 
+    def _showFinancesAdvice(self):
+        """Finances advice is only shown :
+           - if given (at worst it will be 'not_given_finance');
+           - if item is 'validated' to everybody;
+           - if it is 'prevalidated_waiting_advices', to finances advisers."""
+        financeAdviceId = self.context.adapted().getFinanceAdviceId()
+        if not financeAdviceId:
+            return False
+        adviceObj = self.context.getAdviceObj(financeAdviceId)
+        if not adviceObj:
+            return False
+        item_state = self.context.queryState()
+        tool = api.portal.get_tool('portal_plonemeeting')
+        financeAdviceGroup = getattr(tool, financeAdviceId)
+        if item_state == 'validated' or \
+           self.context.hasMeeting() or \
+           (item_state == 'prevalidated_waiting_advices' and financeAdviceGroup.userPloneGroups(suffixes=['advisers'])):
+            return True
+
+    def printFinancesAdvice(self):
+        """Print the legal text regarding Finances advice."""
+        if not self._showFinancesAdvice():
+            return ''
+        adviceData = self.context.getAdviceDataFor(self.context.context, self.context.adapted().getFinanceAdviceId())
+        delayStartedOnLocalized = adviceData['delay_infos']['delay_started_on_localized']
+        adviceGivenOnLocalized = adviceData['advice_given_on_localized']
+        adviceTypeTranslated = ''
+        if adviceData['type'] in ('positive_finance', 'positive_with_remarks_finance'):
+            adviceTypeTranslated = 'favorable'
+        elif adviceData['type'] == 'negative_finance':
+            adviceTypeTranslated = 'défavorable'
+        elif adviceData['type'] == 'cautious_finance':
+            adviceTypeTranslated = 'réservé'
+        elif adviceData['type'] == 'not_given_finance':
+            adviceTypeTranslated = 'non remis'
+        return FIN_ADVICE_LINE1.format(delayStartedOnLocalized) + \
+            FIN_ADVICE_LINE2.format(adviceTypeTranslated, adviceGivenOnLocalized)
+
     def printDelibeContentForCollege(self):
         """Printed on a College item, get the whole body of the delibe in one shot."""
         body = self.context.getMotivation() and self.context.getMotivation() + '<p></p>' or ''
-        if self.getLegalTextForFDAdvice():
-            body += self.getLegalTextForFDAdvice() + '<p></p>'
+        finAdvice = self.printFinancesAdvice()
+        if finAdvice:
+            body += finAdvice + '<p></p>'
         body += "<p><strong>Décide:</strong> <br/></p>"
         body += self.context.getDecision() + '<p></p>'
         if self.context.getSendToAuthority():
@@ -38,8 +82,9 @@ class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
     def printDelibeContentForCouncil(self):
         """Printed on a Council item, get the whole body of the delibe in one shot."""
         body = self.context.getMotivation() and self.context.getMotivation() + '<p></p>' or ''
-        if self.getLegalTextForFDAdvice():
-            body += self.getLegalTextForFDAdvice() + '<p></p>'
+        finAdvice = self.printFinancesAdvice()
+        if finAdvice:
+            body += finAdvice + '<p></p>'
         #body += self.printCollegeProposalInfos().encode("utf-8")
         body += self.context.getDecision() + '<p></p>'
         if self.context.getSendToAuthority():
