@@ -310,9 +310,7 @@ collegeMeeting.certifiedSignatures = [
      'date_to': '',
      },
 ]
-collegeMeeting.places = """Place1\r
-Place2\r
-Place3\r"""
+collegeMeeting.places = """Aile Dauphin 101 - Hôtel de Ville de Charleroi"""
 collegeMeeting.categories = categories
 collegeMeeting.shortName = 'College'
 collegeMeeting.meetingFileTypes = [annexe, annexeBudget, annexeCahier,
