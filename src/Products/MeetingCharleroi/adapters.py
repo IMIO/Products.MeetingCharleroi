@@ -62,9 +62,6 @@ from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCouncilWorkflo
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowActions
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowConditions
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
-from Products.MeetingCharleroi.config import FINANCE_ADVICE_LEGAL_TEXT_PRE
-from Products.MeetingCharleroi.config import FINANCE_ADVICE_LEGAL_TEXT
-from Products.MeetingCharleroi.config import FINANCE_ADVICE_LEGAL_TEXT_NOT_GIVEN
 from Products.MeetingCharleroi.config import FINANCE_GIVEABLE_ADVICE_STATES
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_ID

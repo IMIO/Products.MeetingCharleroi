@@ -18,6 +18,8 @@ FIN_ADVICE_LINE1 = "<p>Considérant la communication du dossier au Directeur fin
     "Code de la Démocratie locale et de la Décentralisation ;</p>"
 FIN_ADVICE_LINE2 = "<p>Considérant son avis {0} du {1} joint en annexe ;</p>"
 
+FIN_ADVICE_ITEM = "<p><strong>Avis du Directeur financier :</strong></p><p>Type d'avis : {0}</p><p>Demandé le : {1}</p><p>Émis le : {2}</p>"
+
 
 class MCHMeetingBeforeFacetedInfosView(MeetingBeforeFacetedInfosView):
     """ """
@@ -45,13 +47,9 @@ class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
            (item_state == 'prevalidated_waiting_advices' and financeAdviceGroup.userPloneGroups(suffixes=['advisers'])):
             return True
 
-    def printFinancesAdvice(self):
-        """Print the legal text regarding Finances advice."""
-        if not self._showFinancesAdvice():
-            return ''
+    def _financeAdviceData(self):
+        """ """
         adviceData = self.context.getAdviceDataFor(self.context.context, self.context.adapted().getFinanceAdviceId())
-        delayStartedOnLocalized = adviceData['delay_infos']['delay_started_on_localized']
-        adviceGivenOnLocalized = adviceData['advice_given_on_localized']
         adviceTypeTranslated = ''
         if adviceData['type'] in ('positive_finance', 'positive_with_remarks_finance'):
             adviceTypeTranslated = 'favorable'
@@ -61,6 +59,17 @@ class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
             adviceTypeTranslated = 'réservé'
         elif adviceData['type'] == 'not_given_finance':
             adviceTypeTranslated = 'non remis'
+        adviceData['advice_type_translated'] = adviceTypeTranslated
+        return adviceData
+
+    def printFinancesAdvice(self):
+        """Print the legal text regarding Finances advice."""
+        if not self._showFinancesAdvice():
+            return ''
+        adviceData = self._financeAdviceData()
+        delayStartedOnLocalized = adviceData['delay_infos']['delay_started_on_localized']
+        adviceGivenOnLocalized = adviceData['advice_given_on_localized']
+        adviceTypeTranslated = adviceData['advice_type_translated']
         return FIN_ADVICE_LINE1.format(delayStartedOnLocalized) + \
             FIN_ADVICE_LINE2.format(adviceTypeTranslated, adviceGivenOnLocalized)
 
@@ -129,8 +138,6 @@ class MCHMeetingDocumentGenerationHelperView(MCMeetingDocumentGenerationHelperVi
 
     def printItemDelibeContentForCollege(self, item):
         """
-        Printed on a College Item in a College Meeting, get the whole body
-        of the delibe in one shot.
         """
         view = item.restrictedTraverse("@@document-generation")
         helper = view.get_generation_context_helper()
@@ -138,15 +145,34 @@ class MCHMeetingDocumentGenerationHelperView(MCMeetingDocumentGenerationHelperVi
 
     def printItemDelibeContentForCouncil(self, item):
         """
-        Printed on a Council Item in a Council Meeting, get the whole body
-        of the delibe in one shot.
         """
         view = item.restrictedTraverse("@@document-generation")
         helper = view.get_generation_context_helper()
         return helper.printDelibeContentForCouncil()
 
     def printItemContentForCollegePV(self, item):
-        """Printed on a College item, get the whole body of the item for the PV."""
+        """
+        """
         view = item.restrictedTraverse("@@document-generation")
         helper = view.get_generation_context_helper()
         return helper.printDelibeContentForCollege()
+
+    def printItemPresentation(self, item):
+        """
+        """
+        body = item.Description() and item.Description() + '<p></p>' or ''
+        # insert finances advice
+        view = item.restrictedTraverse("@@document-generation")
+        helper = view.get_generation_context_helper()
+        finAdvice = ''
+        if helper._showFinancesAdvice():
+            adviceData = helper._financeAdviceData()
+            adviceTypeTranslated = adviceData['advice_type_translated']
+            delayStartedOnLocalized = adviceData['delay_infos']['delay_started_on_localized']
+            adviceGivenOnLocalized = adviceData['advice_given_on_localized']
+            finAdvice = FIN_ADVICE_ITEM.format(adviceTypeTranslated,
+                                               delayStartedOnLocalized,
+                                               adviceGivenOnLocalized)
+        if finAdvice:
+            body += finAdvice + '<p></p>'
+        return body
