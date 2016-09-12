@@ -574,6 +574,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
                                   ordered=True,
                                   additional_catalog_query=additionalQuery)
         number = 0
+        found = False
         for brain in brains:
             number += 1
             if brain.UID == item.UID():
