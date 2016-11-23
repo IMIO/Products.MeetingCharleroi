@@ -31,6 +31,7 @@ from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingChar
 
 from plone import api
 
+
 class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
     """
         Tests the Meeting adapted methods
@@ -329,7 +330,6 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
                                                                                   itemType='toCouncil',
                                                                                   listTypes='depose')
 
-
         # Communication items
         standardCommuItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
                                                                           standard=True,
@@ -460,11 +460,11 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
 
         self.changeUser('pmManager')
         # create items with various categories
-        itemDev1 = self.create('MeetingItem', category='deployment')
-        itemDev2 = self.create('MeetingItem', category='deployment')
+        itemDev1 = self.create('MeetingItem', category='development')
+        itemDev2 = self.create('MeetingItem', category='development')
         itemDev3 = self.create('MeetingItem', category=COMMUNICATION_CAT_ID)
-        itemVen1 = self.create('MeetingItem', proposingGroup='vendors', category='development')
-        itemVen2 = self.create('MeetingItem', proposingGroup='vendors', category='deployment')
+        itemVen1 = self.create('MeetingItem', proposingGroup='vendors', category='research')
+        itemVen2 = self.create('MeetingItem', proposingGroup='vendors', category='development')
         itemVen3 = self.create('MeetingItem', proposingGroup='vendors', category=COMMUNICATION_CAT_ID)
         meeting = self.create('Meeting', date=DateTime())
         for item in [itemDev1, itemDev2, itemDev3,
@@ -474,7 +474,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         orderedItems = meeting.getItems(ordered=True)
         self.assertEquals([item.getCategory() for item in orderedItems],
                           [COMMUNICATION_CAT_ID, COMMUNICATION_CAT_ID,
-                           'deployment', 'deployment', 'development', 'deployment'])
+                           'development', 'development', 'research', 'development'])
 
     def test_pm_FullInsertingProcess(self):
         '''Test inserting an item using the relevant inserting methods.'''
@@ -516,11 +516,13 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
              ('depose', 'zone-de-police', 'groupincharge1', (), (), 'remboursement'),
              ('normal', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), 'affaires-juridiques'),
              ('normal', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), 'affaires-juridiques'),
-             ('normal', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), ('meeting-config-council',), 'affaires-juridiques'),
+             ('normal', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), ('meeting-config-council',),
+              'affaires-juridiques'),
              ('normal', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), 'remboursement'),
              ('late', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), 'affaires-juridiques'),
              ('late', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), 'affaires-juridiques'),
-             ('late', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), ('meeting-config-council',), 'affaires-juridiques'),
+             ('late', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), ('meeting-config-council',),
+              'affaires-juridiques'),
              ('late', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), 'remboursement'),
              ('normal', 'zone-de-police', 'groupincharge1', (), (), 'communication'),
              ('normal', 'zone-de-police', 'groupincharge1', (), (), 'communication'),
@@ -538,10 +540,12 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
              ('normal', 'developers', 'groupincharge2', ('meeting-config-council',), (), 'affaires-juridiques'),
              ('normal', 'developers', 'groupincharge2', ('meeting-config-council',), (), 'affaires-juridiques'),
              ('normal', 'developers', 'groupincharge2', ('meeting-config-council',), (), 'remboursement'),
-             ('normal', 'developers', 'groupincharge2', ('meeting-config-council',), ('meeting-config-council',), 'remboursement'),
+             ('normal', 'developers', 'groupincharge2', ('meeting-config-council',), ('meeting-config-council',),
+              'remboursement'),
              ('late', 'developers', 'groupincharge2', ('meeting-config-council',), (), 'affaires-juridiques'),
              ('late', 'developers', 'groupincharge2', ('meeting-config-council',), (), 'remboursement'),
-             ('late', 'developers', 'groupincharge2', ('meeting-config-council',), ('meeting-config-council',), 'remboursement'),
+             ('late', 'developers', 'groupincharge2', ('meeting-config-council',), ('meeting-config-council',),
+              'remboursement'),
              ('normal', 'developers', 'groupincharge2', (), (), 'communication'),
              ('normal', 'developers', 'groupincharge2', (), (), 'communication'),
              ('normal', 'developers', 'groupincharge2', (), (), 'communication')])
