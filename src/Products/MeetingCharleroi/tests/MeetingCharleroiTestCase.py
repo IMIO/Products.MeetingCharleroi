@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2007-2012 by CommunesPlone.org
+# Copyright (c) 2016 by Imio.be
 #
 # GNU General Public License (GPL)
 #
@@ -29,21 +29,9 @@ from Products.MeetingCharleroi.tests.helpers import MeetingCharleroiTestingHelpe
 class MeetingCharleroiTestCase(PloneMeetingTestCase, MeetingCharleroiTestingHelpers):
     """Base class for defining MeetingCharleroi test cases."""
 
-    # Some default content
-    descriptionText = '<p>Some description</p>'
-    decisionText = '<p>Some decision.</p>'
-    # by default, PloneMeeting's test file testPerformances.py and
-    # testConversionWithDocumentViewer.py' are ignored, override the subproductIgnoredTestFiles
-    # attribute to take these files into account
-    #subproductIgnoredTestFiles = ['testPerformances.py', ]
-
     layer = MCH_TESTING_PROFILE_FUNCTIONAL
 
     def setUp(self):
         PloneMeetingTestCase.setUp(self)
         self.meetingConfig = getattr(self.tool, 'meeting-config-college')
         self.meetingConfig2 = getattr(self.tool, 'meeting-config-council')
-        # Set the default file and file type for adding annexes
-        self.annexFile = 'INSTALL.TXT'
-        self.annexFileType = 'annexeBudget'
-        self.annexFileTypeDecision = 'annexeDecision'

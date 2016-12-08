@@ -83,6 +83,7 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         self.do(item2, 'propose')
         # pmReviewer1 validates item1 and adds an annex to it
         self.changeUser('pmServiceHead1')
+        import ipdb; ipdb.set_trace()
         self.addAnnex(item1, relatedTo='item_decision')
         self.do(item1, 'proposeToRefAdmin')
         self.changeUser('pmRefAdmin1')

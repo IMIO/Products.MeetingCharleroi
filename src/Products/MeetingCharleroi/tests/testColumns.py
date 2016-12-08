@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# File: testMeetingFileType.py
+# File: testColumns.py
 #
-# Copyright (c) 2007-2013 by Imio.be
+# Copyright (c) 2016 by Imio.be
 #
 # GNU General Public License (GPL)
 #
@@ -23,15 +23,15 @@
 #
 
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
-from Products.MeetingCommunes.tests.testMeetingFileType import testMeetingFileType as mcmft
+from Products.MeetingCommunes.tests.testColumns import testColumns as mctc
 
 
-class testMeetingFileType(MeetingCharleroiTestCase, mcmft):
-    '''Tests the MeetingFileType class methods.'''
+class testColumns(MeetingCharleroiTestCase, mctc):
+    ''' '''
 
 
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
-    suite.addTest(makeSuite(testMeetingFileType, prefix='test_'))
+    suite.addTest(makeSuite(testColumns, prefix='test_'))
     return suite
