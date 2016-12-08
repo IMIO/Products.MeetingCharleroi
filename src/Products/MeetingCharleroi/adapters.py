@@ -31,6 +31,7 @@ from plone import api
 
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.permissions import ReviewPortalContent
+from Products.CMFCore.utils import _checkPermission
 from Products.PloneMeeting.adapters import ItemPrettyLinkAdapter
 from Products.PloneMeeting.Meeting import Meeting
 from Products.PloneMeeting.MeetingConfig import MeetingConfig
@@ -42,7 +43,6 @@ from Products.PloneMeeting.interfaces import IToolPloneMeetingCustom
 from Products.PloneMeeting.model import adaptations
 from Products.PloneMeeting.model.adaptations import grantPermission
 from Products.PloneMeeting.model.adaptations import WF_APPLIED
-from Products.PloneMeeting.utils import checkPermission
 from Products.PloneMeeting.utils import getLastEvent
 from Products.MeetingCommunes.adapters import CustomMeeting
 from Products.MeetingCommunes.adapters import CustomMeetingConfig
@@ -498,7 +498,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         is20DaysDelay = self.context.adviceIndex[FINANCE_GROUP_ID]['delay'] == '20'
         # bypass for Managers
         isManager = tool.isManager(self.context)
-        if days == 10 and checkPermission(ModifyPortalContent, self.context) and not is20DaysDelay:
+        if days == 10 and _checkPermission(ModifyPortalContent, self.context) and not is20DaysDelay:
             res = True
         # change delay widget
         elif self.context.REQUEST.get('managing_available_delays', None):
@@ -512,7 +512,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
                     res = True
             # to 5, only available thru change delay widget
             elif days == 5 and not is20DaysDelay:
-                if checkPermission(ModifyPortalContent, self.context):
+                if _checkPermission(ModifyPortalContent, self.context):
                     res = True
 
         return res
@@ -696,7 +696,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
 
     def mayProposeToRefAdmin(self):
         res = False
-        if checkPermission(ReviewPortalContent, self.context):
+        if _checkPermission(ReviewPortalContent, self.context):
             res = True
         return res
 
@@ -786,7 +786,7 @@ class MeetingItemCharleroiCouncilWorkflowConditions(MeetingItemCharleroiCollegeW
           Check that the user has the 'Review portal content'
         """
         res = False
-        if checkPermission(ReviewPortalContent, self.context):
+        if _checkPermission(ReviewPortalContent, self.context):
             res = True
         return res
 
