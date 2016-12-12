@@ -28,6 +28,7 @@ from plone.dexterity.utils import createContentInContainer
 from Products.CMFCore.permissions import DeleteObjects
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
+from Products.MeetingCharleroi.profiles.zcharleroi import import_data as charleroi_import_data
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 from zope.i18n import translate
 
@@ -419,3 +420,51 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # advice is no more editable/deletable by finances
         self.assertFalse(self.hasPermission(ModifyPortalContent, advice))
         self.assertFalse(self.hasPermission(DeleteObjects, advice))
+
+    def test_CollegePostPoneNextMeetingWithGivenAdvices(self):
+        '''Check that postpone_next_meeting will work, especially because if finances advice
+           is asked, it must be mandatorily given for the item to be validated.'''
+        cfg = self.meetingConfig
+        self.changeUser('siteadmin')
+        self._configureFinancesAdvice(cfg)
+        cfg.setWorkflowAdaptations(charleroi_import_data.collegeMeeting.workflowAdaptations)
+        cfg.at_post_edit_script()
+
+        self.changeUser('pmCreator1')
+        item = self.create('MeetingItem', title='The first item')
+        # ask finances advice
+        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
+        item.at_post_edit_script()
+        self.proposeItem(item)
+
+        # finances advice
+        self.changeUser('pmReviewer1')
+        self.do(item, 'wait_advices_from_prevalidated')
+        self.changeUser('pmFinController')
+        item.setCompleteness('completeness_complete')
+        # give advice positive with remarks
+        # finances advice WF is tested in test_CollegeFinancesAdviceWF
+        advice = createContentInContainer(
+            item,
+            'meetingadvicefinances',
+            **{'advice_group': FINANCE_GROUP_ID,
+               'advice_type': u'positive_finance',
+               'advice_comment': RichTextValue(u'My comment finances'),
+               'advice_category': u'acquisitions'})
+        self.do(advice, 'proposeToFinancialReviewer')
+        self.changeUser('pmFinReviewer')
+        self.do(advice, 'proposeToFinancialManager')
+        self.changeUser('pmFinManager')
+        self.do(advice, 'signFinancialAdvice')
+
+        # item was automatically validated, present it into a meeting
+        self.changeUser('pmManager')
+        meeting = self.create('Meeting', date=DateTime('2016/12/11'))
+        self.presentItem(item)
+        self.decideMeeting(meeting)
+        self.do(item, 'postpone_next_meeting')
+        # item was postponed, cloned item is validated and advices are inherited
+        self.assertEqual(item.queryState(), 'postponed_next_meeting')
+        cloneItem = item.getBRefs('ItemPredecessor')[0]
+        for adviceInfo in cloneItem.adviceIndex.values():
+            self.assertTrue(adviceInfo['inherited'])

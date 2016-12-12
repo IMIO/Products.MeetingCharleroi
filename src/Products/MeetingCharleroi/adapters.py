@@ -710,7 +710,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
 
     def mayValidate(self):
         res = MeetingItemCollegeWorkflowConditions.mayValidate(self)
-        if res:
+        if res and not self.context.REQUEST.get('postponing_item', False):
             # if finances advice is asked, item may only be validated
             # if the advice have actually be given
             if FINANCE_GROUP_ID in self.context.adviceIndex and \
