@@ -65,6 +65,26 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
            Tested in testCustomWorkflows.py'''
         pass
 
+    def test_pm_WFA_charleroi_add_refadmin(self):
+        '''Test that permissions are correct when the WFA is enabled.'''
+        cfg = self.meetingConfig
+        self.changeUser('siteadmin')
+        cfg.setWorkflowAdaptations(())
+        cfg.at_post_edit_script()
+        itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
+        self.assertFalse('proposed_to_refadmin' in itemWF.states)
+        # activate, needs the 'pre_validation' WFA
+        cfg.setWorkflowAdaptations(('charleroi_add_refadmin', ))
+        cfg.at_post_edit_script()
+        itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
+        self.assertFalse('proposed_to_refadmin' in itemWF.states)
+        # together with 'pre_validation', it is ok
+        cfg.setWorkflowAdaptations(('pre_validation',
+                                    'charleroi_add_refadmin', ))
+        cfg.at_post_edit_script()
+        itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
+        self.assertTrue('proposed_to_refadmin' in itemWF.states)
+
     def _waiting_advices_with_prevalidation_active(self):
         '''Enable WFAdaptation 'charleroi_add_refadmin' before executing test.'''
         cfg = self.meetingConfig

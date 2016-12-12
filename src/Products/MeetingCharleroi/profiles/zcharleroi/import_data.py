@@ -680,8 +680,7 @@ councilMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed',
                                     'accepted_but_modified', 'pre_accepted',
                                     'postponed_next_meeting', 'marked_not_applicable']
 councilMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
-                                      'return_to_proposing_group', 'pre_validation',
-                                      'charleroi_add_refadmin', 'postpone_next_meeting',
+                                      'return_to_proposing_group', 'items_come_validated',
                                       'mark_not_applicable']
 councilMeeting.transitionsForPresentingAnItem = ('propose', 'proposeToRefAdmin', 'prevalidate', 'validate', 'present', )
 councilMeeting.onMeetingTransitionItemTransitionToTrigger = ({'meeting_transition': 'freeze',
