@@ -678,11 +678,11 @@ councilMeeting.itemAdviceEditStates = ()
 councilMeeting.itemAdviceViewStates = ()
 councilMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed',
                                     'accepted_but_modified', 'pre_accepted',
-                                    'postponed_next_meeting', 'marked_not_applicable']
+                                    'marked_not_applicable']
 councilMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
                                       'return_to_proposing_group', 'items_come_validated',
                                       'mark_not_applicable']
-councilMeeting.transitionsForPresentingAnItem = ('propose', 'proposeToRefAdmin', 'prevalidate', 'validate', 'present', )
+councilMeeting.transitionsForPresentingAnItem = ('present', )
 councilMeeting.onMeetingTransitionItemTransitionToTrigger = ({'meeting_transition': 'freeze',
                                                               'item_transition': 'itemfreeze'},
 
@@ -706,7 +706,6 @@ councilMeeting.itemRestrictedPowerObserversStates = councilMeeting.itemPowerObse
 councilMeeting.meetingPowerObserversStates = ('frozen', 'decided', 'closed')
 councilMeeting.meetingRestrictedPowerObserversStates = councilMeeting.meetingPowerObserversStates
 councilMeeting.powerAdvisersGroups = ()
-councilMeeting.itemBudgetInfosStates = ('proposed', 'validated', 'presented')
 councilMeeting.useCopies = True
 councilMeeting.selectableCopyGroups = [groups[0].getIdSuffixed('reviewers'),
                                        groups[1].getIdSuffixed('reviewers'),
