@@ -62,18 +62,6 @@ msgstr "Advice is still not giveable because item is not considered complete."
 msgid "finance_advice_suspended_because_item_sent_back_to_proposing_group"
 msgstr "Advice is suspended because it was sent back to proposing group."
 
-#. Default: "Financial controllers"
-msgid "financialcontrollers"
-msgstr "Financial controllers"
-
-#. Default: "Financial managers"
-msgid "financialmanagers"
-msgstr "Financial managers"
-
-#. Default: "Financial reviewers"
-msgid "financialreviewers"
-msgstr "Financial reviewers"
-
 #. Default: "Pre-validated"
 msgid "icon_help_prevalidated"
 msgstr "Pre-validated"

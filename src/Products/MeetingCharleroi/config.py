@@ -105,6 +105,7 @@ FINANCE_ADVICE_HISTORIZE_COMMENTS = 'financial_advice_signed_historized_comments
 # copy/pasted from MeetingCommunes because importing from MeetingCommunes break
 # the constant monkey patches...
 FINANCE_GROUP_SUFFIXES = ('financialcontrollers',
+                          'financialeditors',
                           'financialreviewers',
                           'financialmanagers')
 CHARLEROI_EXTRA_ADVICE_SUFFIXES = {FINANCE_GROUP_ID: list(FINANCE_GROUP_SUFFIXES)}

@@ -62,18 +62,6 @@ msgstr "Cet avis ne pourra être rendu que lorsque le point sera considéré 'co
 msgid "finance_advice_suspended_because_item_sent_back_to_proposing_group"
 msgstr "Cet avis est suspendu car le point a été renvoyé vers le groupe proposant."
 
-#. Default: "Financial controllers"
-msgid "financialcontrollers"
-msgstr "Contrôleurs financiers"
-
-#. Default: "Financial managers"
-msgid "financialmanagers"
-msgstr "Directeurs financiers"
-
-#. Default: "Financial reviewers"
-msgid "financialreviewers"
-msgstr "Validateurs financiers"
-
 #. Default: "Pre-validated"
 msgid "icon_help_prevalidated"
 msgstr "Proposé au directeur"

@@ -12,6 +12,7 @@ __docformat__ = 'plaintext'
 
 from plone import api
 from Products.PloneMeeting.utils import sendMailIfRelevant
+from Products.MeetingCommunes.config import FINANCE_STATE_TO_GROUPS_MAPPINGS
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 
 
@@ -29,9 +30,6 @@ def onAdviceTransition(advice, event):
     item = advice.getParentNode()
     itemState = item.queryState()
     adviserGroupId = '%s_advisers' % advice.advice_group
-    stateToGroupSuffixMappings = {'proposed_to_financial_controller': 'financialcontrollers',
-                                  'proposed_to_financial_reviewer': 'financialreviewers',
-                                  'proposed_to_financial_manager': 'financialmanagers', }
 
     # onAdviceTransition is called before onAdviceAdded...
     # so the advice_row_id is still not set wich is very bad because
@@ -80,7 +78,7 @@ def onAdviceTransition(advice, event):
     # this is the case if we validate an item and it triggers the fact that advice delay is exceeded
     # this should never be the case as advice delay should have been updated during nightly cron...
     # but if we are in a '_updateAdvices', do not _updateAdvices again...
-    if not newStateId in stateToGroupSuffixMappings:
+    if not newStateId in FINANCE_STATE_TO_GROUPS_MAPPINGS:
         if not item.REQUEST.get('currentlyUpdatingAdvice', False):
             item.updateLocalRoles()
         return
@@ -91,12 +89,12 @@ def onAdviceTransition(advice, event):
     # _advisers group by default in PloneMeeting and it is used for non finance advices
     advice.manage_delLocalRoles((adviserGroupId, ))
     advice.manage_addLocalRoles(adviserGroupId, ('Reader', ))
-    advice.manage_addLocalRoles('%s_%s' % (advice.advice_group, stateToGroupSuffixMappings[newStateId]),
+    advice.manage_addLocalRoles('%s_%s' % (advice.advice_group, FINANCE_STATE_TO_GROUPS_MAPPINGS[newStateId]),
                                 ('MeetingFinanceEditor', ))
     # finally remove 'MeetingFinanceEditor' given in previous state except if it is initial_state
-    if oldStateId in stateToGroupSuffixMappings and event.transition:
+    if oldStateId in FINANCE_STATE_TO_GROUPS_MAPPINGS and event.transition:
         localRoledGroupId = '%s_%s' % (advice.advice_group,
-                                       stateToGroupSuffixMappings[oldStateId])
+                                       FINANCE_STATE_TO_GROUPS_MAPPINGS[oldStateId])
         advice.manage_delLocalRoles((localRoledGroupId, ))
 
     # need to updateLocalRoles, and especially _updateAdvices to finish work :

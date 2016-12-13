@@ -151,6 +151,7 @@ subproducts = CategoryDescriptor('subproducts', 'Subproducts wishes', usingGroup
 
 # Users and groups -------------------------------------------------------------
 pmFinController = UserDescriptor('pmFinController', [])
+pmFinEditor = UserDescriptor('pmFinEditor', [])
 pmFinReviewer = UserDescriptor('pmFinReviewer', [])
 pmFinManager = UserDescriptor('pmFinManager', [])
 
@@ -451,5 +452,6 @@ data = PloneMeetingConfiguration(
 data.restrictUsers = False
 data.usersOutsideGroups = [voter1, voter2, powerobserver1, powerobserver2,
                            restrictedpowerobserver1, restrictedpowerobserver2,
-                           budgetimpacteditor, pmFinController, pmFinReviewer, pmFinManager]
+                           budgetimpacteditor, pmFinController, pmFinEditor,
+                           pmFinReviewer, pmFinManager]
 # ------------------------------------------------------------------------------

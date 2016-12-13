@@ -61,18 +61,6 @@ msgstr ""
 msgid "finance_advice_suspended_because_item_sent_back_to_proposing_group"
 msgstr ""
 
-#. Default: "Financial controllers"
-msgid "financialcontrollers"
-msgstr ""
-
-#. Default: "Financial managers"
-msgid "financialmanagers"
-msgstr ""
-
-#. Default: "Financial reviewers"
-msgid "financialreviewers"
-msgstr ""
-
 #. Default: "Pre-validated"
 msgid "icon_help_prevalidated"
 msgstr ""

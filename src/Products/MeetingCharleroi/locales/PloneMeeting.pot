@@ -53,18 +53,6 @@ msgstr ""
 msgid "wa_waiting_advices"
 msgstr ""
 
-#. Default: "Financial controllers"
-msgid "financialcontrollers"
-msgstr ""
-
-#. Default: "Financial reviewers"
-msgid "financialreviewers"
-msgstr ""
-
-#. Default: "Financial managers"
-msgid "financialmanagers"
-msgstr ""
-
 #. Default: "The finances advice has not been selected on this item."
 msgid "no_finances_advice_asked"
 msgstr ""

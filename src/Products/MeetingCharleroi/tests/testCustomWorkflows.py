@@ -269,6 +269,8 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
                'advice_type': u'negative_finance',
                'advice_comment': RichTextValue(u'My comment finances'),
                'advice_category': u'acquisitions'})
+        self.do(advice, 'proposeToFinancialEditor')
+        self.changeUser('pmFinEditor')
         self.do(advice, 'proposeToFinancialReviewer')
         self.changeUser('pmFinReviewer')
         self.do(advice, 'proposeToFinancialManager')

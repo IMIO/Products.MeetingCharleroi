@@ -135,11 +135,15 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
     def _setupFinancesGroup(self):
         '''Configure finances group.'''
         groupsTool = api.portal.get_tool('portal_groups')
-        # add pmFinController, pmFinReviewer and pmFinManager to advisers and to their respective finance group
+        # add finances users to relevant groups
+        # _advisers
         groupsTool.addPrincipalToGroup('pmFinController', '%s_advisers' % FINANCE_GROUP_ID)
+        groupsTool.addPrincipalToGroup('pmFinEditor', '%s_advisers' % FINANCE_GROUP_ID)
         groupsTool.addPrincipalToGroup('pmFinReviewer', '%s_advisers' % FINANCE_GROUP_ID)
         groupsTool.addPrincipalToGroup('pmFinManager', '%s_advisers' % FINANCE_GROUP_ID)
+        # respective _financesXXX groups
         groupsTool.addPrincipalToGroup('pmFinController', '%s_financialcontrollers' % FINANCE_GROUP_ID)
+        groupsTool.addPrincipalToGroup('pmFinEditor', '%s_financialeditors' % FINANCE_GROUP_ID)
         groupsTool.addPrincipalToGroup('pmFinReviewer', '%s_financialreviewers' % FINANCE_GROUP_ID)
         groupsTool.addPrincipalToGroup('pmFinManager', '%s_financialmanagers' % FINANCE_GROUP_ID)
 
