@@ -366,15 +366,23 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertFalse(cfg.getDefaultAdviceHiddenDuringRedaction())
         self.assertTrue(advice.advice_hide_during_redaction)
 
-        # send item to finances reviewer
-        self.assertEqual(self.transitions(advice), ['proposeToFinancialReviewer'])
+        # send advice to finances editor
+        self.assertEqual(self.transitions(advice), ['proposeToFinancialEditor'])
+        self.do(advice, 'proposeToFinancialEditor')
+        # send advice to finances reviewer
+        self.changeUser('pmFinEditor')
+        self.assertEqual(self.transitions(advice),
+                         ['backToProposedToFinancialController',
+                          'proposeToFinancialReviewer'])
         self.do(advice, 'proposeToFinancialReviewer')
+        # send advice to finances Manager
         self.changeUser('pmFinReviewer')
         self.assertEqual(self.transitions(advice),
                          ['backToProposedToFinancialController',
+                          'backToProposedToFinancialEditor',
                           'proposeToFinancialManager'])
-        # send item to finances manager
         self.do(advice, 'proposeToFinancialManager')
+        # sign the advice
         self.changeUser('pmFinManager')
         self.assertEqual(self.transitions(advice),
                          ['backToProposedToFinancialController',
@@ -406,6 +414,8 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.request.set('new_completeness_value', 'completeness_complete')
         changeCompleteness()
         self.assertTrue(item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'])
+        self.do(advice, 'proposeToFinancialEditor')
+        self.changeUser('pmFinEditor')
         self.do(advice, 'proposeToFinancialReviewer')
         self.changeUser('pmFinReviewer')
         # advice may not be sent to financial manager if it is still asked_again
@@ -453,6 +463,8 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
                'advice_type': u'positive_finance',
                'advice_comment': RichTextValue(u'My comment finances'),
                'advice_category': u'acquisitions'})
+        self.do(advice, 'proposeToFinancialEditor')
+        self.changeUser('pmFinEditor')
         self.do(advice, 'proposeToFinancialReviewer')
         self.changeUser('pmFinReviewer')
         self.do(advice, 'proposeToFinancialManager')
