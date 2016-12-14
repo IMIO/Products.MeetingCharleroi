@@ -14,6 +14,7 @@ class Migrate_To_4_0(PMMigrate_To_4_0):
         logger.info('Calling MeetingConfig.createSearches...')
         for cfg in self.tool.objectValues('MeetingConfig'):
             cfg.createSearches(cfg._searchesInfo())
+            cfg.updateCollectionColumns()
         logger.info('Done.')
 
     def run(self):

@@ -117,9 +117,7 @@ def onAdvicesUpdated(item, event):
         # to be editable, the advice has to be in an editable wf state
         if adviceInfo['advice_editable']:
             advice = getattr(item, adviceInfo['advice_id'])
-            if not advice.queryState() in ('proposed_to_financial_controller',
-                                           'proposed_to_financial_reviewer',
-                                           'proposed_to_financial_manager'):
+            if not advice.queryState() in FINANCE_STATE_TO_GROUPS_MAPPINGS:
                 # advice is no more editable, adapt adviceIndex
                 item.adviceIndex[groupId]['advice_editable'] = False
 
