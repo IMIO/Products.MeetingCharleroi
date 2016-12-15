@@ -105,7 +105,7 @@ council_categories = [
     CategoryDescriptor('pensions-diverses',
                        'Pensions diverses'),
     CategoryDescriptor('ecartements',
-                       'Écartements'),
+                       'Ecartements'),
     CategoryDescriptor('divers',
                        'Divers'),
     CategoryDescriptor('contentieux',
@@ -212,118 +212,117 @@ conseiller = UserDescriptor('conseiller', [], email="test@test.be", fullname="Co
 
 emetteuravisPers = UserDescriptor('emetteuravisPers', [], email="test@test.be", fullname="Emetteur avis Personnel")
 
-groups = [GroupDescriptor(POLICE_GROUP_ID, 'Zone de Police', 'ZPL',
-                          groupInCharge=({'group_id': 'bourgmestre', 'date_to': ''},)),
-          GroupDescriptor('dirgen', 'Directeur Général', 'DG',
-                          groupInCharge=({'group_id': 'bourgmestre', 'date_to': ''},)),
-          GroupDescriptor('secretariat', 'Secrétariat communal', 'Secr',
-                          groupInCharge=({'group_id': 'bourgmestre', 'date_to': ''},)),
-          GroupDescriptor('personnel', 'Service du personnel', 'Pers',
-                          groupInCharge=({'group_id': 'echevin1', 'date_to': ''},)),
-          GroupDescriptor('informatique', 'Service informatique', 'Info',
-                          groupInCharge=({'group_id': 'echevin2', 'date_to': ''},)),
-          GroupDescriptor('dirfin', 'Directeur Financier', 'DF',
-                          groupInCharge=({'group_id': 'echevin2', 'date_to': ''},)),
-          GroupDescriptor('comptabilite', 'Service comptabilité', 'Compt',
-                          groupInCharge=({'group_id': 'echevin2', 'date_to': ''},)),
-          GroupDescriptor('travaux', 'Service travaux', 'Trav',
-                          groupInCharge=({'group_id': 'echevin3', 'date_to': ''},)),
-          GroupDescriptor('bourgmestre', 'Bourgmestre', 'BG'),
-          GroupDescriptor('echevin1', 'Echevin 1', 'Ech1'),
-          GroupDescriptor('echevin2', 'Echevin 2', 'Ech2'),
-          GroupDescriptor('echevin3', 'Echevin 3', 'Ech3'),
-          ]
+police_grp = GroupDescriptor(POLICE_GROUP_ID, 'Zone de Police', 'ZPL',
+                             groupInCharge=({'group_id': 'bourgmestre', 'date_to': ''},))
+dirgen_grp = GroupDescriptor('dirgen', 'Directeur Général', 'DG',
+                             groupInCharge=({'group_id': 'bourgmestre', 'date_to': ''},))
+secr_grp = GroupDescriptor('secretariat', 'Secrétariat communal', 'Secr',
+                           groupInCharge=({'group_id': 'bourgmestre', 'date_to': ''},))
+info_grp = GroupDescriptor('informatique', 'Service informatique', 'Info',
+                           groupInCharge=({'group_id': 'echevin2', 'date_to': ''},))
+pers_grp = GroupDescriptor('personnel', 'Service du personnel', 'Pers',
+                           groupInCharge=({'group_id': 'echevin1', 'date_to': ''},))
+dirfin_grp = GroupDescriptor('dirfin', 'Directeur Financier', 'DF',
+                             groupInCharge=({'group_id': 'echevin2', 'date_to': ''},))
+compta_grp = GroupDescriptor('comptabilite', 'Service comptabilité', 'Compt',
+                             groupInCharge=({'group_id': 'echevin2', 'date_to': ''},))
+trav_grp = GroupDescriptor('travaux', 'Service travaux', 'Trav',
+                           groupInCharge=({'group_id': 'echevin3', 'date_to': ''},))
+bourg_grp = GroupDescriptor('bourgmestre', 'Bourgmestre', 'BG')
+ech1_grp = GroupDescriptor('echevin1', 'Echevin 1', 'Ech1')
+ech2_grp = GroupDescriptor('echevin2', 'Echevin 2', 'Ech2')
+ech3_grp = GroupDescriptor('echevin3', 'Echevin 3', 'Ech3')
 
 # MeetingManager
-groups[0].creators.append(dgen)
-groups[0].serviceheads.append(dgen)
-groups[0].prereviewers.append(dgen)
-groups[0].reviewers.append(dgen)
-groups[0].observers.append(dgen)
-groups[0].advisers.append(dgen)
+dirgen_grp.creators.append(dgen)
+dirgen_grp.serviceheads.append(dgen)
+dirgen_grp.prereviewers.append(dgen)
+dirgen_grp.reviewers.append(dgen)
+dirgen_grp.observers.append(dgen)
+dirgen_grp.advisers.append(dgen)
 
-groups[1].creators.append(dgen)
-groups[1].serviceheads.append(dgen)
-groups[1].prereviewers.append(dgen)
-groups[1].reviewers.append(dgen)
-groups[1].observers.append(dgen)
-groups[1].advisers.append(dgen)
+secr_grp.creators.append(dgen)
+secr_grp.serviceheads.append(dgen)
+secr_grp.prereviewers.append(dgen)
+secr_grp.reviewers.append(dgen)
+secr_grp.observers.append(dgen)
+secr_grp.advisers.append(dgen)
 
-groups[2].creators.append(agentInfo)
-groups[2].creators.append(dgen)
-groups[2].serviceheads.append(agentInfo)
-groups[2].serviceheads.append(dgen)
-groups[2].prereviewers.append(agentInfo)
-groups[2].prereviewers.append(dgen)
-groups[2].reviewers.append(agentInfo)
-groups[2].reviewers.append(dgen)
-groups[2].observers.append(agentInfo)
-groups[2].advisers.append(agentInfo)
+info_grp.creators.append(agentInfo)
+info_grp.creators.append(dgen)
+info_grp.serviceheads.append(agentInfo)
+info_grp.serviceheads.append(dgen)
+info_grp.prereviewers.append(agentInfo)
+info_grp.prereviewers.append(dgen)
+info_grp.reviewers.append(agentInfo)
+info_grp.reviewers.append(dgen)
+info_grp.observers.append(agentInfo)
+info_grp.advisers.append(agentInfo)
 
-groups[3].creators.append(agentPers)
-groups[3].observers.append(agentPers)
-groups[3].creators.append(dgen)
-groups[3].reviewers.append(dgen)
-groups[3].creators.append(chefPers)
-groups[3].observers.append(chefPers)
-groups[3].serviceheads.append(chefPers)
-groups[3].creators.append(refPers)
-groups[3].serviceheads.append(refPers)
-groups[3].prereviewers.append(refPers)
-groups[3].creators.append(dirPers)
-groups[3].serviceheads.append(dirPers)
-groups[3].prereviewers.append(dirPers)
-groups[3].reviewers.append(dirPers)
-groups[3].observers.append(dirPers)
-groups[3].advisers.append(dirPers)
-groups[3].observers.append(echevinPers)
-groups[3].advisers.append(emetteuravisPers)
+pers_grp.creators.append(agentPers)
+pers_grp.observers.append(agentPers)
+pers_grp.creators.append(dgen)
+pers_grp.reviewers.append(dgen)
+pers_grp.creators.append(chefPers)
+pers_grp.observers.append(chefPers)
+pers_grp.serviceheads.append(chefPers)
+pers_grp.creators.append(refPers)
+pers_grp.serviceheads.append(refPers)
+pers_grp.prereviewers.append(refPers)
+pers_grp.creators.append(dirPers)
+pers_grp.serviceheads.append(dirPers)
+pers_grp.prereviewers.append(dirPers)
+pers_grp.reviewers.append(dirPers)
+pers_grp.observers.append(dirPers)
+pers_grp.advisers.append(dirPers)
+pers_grp.observers.append(echevinPers)
+pers_grp.advisers.append(emetteuravisPers)
 
 # dirfin
-groups[4].itemAdviceStates = ('meeting-config-college__state__prevalidated_waiting_advices',)
-groups[4].itemAdviceEditStates = ('meeting-config-college__state__prevalidated_waiting_advices',)
-groups[4].keepAccessToItemWhenAdviceIsGiven = True
-groups[4].creators.append(dfin)
-groups[4].serviceheads.append(dfin)
-groups[4].prereviewers.append(dfin)
-groups[4].reviewers.append(dfin)
-groups[4].observers.append(dfin)
-groups[4].advisers.append(dfin)
+dirfin_grp.itemAdviceStates = ('meeting-config-college__state__prevalidated_waiting_advices',)
+dirfin_grp.itemAdviceEditStates = ('meeting-config-college__state__prevalidated_waiting_advices',)
+dirfin_grp.keepAccessToItemWhenAdviceIsGiven = True
+dirfin_grp.creators.append(dfin)
+dirfin_grp.serviceheads.append(dfin)
+dirfin_grp.prereviewers.append(dfin)
+dirfin_grp.reviewers.append(dfin)
+dirfin_grp.observers.append(dfin)
+dirfin_grp.advisers.append(dfin)
 
-groups[5].creators.append(agentCompta)
-groups[5].creators.append(dfin)
-groups[5].creators.append(dgen)
-groups[5].creators.append(chefCompta)
-groups[5].observers.append(chefCompta)
-groups[5].serviceheads.append(chefCompta)
-groups[5].creators.append(refCompta)
-groups[5].serviceheads.append(refCompta)
-groups[5].prereviewers.append(refCompta)
-groups[5].creators.append(dirCompta)
-groups[5].serviceheads.append(dirCompta)
-groups[5].prereviewers.append(dirCompta)
-groups[5].reviewers.append(dirCompta)
-groups[5].observers.append(dirCompta)
-groups[5].advisers.append(dfin)
+compta_grp.creators.append(agentCompta)
+compta_grp.creators.append(dfin)
+compta_grp.creators.append(dgen)
+compta_grp.creators.append(chefCompta)
+compta_grp.observers.append(chefCompta)
+compta_grp.serviceheads.append(chefCompta)
+compta_grp.creators.append(refCompta)
+compta_grp.serviceheads.append(refCompta)
+compta_grp.prereviewers.append(refCompta)
+compta_grp.creators.append(dirCompta)
+compta_grp.serviceheads.append(dirCompta)
+compta_grp.prereviewers.append(dirCompta)
+compta_grp.reviewers.append(dirCompta)
+compta_grp.observers.append(dirCompta)
+compta_grp.advisers.append(dfin)
 
-groups[6].creators.append(agentTrav)
-groups[6].creators.append(dgen)
-groups[6].serviceheads.append(agentTrav)
-groups[6].serviceheads.append(dgen)
-groups[6].prereviewers.append(agentTrav)
-groups[6].prereviewers.append(dgen)
-groups[6].reviewers.append(agentTrav)
-groups[6].reviewers.append(dgen)
-groups[6].observers.append(agentTrav)
-groups[6].observers.append(echevinTrav)
-groups[6].advisers.append(agentTrav)
+trav_grp.creators.append(agentTrav)
+trav_grp.creators.append(dgen)
+trav_grp.serviceheads.append(agentTrav)
+trav_grp.serviceheads.append(dgen)
+trav_grp.prereviewers.append(agentTrav)
+trav_grp.prereviewers.append(dgen)
+trav_grp.reviewers.append(agentTrav)
+trav_grp.reviewers.append(dgen)
+trav_grp.observers.append(agentTrav)
+trav_grp.observers.append(echevinTrav)
+trav_grp.advisers.append(agentTrav)
 
-groups[7].creators.append(dgen)
-groups[7].serviceheads.append(dgen)
-groups[7].prereviewers.append(dgen)
-groups[7].reviewers.append(dgen)
-groups[7].observers.append(dgen)
-groups[7].advisers.append(dgen)
+bourg_grp.creators.append(dgen)
+bourg_grp.serviceheads.append(dgen)
+bourg_grp.prereviewers.append(dgen)
+bourg_grp.reviewers.append(dgen)
+bourg_grp.observers.append(dgen)
+bourg_grp.advisers.append(dgen)
 
 # Meeting configurations -------------------------------------------------------
 # college
@@ -508,10 +507,10 @@ collegeMeeting.meetingPowerObserversStates = ('frozen', 'decided', 'closed')
 collegeMeeting.powerAdvisersGroups = ('dirgen', 'dirfin', )
 collegeMeeting.itemBudgetInfosStates = ('proposed', 'validated', 'presented')
 collegeMeeting.useCopies = True
-collegeMeeting.selectableCopyGroups = [groups[0].getIdSuffixed('reviewers'),
-                                       groups[1].getIdSuffixed('reviewers'),
-                                       groups[2].getIdSuffixed('reviewers'),
-                                       groups[4].getIdSuffixed('reviewers')]
+collegeMeeting.selectableCopyGroups = [police_grp.getIdSuffixed('reviewers'),
+                                       dirgen_grp.getIdSuffixed('reviewers'),
+                                       dirfin_grp.getIdSuffixed('reviewers'),
+                                       pers_grp.getIdSuffixed('reviewers')]
 collegeMeeting.podTemplates = collegeTemplates
 collegeMeeting.meetingConfigsToCloneTo = [{'meeting_config': 'meeting-config-council',
                                            'trigger_workflow_transitions_until': '__nothing__'}, ]
@@ -757,10 +756,10 @@ councilMeeting.meetingPowerObserversStates = ('frozen', 'decided', 'closed')
 councilMeeting.meetingRestrictedPowerObserversStates = councilMeeting.meetingPowerObserversStates
 councilMeeting.powerAdvisersGroups = ()
 councilMeeting.useCopies = True
-councilMeeting.selectableCopyGroups = [groups[0].getIdSuffixed('reviewers'),
-                                       groups[1].getIdSuffixed('reviewers'),
-                                       groups[2].getIdSuffixed('reviewers'),
-                                       groups[4].getIdSuffixed('reviewers')]
+councilMeeting.selectableCopyGroups = [police_grp.getIdSuffixed('reviewers'),
+                                       dirgen_grp.getIdSuffixed('reviewers'),
+                                       dirfin_grp.getIdSuffixed('reviewers'),
+                                       pers_grp.getIdSuffixed('reviewers')]
 councilMeeting.podTemplates = councilTemplates
 
 conseiller1_mu = MeetingUserDescriptor('BAKKDJ018', duty='Conseiller communal', usages=['asker', ])
@@ -873,7 +872,9 @@ councilMeeting.recurringItems = [
 
 data = PloneMeetingConfiguration(meetingFolderTitle='Mes séances',
                                  meetingConfigs=(collegeMeeting, councilMeeting),
-                                 groups=groups)
+                                 groups=[police_grp, dirgen_grp, secr_grp, info_grp, pers_grp,
+                                         dirfin_grp, compta_grp, trav_grp,
+                                         bourg_grp, ech1_grp, ech2_grp, ech3_grp])
 data.enableUserPreferences = False
 data.usersOutsideGroups = [bourgmestre, conseiller,
                            conseiller1, conseiller2, conseiller3, conseiller4, conseiller5,
