@@ -22,6 +22,7 @@
 # ------------------------------------------------------------------------------
 
 from AccessControl import ClassSecurityInfo
+from DateTime import DateTime
 from Globals import InitializeClass
 from zope.interface import implements
 from zope.i18n import translate
@@ -230,7 +231,8 @@ class CustomCharleroiMeeting(CustomMeeting):
                     groupsInChargeItems[groupInCharge] = categDict.copy()
                     byDateItems[nextMeetingDate] = groupsInChargeItems.copy()
 
-        return OrderedDict(sorted(byDateItems.items(), key=lambda t: t[0].getDate().strftime('%Y%m%d')))
+        return OrderedDict(sorted(byDateItems.items(),
+                                  key=lambda t: t[0] and t[0].getDate().strftime('%Y%m%d') or DateTime('1950/01/01')))
 
     def _getPolicePrescriptiveItems(self, itemUids, listTypes=['normal']):
         """
