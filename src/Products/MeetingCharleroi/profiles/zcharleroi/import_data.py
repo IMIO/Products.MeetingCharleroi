@@ -10,6 +10,7 @@ from Products.PloneMeeting.profiles import ItemAnnexTypeDescriptor
 from Products.PloneMeeting.profiles import ItemTemplateDescriptor
 from Products.PloneMeeting.profiles import MeetingConfigDescriptor
 from Products.PloneMeeting.profiles import MeetingUserDescriptor
+from Products.PloneMeeting.profiles import PloneGroupDescriptor
 from Products.PloneMeeting.profiles import PloneMeetingConfiguration
 from Products.PloneMeeting.profiles import PodTemplateDescriptor
 from Products.PloneMeeting.profiles import RecurringItemDescriptor
@@ -30,47 +31,87 @@ annexeAvisLegal = AnnexTypeDescriptor('annexeAvisLegal', 'Extrait article de loi
 
 # Categories -------------------------------------------------------------------
 recurring = CategoryDescriptor('recurrents', 'Récurrents')
-categories = [recurring,
-              CategoryDescriptor('divers',
-                                 'Divers',
-                                 description='Bourgmestre|P. Magnette'),
-              CategoryDescriptor('affaires-juridiques',
-                                 'Affaires juridiques',
-                                 description='Bourgmestre|P. Magnette'),
-              CategoryDescriptor('occupation-privative',
-                                 'Occupation privative',
-                                 description='Bourgmestre|P. Magnette'),
-              CategoryDescriptor('dispenses-de-service',
-                                 'Dispenses de service',
-                                 description='Bourgmestre|P. Magnette'),
-              CategoryDescriptor('remboursement',
-                                 'Remboursement',
-                                 description='Bourgmestre|P. Magnette'),
-              CategoryDescriptor('pop-inscription-office',
-                                 'Population – Inscriptions d’office',
-                                 description='L’Echevine|F. Daspremont'),
-              CategoryDescriptor('non-valeurs',
-                                 'Non-valeurs',
-                                 description='L’Echevine|F. Daspremont'),
-              CategoryDescriptor('droits-contates',
-                                 'Droits constatés',
-                                 description='L’Echevine|F. Daspremont'),
-              CategoryDescriptor('deplacements-etranger',
-                                 'Déplacement à l’étranger',
-                                 description='L’Echevine|J. Patte'),
-              CategoryDescriptor('partenariat',
-                                 'Partenariat',
-                                 description='L’Echevine|J. Patte'),
-              CategoryDescriptor('fin-de-bail',
-                                 'Fin de bail',
-                                 description='L’Echevin|E. Goffart'),
-              CategoryDescriptor('droit-constates',
-                                 'Droits constatés',
-                                 description='L’Echevin|E. Goffart'),
-              CategoryDescriptor(COMMUNICATION_CAT_ID,
-                                 'Communication',
-                                 description=''),
-              ]
+college_categories = [
+    recurring,
+    CategoryDescriptor('divers',
+                       'Divers',
+                       description='Bourgmestre|P. Magnette'),
+    CategoryDescriptor('affaires-juridiques',
+                       'Affaires juridiques',
+                       description='Bourgmestre|P. Magnette'),
+    CategoryDescriptor('occupation-privative',
+                       'Occupation privative',
+                       description='Bourgmestre|P. Magnette'),
+    CategoryDescriptor('dispenses-de-service',
+                       'Dispenses de service',
+                       description='Bourgmestre|P. Magnette'),
+    CategoryDescriptor('remboursement',
+                       'Remboursement',
+                       description='Bourgmestre|P. Magnette'),
+    CategoryDescriptor('pop-inscription-office',
+                       'Population – Inscriptions d’office',
+                       description='L’Echevine|F. Daspremont'),
+    CategoryDescriptor('non-valeurs',
+                       'Non-valeurs',
+                       description='L’Echevine|F. Daspremont'),
+    CategoryDescriptor('droits-contates',
+                       'Droits constatés',
+                       description='L’Echevine|F. Daspremont'),
+    CategoryDescriptor('deplacements-etranger',
+                       'Déplacement à l’étranger',
+                       description='L’Echevine|J. Patte'),
+    CategoryDescriptor('partenariat',
+                       'Partenariat',
+                       description='L’Echevine|J. Patte'),
+    CategoryDescriptor('fin-de-bail',
+                       'Fin de bail',
+                       description='L’Echevin|E. Goffart'),
+    CategoryDescriptor('droit-constates',
+                       'Droits constatés',
+                       description='L’Echevin|E. Goffart'),
+    CategoryDescriptor(COMMUNICATION_CAT_ID,
+                       'Communication',
+                       description=''),
+]
+council_categories = [
+    CategoryDescriptor('entetes',
+                       'Entêtes'),
+    CategoryDescriptor('proposes-par-un-conseiller',
+                       'Proposés par un Conseiller'),
+    CategoryDescriptor('interventions',
+                       'Interventions'),
+    CategoryDescriptor('questions-actualite',
+                       "Questions d'actualité"),
+    CategoryDescriptor('designations',
+                       'Désignations'),
+    CategoryDescriptor('nominations',
+                       'Nominations'),
+    CategoryDescriptor('engagements',
+                       'Engagements'),
+    CategoryDescriptor('mises-a-disposition',
+                       'Mises à disposition'),
+    CategoryDescriptor('autorisations',
+                       'Autorisations'),
+    CategoryDescriptor('conges',
+                       'Congés'),
+    CategoryDescriptor('disponibilites',
+                       'Disponibilités'),
+    CategoryDescriptor('interruptions-de-carriere',
+                       'Interruptions de carrière'),
+    CategoryDescriptor('occupations-complementaires',
+                       'Occupations complémentaires'),
+    CategoryDescriptor('demissions',
+                       'Démissions'),
+    CategoryDescriptor('pensions-diverses',
+                       'Pensions diverses'),
+    CategoryDescriptor('ecartements',
+                       'Écartements'),
+    CategoryDescriptor('divers',
+                       'Divers'),
+    CategoryDescriptor('contentieux',
+                       'Contentieux'),
+
+]
 
 # Pod templates ----------------------------------------------------------------
 agendaTemplate = PodTemplateDescriptor('oj', 'Ordre du jour')
@@ -310,7 +351,7 @@ collegeMeeting.certifiedSignatures = [
      },
 ]
 collegeMeeting.places = """Aile Dauphin 101 - Hôtel de Ville de Charleroi"""
-collegeMeeting.categories = categories
+collegeMeeting.categories = college_categories
 collegeMeeting.shortName = 'College'
 collegeMeeting.annexTypes = [annexe, annexeBudget, annexeCahier,
                              annexeDecision, annexeAvis, annexeAvisLegal]
@@ -366,7 +407,7 @@ collegeMeeting.insertingMethodsOnAddItem = (
     {'insertingMethod': 'on_groups_in_charge', 'reverse': '0'},
     {'insertingMethod': 'on_categories', 'reverse': '0'})
 collegeMeeting.listTypes = DEFAULT_LIST_TYPES + \
-    [{'identifier': 'depose', 'label': u'Déposé', 'used_in_inserting_method': '0'}]
+    [{'identifier': 'depose', 'label': u'Déposé en séance', 'used_in_inserting_method': '0'}]
 collegeMeeting.useGroupsAsCategories = False
 collegeMeeting.toDiscussSetOnItemInsert = True
 collegeMeeting.toDiscussDefault = False
@@ -626,7 +667,7 @@ councilMeeting.certifiedSignatures = [
 councilMeeting.places = """Place1\n\r
 Place2\n\r
 Place3\n\r"""
-councilMeeting.categories = categories
+councilMeeting.categories = council_categories
 councilMeeting.shortName = 'Council'
 councilMeeting.itemCreatedOnlyUsingTemplate = True
 councilMeeting.useGroupsAsCategories = False
@@ -637,9 +678,11 @@ councilMeeting.usedItemAttributes = ['motivation',
                                      'privacy',
                                      'itemAssembly',
                                      'budgetInfos',
-                                     'manuallyLinkedItems']
+                                     'manuallyLinkedItems',
+                                     'pollType',
+                                     'itemInitiator',
+                                     'itemAssembly', ]
 councilMeeting.usedMeetingAttributes = ['startDate',
-                                        'midDate',
                                         'endDate',
                                         'signatures',
                                         'assembly',
@@ -665,8 +708,14 @@ councilMeeting.meetingTopicStates = ('created', 'frozen')
 councilMeeting.decisionTopicStates = ('decided', 'closed')
 councilMeeting.itemAdviceStates = ('validated',)
 councilMeeting.enforceAdviceMandatoriness = False
-councilMeeting.insertingMethodsOnAddItem = ({'insertingMethod': 'on_proposing_groups',
-                                             'reverse': '0'}, )
+councilMeeting.insertingMethodsOnAddItem = (
+    {'insertingMethod': 'on_privacy', 'reverse': '0'},
+    {'insertingMethod': 'on_list_type', 'reverse': '0'},
+    {'insertingMethod': 'on_poll_type', 'reverse': '0'},
+    {'insertingMethod': 'on_categories', 'reverse': '0'},
+    {'insertingMethod': 'on_police_then_other_groups', 'reverse': '1'},
+    {'insertingMethod': 'on_groups_in_charge', 'reverse': '0'},
+    {'insertingMethod': 'on_proposing_groups', 'reverse': '0'},)
 councilMeeting.recordItemHistoryStates = []
 councilMeeting.maxShownMeetings = 5
 councilMeeting.maxDaysDecisions = 60
@@ -714,25 +763,93 @@ councilMeeting.selectableCopyGroups = [groups[0].getIdSuffixed('reviewers'),
                                        groups[4].getIdSuffixed('reviewers')]
 councilMeeting.podTemplates = councilTemplates
 
-bourgmestre_mu = MeetingUserDescriptor('bourgmestre',
-                                       duty='Bourgmestre',
-                                       usages=['assemblyMember', 'signer', 'asker', ],
-                                       signatureIsDefault=True)
-receveur_mu = MeetingUserDescriptor('receveur',
-                                    duty='Receveur communal',
-                                    usages=['assemblyMember', 'signer', 'asker', ])
-echevinPers_mu = MeetingUserDescriptor('echevinPers',
-                                       duty='Echevin GRH',
-                                       usages=['assemblyMember', 'asker', ])
-echevinTrav_mu = MeetingUserDescriptor('echevinTrav',
-                                       duty='Echevin Travaux',
-                                       usages=['assemblyMember', 'asker', ])
-dgen_mu = MeetingUserDescriptor('dgen',
-                                duty='Directeur Général',
-                                usages=['assemblyMember', 'signer', 'asker', ],
-                                signatureIsDefault=True)
+conseiller1_mu = MeetingUserDescriptor('BAKKDJ018', duty='Conseiller communal', usages=['asker', ])
+conseiller1 = UserDescriptor('BAKKDJ018', [], email="test@test.be", fullname="BAKKOUCHE Djamila")
+conseiller2_mu = MeetingUserDescriptor('BANGSE231', duty='Conseiller communal', usages=['asker', ])
+conseiller2 = UserDescriptor('BANGSE231', [], email="test@test.be", fullname="BANGISA Serge")
+conseiller3_mu = MeetingUserDescriptor('CASALE201', duty='Conseiller communal', usages=['asker', ])
+conseiller3 = UserDescriptor('CASALE201', [], email="test@test.be", fullname="CASAERT Léon")
+conseiller4_mu = MeetingUserDescriptor('CHASOL115', duty='Conseiller communal', usages=['asker', ])
+conseiller4 = UserDescriptor('CHASOL115', [], email="test@test.be", fullname="CHASTEL Olivier")
+conseiller5_mu = MeetingUserDescriptor('DEMALU140', duty='Conseiller communal', usages=['asker', ])
+conseiller5 = UserDescriptor('DEMALU140', [], email="test@test.be", fullname="DEMARET Lucie")
+conseiller6_mu = MeetingUserDescriptor('DEPRJE105', duty='Conseiller communal', usages=['asker', ])
+conseiller6 = UserDescriptor('DEPRJE105', [], email="test@test.be", fullname="DEPREZ Jean-Pierre")
+conseiller7_mu = MeetingUserDescriptor('DESGXA103', duty='Conseiller communal', usages=['asker', ])
+conseiller7 = UserDescriptor('DESGXA103', [], email="test@test.be", fullname="DESGAIN Xavier")
+conseiller8_mu = MeetingUserDescriptor('DEVIFA128', duty='Conseiller communal', usages=['asker', ])
+conseiller8 = UserDescriptor('DEVIFA128', [], email="test@test.be", fullname="DEVILERS Fabienne")
+conseiller9_mu = MeetingUserDescriptor('DOGRMA293', duty='Conseiller communal', usages=['asker', ])
+conseiller9 = UserDescriptor('DOGRMA293', [], email="test@test.be", fullname="DOGRU Mahmut")
+conseiller10_mu = MeetingUserDescriptor('DUFRAN251', duty='Conseiller communal', usages=['asker', ])
+conseiller10 = UserDescriptor('DUFRAN251', [], email="test@test.be", fullname="DUFRANE Anthony")
+conseiller11_mu = MeetingUserDescriptor('ELBOMA166', duty='Conseiller communal', usages=['asker', ])
+conseiller11 = UserDescriptor('ELBOMA166', [], email="test@test.be", fullname="EL BOUREZGUI Malika")
+conseiller12_mu = MeetingUserDescriptor('FELOMA103', duty='Conseiller communal', usages=['asker', ])
+conseiller12 = UserDescriptor('FELOMA103', [], email="test@test.be", fullname="FELON Maxime")
+conseiller13_mu = MeetingUserDescriptor('FOTIDO146', duty='Conseiller communal', usages=['asker', ])
+conseiller13 = UserDescriptor('FOTIDO146', [], email="test@test.be", fullname="FOTIA Dominique")
+conseiller14_mu = MeetingUserDescriptor('FRERAL093', duty='Conseiller communal', usages=['asker', ])
+conseiller14 = UserDescriptor('FRERAL093', [], email="test@test.be", fullname="FRERE Albert")
+conseiller15_mu = MeetingUserDescriptor('GAHOLA116', duty='Conseiller communal', usages=['asker', ])
+conseiller15 = UserDescriptor('GAHOLA116', [], email="test@test.be", fullname="GAHOUCHI Latifa")
+conseiller16_mu = MeetingUserDescriptor('HERMMA071', duty='Conseiller communal', usages=['asker', ])
+conseiller16 = UserDescriptor('HERMMA071', [], email="test@test.be", fullname="HERMAN Maurice")
+conseiller17_mu = MeetingUserDescriptor('HEMBPH039', duty='Conseiller communal', usages=['asker', ])
+conseiller17 = UserDescriptor('HEMBPH039', [], email="test@test.be", fullname="HEMBISE Philippe")
+conseiller18_mu = MeetingUserDescriptor('HOEBMA186', duty='Conseiller communal', usages=['asker', ])
+conseiller18 = UserDescriptor('HOEBMA186', [], email="test@test.be", fullname="HOEBEKE Maryse")
+conseiller19_mu = MeetingUserDescriptor('IMANHI167', duty='Conseiller communal', usages=['asker', ])
+conseiller19 = UserDescriptor('IMANHI167', [], email="test@test.be", fullname="IMANE Hicham")
+conseiller20_mu = MeetingUserDescriptor('ITALGA169', duty='Conseiller communal', usages=['asker', ])
+conseiller20 = UserDescriptor('ITALGA169', [], email="test@test.be", fullname="ITALIANO Gaetano")
+conseiller21_mu = MeetingUserDescriptor('JADODA369', duty='Conseiller communal', usages=['asker', ])
+conseiller21 = UserDescriptor('JADODA369', [], email="test@test.be", fullname="JADOUL David")
+conseiller22_mu = MeetingUserDescriptor('KADIMO133', duty='Conseiller communal', usages=['asker', ])
+conseiller22 = UserDescriptor('KADIMO133', [], email="test@test.be", fullname="KADIM Mohamed")
+conseiller23_mu = MeetingUserDescriptor('KILISE305', duty='Conseiller communal', usages=['asker', ])
+conseiller23 = UserDescriptor('KILISE305', [], email="test@test.be", fullname="KILIC Serdar")
+conseiller24_mu = MeetingUserDescriptor('MAGNPA235', duty='Conseiller communal', usages=['asker', ])
+conseiller24 = UserDescriptor('MAGNPA235', [], email="test@test.be", fullname="MAGNETTE Paul")
+conseiller25_mu = MeetingUserDescriptor('MANOLI138', duty='Conseiller communal', usages=['asker', ])
+conseiller25 = UserDescriptor('MANOLI138', [], email="test@test.be", fullname="MANOUVRIER Line")
 
-councilMeeting.meetingUsers = [bourgmestre_mu, receveur_mu, echevinPers_mu, echevinTrav_mu, dgen_mu]
+council_restrictedpowerobservers = PloneGroupDescriptor('meeting-config-council_restrictedpowerobservers',
+                                                        'meeting-config-council_restrictedpowerobservers',
+                                                        [])
+conseiller1.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller2.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller3.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller4.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller5.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller6.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller7.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller8.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller9.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller10.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller11.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller12.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller13.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller14.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller15.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller16.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller17.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller18.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller19.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller20.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller21.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller22.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller23.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller24.ploneGroups = [council_restrictedpowerobservers, ]
+conseiller25.ploneGroups = [council_restrictedpowerobservers, ]
+
+councilMeeting.meetingUsers = [conseiller1_mu, conseiller2_mu, conseiller3_mu, conseiller4_mu,
+                               conseiller5_mu, conseiller6_mu, conseiller7_mu, conseiller8_mu,
+                               conseiller9_mu, conseiller10_mu, conseiller11_mu, conseiller12_mu,
+                               conseiller13_mu, conseiller14_mu, conseiller15_mu, conseiller16_mu,
+                               conseiller17_mu, conseiller18_mu, conseiller19_mu, conseiller20_mu,
+                               conseiller21_mu, conseiller22_mu, conseiller23_mu, conseiller24_mu,
+                               conseiller25_mu]
 
 councilMeeting.itemTemplates = [
     ItemTemplateDescriptor(
@@ -758,5 +875,10 @@ data = PloneMeetingConfiguration(meetingFolderTitle='Mes séances',
                                  meetingConfigs=(collegeMeeting, councilMeeting),
                                  groups=groups)
 data.enableUserPreferences = False
-data.usersOutsideGroups = [bourgmestre, conseiller]
+data.usersOutsideGroups = [bourgmestre, conseiller,
+                           conseiller1, conseiller2, conseiller3, conseiller4, conseiller5,
+                           conseiller6, conseiller7, conseiller8, conseiller9, conseiller10,
+                           conseiller11, conseiller12, conseiller13, conseiller14, conseiller15,
+                           conseiller16, conseiller17, conseiller18, conseiller19, conseiller20,
+                           conseiller21, conseiller22, conseiller23, conseiller24, conseiller25]
 # ------------------------------------------------------------------------------
