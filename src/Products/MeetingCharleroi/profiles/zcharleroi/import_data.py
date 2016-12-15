@@ -334,7 +334,9 @@ collegeMeeting.assembly = 'Pierre Dupont - Bourgmestre,\n' \
                           'Charles Exemple - 1er Echevin,\n' \
                           'Echevin Un, Echevin Deux, Echevin Trois - Echevins,\n' \
                           'Jacqueline Exemple, Responsable du CPAS'
-collegeMeeting.signatures = 'Le Secrétaire communal\nPierre Dupont\nLe Bourgmestre\nCharles Exemple'
+collegeMeeting.signatures = \
+    'Le Secrétaire communal\nPierre Dupont\nDirecteur général f.f.\nLe Président\nCharles Exemple\nÉchevin délégué'
+
 collegeMeeting.certifiedSignatures = [
     {'signatureNumber': '1',
      'name': u'Mr Vraiment Présent',
