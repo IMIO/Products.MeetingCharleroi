@@ -143,6 +143,11 @@ dfAdvicesTemplate.odt_file = 'synthese-avis-df.odt'
 dfAdvicesTemplate.pod_formats = ['odt', 'pdf', ]
 dfAdvicesTemplate.dashboard_collections_ids = ['searchitemswithfinanceadvice']
 
+dfAdviceTemplate = PodTemplateDescriptor('df-advice', 'Avis DF')
+dfAdviceTemplate.odt_file = 'df-advice.odt'
+dfAdviceTemplate.pod_formats = ['odt', 'pdf', ]
+dfAdviceTemplate.pod_portal_types = ['MeetingItemCollege']
+
 dashboardTemplate = PodTemplateDescriptor('recapitulatif', 'Récapitulatif', dashboard=True)
 dashboardTemplate.odt_file = 'recapitulatif-tb.odt'
 dashboardTemplate.tal_condition = 'python: context.absolute_url().endswith("/searches_items")'

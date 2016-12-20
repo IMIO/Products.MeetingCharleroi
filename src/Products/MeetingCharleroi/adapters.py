@@ -587,6 +587,9 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         else:
             return number
 
+    def showFinanceAdviceDocuments(self):
+        return self.context.restrictedTraverse('document-generation').get_generation_context_helper().showFinancesAdvice()
+
 
 class CustomCharleroiMeetingGroup(CustomMeetingGroup):
     '''Adapter that adapts a meeting group implementing IMeetingGroup to the
