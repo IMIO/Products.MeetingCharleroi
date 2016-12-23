@@ -14,11 +14,12 @@ from Products.PloneMeeting.browser.views import MeetingBeforeFacetedInfosView
 from Products.PloneMeeting.utils import getLastEvent
 
 FIN_ADVICE_LINE1 = "<p>Considérant la communication du dossier au Directeur financier faite en date du {0}, " \
-    "conformément à l'article L1124-40 §1er, 3° et 4° du " \
-    "Code de la Démocratie locale et de la Décentralisation ;</p>"
+                   "conformément à l'article L1124-40 §1er, 3° et 4° du " \
+                   "Code de la Démocratie locale et de la Décentralisation ;</p>"
 FIN_ADVICE_LINE2 = "<p>Considérant son avis {0} du {1} joint en annexe ;</p>"
 
-FIN_ADVICE_ITEM = "<p><strong>Avis du Directeur financier :</strong></p><p>Type d'avis : {0}</p><p>Demandé le : {1}</p><p>Émis le : {2}</p>"
+FIN_ADVICE_ITEM = "<p><strong>Avis du Directeur financier :</strong></p><p>Type d'avis : {0}</p>" \
+                  "<p>Demandé le : {1}</p><p>Émis le : {2}</p>"
 
 
 class MCHMeetingBeforeFacetedInfosView(MeetingBeforeFacetedInfosView):
@@ -43,8 +44,9 @@ class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
         tool = api.portal.get_tool('portal_plonemeeting')
         financeAdviceGroup = getattr(tool, financeAdviceId)
         if item_state == 'validated' or \
-           self.context.hasMeeting() or \
-           (item_state == 'prevalidated_waiting_advices' and financeAdviceGroup.userPloneGroups(suffixes=['advisers'])):
+                self.context.hasMeeting() or \
+                (item_state == 'prevalidated_waiting_advices' and financeAdviceGroup.userPloneGroups(
+                    suffixes=['advisers'])):
             return True
 
     def _financeAdviceData(self):
@@ -60,6 +62,15 @@ class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
         elif adviceData['type'] == 'not_given_finance':
             adviceTypeTranslated = 'non remis'
         adviceData['advice_type_translated'] = adviceTypeTranslated
+
+        for dealayChange in adviceData['delay_changes_history']:
+            """Get the new value of the latest delay change into history. """
+            newDelay = int(dealayChange['action'][1])
+            oldDelay = int(dealayChange['action'][0])
+            dealayChange['delayDiff'] = str(newDelay - oldDelay)
+
+        adviceData['printableHistory'] = self.printHistoryForFinancesAdvice(adviceData['given_advice'])
+
         return adviceData
 
     def printFinancesAdvice(self):
@@ -83,8 +94,8 @@ class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
         body += self.context.getDecision() + '<p></p>'
         if self.context.getSendToAuthority():
             body += "<p>Conformément aux prescrits des articles L3111-1 et suivants " \
-                    "du Code de la démocratie locale et de la décentralisation relatifs "\
-                    "à la Tutelle, la présente décision et ses pièces justificatives sont "\
+                    "du Code de la démocratie locale et de la décentralisation relatifs " \
+                    "à la Tutelle, la présente décision et ses pièces justificatives sont " \
                     "transmises aux Autorités de Tutelle.</p>"
         return body
 
@@ -94,12 +105,12 @@ class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
         finAdvice = self.printFinancesAdvice()
         if finAdvice:
             body += finAdvice + '<p></p>'
-        #body += self.printCollegeProposalInfos().encode("utf-8")
+        # body += self.printCollegeProposalInfos().encode("utf-8")
         body += self.context.getDecision() + '<p></p>'
         if self.context.getSendToAuthority():
             body += "<p>Conformément aux prescrits des articles L3111-1 et suivants " \
-                    "du Code de la démocratie locale et de la décentralisation relatifs "\
-                    "à la Tutelle, la présente décision et ses pièces justificatives sont "\
+                    "du Code de la démocratie locale et de la décentralisation relatifs " \
+                    "à la Tutelle, la présente décision et ses pièces justificatives sont " \
                     "transmises aux Autorités de Tutelle.<br/></p>"
         body += self.context.getObservations() and self.context.getObservations() or ''
         return body
@@ -131,6 +142,25 @@ class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
             return {'author': mTool.getMemberById(str(lastEvent['actor'])).getProperty('fullname'),
                     'date': lastEvent['time'].strftime('%d/%m/%Y %H:%M')}
         return ''
+
+    def printHistoryForFinancesAdvice(self, advice):
+        printable_history = []
+        if advice and advice.getHistory():
+            m_tool = api.portal.get_tool('portal_membership')
+            for changeHistory in advice.getHistory():
+                printable_history_item = {
+                    'author': m_tool.getMemberById(changeHistory['actor']).getProperty('fullname'),
+                    'date': changeHistory['time'].strftime('%d/%m/%Y %H:%M'),
+                    'review_state_translated': self.translate(changeHistory['review_state'])}
+
+                if changeHistory['comments'] == 'wf_transition_triggered_by_application':
+                    printable_history_item['comments'] = self.translate(changeHistory['comments'])
+                else:
+                    printable_history_item['comments'] = changeHistory['comments']
+
+                printable_history.append(printable_history_item)
+
+        return printable_history
 
 
 class MCHMeetingDocumentGenerationHelperView(MCMeetingDocumentGenerationHelperView):
