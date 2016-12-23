@@ -588,7 +588,9 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
             return number
 
     def showFinanceAdviceDocuments(self):
-        return self.context.restrictedTraverse('document-generation').get_generation_context_helper().showFinancesAdvice()
+        docgen = self.context.restrictedTraverse('document-generation')
+        helper = docgen.get_generation_context_helper()
+        return helper.showFinancesAdvice()
 
 
 class CustomCharleroiMeetingGroup(CustomMeetingGroup):

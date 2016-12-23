@@ -18,7 +18,8 @@ FIN_ADVICE_LINE1 = "<p>Considérant la communication du dossier au Directeur fin
                    "Code de la Démocratie locale et de la Décentralisation ;</p>"
 FIN_ADVICE_LINE2 = "<p>Considérant son avis {0} du {1} joint en annexe ;</p>"
 
-FIN_ADVICE_ITEM = "<p><strong>Avis du Directeur financier :</strong></p><p>Type d'avis : {0}</p><p>Demandé le : {1}</p><p>Émis le : {2}</p>"
+FIN_ADVICE_ITEM = "<p><strong>Avis du Directeur financier :</strong></p><p>Type d'avis : {0}</p>" \
+                  "<p>Demandé le : {1}</p><p>Émis le : {2}</p>"
 
 
 class MCHMeetingBeforeFacetedInfosView(MeetingBeforeFacetedInfosView):
@@ -81,7 +82,7 @@ class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
         adviceGivenOnLocalized = adviceData['advice_given_on_localized']
         adviceTypeTranslated = adviceData['advice_type_translated']
         return FIN_ADVICE_LINE1.format(delayStartedOnLocalized) + \
-               FIN_ADVICE_LINE2.format(adviceTypeTranslated, adviceGivenOnLocalized)
+            FIN_ADVICE_LINE2.format(adviceTypeTranslated, adviceGivenOnLocalized)
 
     def printDelibeContentForCollege(self):
         """Printed on a College item, get the whole body of the delibe in one shot."""
@@ -147,9 +148,10 @@ class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
         if advice and advice.getHistory():
             m_tool = api.portal.get_tool('portal_membership')
             for changeHistory in advice.getHistory():
-                printable_history_item = {'author': m_tool.getMemberById(changeHistory['actor']).getProperty('fullname'),
-                                          'date': changeHistory['time'].strftime('%d/%m/%Y %H:%M'),
-                                          'review_state_translated': self.translate(changeHistory['review_state'])}
+                printable_history_item = {
+                    'author': m_tool.getMemberById(changeHistory['actor']).getProperty('fullname'),
+                    'date': changeHistory['time'].strftime('%d/%m/%Y %H:%M'),
+                    'review_state_translated': self.translate(changeHistory['review_state'])}
 
                 if changeHistory['comments'] == 'wf_transition_triggered_by_application':
                     printable_history_item['comments'] = self.translate(changeHistory['comments'])
