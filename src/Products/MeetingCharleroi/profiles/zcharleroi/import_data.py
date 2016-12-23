@@ -30,7 +30,7 @@ annexeAvis = AnnexTypeDescriptor('annexeAvis', 'Annexe à un avis', u'attach.png
 annexeAvisLegal = AnnexTypeDescriptor('annexeAvisLegal', 'Extrait article de loi', u'legalAdvice.png', '', 'advice')
 
 # Categories -------------------------------------------------------------------
-recurring = CategoryDescriptor('recurrents', 'Récurrents')
+recurring = CategoryDescriptor('entetes', 'Récurrents')
 college_categories = [
     recurring,
     CategoryDescriptor('divers',
@@ -529,21 +529,21 @@ collegeMeeting.recurringItems = [
         id='recurringagenda1',
         title='Approuve le procès-verbal de la séance antérieure',
         description='Approuve le procès-verbal de la séance antérieure',
-        category='recurrents',
+        category='entetes',
         proposingGroup='secretariat',
         decision='Procès-verbal approuvé'),
     RecurringItemDescriptor(
         id='recurringofficialreport1',
         title='Autorise et signe les bons de commande de la semaine',
         description='Autorise et signe les bons de commande de la semaine',
-        category='recurrents',
+        category='entetes',
         proposingGroup='secretariat',
         decision='Bons de commande signés'),
     RecurringItemDescriptor(
         id='recurringofficialreport2',
         title='Ordonnance et signe les mandats de paiement de la semaine',
         description='Ordonnance et signe les mandats de paiement de la semaine',
-        category='recurrents',
+        category='entetes',
         proposingGroup='secretariat',
         decision='Mandats de paiement de la semaine approuvés'), ]
 collegeMeeting.itemTemplates = [
@@ -874,7 +874,7 @@ councilMeeting.recurringItems = [
         id='recurringagenda1',
         title='Approuve le procès-verbal de la séance antérieure',
         description='Approuve le procès-verbal de la séance antérieure',
-        category='recurrents',
+        category='entetes',
         proposingGroup='secretariat',
         decision='Procès-verbal approuvé'), ]
 
