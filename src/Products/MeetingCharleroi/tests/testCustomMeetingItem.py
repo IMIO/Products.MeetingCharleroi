@@ -22,6 +22,7 @@
 # 02110-1301, USA.
 #
 
+from DateTime import DateTime
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.permissions import View
 from Products.MeetingCommunes.tests.testCustomMeetingItem import testCustomMeetingItem as mctcmi
@@ -81,6 +82,33 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         # and even able to change it
         self.assertTrue(itemCompletenessView.listSelectableCompleteness())
 
+    def test_LateExtraCollege(self):
+        """When an item is presented into a Council meeting and is coming from
+           a College item that is presented to a College meeting, the listType used
+           is not 'late' but 'lateextracollege'."""
+        cfg = self.meetingConfig
+        cfg2 = self.meetingConfig2
+        cfg2Id = cfg2.getId()
+        # items will be immediatelly presented to the Council meeting while sent
+        cfg.setMeetingConfigsToCloneTo(
+            ({'meeting_config': cfg2Id,
+              'trigger_workflow_transitions_until': '%s.%s' % (cfg2Id, 'present')}, ))
+        # create 2 College meetings, one extraordinarySession and one normal session
+        # then send an item from each to a Council meeting
+        self.changeUser('pmManager')
+        collegeMeeting1 = self.create('Meeting', date=DateTime('2016/12/15'))
+        item1 = self.create('MeetingItem')
+        item1.setDecision(self.decisionText)
+        self.present(item1)
+        collegeMeeting2 = self.create('Meeting', date=DateTime('2016/12/20'))
+        collegeMeeting2.setExtraordinarySession(True)
+        item2 = self.create('MeetingItem')
+        item2.setDecision(self.decisionText)
+        self.present(item2)
+        # move to Council
+        self.setMeetingConfig(cfg2)
+        councilMeeting = self.create('Meeting', date=DateTime('2016/12/30'))
+        pass
 
 def test_suite():
     from unittest import TestSuite, makeSuite

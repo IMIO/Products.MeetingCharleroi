@@ -16,3 +16,20 @@ table.listing tr[class][class] td.meeting_item_listType_depose {
 #content a.item_listType_depose:visited {
     color: DarkOrchid;
 }
+
+/* listType 'lateextracollege' */
+table.listing tr[class][class] td.meeting_item_listType_lateextracollege {
+    background: repeating-linear-gradient(
+    45deg,
+    red,
+    red 10px,
+    #AF0000 10px,
+    #AF0000 20px
+    );;;
+}
+#content a.item_listType_lateextracollege,
+#content span.item_listType_lateextracollege,
+#content a.item_listType_lateextracollege:link,
+#content a.item_listType_lateextracollege:visited {
+    color: red;
+}
