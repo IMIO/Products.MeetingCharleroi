@@ -554,7 +554,7 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'toDiscuss': True,
          'otherMeetingConfigsClonableToEmergency': ('meeting-config-council',),
          'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
-        )
+    )
 
     lateItems = (
         # dirgen
@@ -683,4 +683,9 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
                 wfTool.doActionFor(newItem, transition)
             if state == 'depose':
                 newItem.setListType('depose')
+
+            if item['toDiscuss'] and cfg.id == 'meeting-config-college' \
+                    and item['category'] in ['affaires-juridiques', 'remboursement']:
+                newItem.setOptionalAdvisers(('dirfin__rowid__unique_id_003'))
+
             newItem.reindexObject(idxs=['listType'])
