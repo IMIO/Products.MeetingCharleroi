@@ -25,7 +25,6 @@
 from AccessControl import Unauthorized
 from zope.annotation import IAnnotations
 from Products.CMFCore.permissions import View
-from Products.MeetingCharleroi.profiles.zcharleroi import import_data as charleroi_import_data
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 from Products.PloneMeeting.tests.testWorkflows import testWorkflows as pmtw
 
@@ -148,8 +147,7 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         # items come from College or could be created by a MeetingManager directly 'validated'
         # apply WFAdaptation defined in zcharleroi.import_data
         cfg = self.meetingConfig
-        cfg.setWorkflowAdaptations(charleroi_import_data.councilMeeting.workflowAdaptations)
-        cfg.at_post_edit_script()
+        self.setupCouncilWorkflows()
         itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
         self.assertFalse('itemcreated' in itemWF.states)
         self.assertFalse('proposed' in itemWF.states)

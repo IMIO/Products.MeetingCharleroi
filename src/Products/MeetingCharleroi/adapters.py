@@ -592,6 +592,18 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         helper = docgen.get_generation_context_helper()
         return helper.showFinancesAdvice()
 
+    def getListTypeLateValue(self, meeting):
+        '''Returns 'late' by default except if item is inserted into a Council meeting
+           and is coming from a College item presented to an extraordinary meeting.'''
+        if self.context.portal_type == 'MeetingItemCouncil':
+            predecessor = self.context.getPredecessor()
+            if predecessor and \
+               predecessor.portal_type == 'MeetingItemCollege' and \
+               (predecessor.hasMeeting() and predecessor.getMeeting().getExtraordinarySession()):
+                return 'lateextracollege'
+
+        return self.context.getListTypeLateValue(meeting)
+
 
 class CustomCharleroiMeetingGroup(CustomMeetingGroup):
     '''Adapter that adapts a meeting group implementing IMeetingGroup to the
