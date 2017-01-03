@@ -28,7 +28,6 @@ from plone.dexterity.utils import createContentInContainer
 from Products.CMFCore.permissions import DeleteObjects
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
-from Products.MeetingCharleroi.profiles.zcharleroi import import_data as charleroi_import_data
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 from zope.i18n import translate
 
@@ -439,8 +438,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         cfg = self.meetingConfig
         self.changeUser('siteadmin')
         self._configureFinancesAdvice(cfg)
-        cfg.setWorkflowAdaptations(charleroi_import_data.collegeMeeting.workflowAdaptations)
-        cfg.at_post_edit_script()
+        self.setupCouncilWorkflows()
 
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')

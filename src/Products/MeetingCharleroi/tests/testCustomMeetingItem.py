@@ -87,28 +87,58 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
            a College item that is presented to a College meeting, the listType used
            is not 'late' but 'lateextracollege'."""
         cfg = self.meetingConfig
+        cfgId = cfg.getId()
         cfg2 = self.meetingConfig2
         cfg2Id = cfg2.getId()
         # items will be immediatelly presented to the Council meeting while sent
+        self.setupCouncilWorkflows()
         cfg.setMeetingConfigsToCloneTo(
             ({'meeting_config': cfg2Id,
-              'trigger_workflow_transitions_until': '%s.%s' % (cfg2Id, 'present')}, ))
+              'trigger_workflow_transitions_until': '%s.%s' % (cfg2Id, 'validate')}, ))
+        cfg.setItemAutoSentToOtherMCStates(('itemfrozen', ))
         # create 2 College meetings, one extraordinarySession and one normal session
         # then send an item from each to a Council meeting
         self.changeUser('pmManager')
+        # create the Council meeting
+        self.setMeetingConfig(cfg2Id)
+        councilMeeting = self.create('Meeting', date=DateTime('2017/01/01'))
+        self.freezeMeeting(councilMeeting)
+        # create elements in College
+        self.setMeetingConfig(cfgId)
         collegeMeeting1 = self.create('Meeting', date=DateTime('2016/12/15'))
         item1 = self.create('MeetingItem')
         item1.setDecision(self.decisionText)
-        self.present(item1)
+        item1.setOtherMeetingConfigsClonableTo((cfg2Id,))
+        self.presentItem(item1)
+        self.freezeMeeting(collegeMeeting1)
         collegeMeeting2 = self.create('Meeting', date=DateTime('2016/12/20'))
         collegeMeeting2.setExtraordinarySession(True)
         item2 = self.create('MeetingItem')
         item2.setDecision(self.decisionText)
-        self.present(item2)
-        # move to Council
-        self.setMeetingConfig(cfg2)
-        councilMeeting = self.create('Meeting', date=DateTime('2016/12/30'))
-        pass
+        item2.setOtherMeetingConfigsClonableTo((cfg2Id,))
+        self.presentItem(item2)
+        self.freezeMeeting(collegeMeeting2)
+
+        # now in the council, present the new items
+        self.setCurrentMeeting(councilMeeting)
+
+        itemFromExtraSession = item2.getItemClonedToOtherMC(cfg2Id)
+        itemFromExtraSession.setPreferredMeeting(councilMeeting.UID())
+        itemFromExtraSession.setCategory('deployment')
+        self.presentItem(itemFromExtraSession)
+        self.assertEqual(itemFromExtraSession.getListType(), 'lateextracollege')
+
+        itemNotFromExtraSession = item1.getItemClonedToOtherMC(cfg2Id)
+        itemNotFromExtraSession.setPreferredMeeting(councilMeeting.UID())
+        itemNotFromExtraSession.setCategory('deployment')
+        self.presentItem(itemNotFromExtraSession)
+        self.assertEqual(itemNotFromExtraSession.getListType(), 'late')
+
+        # items are inserted following listType and listType 'lateextracollege'
+        # will be after 'late'
+        self.assertEqual([item.getListType() for item in councilMeeting.getItems(ordered=True)],
+                         ['lateextracollege', 'late'])
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite

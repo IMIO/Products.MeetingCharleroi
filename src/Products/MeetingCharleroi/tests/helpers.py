@@ -25,7 +25,7 @@ from Products.PloneMeeting.config import MEETING_GROUP_SUFFIXES
 from Products.PloneMeeting.tests.helpers import PloneMeetingTestingHelpers
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_ID
-from Products.MeetingCharleroi.profiles.zcharleroi.import_data import collegeMeeting
+from Products.MeetingCharleroi.profiles.zcharleroi import import_data as charleroi_import_data
 from Products.MeetingCharleroi.setuphandlers import _configureCollegeCustomAdvisers
 from Products.MeetingCharleroi.setuphandlers import _createFinancesGroup
 
@@ -184,7 +184,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                 groupsTool.addPrincipalToGroup('pmManager', '{0}_{1}'.format(groupId, suffix))
 
         # create categories
-        for cat in collegeMeeting.categories:
+        for cat in charleroi_import_data.collegeMeeting.categories:
             data = {'id': cat.id,
                     'title': cat.title,
                     'description': cat.description}
@@ -192,7 +192,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
 
         self._removeConfigObjectsFor(self.meetingConfig)
         # create itemTemplates
-        for template in collegeMeeting.itemTemplates:
+        for template in charleroi_import_data.collegeMeeting.itemTemplates:
             data = {'id': template.id,
                     'title': template.title,
                     'description': template.description,
@@ -201,3 +201,16 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                     #'templateUsingGroups': template.templateUsingGroups,
                     'decision': template.decision}
             self.create('MeetingItemTemplate', **data)
+
+    def setupCouncilWorkflows(self):
+        """ """
+        cfg = getattr(self.tool, 'meeting-config-council')
+        # this will especially setup groups in charge, necessary to present items to a Council meeting
+        self._setupPoliceGroup()
+        cfg.setWorkflowAdaptations(charleroi_import_data.councilMeeting.workflowAdaptations)
+        # items come validated
+        cfg.setTransitionsForPresentingAnItem(('present', ))
+        # setup inserting methods
+        cfg.setInsertingMethodsOnAddItem(charleroi_import_data.councilMeeting.insertingMethodsOnAddItem)
+        # setup groups in charge
+        cfg.at_post_edit_script()

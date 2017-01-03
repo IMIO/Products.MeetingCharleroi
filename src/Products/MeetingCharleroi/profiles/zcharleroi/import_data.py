@@ -680,7 +680,7 @@ councilMeeting.itemCreatedOnlyUsingTemplate = True
 councilMeeting.listTypes = DEFAULT_LIST_TYPES + \
     [{'identifier': 'lateextracollege',
       'label': u'Urgence (Collège extraordinaire)',
-      'used_in_inserting_method': '0'}]
+      'used_in_inserting_method': '1'}]
 councilMeeting.useGroupsAsCategories = False
 councilMeeting.annexTypes = [annexe, annexeBudget, annexeCahier,
                              annexeDecision, annexeAvis, annexeAvisLegal]
