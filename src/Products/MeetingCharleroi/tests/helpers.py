@@ -28,6 +28,7 @@ from Products.MeetingCharleroi.config import POLICE_GROUP_ID
 from Products.MeetingCharleroi.profiles.zcharleroi import import_data as charleroi_import_data
 from Products.MeetingCharleroi.setuphandlers import _configureCollegeCustomAdvisers
 from Products.MeetingCharleroi.setuphandlers import _createFinancesGroup
+from Products.MeetingCharleroi.setuphandlers import _demoData
 
 
 class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
@@ -214,3 +215,20 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         cfg.setInsertingMethodsOnAddItem(charleroi_import_data.councilMeeting.insertingMethodsOnAddItem)
         # setup groups in charge
         cfg.at_post_edit_script()
+
+    def setupCollegeDemoData(self):
+        """ """
+        cfg = self.meetingConfig
+
+        self._setupPoliceGroup()
+        self._configureFinancesAdvice(cfg)
+        cfg.setCustomAdvisers(charleroi_import_data.collegeMeeting.customAdvisers)
+        cfg.setInsertingMethodsOnAddItem(charleroi_import_data.collegeMeeting.insertingMethodsOnAddItem)
+        cfg.setUseGroupsAsCategories(charleroi_import_data.collegeMeeting.useGroupsAsCategories)
+        # let creators select the 'toDiscuss' value
+        cfg.setToDiscussSetOnItemInsert(False)
+        cfg.setMeetingConfigsToCloneTo(charleroi_import_data.collegeMeeting.meetingConfigsToCloneTo)
+
+        # create items and meetings using demo data
+        self.changeUser('pmManager')
+        _demoData(self.portal, 'pmManager', ('developers', 'vendors'))

@@ -26,7 +26,6 @@ from DateTime import DateTime
 from Products.MeetingCommunes.tests.testCustomMeeting import testCustomMeeting as mctcm
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_ID
-from Products.MeetingCharleroi.setuphandlers import _demoData
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 
 from plone import api
@@ -478,28 +477,9 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
 
     def test_pm_FullInsertingProcess(self):
         '''Test inserting an item using the relevant inserting methods.'''
-        self._setupPoliceGroup()
         cfg = self.meetingConfig
-        cfg2 = self.meetingConfig2
-        cfg2Id = cfg2.getId()
+        self.setupCollegeDemoData()
 
-        cfg.setInsertingMethodsOnAddItem(
-            ({'insertingMethod': 'on_police_then_other_groups', 'reverse': '0'},
-             {'insertingMethod': 'on_communication', 'reverse': '1'},
-             {'insertingMethod': 'on_other_mc_to_clone_to', 'reverse': '1'},
-             {'insertingMethod': 'on_list_type', 'reverse': '0'},
-             {'insertingMethod': 'on_groups_in_charge', 'reverse': '0'},
-             {'insertingMethod': 'on_categories', 'reverse': '0'}))
-
-        cfg.setUseGroupsAsCategories(False)
-        # let creators select the 'toDiscuss' value
-        cfg.setToDiscussSetOnItemInsert(False)
-        cfg.setMeetingConfigsToCloneTo(({'meeting_config': '%s' % cfg2Id,
-                                         'trigger_workflow_transitions_until': '__nothing__'},))
-
-        # create items and meetings using demo data
-        self.changeUser('pmManager')
-        _demoData(self.portal, 'pmManager', ('developers', 'vendors'))
         meeting = cfg.getMeetingsAcceptingItems()[-3].getObject()
         orderedItems = meeting.getItems(ordered=True)
         self.assertEquals(
