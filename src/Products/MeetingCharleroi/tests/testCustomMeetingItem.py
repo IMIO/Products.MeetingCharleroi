@@ -139,6 +139,52 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         self.assertEqual([item.getListType() for item in councilMeeting.getItems(ordered=True)],
                          ['lateextracollege', 'late'])
 
+    def test_ItemRefForActeCollege(self):
+        """Test the method rendering the item reference of items in a College meeting."""
+        cfg = self.meetingConfig
+        self.setupCollegeDemoData()
+        meeting = cfg.getMeetingsAcceptingItems()[-3].getObject()
+        orderedBrains = meeting.getItems(ordered=True, useCatalog=True)
+        self.assertEqual(
+            [brain.getObject().getItemReference() for brain in orderedBrains],
+            ['2017/3/ZP/1', '2017/3/ZP/2', '2017/3/ZP/3', '2017/3/ZP/4', '2017/3/ZP/5',  # ZP items
+             '2017/3/ZP/C/1', '2017/3/ZP/C/2', '2017/3/ZP/C/3', '2017/3/ZP/C/4',  # ZP items to Council
+             '2017/3/ZP/C/5', '2017/3/ZP/C/6', '2017/3/ZP/C/7', '2017/3/ZP/C/8',
+             '-', '-', '-',  # ZP Communications
+             '2017/3/1', '2017/3/2', '2017/3/3', '2017/3/4', '2017/3/5', '2017/3/6', '2017/3/7',  # normal items
+             '2017/3/C/1', '2017/3/C/2', '2017/3/C/3', '2017/3/C/4', '2017/3/C/5',  # items to Council
+             '2017/3/C/6', '2017/3/C/7', '2017/3/C/8', '2017/3/C/9', '2017/3/C/10',
+             '-', '-', '-']  # communications
+            )
+
+        # now check with 'pmCreator1' that may only see items of 'developers'
+        # compare with what is returned for a user that may see everything
+        orderedDevelopersBrains = meeting.getItems(ordered=True, useCatalog=True,
+                                                   additional_catalog_query={'getProposingGroup': 'developers'})
+        devRefs = [brain.getObject().getItemReference() for brain in orderedDevelopersBrains]
+        self.assertEqual(
+            devRefs,
+            ['2017/3/3', '2017/3/4',
+             '2017/3/C/4', '2017/3/C/5', '2017/3/C/6',
+             '2017/3/C/7', '2017/3/C/8', '2017/3/C/9', '2017/3/C/10',
+             '-', '-', '-'])
+        self.changeUser('pmCreator1')
+        orderedDevelopersBrains = meeting.getItems(ordered=True, useCatalog=True,
+                                                   additional_catalog_query={'getProposingGroup': 'developers'})
+        creator1DevRefs = [brain.getObject().getItemReference() for brain in orderedDevelopersBrains]
+        self.assertEqual(devRefs, creator1DevRefs)
+
+    def test_ItemRefForActeCouncil(self):
+        """Test the method rendering the item reference of items in a College meeting."""
+        meeting = self.setupCouncilDemoData()
+        orderedBrains = meeting.getItems(ordered=True, useCatalog=True)
+        self.assertEqual(
+            [brain.getObject().getItemReference() for brain in orderedBrains],
+            ['2017/1/1', '2017/1/2', '2017/1/3', '2017/1/4', '2017/1/5',
+             '2017/1/6', '2017/1/7', '2017/1/8', '2017/1/9', '2017/1/10',
+             '2017/1/11', '2017/1/12', '2017/1/13', '2017/1/14', '2017/1/15',
+             '2017/1/U/16', '2017/1/U/17', '2017/1/U/18'])
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite

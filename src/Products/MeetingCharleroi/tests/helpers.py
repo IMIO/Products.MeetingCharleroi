@@ -29,6 +29,7 @@ from Products.MeetingCharleroi.profiles.zcharleroi import import_data as charler
 from Products.MeetingCharleroi.setuphandlers import _configureCollegeCustomAdvisers
 from Products.MeetingCharleroi.setuphandlers import _createFinancesGroup
 from Products.MeetingCharleroi.setuphandlers import _demoData
+from Products.MeetingCharleroi.setuphandlers import _addCouncilDemoData
 
 
 class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
@@ -153,6 +154,11 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
            - create 'zone-de-police' group;
            - add 'pmManager' to the _creators group;
            - add some default categories.'''
+        # due to complex setup to manage college and council,
+        # sometimes this method is called twice...
+        if POLICE_GROUP_ID in self.tool.objectIds():
+            return
+
         self.changeUser('siteadmin')
         self.create('MeetingGroup',
                     id=POLICE_GROUP_ID,
@@ -205,16 +211,19 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
 
     def setupCouncilWorkflows(self):
         """ """
-        cfg = getattr(self.tool, 'meeting-config-council')
+        cfg = getattr(self.tool, 'meeting-config-college')
+        cfg.setItemManualSentToOtherMCStates(charleroi_import_data.collegeMeeting.itemManualSentToOtherMCStates)
+
+        cfg2 = getattr(self.tool, 'meeting-config-council')
         # this will especially setup groups in charge, necessary to present items to a Council meeting
         self._setupPoliceGroup()
-        cfg.setWorkflowAdaptations(charleroi_import_data.councilMeeting.workflowAdaptations)
+        cfg2.setWorkflowAdaptations(charleroi_import_data.councilMeeting.workflowAdaptations)
         # items come validated
-        cfg.setTransitionsForPresentingAnItem(('present', ))
+        cfg2.setTransitionsForPresentingAnItem(('present', ))
+        cfg2.setItemReferenceFormat(charleroi_import_data.councilMeeting.itemReferenceFormat)
         # setup inserting methods
-        cfg.setInsertingMethodsOnAddItem(charleroi_import_data.councilMeeting.insertingMethodsOnAddItem)
-        # setup groups in charge
-        cfg.at_post_edit_script()
+        cfg2.setInsertingMethodsOnAddItem(charleroi_import_data.councilMeeting.insertingMethodsOnAddItem)
+        cfg2.at_post_edit_script()
 
     def setupCollegeDemoData(self):
         """ """
@@ -225,10 +234,19 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         cfg.setCustomAdvisers(charleroi_import_data.collegeMeeting.customAdvisers)
         cfg.setInsertingMethodsOnAddItem(charleroi_import_data.collegeMeeting.insertingMethodsOnAddItem)
         cfg.setUseGroupsAsCategories(charleroi_import_data.collegeMeeting.useGroupsAsCategories)
+        cfg.setItemReferenceFormat(charleroi_import_data.collegeMeeting.itemReferenceFormat)
         # let creators select the 'toDiscuss' value
         cfg.setToDiscussSetOnItemInsert(False)
         cfg.setMeetingConfigsToCloneTo(charleroi_import_data.collegeMeeting.meetingConfigsToCloneTo)
 
         # create items and meetings using demo data
         self.changeUser('pmManager')
-        _demoData(self.portal, 'pmManager', ('developers', 'vendors'))
+        collegeMeeting = _demoData(self.portal, 'pmManager', ('developers', 'vendors'))
+        return collegeMeeting
+
+    def setupCouncilDemoData(self):
+        """ """
+        collegeMeeting = self.setupCollegeDemoData()
+        self.setupCouncilWorkflows()
+        councilMeeting = _addCouncilDemoData(collegeMeeting, userId='pmManager')
+        return councilMeeting

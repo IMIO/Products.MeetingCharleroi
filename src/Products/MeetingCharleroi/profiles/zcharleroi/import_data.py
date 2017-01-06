@@ -406,6 +406,7 @@ collegeMeeting.transitionsToConfirm = ['MeetingItem.delay', ]
 collegeMeeting.meetingTopicStates = ('created', 'frozen')
 collegeMeeting.decisionTopicStates = ('decided', 'closed')
 collegeMeeting.enforceAdviceMandatoriness = False
+collegeMeeting.itemReferenceFormat = "python: here.adapted().getItemRefForActe()"
 collegeMeeting.insertingMethodsOnAddItem = (
     {'insertingMethod': 'on_police_then_other_groups', 'reverse': '0'},
     {'insertingMethod': 'on_communication', 'reverse': '1'},
@@ -719,6 +720,7 @@ councilMeeting.meetingTopicStates = ('created', 'frozen')
 councilMeeting.decisionTopicStates = ('decided', 'closed')
 councilMeeting.itemAdviceStates = ('validated',)
 councilMeeting.enforceAdviceMandatoriness = False
+councilMeeting.itemReferenceFormat = "python: here.adapted().getItemRefForActeCouncil()"
 councilMeeting.insertingMethodsOnAddItem = (
     {'insertingMethod': 'on_privacy', 'reverse': '0'},
     {'insertingMethod': 'on_list_type', 'reverse': '0'},

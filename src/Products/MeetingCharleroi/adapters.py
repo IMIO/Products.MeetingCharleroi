@@ -29,7 +29,6 @@ from zope.i18n import translate
 
 from collections import OrderedDict
 from plone import api
-
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.permissions import ReviewPortalContent
 from Products.CMFCore.utils import _checkPermission
@@ -520,20 +519,23 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         return res
 
     def getItemRefForActe(self, oj=False):
-        '''Compute the item number for PV'''
+        '''Compute the College item reference.'''
         item = self.getSelf()
         isPoliceItem = bool(item.getProposingGroup() == 'zone-de-police')
         isCommuItem = bool(item.getCategory() == 'communication')
         toSendToCouncil = bool('meeting-config-council' in item.getOtherMeetingConfigsClonableTo())
+        isPrivacySecret = bool(item.getPrivacy() == 'secret')
 
         additionalQuery = {}
         policeItems = {'getProposingGroup': {'query': 'zone-de-police'}}
         notPoliceItems = {'getProposingGroup': {'not': 'zone-de-police'}}
         toSendToCouncilItems = {'sentToInfos': {'query': ['meeting-config-council__clonable_to',
                                                           'meeting-config-council__clonable_to_emergency',
-                                                          'meeting-config-council__cloned_to']}}
+                                                          'meeting-config-council__cloned_to',
+                                                          'meeting-config-council__cloned_to_emergency']}}
         notToSendToCouncilItems = {'sentToInfos': {'query': 'not_to_be_cloned_to'}}
         notCommunicationItems = {'getCategory': {'not': 'communication'}}
+        secretItems = {'privacy': {'query': 'secret'}}
 
         ref = '-'
         if not isCommuItem:
@@ -542,6 +544,9 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
             meetingNumber = meeting.getMeetingNumber()
             ref = str(year) + '/' + str(meetingNumber)
             additionalQuery.update(notCommunicationItems)
+            if isPrivacySecret:
+                ref = ref + '/HC'
+                additionalQuery.update(secretItems)
             if isPoliceItem:
                 additionalQuery.update(policeItems)
                 if not toSendToCouncil:
@@ -570,11 +575,46 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
 
         return ref
 
+    def getItemRefForActeCouncil(self, oj=False):
+        '''Compute the Council item reference.'''
+        item = self.getSelf()
+        specialCategories = ['proposes-par-un-conseiller', 'interventions', 'questions-actualite']
+        isSpecialItem = bool(item.getCategory() in specialCategories)
+        isLateItem = bool(item.getListType() != 'normal')
+
+        additionalQuery = {}
+        specialItems = {'getCategory': {'query': specialCategories}}
+        normalItems = {
+            'getListType': {'query': 'normal'},
+            'getCategory': {'not': specialCategories}}
+        lateItems = {'getListType': {'not': 'normal'}}
+
+        meeting = item.getMeeting()
+        year = meeting.getDate().strftime('%Y')
+        meetingNumber = meeting.getMeetingNumber()
+        ref = str(year) + '/' + str(meetingNumber)
+        if isSpecialItem:
+            ref = ref + '/S'
+            additionalQuery.update(specialItems)
+        elif isLateItem:
+            ref = ref + '/U'
+            additionalQuery.update(lateItems)
+        else:
+            # normal items
+            additionalQuery.update(normalItems)
+
+        itemNumber = self._itemNumberCalculation(item, meeting, additionalQuery)
+        ref = ref + '/' + str(itemNumber)
+        return ref
+
     def _itemNumberCalculation(self, item, meeting, additionalQuery={}):
         '''Compute the item number for PV '''
+        # do the query unrestricted so we have same result for users
+        # that do not have access to every items of the meeting
         brains = meeting.getItems(useCatalog=True,
                                   ordered=True,
-                                  additional_catalog_query=additionalQuery)
+                                  additional_catalog_query=additionalQuery,
+                                  unrestricted=True)
         number = 0
         found = False
         for brain in brains:

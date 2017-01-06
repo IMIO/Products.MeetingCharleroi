@@ -230,7 +230,8 @@ def finalizeExampleInstance(context):
         _createFinancesGroup(site)
 
     # add demo data
-    addDemoData(context)
+    collegeMeeting = addCollegeDemoData(context)
+    _addCouncilDemoData(collegeMeeting)
 
 
 def _configureCollegeCustomAdvisers(site):
@@ -334,13 +335,14 @@ def reorderCss(context):
         portal_css.moveResourceToBottom(resource)
 
 
-def addDemoData(context):
+def addCollegeDemoData(context):
     ''' '''
     if isNotMeetingCharleroiProfile(context) and \
        not isMeetingCharleroiConfigureProfile(context):
         return
 
-    _demoData(context.getSite(), 'dgen', ('dirgen', 'personnel'))
+    collegeMeeting = _demoData(context.getSite(), 'dgen', ('dirgen', 'personnel'))
+    return collegeMeeting
 
 
 def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateId='template5'):
@@ -689,3 +691,51 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
                 newItem.setOptionalAdvisers(('dirfin__rowid__unique_id_003'))
 
             newItem.reindexObject(idxs=['listType'])
+    return meetingForItems
+
+
+def _addCouncilDemoData(collegeMeeting, userId='dgen'):
+    '''This needs to be called after 'addCollegeDemoData'.'''
+
+    # create 1 meeting, insert some items, then freeze it and insert other items
+    portal = api.portal.get()
+    tool = api.portal.get_tool('portal_plonemeeting')
+    wfTool = api.portal.get_tool('portal_workflow')
+    cfg2 = getattr(tool, 'meeting-config-council')
+    cfg2Id = cfg2.getId()
+    dgenFolder = tool.getPloneMeetingFolder(cfg2Id, userId)
+    date = DateTime() + 1
+    with api.env.adopt_user(userId):
+        councilCategory = cfg2.getCategories()[0]
+        meetingId = dgenFolder.invokeFactory('MeetingCouncil',
+                                             date=date,
+                                             id=date.strftime('%Y%m%d'))
+        meeting = getattr(dgenFolder, meetingId)
+        portal.REQUEST['PUBLISHED'] = meeting
+        # get every items to send to council without emergency
+        itemsToCouncilNoEmergency = [
+            item for item in collegeMeeting.getItems(ordered=True)
+            if item.getOtherMeetingConfigsClonableTo() and not item.getOtherMeetingConfigsClonableToEmergency()]
+        # send to council every items
+        for item in itemsToCouncilNoEmergency:
+            councilItem = item.cloneToOtherMeetingConfig(cfg2Id)
+            councilItem.setCategory(councilCategory.getId())
+            wfTool.doActionFor(councilItem, 'present')
+
+        # send first 'emergency' item to Council to show that it is inserted
+        # as a normal item in the next created meeting
+        itemsToCouncilEmergency = [
+            item for item in collegeMeeting.getItems(ordered=True)
+            if item.getOtherMeetingConfigsClonableTo() and item.getOtherMeetingConfigsClonableToEmergency()]
+        firstItemEmergency = itemsToCouncilEmergency[0]
+        firstItemEmergencyCouncil = firstItemEmergency.cloneToOtherMeetingConfig(cfg2Id)
+        firstItemEmergencyCouncil.setCategory(councilCategory.getId())
+        wfTool.doActionFor(firstItemEmergencyCouncil, 'present')
+        # now freeze the meeting and present other emergency items
+        wfTool.doActionFor(meeting, 'freeze')
+        for item in itemsToCouncilEmergency[1:]:
+            councilItem = item.cloneToOtherMeetingConfig(cfg2Id)
+            councilItem.setCategory(councilCategory.getId())
+            wfTool.doActionFor(councilItem, 'present')
+
+    return meeting
