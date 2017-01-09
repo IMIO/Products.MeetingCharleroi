@@ -91,7 +91,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         cfg2 = self.meetingConfig2
         cfg2Id = cfg2.getId()
         # items will be immediatelly presented to the Council meeting while sent
-        self.setupCouncilWorkflows()
+        self.setupCouncilConfig()
         cfg.setMeetingConfigsToCloneTo(
             ({'meeting_config': cfg2Id,
               'trigger_workflow_transitions_until': '%s.%s' % (cfg2Id, 'validate')}, ))
@@ -143,6 +143,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         """Test the method rendering the item reference of items in a College meeting."""
         cfg = self.meetingConfig
         self.setupCollegeDemoData()
+        self.changeUser('pmManager')
         meeting = cfg.getMeetingsAcceptingItems()[-3].getObject()
         orderedBrains = meeting.getItems(ordered=True, useCatalog=True)
         self.assertEqual(
@@ -177,6 +178,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
     def test_ItemRefForActeCouncil(self):
         """Test the method rendering the item reference of items in a College meeting."""
         meeting = self.setupCouncilDemoData()
+        self.changeUser('pmManager')
         orderedBrains = meeting.getItems(ordered=True, useCatalog=True)
         self.assertEqual(
             [brain.getObject().getItemReference() for brain in orderedBrains],
@@ -184,6 +186,21 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
              '2017/1/6', '2017/1/7', '2017/1/8', '2017/1/9', '2017/1/10',
              '2017/1/11', '2017/1/12', '2017/1/13', '2017/1/14', '2017/1/15',
              '2017/1/U/16', '2017/1/U/17', '2017/1/U/18'])
+
+        # now check with 'pmCreator1' that may only see items of 'developers'
+        # compare with what is returned for a user that may see everything
+        orderedDevelopersBrains = meeting.getItems(ordered=True, useCatalog=True,
+                                                   additional_catalog_query={'getProposingGroup': 'developers'})
+        devRefs = [brain.getObject().getItemReference() for brain in orderedDevelopersBrains]
+        self.assertEqual(
+            devRefs,
+            ['2017/1/4', '2017/1/5', '2017/1/6', '2017/1/7', '2017/1/8',
+             '2017/1/U/16', '2017/1/U/17'])
+        self.changeUser('pmCreator1')
+        orderedDevelopersBrains = meeting.getItems(ordered=True, useCatalog=True,
+                                                   additional_catalog_query={'getProposingGroup': 'developers'})
+        creator1DevRefs = [brain.getObject().getItemReference() for brain in orderedDevelopersBrains]
+        self.assertEqual(devRefs, creator1DevRefs)
 
 
 def test_suite():

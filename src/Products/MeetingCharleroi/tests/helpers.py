@@ -190,16 +190,33 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
             for suffix in MEETING_GROUP_SUFFIXES:
                 groupsTool.addPrincipalToGroup('pmManager', '{0}_{1}'.format(groupId, suffix))
 
+        self._removeConfigObjectsFor(self.meetingConfig,
+                                     folders=['recurringitems', 'itemtemplates', 'categories'])
+        self._createCategories(self.meetingConfig)
+        self._createItemTemplates(self.meetingConfig)
+
+    def _createCategories(self, cfg):
+        """ """
+        if cfg.getId() == 'meeting-config-college':
+            categories = charleroi_import_data.collegeMeeting.categories
+        else:
+            categories = charleroi_import_data.councilMeeting.categories
         # create categories
-        for cat in charleroi_import_data.collegeMeeting.categories:
+        for cat in categories:
             data = {'id': cat.id,
                     'title': cat.title,
                     'description': cat.description}
-            self.create('MeetingCategory', **data)
+            self.create('MeetingCategory',
+                        meetingConfig=cfg,
+                        **data)
 
-        self._removeConfigObjectsFor(self.meetingConfig)
-        # create itemTemplates
-        for template in charleroi_import_data.collegeMeeting.itemTemplates:
+    def _createItemTemplates(self, cfg):
+        """ """
+        if cfg.getId() == 'meeting-config-college':
+            templates = charleroi_import_data.collegeMeeting.itemTemplates
+        else:
+            templates = charleroi_import_data.councilMeeting.itemTemplates
+        for template in templates:
             data = {'id': template.id,
                     'title': template.title,
                     'description': template.description,
@@ -207,9 +224,11 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                     'proposingGroup': template.proposingGroup == POLICE_GROUP_ID and POLICE_GROUP_ID or 'developers',
                     #'templateUsingGroups': template.templateUsingGroups,
                     'decision': template.decision}
-            self.create('MeetingItemTemplate', **data)
+            self.create('MeetingItemTemplate',
+                        meetingConfig=cfg,
+                        **data)
 
-    def setupCouncilWorkflows(self):
+    def setupCouncilConfig(self):
         """ """
         cfg = getattr(self.tool, 'meeting-config-college')
         cfg.setItemManualSentToOtherMCStates(charleroi_import_data.collegeMeeting.itemManualSentToOtherMCStates)
@@ -241,12 +260,21 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
 
         # create items and meetings using demo data
         self.changeUser('pmManager')
-        collegeMeeting = _demoData(self.portal, 'pmManager', ('developers', 'vendors'))
+        collegeMeeting = _demoData(self.portal,
+                                   userId='pmManager',
+                                   firstTwoGroupIds=('developers', 'vendors'))
         return collegeMeeting
 
     def setupCouncilDemoData(self):
         """ """
         collegeMeeting = self.setupCollegeDemoData()
-        self.setupCouncilWorkflows()
-        councilMeeting = _addCouncilDemoData(collegeMeeting, userId='pmManager')
+        self.changeUser('siteadmin')
+        self._removeConfigObjectsFor(self.meetingConfig2,
+                                     folders=['recurringitems', 'itemtemplates', 'categories'])
+        self._createCategories(self.meetingConfig2)
+        self._createItemTemplates(self.meetingConfig2)
+        self.setupCouncilConfig()
+        councilMeeting = _addCouncilDemoData(collegeMeeting,
+                                             userId='pmManager',
+                                             firstTwoGroupIds=('developers', 'vendors'))
         return councilMeeting

@@ -147,7 +147,7 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         # items come from College or could be created by a MeetingManager directly 'validated'
         # apply WFAdaptation defined in zcharleroi.import_data
         cfg = self.meetingConfig
-        self.setupCouncilWorkflows()
+        self.setupCouncilConfig()
         itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
         self.assertFalse('itemcreated' in itemWF.states)
         self.assertFalse('proposed' in itemWF.states)
