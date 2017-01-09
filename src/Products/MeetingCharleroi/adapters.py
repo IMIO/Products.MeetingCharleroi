@@ -62,6 +62,7 @@ from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCouncilWorkflo
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowActions
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowConditions
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
+from Products.MeetingCharleroi.config import NEVER_LATE_CATEGORIES
 from Products.MeetingCharleroi.config import FINANCE_GIVEABLE_ADVICE_STATES
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_ID
@@ -587,7 +588,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         normalItems = {
             'getListType': {'query': 'normal'},
             'getCategory': {'not': specialCategories}}
-        lateItems = {'getListType': {'not': 'normal'}}
+        lateItems = {'listType': {'not': 'normal'}}
 
         meeting = item.getMeeting()
         year = meeting.getDate().strftime('%Y')
@@ -805,6 +806,18 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
             elif destinationState == 'prevalidated' and tool.isManager(self.context):
                 res = True
         return res
+
+    security.declarePublic('isLateFor')
+
+    def isLateFor(self, meeting):
+        '''Some categories are never considered 'late'.'''
+        tool = api.portal.get_tool('portal_plonemeeting')
+        cfg = tool.getMeetingConfig(meeting)
+        if self.context.getCategory() in NEVER_LATE_CATEGORIES[cfg.getId()]:
+            return False
+
+        # return original behavior
+        return MeetingItemCollegeWorkflowConditions.isLateFor(self, meeting)
 
 
 class MeetingCharleroiCouncilWorkflowActions(MeetingCharleroiCollegeWorkflowActions):

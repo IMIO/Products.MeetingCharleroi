@@ -23,6 +23,7 @@ from imio.helpers.catalog import addOrUpdateIndexes
 from Products.PloneMeeting.exportimport.content import ToolInitializer
 from Products.PloneMeeting.model.adaptations import performWorkflowAdaptations
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
+from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_ID
 from Products.MeetingCharleroi.config import PROJECTNAME
@@ -393,7 +394,7 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
     items = (
         # dirgen
         {'templateId': templateId,
-         'title': u'Exemple point 1',
+         'title': u'Point spécial 1',
          'proposingGroup': firstTwoGroupIds[0],
          'category': 'affaires-juridiques',
          'toDiscuss': True,
@@ -694,7 +695,10 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
     return meetingForItems
 
 
-def _addCouncilDemoData(collegeMeeting, userId='dgen'):
+def _addCouncilDemoData(collegeMeeting,
+                        userId='dgen',
+                        firstTwoGroupIds=('dirgen', 'personnel'),
+                        templateId='template1'):
     '''This needs to be called after 'addCollegeDemoData'.'''
 
     # create 1 meeting, insert some items, then freeze it and insert other items
@@ -706,7 +710,7 @@ def _addCouncilDemoData(collegeMeeting, userId='dgen'):
     dgenFolder = tool.getPloneMeetingFolder(cfg2Id, userId)
     date = DateTime() + 1
     with api.env.adopt_user(userId):
-        councilCategory = cfg2.getCategories()[0]
+        councilCategoryId = 'designations'
         meetingId = dgenFolder.invokeFactory('MeetingCouncil',
                                              date=date,
                                              id=date.strftime('%Y%m%d'))
@@ -719,7 +723,7 @@ def _addCouncilDemoData(collegeMeeting, userId='dgen'):
         # send to council every items
         for item in itemsToCouncilNoEmergency:
             councilItem = item.cloneToOtherMeetingConfig(cfg2Id)
-            councilItem.setCategory(councilCategory.getId())
+            councilItem.setCategory(councilCategoryId)
             wfTool.doActionFor(councilItem, 'present')
 
         # send first 'emergency' item to Council to show that it is inserted
@@ -729,13 +733,48 @@ def _addCouncilDemoData(collegeMeeting, userId='dgen'):
             if item.getOtherMeetingConfigsClonableTo() and item.getOtherMeetingConfigsClonableToEmergency()]
         firstItemEmergency = itemsToCouncilEmergency[0]
         firstItemEmergencyCouncil = firstItemEmergency.cloneToOtherMeetingConfig(cfg2Id)
-        firstItemEmergencyCouncil.setCategory(councilCategory.getId())
+        firstItemEmergencyCouncil.setCategory(councilCategoryId)
         wfTool.doActionFor(firstItemEmergencyCouncil, 'present')
         # now freeze the meeting and present other emergency items
         wfTool.doActionFor(meeting, 'freeze')
         for item in itemsToCouncilEmergency[1:]:
             councilItem = item.cloneToOtherMeetingConfig(cfg2Id)
-            councilItem.setCategory(councilCategory.getId())
+            councilItem.setCategory(councilCategoryId)
             wfTool.doActionFor(councilItem, 'present')
+
+        # now add some special items, aka items using categories "proposes-par-un-conseiller"
+        # "interventions" and "questions-actualite"
+        special_items = (
+            {'templateId': templateId,
+             'title': u'Point entête 1',
+             'proposingGroup': firstTwoGroupIds[0],
+             'category': COUNCIL_SPECIAL_CATEGORIES[0]},
+            {'templateId': templateId,
+             'title': u'Point proposé par un conseiller 1',
+             'proposingGroup': firstTwoGroupIds[0],
+             'category': COUNCIL_SPECIAL_CATEGORIES[1]},
+            {'templateId': templateId,
+             'title': u'Intervention 1',
+             'proposingGroup': firstTwoGroupIds[0],
+             'category': COUNCIL_SPECIAL_CATEGORIES[2]},
+            {'templateId': templateId,
+             'title': u'Question d\'actualité 1',
+             'proposingGroup': firstTwoGroupIds[0],
+             'category': COUNCIL_SPECIAL_CATEGORIES[3]},
+        )
+
+        userFolder = tool.getPloneMeetingFolder(cfg2Id, userId)
+        for item in special_items:
+            # get the template then clone it
+            template = getattr(tool.getMeetingConfig(userFolder).itemtemplates, item['templateId'])
+            newItem = template.clone(newOwnerId=userId,
+                                     destFolder=userFolder,
+                                     newPortalType=cfg2.getItemTypeName())
+            newItem.setTitle(item['title'])
+            newItem.setProposingGroup(item['proposingGroup'])
+            newItem.setCategory(item['category'])
+            newItem.setPreferredMeeting(meeting.UID())
+            newItem.reindexObject()
+            wfTool.doActionFor(newItem, 'present')
 
     return meeting

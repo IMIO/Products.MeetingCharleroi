@@ -182,10 +182,12 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         orderedBrains = meeting.getItems(ordered=True, useCatalog=True)
         self.assertEqual(
             [brain.getObject().getItemReference() for brain in orderedBrains],
-            ['2017/1/1', '2017/1/2', '2017/1/3', '2017/1/4', '2017/1/5',
-             '2017/1/6', '2017/1/7', '2017/1/8', '2017/1/9', '2017/1/10',
-             '2017/1/11', '2017/1/12', '2017/1/13', '2017/1/14', '2017/1/15',
-             '2017/1/U/16', '2017/1/U/17', '2017/1/U/18'])
+            ['2017/1/1',
+             '2017/1/S/1', '2017/1/S/2', '2017/1/S/3',
+             '2017/1/2', '2017/1/3', '2017/1/4', '2017/1/5', '2017/1/6',
+             '2017/1/7', '2017/1/8', '2017/1/9', '2017/1/10', '2017/1/11',
+             '2017/1/12', '2017/1/13', '2017/1/14', '2017/1/15', '2017/1/16',
+             '2017/1/U/1', '2017/1/U/2', '2017/1/U/3'])
 
         # now check with 'pmCreator1' that may only see items of 'developers'
         # compare with what is returned for a user that may see everything
@@ -194,8 +196,10 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         devRefs = [brain.getObject().getItemReference() for brain in orderedDevelopersBrains]
         self.assertEqual(
             devRefs,
-            ['2017/1/4', '2017/1/5', '2017/1/6', '2017/1/7', '2017/1/8',
-             '2017/1/U/16', '2017/1/U/17'])
+            ['2017/1/1',
+             '2017/1/S/1', '2017/1/S/2', '2017/1/S/3',
+             '2017/1/5', '2017/1/6', '2017/1/7', '2017/1/8', '2017/1/9',
+             '2017/1/U/1', '2017/1/U/2'])
         self.changeUser('pmCreator1')
         orderedDevelopersBrains = meeting.getItems(ordered=True, useCatalog=True,
                                                    additional_catalog_query={'getProposingGroup': 'developers'})

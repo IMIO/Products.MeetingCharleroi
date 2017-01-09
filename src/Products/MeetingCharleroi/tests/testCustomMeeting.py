@@ -25,8 +25,10 @@
 from DateTime import DateTime
 from Products.MeetingCommunes.tests.testCustomMeeting import testCustomMeeting as mctcm
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
+from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
 from Products.MeetingCharleroi.config import POLICE_GROUP_ID
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
+from Products.PloneMeeting.utils import getLastEvent
 
 from plone import api
 
@@ -459,11 +461,11 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
 
         self.changeUser('pmManager')
         # create items with various categories
-        itemDev1 = self.create('MeetingItem', category='development')
-        itemDev2 = self.create('MeetingItem', category='development')
+        itemDev1 = self.create('MeetingItem', category='affaires-juridiques')
+        itemDev2 = self.create('MeetingItem', category='affaires-juridiques')
         itemDev3 = self.create('MeetingItem', category=COMMUNICATION_CAT_ID)
-        itemVen1 = self.create('MeetingItem', proposingGroup='vendors', category='research')
-        itemVen2 = self.create('MeetingItem', proposingGroup='vendors', category='development')
+        itemVen1 = self.create('MeetingItem', proposingGroup='vendors', category='remboursement')
+        itemVen2 = self.create('MeetingItem', proposingGroup='vendors', category='affaires-juridiques')
         itemVen3 = self.create('MeetingItem', proposingGroup='vendors', category=COMMUNICATION_CAT_ID)
         meeting = self.create('Meeting', date=DateTime())
         for item in [itemDev1, itemDev2, itemDev3,
@@ -473,7 +475,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         orderedItems = meeting.getItems(ordered=True)
         self.assertEquals([item.getCategory() for item in orderedItems],
                           [COMMUNICATION_CAT_ID, COMMUNICATION_CAT_ID,
-                           'development', 'development', 'research', 'development'])
+                           'affaires-juridiques', 'affaires-juridiques',
+                           'remboursement', 'affaires-juridiques'])
 
     def test_pm_FullInsertingProcess(self):
         '''Test inserting an item using the relevant inserting methods.'''
@@ -529,6 +532,39 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
              ('normal', 'developers', 'groupincharge2', (), (), 'communication'),
              ('normal', 'developers', 'groupincharge2', (), (), 'communication'),
              ('normal', 'developers', 'groupincharge2', (), (), 'communication')])
+
+    def test_CollegeCommunicationItemIsInsertedAsNormalItem(self):
+        """ """
+        cfg = self.meetingConfig
+        self.setupCollegeDemoData()
+        meeting = cfg.getMeetingsAcceptingItems()[-3].getObject()
+
+        self.freezeMeeting(meeting)
+        self.assertEqual(meeting.queryState(), 'frozen')
+        commItem = self.create('MeetingItem')
+        commItem.setCategory('communication')
+        commItem.setPreferredMeeting(meeting.UID())
+        self.presentItem(commItem)
+        self.assertEqual(commItem.getMeeting(), meeting)
+        self.assertEqual(commItem.getListType(), 'normal')
+
+    def test_CouncilItemsUsingSpecialCategoriesAreInsertedAsNormalItem(self):
+        """ """
+        # use the Council demo that adds items using special category in a frozen meeting
+        meeting = self.setupCouncilDemoData()
+        self.changeUser('pmManager')
+        self.assertEqual(meeting.queryState(), 'frozen')
+        special_items = [
+            brain.getObject() for brain in
+            meeting.getItems(ordered=True,
+                             useCatalog=True,
+                             additional_catalog_query={'getCategory': COUNCIL_SPECIAL_CATEGORIES})]
+        # items were presented after meeting freeze
+        for item in special_items:
+            self.assertTrue(item.modified() > getLastEvent(meeting, 'freeze')['time'])
+        self.assertEqual(
+            [item.getListType() for item in special_items],
+            ['normal', 'normal', 'normal', 'normal'])
 
 
 def test_suite():
