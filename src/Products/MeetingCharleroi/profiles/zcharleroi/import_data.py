@@ -379,10 +379,11 @@ collegeMeeting.usedMeetingAttributes = ['startDate',
                                         'assemblyGuests',
                                         'assemblyStaves',
                                         'place',
+                                        'extraordinarySession',
                                         'observations',
                                         'assemblyPolice']
 collegeMeeting.recordMeetingHistoryStates = []
-collegeMeeting.itemsListVisibleColumns = ('Creator', 'CreationDate', 'review_state', 'getCategory',
+collegeMeeting.itemsListVisibleColumns = ('Creator', 'review_state', 'getCategory',
                                           'proposing_group_acronym', 'advices', 'toDiscuss', 'actions')
 collegeMeeting.itemColumns = ('Creator', 'CreationDate', 'ModificationDate', 'review_state',
                               'getCategory', 'proposing_group_acronym', 'advices', 'toDiscuss',
@@ -704,6 +705,10 @@ councilMeeting.usedMeetingAttributes = ['startDate',
                                         'authorityNotice',
                                         'observations', ]
 councilMeeting.recordMeetingHistoryStates = []
+councilMeeting.itemsListVisibleColumns = ('Creator', 'review_state', 'getCategory',
+                                          'proposing_group_acronym', 'advices', 'actions')
+councilMeeting.itemColumns = ('Creator', 'CreationDate', 'ModificationDate', 'review_state',
+                              'getCategory', 'proposing_group_acronym', 'advices', 'linkedMeetingDate', 'actions')
 councilMeeting.xhtmlTransformFields = ('MeetingItem.description',
                                        'MeetingItem.decision',
                                        'MeetingItem.observations',

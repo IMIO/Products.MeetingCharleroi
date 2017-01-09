@@ -78,6 +78,10 @@ msgstr "En attente avis finances"
 msgid "icon_help_waiting_advices_from_proposed"
 msgstr "En attente des avis (Proposé au chef de service)"
 
+#. Default: "Late item"
+msgid "late"
+msgstr "Urgence"
+
 #. Default: "Assembly for Police"
 msgid "meeting_assemblyPolice"
 msgstr "Présents pour la Zone de Police"

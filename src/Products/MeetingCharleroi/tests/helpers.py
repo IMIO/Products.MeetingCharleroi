@@ -236,6 +236,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         cfg2 = getattr(self.tool, 'meeting-config-council')
         # this will especially setup groups in charge, necessary to present items to a Council meeting
         self._setupPoliceGroup()
+        cfg2.setListTypes(charleroi_import_data.councilMeeting.listTypes)
         cfg2.setWorkflowAdaptations(charleroi_import_data.councilMeeting.workflowAdaptations)
         # items come validated
         cfg2.setTransitionsForPresentingAnItem(('present', ))
@@ -260,14 +261,15 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
 
         # create items and meetings using demo data
         self.changeUser('pmManager')
-        collegeMeeting = _demoData(self.portal,
-                                   userId='pmManager',
-                                   firstTwoGroupIds=('developers', 'vendors'))
-        return collegeMeeting
+        collegeMeeting, collegeExtraMeeting = _demoData(
+            self.portal,
+            userId='pmManager',
+            firstTwoGroupIds=('developers', 'vendors'))
+        return collegeMeeting, collegeExtraMeeting
 
     def setupCouncilDemoData(self):
         """ """
-        collegeMeeting = self.setupCollegeDemoData()
+        collegeMeeting, collegeExtraMeeting = self.setupCollegeDemoData()
         self.changeUser('siteadmin')
         self._removeConfigObjectsFor(self.meetingConfig2,
                                      folders=['recurringitems', 'itemtemplates', 'categories'])
@@ -275,6 +277,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         self._createItemTemplates(self.meetingConfig2)
         self.setupCouncilConfig()
         councilMeeting = _addCouncilDemoData(collegeMeeting,
+                                             collegeExtraMeeting,
                                              userId='pmManager',
                                              firstTwoGroupIds=('developers', 'vendors'))
         return councilMeeting

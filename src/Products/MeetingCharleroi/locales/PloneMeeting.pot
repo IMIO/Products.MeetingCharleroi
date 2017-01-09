@@ -129,3 +129,6 @@ msgstr ""
 msgid "assembly_police_descr"
 msgstr ""
 
+#. Default: "Late item"
+msgid "late"
+msgstr ""

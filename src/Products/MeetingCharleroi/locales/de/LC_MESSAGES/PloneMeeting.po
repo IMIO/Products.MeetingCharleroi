@@ -77,6 +77,10 @@ msgstr ""
 msgid "icon_help_waiting_advices_from_proposed"
 msgstr ""
 
+#. Default: "Late item"
+msgid "late"
+msgstr ""
+
 #. Default: "Assembly for Police"
 msgid "meeting_assemblyPolice"
 msgstr ""

@@ -480,72 +480,76 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
 
     def test_pm_FullInsertingProcess(self):
         '''Test inserting an item using the relevant inserting methods.'''
-        cfg = self.meetingConfig
-        self.setupCollegeDemoData()
+        collegeMeeting, collegeExtraMeeting = self.setupCollegeDemoData()
 
-        meeting = cfg.getMeetingsAcceptingItems()[-3].getObject()
-        orderedItems = meeting.getItems(ordered=True)
-        self.assertEquals(
-            [(item.getListType(),
-              item.getProposingGroup(),
-              item.getProposingGroup(theObject=True).getGroupInChargeAt(meeting.getDate()).getId(),
-              item.getOtherMeetingConfigsClonableTo(),
-              item.getOtherMeetingConfigsClonableToEmergency(),
-              item.getCategory()) for item in orderedItems],
-            [('normal', 'zone-de-police', 'groupincharge1', (), (), 'remboursement'),
-             ('normal', 'zone-de-police', 'groupincharge1', (), (), 'remboursement'),
-             ('late', 'zone-de-police', 'groupincharge1', (), (), 'remboursement'),
-             ('late', 'zone-de-police', 'groupincharge1', (), (), 'remboursement'),
-             ('depose', 'zone-de-police', 'groupincharge1', (), (), 'remboursement'),
-             ('normal', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), 'affaires-juridiques'),
-             ('normal', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), 'affaires-juridiques'),
-             ('normal', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), ('meeting-config-council',),
-              'affaires-juridiques'),
-             ('normal', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), 'remboursement'),
-             ('late', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), 'affaires-juridiques'),
-             ('late', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), 'affaires-juridiques'),
-             ('late', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), ('meeting-config-council',),
-              'affaires-juridiques'),
-             ('late', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), 'remboursement'),
-             ('normal', 'zone-de-police', 'groupincharge1', (), (), 'communication'),
-             ('normal', 'zone-de-police', 'groupincharge1', (), (), 'communication'),
-             ('normal', 'zone-de-police', 'groupincharge1', (), (), 'communication'),
-             ('normal', 'vendors', 'groupincharge1', (), (), 'remboursement'),
-             ('normal', 'vendors', 'groupincharge1', (), (), 'remboursement'),
-             ('normal', 'developers', 'groupincharge2', (), (), 'remboursement'),
-             ('normal', 'developers', 'groupincharge2', (), (), 'remboursement'),
-             ('late', 'vendors', 'groupincharge1', (), (), 'remboursement'),
-             ('late', 'vendors', 'groupincharge1', (), (), 'remboursement'),
-             ('depose', 'vendors', 'groupincharge1', (), (), 'remboursement'),
-             ('normal', 'vendors', 'groupincharge1', ('meeting-config-council',), (), 'affaires-juridiques'),
-             ('normal', 'vendors', 'groupincharge1', ('meeting-config-council',), (), 'affaires-juridiques'),
-             ('normal', 'vendors', 'groupincharge1', ('meeting-config-council',), (), 'remboursement'),
-             ('normal', 'developers', 'groupincharge2', ('meeting-config-council',), (), 'affaires-juridiques'),
-             ('normal', 'developers', 'groupincharge2', ('meeting-config-council',), (), 'affaires-juridiques'),
-             ('normal', 'developers', 'groupincharge2', ('meeting-config-council',), (), 'remboursement'),
-             ('normal', 'developers', 'groupincharge2', ('meeting-config-council',), ('meeting-config-council',),
-              'remboursement'),
-             ('late', 'developers', 'groupincharge2', ('meeting-config-council',), (), 'affaires-juridiques'),
-             ('late', 'developers', 'groupincharge2', ('meeting-config-council',), (), 'remboursement'),
-             ('late', 'developers', 'groupincharge2', ('meeting-config-council',), ('meeting-config-council',),
-              'remboursement'),
-             ('normal', 'developers', 'groupincharge2', (), (), 'communication'),
-             ('normal', 'developers', 'groupincharge2', (), (), 'communication'),
-             ('normal', 'developers', 'groupincharge2', (), (), 'communication')])
+        orderedItems = collegeMeeting.getItems(ordered=True)
+        self.assertEquals([
+            (item.getListType(),
+             item.getProposingGroup(),
+             item.getProposingGroup(theObject=True).getGroupInChargeAt(collegeMeeting.getDate()).getId(),
+             item.getOtherMeetingConfigsClonableTo(),
+             item.getOtherMeetingConfigsClonableToPrivacy(),
+             item.getOtherMeetingConfigsClonableToEmergency(),
+             item.getCategory()) for item in orderedItems],
+            [('normal', 'zone-de-police', 'groupincharge1', (), (), (), 'remboursement'),
+             ('normal', 'zone-de-police', 'groupincharge1', (), (), (), 'remboursement'),
+             ('late', 'zone-de-police', 'groupincharge1', (), (), (), 'remboursement'),
+             ('late', 'zone-de-police', 'groupincharge1', (), (), (), 'remboursement'),
+             ('depose', 'zone-de-police', 'groupincharge1', (), (), (), 'remboursement'),
+             ('normal', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), (), 'affaires-juridiques'),
+             ('normal', 'zone-de-police', 'groupincharge1',
+              ('meeting-config-council',), ('meeting-config-council',), (), 'affaires-juridiques'),
+             ('normal', 'zone-de-police', 'groupincharge1',
+              ('meeting-config-council',), (), ('meeting-config-council',), 'affaires-juridiques'),
+             ('normal', 'zone-de-police', 'groupincharge1',
+              ('meeting-config-council',), ('meeting-config-council',), (), 'remboursement'),
+             ('late', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), (), 'affaires-juridiques'),
+             ('late', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), (), 'affaires-juridiques'),
+             ('late', 'zone-de-police', 'groupincharge1',
+              ('meeting-config-council',), (), ('meeting-config-council',), 'affaires-juridiques'),
+             ('late', 'zone-de-police', 'groupincharge1',
+              ('meeting-config-council',), ('meeting-config-council',), (), 'remboursement'),
+             ('normal', 'zone-de-police', 'groupincharge1', (), (), (), 'communication'),
+             ('normal', 'zone-de-police', 'groupincharge1', (), (), (), 'communication'),
+             ('normal', 'zone-de-police', 'groupincharge1', (), (), (), 'communication'),
+             ('normal', 'vendors', 'groupincharge1', (), (), (), 'remboursement'),
+             ('normal', 'vendors', 'groupincharge1', (), (), (), 'remboursement'),
+             ('normal', 'developers', 'groupincharge2', (), (), (), 'remboursement'),
+             ('normal', 'developers', 'groupincharge2', (), (), (), 'remboursement'),
+             ('late', 'vendors', 'groupincharge1', (), (), (), 'remboursement'),
+             ('late', 'vendors', 'groupincharge1', (), (), (), 'remboursement'),
+             ('depose', 'vendors', 'groupincharge1', (), (), (), 'remboursement'),
+             ('normal', 'vendors', 'groupincharge1', ('meeting-config-council',), (), (), 'affaires-juridiques'),
+             ('normal', 'vendors', 'groupincharge1',
+              ('meeting-config-council',), ('meeting-config-council',), (), 'affaires-juridiques'),
+             ('normal', 'vendors', 'groupincharge1', ('meeting-config-council',), (), (), 'remboursement'),
+             ('normal', 'developers', 'groupincharge2',
+              ('meeting-config-council',), ('meeting-config-council',), (), 'affaires-juridiques'),
+             ('normal', 'developers', 'groupincharge2',
+              ('meeting-config-council',), ('meeting-config-council',), (), 'affaires-juridiques'),
+             ('normal', 'developers', 'groupincharge2', ('meeting-config-council',), (), (), 'remboursement'),
+             ('normal', 'developers', 'groupincharge2',
+              ('meeting-config-council',), (), ('meeting-config-council',), 'remboursement'),
+             ('late', 'developers', 'groupincharge2', ('meeting-config-council',), (), (), 'affaires-juridiques'),
+             ('late', 'developers', 'groupincharge2',
+              ('meeting-config-council',), ('meeting-config-council',), (), 'remboursement'),
+             ('late', 'developers', 'groupincharge2',
+              ('meeting-config-council',), ('meeting-config-council',), ('meeting-config-council',), 'remboursement'),
+             ('normal', 'developers', 'groupincharge2', (), (), (), 'communication'),
+             ('normal', 'developers', 'groupincharge2', (), (), (), 'communication'),
+             ('normal', 'developers', 'groupincharge2', (), (), (), 'communication')])
 
     def test_CollegeCommunicationItemIsInsertedAsNormalItem(self):
         """ """
-        cfg = self.meetingConfig
-        self.setupCollegeDemoData()
-        meeting = cfg.getMeetingsAcceptingItems()[-3].getObject()
+        collegeMeeting, collegeExtraMeeting = self.setupCollegeDemoData()
 
-        self.freezeMeeting(meeting)
-        self.assertEqual(meeting.queryState(), 'frozen')
+        self.freezeMeeting(collegeMeeting)
+        self.assertEqual(collegeMeeting.queryState(), 'frozen')
         commItem = self.create('MeetingItem')
         commItem.setCategory('communication')
-        commItem.setPreferredMeeting(meeting.UID())
+        commItem.setPreferredMeeting(collegeMeeting.UID())
         self.presentItem(commItem)
-        self.assertEqual(commItem.getMeeting(), meeting)
+        self.assertEqual(commItem.getMeeting(), collegeMeeting)
         self.assertEqual(commItem.getListType(), 'normal')
 
     def test_CouncilItemsUsingSpecialCategoriesAreInsertedAsNormalItem(self):

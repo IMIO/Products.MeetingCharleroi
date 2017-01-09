@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 by Imio.be
+# Copyright (c) 2017 by Imio.be
 #
 # GNU General Public License (GPL)
 #
