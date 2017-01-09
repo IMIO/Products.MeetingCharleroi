@@ -542,7 +542,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
     def test_CollegeCommunicationItemIsInsertedAsNormalItem(self):
         """ """
         collegeMeeting, collegeExtraMeeting = self.setupCollegeDemoData()
-
+        self.portal.REQUEST['PUBLISHED'] = collegeMeeting
         self.freezeMeeting(collegeMeeting)
         self.assertEqual(collegeMeeting.queryState(), 'frozen')
         commItem = self.create('MeetingItem')
