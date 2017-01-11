@@ -228,6 +228,24 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                         meetingConfig=cfg,
                         **data)
 
+    def _createRecurringItems(self, cfg):
+        """ """
+        if cfg.getId() == 'meeting-config-college':
+            items = charleroi_import_data.collegeMeeting.recurringItems
+        else:
+            items = charleroi_import_data.councilMeeting.recurringItems
+        for item in items:
+            data = {'id': item.id,
+                    'title': item.title,
+                    'description': item.description,
+                    'category': item.category,
+                    'proposingGroup': 'developers',
+                    'decision': item.decision,
+                    'meetingTransitionInsertingMe': item.meetingTransitionInsertingMe}
+            self.create('MeetingItemRecurring',
+                        meetingConfig=cfg,
+                        **data)
+
     def setupCouncilConfig(self):
         """ """
         cfg = getattr(self.tool, 'meeting-config-college')
@@ -237,6 +255,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         # this will especially setup groups in charge, necessary to present items to a Council meeting
         self._setupPoliceGroup()
         cfg2.setListTypes(charleroi_import_data.councilMeeting.listTypes)
+        cfg2.setSelectablePrivacies(charleroi_import_data.councilMeeting.selectablePrivacies)
         cfg2.setWorkflowAdaptations(charleroi_import_data.councilMeeting.workflowAdaptations)
         # items come validated
         cfg2.setTransitionsForPresentingAnItem(('present', ))
@@ -275,6 +294,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                                      folders=['recurringitems', 'itemtemplates', 'categories'])
         self._createCategories(self.meetingConfig2)
         self._createItemTemplates(self.meetingConfig2)
+        self._createRecurringItems(self.meetingConfig2)
         self.setupCouncilConfig()
         councilMeeting = _addCouncilDemoData(collegeMeeting,
                                              collegeExtraMeeting,

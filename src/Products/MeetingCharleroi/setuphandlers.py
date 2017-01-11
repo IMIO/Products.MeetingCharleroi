@@ -811,27 +811,60 @@ def _addCouncilDemoData(collegeMeeting,
 
         # now add some special items, aka items using categories "proposes-par-un-conseiller"
         # "interventions" and "questions-actualite"
+        # more over add some items using privacy "secret_heading"
         special_items = (
+            # 'secret_heading'
             {'templateId': templateId,
              'title': u'Point entête 1',
              'proposingGroup': firstTwoGroupIds[0],
-             'category': COUNCIL_SPECIAL_CATEGORIES[0]},
+             'category': councilCategoryId,
+             'privacy': 'secret_heading'},
+            {'templateId': templateId,
+             'title': u'Point entête 2',
+             'proposingGroup': firstTwoGroupIds[0],
+             'category': councilCategoryId,
+             'privacy': 'secret_heading'},
+            {'templateId': templateId,
+             'title': u'Point entête 3',
+             'proposingGroup': firstTwoGroupIds[0],
+             'category': councilCategoryId,
+             'privacy': 'secret_heading'},
+            # items using special categories
             {'templateId': templateId,
              'title': u'Point proposé par un conseiller 1',
              'proposingGroup': firstTwoGroupIds[0],
-             'category': COUNCIL_SPECIAL_CATEGORIES[1]},
+             'category': COUNCIL_SPECIAL_CATEGORIES[1],
+             'privacy': 'public'},
             {'templateId': templateId,
              'title': u'Intervention 1',
              'proposingGroup': firstTwoGroupIds[0],
-             'category': COUNCIL_SPECIAL_CATEGORIES[2]},
+             'category': COUNCIL_SPECIAL_CATEGORIES[2],
+             'privacy': 'public'},
             {'templateId': templateId,
              'title': u'Question d\'actualité 1',
              'proposingGroup': firstTwoGroupIds[0],
-             'category': COUNCIL_SPECIAL_CATEGORIES[3]},
+             'category': COUNCIL_SPECIAL_CATEGORIES[3],
+             'privacy': 'public'},
+            {'templateId': templateId,
+             'title': u'Huis clos entête 1',
+             'proposingGroup': firstTwoGroupIds[0],
+             'category': COUNCIL_SPECIAL_CATEGORIES[3],
+             'privacy': 'public'},
+            {'templateId': templateId,
+             'title': u'Question d\'actualité 1',
+             'proposingGroup': firstTwoGroupIds[0],
+             'category': COUNCIL_SPECIAL_CATEGORIES[3],
+             'privacy': 'public'},
         )
 
         userFolder = tool.getPloneMeetingFolder(cfg2Id, userId)
+        i = 1
+        wfTool.doActionFor(meeting, 'backToCreated')
         for item in special_items:
+            # just insert 2 first items in the 'created' meeting, others will be inserted in a frozen meeting
+            if i == 3:
+                wfTool.doActionFor(meeting, 'freeze')
+            i = i + 1
             # get the template then clone it
             template = getattr(tool.getMeetingConfig(userFolder).itemtemplates, item['templateId'])
             newItem = template.clone(newOwnerId=userId,
@@ -841,6 +874,7 @@ def _addCouncilDemoData(collegeMeeting,
             newItem.setProposingGroup(item['proposingGroup'])
             newItem.setCategory(item['category'])
             newItem.setPreferredMeeting(meeting.UID())
+            newItem.setPrivacy(item['privacy'])
             newItem.reindexObject()
             wfTool.doActionFor(newItem, 'present')
 
