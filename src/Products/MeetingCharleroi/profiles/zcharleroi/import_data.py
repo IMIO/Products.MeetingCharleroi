@@ -694,6 +694,7 @@ councilMeeting.usedItemAttributes = ['motivation',
                                      'budgetInfos',
                                      'manuallyLinkedItems',
                                      'pollType',
+                                     'pollTypeObservations',
                                      'itemInitiator',
                                      'itemAssembly', ]
 councilMeeting.usedMeetingAttributes = ['startDate',
