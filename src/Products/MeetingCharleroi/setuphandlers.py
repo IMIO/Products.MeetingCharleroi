@@ -769,7 +769,7 @@ def _addCouncilDemoData(collegeMeeting,
     dgenFolder = tool.getPloneMeetingFolder(cfg2Id, userId)
     date = DateTime() + 1
     with api.env.adopt_user(userId):
-        councilCategoryId = 'designations'
+        councilCategoryIds = ['designations', 'engagements', 'contentieux']
         meetingId = dgenFolder.invokeFactory('MeetingCouncil',
                                              date=date,
                                              id=date.strftime('%Y%m%d'))
@@ -781,9 +781,13 @@ def _addCouncilDemoData(collegeMeeting,
             item for item in collegeMeeting.getItems(ordered=True)
             if item.getOtherMeetingConfigsClonableTo() and not item.getOtherMeetingConfigsClonableToEmergency()]
         # send to council every items
+        i = 0
         for item in itemsToCouncilNoEmergency:
             councilItem = item.cloneToOtherMeetingConfig(cfg2Id)
-            councilItem.setCategory(councilCategoryId)
+            councilItem.setCategory(councilCategoryIds[i])
+            i = i + 1
+            if i == len(councilCategoryIds):
+                i = 0
             wfTool.doActionFor(councilItem, 'present')
 
         # send first 'emergency' item to Council to show that it is inserted
@@ -793,20 +797,20 @@ def _addCouncilDemoData(collegeMeeting,
             if item.getOtherMeetingConfigsClonableTo() and item.getOtherMeetingConfigsClonableToEmergency()]
         firstItemEmergency = itemsToCouncilEmergency[0]
         firstItemEmergencyCouncil = firstItemEmergency.cloneToOtherMeetingConfig(cfg2Id)
-        firstItemEmergencyCouncil.setCategory(councilCategoryId)
+        firstItemEmergencyCouncil.setCategory(councilCategoryIds[0])
         wfTool.doActionFor(firstItemEmergencyCouncil, 'present')
         # now freeze the meeting and present other emergency items
         wfTool.doActionFor(meeting, 'freeze')
         for item in itemsToCouncilEmergency[1:]:
             councilItem = item.cloneToOtherMeetingConfig(cfg2Id)
-            councilItem.setCategory(councilCategoryId)
+            councilItem.setCategory(councilCategoryIds[1])
             wfTool.doActionFor(councilItem, 'present')
 
         # present items from collegeExtraMeeting
         for item in collegeExtraMeeting.getItems():
             if item.getOtherMeetingConfigsClonableTo():
                 councilItem = item.cloneToOtherMeetingConfig(cfg2Id)
-                councilItem.setCategory(councilCategoryId)
+                councilItem.setCategory(councilCategoryIds[2])
                 wfTool.doActionFor(councilItem, 'present')
 
         # now add some special items, aka items using categories "proposes-par-un-conseiller"
@@ -817,58 +821,84 @@ def _addCouncilDemoData(collegeMeeting,
             {'templateId': templateId,
              'title': u'Point entête 1',
              'proposingGroup': firstTwoGroupIds[0],
-             'category': councilCategoryId,
+             'category': councilCategoryIds[0],
              'privacy': 'secret_heading',
-             'itemInitiator': ()},
+             'itemInitiator': (),
+             'pollType': 'secret',
+             'pollTypeObservations': ''},
             {'templateId': templateId,
              'title': u'Point entête 2',
              'proposingGroup': firstTwoGroupIds[0],
-             'category': councilCategoryId,
+             'category': councilCategoryIds[1],
              'privacy': 'secret_heading',
-             'itemInitiator': ()},
+             'itemInitiator': (),
+             'pollType': 'secret',
+             'pollTypeObservations': ''},
             {'templateId': templateId,
              'title': u'Point entête 3',
              'proposingGroup': firstTwoGroupIds[0],
-             'category': councilCategoryId,
+             'category': councilCategoryIds[2],
              'privacy': 'secret_heading',
-             'itemInitiator': ()},
+             'itemInitiator': (),
+             'pollType': 'secret',
+             'pollTypeObservations': '<p>Petite note vote secret</p>'},
             # items using special categories
             {'templateId': templateId,
              'title': u'Point proposé par un conseiller 1',
              'proposingGroup': firstTwoGroupIds[0],
              'category': COUNCIL_SPECIAL_CATEGORIES[1],
              'privacy': 'public',
-             'itemInitiator': ('DESGXA103',)},
+             'itemInitiator': ('DESGXA103',),
+             'pollType': 'freehand',
+             'pollTypeObservations': ''},
             {'templateId': templateId,
              'title': u'Point proposé par un conseiller 2',
              'proposingGroup': firstTwoGroupIds[0],
              'category': COUNCIL_SPECIAL_CATEGORIES[1],
              'privacy': 'public',
-             'itemInitiator': ('DESGXA103', 'DEVIFA128')},
+             'itemInitiator': ('DESGXA103', 'DEVIFA128'),
+             'pollType': 'freehand',
+             'pollTypeObservations': ''},
             {'templateId': templateId,
              'title': u'Intervention 1',
              'proposingGroup': firstTwoGroupIds[0],
              'category': COUNCIL_SPECIAL_CATEGORIES[2],
              'privacy': 'public',
-             'itemInitiator': ()},
+             'itemInitiator': (),
+             'pollType': 'freehand',
+             'pollTypeObservations': '<p>Une autre petite note</p>'},
             {'templateId': templateId,
              'title': u'Question d\'actualité 1',
              'proposingGroup': firstTwoGroupIds[0],
              'category': COUNCIL_SPECIAL_CATEGORIES[3],
              'privacy': 'public',
-             'itemInitiator': ()},
+             'itemInitiator': (),
+             'pollType': 'freehand',
+             'pollTypeObservations': ''},
             {'templateId': templateId,
              'title': u'Huis clos entête 1',
              'proposingGroup': firstTwoGroupIds[0],
              'category': COUNCIL_SPECIAL_CATEGORIES[3],
              'privacy': 'public',
-             'itemInitiator': ()},
+             'itemInitiator': (),
+             'pollType': 'freehand',
+             'pollTypeObservations': ''},
             {'templateId': templateId,
              'title': u'Question d\'actualité 1',
              'proposingGroup': firstTwoGroupIds[0],
              'category': COUNCIL_SPECIAL_CATEGORIES[3],
              'privacy': 'public',
-             'itemInitiator': ()},
+             'itemInitiator': (),
+             'pollType': 'freehand',
+             'pollTypeObservations': ''},
+            {'templateId': templateId,
+             'title': u'Approuve le procès-verbal de la séance à huis-clos du ...',
+             'proposingGroup': firstTwoGroupIds[0],
+             'category': 'entetes',
+             'privacy': 'secret',
+             'itemInitiator': (),
+             'pollType': 'secret',
+             'pollTypeObservations': ''},
         )
 
         userFolder = tool.getPloneMeetingFolder(cfg2Id, userId)
@@ -890,6 +920,8 @@ def _addCouncilDemoData(collegeMeeting,
             newItem.setPreferredMeeting(meeting.UID())
             newItem.setPrivacy(item['privacy'])
             newItem.setItemInitiator(item['itemInitiator'])
+            newItem.setPollType(item['pollType'])
+            newItem.setPollTypeObservations(item['pollTypeObservations'], mimetype='text/html')
             newItem.reindexObject()
             wfTool.doActionFor(newItem, 'present')
 
