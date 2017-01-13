@@ -260,6 +260,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         # items come validated
         cfg2.setTransitionsForPresentingAnItem(('present', ))
         cfg2.setItemReferenceFormat(charleroi_import_data.councilMeeting.itemReferenceFormat)
+        cfg2.setUsedItemAttributes(charleroi_import_data.councilMeeting.usedItemAttributes)
         # setup inserting methods
         cfg2.setInsertingMethodsOnAddItem(charleroi_import_data.councilMeeting.insertingMethodsOnAddItem)
         cfg2.at_post_edit_script()

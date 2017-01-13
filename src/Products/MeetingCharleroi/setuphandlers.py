@@ -897,7 +897,7 @@ def _addCouncilDemoData(collegeMeeting,
              'category': 'entetes',
              'privacy': 'secret',
              'itemInitiator': (),
-             'pollType': 'secret',
+             'pollType': 'freehand',
              'pollTypeObservations': ''},
         )
 

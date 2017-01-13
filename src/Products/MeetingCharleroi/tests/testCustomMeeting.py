@@ -568,7 +568,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
             self.assertTrue(item.modified() > getLastEvent(meeting, 'freeze')['time'])
         self.assertEqual(
             [item.getListType() for item in special_items],
-            ['normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal'])
+            ['normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal'])
 
 
 def test_suite():
