@@ -32,26 +32,39 @@ class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
     def _showFinancesAdvice(self):
         """Finances advice is only shown :
            - if given (at worst it will be 'not_given_finance');
+           - in any case if item is in Council;
            - if item is 'validated' to everybody;
            - if it is 'prevalidated_waiting_advices', to finances advisers."""
-        financeAdviceId = self.context.adapted().getFinanceAdviceId()
+        adviceHolder = self._advice_holder()
+        financeAdviceId = adviceHolder.adapted().getFinanceAdviceId()
         if not financeAdviceId:
             return False
-        adviceObj = self.context.getAdviceObj(financeAdviceId)
+        adviceObj = adviceHolder.getAdviceObj(financeAdviceId)
         if not adviceObj:
             return False
         item_state = self.context.queryState()
         tool = api.portal.get_tool('portal_plonemeeting')
         financeAdviceGroup = getattr(tool, financeAdviceId)
         if item_state == 'validated' or \
-                self.context.hasMeeting() or \
+                adviceHolder.hasMeeting() or \
                 (item_state == 'prevalidated_waiting_advices' and financeAdviceGroup.userPloneGroups(
                     suffixes=['advisers'])):
             return True
 
+    def _advice_holder(self):
+        context = self.context.context
+        if context.portal_type == 'MeetingItemCouncil':
+            predecessor = context.getPredecessor()
+            if predecessor and predecessor.portal_type == 'MeetingItemCollege':
+                context = predecessor
+        return context
+
     def _financeAdviceData(self):
         """ """
-        adviceData = self.context.getAdviceDataFor(self.context.context, self.context.adapted().getFinanceAdviceId())
+        # if item is in Council, get the adviceData from it's predecessor
+        adviceHolder = self._advice_holder()
+        adviceData = adviceHolder.getAdviceDataFor(adviceHolder,
+                                                   adviceHolder.adapted().getFinanceAdviceId())
         adviceTypeTranslated = ''
         if adviceData['type'] in ('positive_finance', 'positive_with_remarks_finance'):
             adviceTypeTranslated = 'favorable'
