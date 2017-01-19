@@ -239,7 +239,6 @@ ech1_grp = GroupDescriptor('echevin1', 'Echevin 1', 'Ech1')
 ech2_grp = GroupDescriptor('echevin2', 'Echevin 2', 'Ech2')
 ech3_grp = GroupDescriptor('echevin3', 'Echevin 3', 'Ech3')
 
-# MeetingManager
 dirgen_grp.creators.append(dgen)
 dirgen_grp.serviceheads.append(dgen)
 dirgen_grp.prereviewers.append(dgen)
@@ -284,7 +283,6 @@ pers_grp.advisers.append(dirPers)
 pers_grp.observers.append(echevinPers)
 pers_grp.advisers.append(emetteuravisPers)
 
-# dirfin
 dirfin_grp.itemAdviceStates = ('meeting-config-college__state__prevalidated_waiting_advices',)
 dirfin_grp.itemAdviceEditStates = ('meeting-config-college__state__prevalidated_waiting_advices',)
 dirfin_grp.keepAccessToItemWhenAdviceIsGiven = True
@@ -294,6 +292,10 @@ dirfin_grp.prereviewers.append(dfin)
 dirfin_grp.reviewers.append(dfin)
 dirfin_grp.observers.append(dfin)
 dirfin_grp.advisers.append(dfin)
+dirfin_grp.financialcontrollers.append(dfin)
+dirfin_grp.financialeditors.append(dfin)
+dirfin_grp.financialreviewers.append(dfin)
+dirfin_grp.financialmanagers.append(dfin)
 
 compta_grp.creators.append(agentCompta)
 compta_grp.creators.append(dfin)
