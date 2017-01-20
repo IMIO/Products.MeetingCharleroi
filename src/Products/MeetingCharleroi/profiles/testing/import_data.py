@@ -154,6 +154,7 @@ pmFinController = UserDescriptor('pmFinController', [])
 pmFinEditor = UserDescriptor('pmFinEditor', [])
 pmFinReviewer = UserDescriptor('pmFinReviewer', [])
 pmFinManager = UserDescriptor('pmFinManager', [])
+dfin = UserDescriptor('dfin', [])
 
 pmManager = UserDescriptor('pmManager', [])
 pmCreator1 = UserDescriptor('pmCreator1', [])
@@ -453,5 +454,5 @@ data.restrictUsers = False
 data.usersOutsideGroups = [voter1, voter2, powerobserver1, powerobserver2,
                            restrictedpowerobserver1, restrictedpowerobserver2,
                            budgetimpacteditor, pmFinController, pmFinEditor,
-                           pmFinReviewer, pmFinManager]
+                           pmFinReviewer, pmFinManager, dfin]
 # ------------------------------------------------------------------------------
