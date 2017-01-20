@@ -10,8 +10,10 @@
 from plone import api
 from Products.MeetingCommunes.browser.overrides import MCItemDocumentGenerationHelperView
 from Products.MeetingCommunes.browser.overrides import MCMeetingDocumentGenerationHelperView
+from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.PloneMeeting.browser.views import MeetingBeforeFacetedInfosView
 from Products.PloneMeeting.utils import getLastEvent
+
 
 FIN_ADVICE_LINE1 = "<p>Considérant la communication du dossier au Directeur financier faite en date du {0}, " \
                    "conformément à l'article L1124-40 §1er, 3° et 4° du " \
@@ -36,15 +38,12 @@ class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
            - if item is 'validated' to everybody;
            - if it is 'prevalidated_waiting_advices', to finances advisers."""
         adviceHolder = self._advice_holder()
-        financeAdviceId = adviceHolder.adapted().getFinanceAdviceId()
-        if not financeAdviceId:
-            return False
-        adviceObj = adviceHolder.getAdviceObj(financeAdviceId)
+        adviceObj = adviceHolder.getAdviceObj(FINANCE_GROUP_ID)
         if not adviceObj:
             return False
         item_state = self.context.queryState()
         tool = api.portal.get_tool('portal_plonemeeting')
-        financeAdviceGroup = getattr(tool, financeAdviceId)
+        financeAdviceGroup = getattr(tool, FINANCE_GROUP_ID)
         if item_state == 'validated' or \
                 adviceHolder.hasMeeting() or \
                 (item_state == 'prevalidated_waiting_advices' and financeAdviceGroup.userPloneGroups(
@@ -52,19 +51,13 @@ class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
             return True
 
     def _advice_holder(self):
-        context = self.context.context
-        if context.portal_type == 'MeetingItemCouncil':
-            predecessor = context.getPredecessor()
-            if predecessor and predecessor.portal_type == 'MeetingItemCollege':
-                context = predecessor
-        return context
+        adviceInfo = self.real_context.getAdviceDataFor(self.real_context, FINANCE_GROUP_ID)
+        return adviceInfo.get('adviceHolder', self.real_context)
 
     def _financeAdviceData(self):
         """ """
         # if item is in Council, get the adviceData from it's predecessor
-        adviceHolder = self._advice_holder()
-        adviceData = adviceHolder.getAdviceDataFor(adviceHolder,
-                                                   adviceHolder.adapted().getFinanceAdviceId())
+        adviceData = self.real_context.getAdviceDataFor(self.real_context, FINANCE_GROUP_ID)
         adviceTypeTranslated = ''
         if adviceData['type'] in ('positive_finance', 'positive_with_remarks_finance'):
             adviceTypeTranslated = 'favorable'

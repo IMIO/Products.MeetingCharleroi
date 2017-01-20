@@ -18,6 +18,8 @@ import logging
 logger = logging.getLogger('MeetingCharleroi: setuphandlers')
 from DateTime import DateTime
 from plone import api
+from plone.app.textfield.value import RichTextValue
+from plone.dexterity.utils import createContentInContainer
 from Products.CMFPlone.utils import _createObjectByType
 from imio.helpers.catalog import addOrUpdateIndexes
 from Products.PloneMeeting.exportimport.content import ToolInitializer
@@ -343,9 +345,33 @@ def addCollegeDemoData(context):
 
 def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateId='template5'):
     """ """
+    wfTool = api.portal.get_tool('portal_workflow')
+
+    def _add_finance_advice(item, newItem, last_transition):
+        if item['toDiscuss'] and cfg.id == 'meeting-config-college' and \
+           item['category'] in ['affaires-juridiques', 'remboursement'] and \
+           last_transition == 'prevalidate':
+            newItem.setOptionalAdvisers(('dirfin__rowid__unique_id_003'))
+            newItem.updateLocalRoles()
+            wfTool.doActionFor(newItem, 'wait_advices_from_prevalidated')
+            newItem.setCompleteness('completeness_complete')
+            newItem.updateLocalRoles()
+            with api.env.adopt_user('dfin'):
+                advice = createContentInContainer(
+                    newItem,
+                    'meetingadvicefinances',
+                    **{'advice_group': 'dirfin',
+                       'advice_type': u'positive_finance',
+                       'advice_comment': RichTextValue(u'Mon commentaire')})
+                wfTool.doActionFor(advice, 'proposeToFinancialEditor')
+                wfTool.doActionFor(advice, 'proposeToFinancialReviewer')
+                wfTool.doActionFor(advice, 'proposeToFinancialManager')
+                wfTool.doActionFor(advice, 'signFinancialAdvice')
+            return True
+        return False
+
     tool = api.portal.get_tool('portal_plonemeeting')
     cfg = getattr(tool, 'meeting-config-college')
-    wfTool = api.portal.get_tool('portal_workflow')
     pTool = api.portal.get_tool('plone_utils')
     mTool = api.portal.get_tool('portal_membership')
     # first we need to be sure that our IPoneMeetingLayer is set correctly
@@ -709,7 +735,6 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
         )
 
     userFolder = tool.getPloneMeetingFolder(cfg.getId(), userId)
-    wfTool = api.portal.get_tool('portal_workflow')
 
     for step in ('normal', 'late', 'depose', 'extra_late'):
         if step == 'late':
@@ -736,20 +761,22 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
             newItem.setOtherMeetingConfigsClonableTo(item['otherMeetingConfigsClonableTo'])
             newItem.setPreferredMeeting(meetingForItems.UID())
             newItem.reindexObject()
+
             if step == 'extra_late':
                 site.REQUEST['PUBLISHED'] = meetingForExtraLateItems
             else:
                 site.REQUEST['PUBLISHED'] = meetingForItems
+            item_received_finances_advice = False
             for transition in cfg.getTransitionsForPresentingAnItem():
+                if item_received_finances_advice and transition == 'validate':
+                    continue
                 wfTool.doActionFor(newItem, transition)
+                item_received_finances_advice = _add_finance_advice(item, newItem, transition)
+
             if step == 'depose':
                 newItem.setListType('depose')
-
-            if item['toDiscuss'] and cfg.id == 'meeting-config-college' \
-                    and item['category'] in ['affaires-juridiques', 'remboursement']:
-                newItem.setOptionalAdvisers(('dirfin__rowid__unique_id_003'))
-
             newItem.reindexObject(idxs=['listType'])
+
     return meetingForItems, meetingForExtraLateItems
 
 

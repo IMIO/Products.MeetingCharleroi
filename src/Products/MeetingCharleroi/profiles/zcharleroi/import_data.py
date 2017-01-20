@@ -528,6 +528,10 @@ collegeMeeting.meetingConfigsToCloneTo = [{'meeting_config': 'meeting-config-cou
                                            'trigger_workflow_transitions_until': '__nothing__'}, ]
 collegeMeeting.itemAutoSentToOtherMCStates = ('accepted', 'accepted_but_modified', )
 collegeMeeting.itemManualSentToOtherMCStates = ('itemfrozen', 'pre_accepted', )
+collegeMeeting.keepAdvicesOnSentToOtherMC = True
+collegeMeeting.advicesKeptOnSentToOtherMC = ('delay_real_group_id__unique_id_002',
+                                             'delay_real_group_id__unique_id_003',
+                                             'delay_real_group_id__unique_id_004')
 collegeMeeting.recurringItems = [
     RecurringItemDescriptor(
         id='recurringagenda1',
