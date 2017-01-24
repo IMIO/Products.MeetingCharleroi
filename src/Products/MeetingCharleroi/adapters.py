@@ -167,7 +167,7 @@ class CustomCharleroiMeeting(CustomMeeting):
         category as key and the list of all items having that
         group in charge and that category as value.
         """
-        groupsInChargeItems = OrderedDict()
+        groupsInChargeItems = {}
         for categorizedItems in itemsList:
             for item in categorizedItems[1:]:
                 groupInCharge = item.getProposingGroup(theObject=True).getGroupInChargeAt(self.context.getDate())
@@ -187,6 +187,9 @@ class CustomCharleroiMeeting(CustomMeeting):
                     categDict = OrderedDict()
                     categDict[categorizedItems[0]] = [item]
                     groupsInChargeItems[groupInCharge] = categDict
+        return OrderedDict(sorted(groupsInChargeItems.items(),
+                                  key=lambda t: t[0] and t[0].getOrder()))
+
         return groupsInChargeItems
 
     def _sortByGroupInChargeByDate(self, itemsList):
@@ -200,6 +203,7 @@ class CustomCharleroiMeeting(CustomMeeting):
         byDateItems = {}
         tool = api.portal.get_tool('portal_plonemeeting')
         councilMC = getattr(tool, 'meeting-config-council')
+        categDict = OrderedDict()
 
         for categorizedItems in itemsList:
             for item in categorizedItems[1:]:
@@ -218,8 +222,8 @@ class CustomCharleroiMeeting(CustomMeeting):
                             # create the list with item in it
                             byDateItems[nextMeetingDate][groupInCharge][categorizedItems[0]] = [item]
                     else:
-                        # create the key for that group in charge and add the
-                        # item list in it.
+                        # create the key for that group in charge and add the item list in it.
+                        categDict = OrderedDict()
                         categDict[categorizedItems[0]] = [item]
                         byDateItems[nextMeetingDate][groupInCharge] = categDict.copy()
                 else:
@@ -230,9 +234,15 @@ class CustomCharleroiMeeting(CustomMeeting):
                     groupsInChargeItems = OrderedDict()
                     groupsInChargeItems[groupInCharge] = categDict.copy()
                     byDateItems[nextMeetingDate] = groupsInChargeItems.copy()
-
-        return OrderedDict(sorted(byDateItems.items(),
-                                  key=lambda t: t[0] and t[0].getDate().strftime('%Y%m%d') or DateTime('1950/01/01')))
+        res = OrderedDict()
+        # sort by groupInCharge
+        for date in byDateItems.items():
+            res[date[0]] = OrderedDict(sorted(date[1].items(), key=lambda t: t[0].getOrder()))
+        # sort by meeting date
+        res = OrderedDict(sorted(res.items(),
+                                 key=lambda t: (t[0] and t[0].getDate().strftime('%Y%m%d')
+                                                or DateTime('1950/01/01'))))
+        return res
 
     def _getPolicePrescriptiveItems(self, itemUids, listTypes=['normal']):
         """
