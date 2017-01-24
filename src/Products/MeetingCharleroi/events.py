@@ -13,6 +13,7 @@ __docformat__ = 'plaintext'
 from plone import api
 from Products.PloneMeeting.utils import sendMailIfRelevant
 from Products.MeetingCommunes.config import FINANCE_STATE_TO_GROUPS_MAPPINGS
+from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 
 
@@ -129,3 +130,23 @@ def onAdvicesUpdated(item, event):
             adviceInfo['advice_addable'] = False
             adviceInfo['advice_editable'] = False
             adviceInfo['delay_infos'] = item.getDelayInfosForAdvice(groupId)
+
+
+def onItemDuplicatedToOtherMC(originalItem, event):
+    '''When an item is sent to the Council, we need to initialize
+       category depending on privacy :
+       - 'public' items will use category COUNCIL_DEFAULT_CATEGORY and will be presented to next meeting;
+       - 'secret' items will stay in it's initial state.'''
+    newItem = event.newItem
+
+    if originalItem.portal_type == 'MeetingItemCollege' and \
+       newItem.portal_type == 'MeetingItemCouncil':
+        if newItem.getPrivacy() == 'public':
+            tool = api.portal.get_tool('portal_plonemeeting')
+            destMeetingConfig = tool.getMeetingConfig(originalItem)
+            newItem.setCategory(COUNCIL_DEFAULT_CATEGORY)
+            meeting = newItem._otherMCMeetingToBePresentedIn(destMeetingConfig)
+            if meeting:
+                newItem.setPreferredMeeting(meeting.UID())
+                wfTool = api.portal.get_tool('portal_workflow')
+                wfTool.doActionFor(newItem, 'present')

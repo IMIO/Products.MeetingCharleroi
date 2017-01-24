@@ -34,6 +34,10 @@ class testMeetingItem(MeetingCharleroiTestCase, mctmi):
         '''Already tested in testCustomMeetingItem.'''
         pass
 
+    def _extraNeutralFields(self):
+        """ """
+        return ['bourgmestreObservations']
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite
