@@ -26,7 +26,7 @@ from DateTime import DateTime
 from Products.MeetingCommunes.tests.testCustomMeeting import testCustomMeeting as mctcm
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
-from Products.MeetingCharleroi.config import POLICE_GROUP_ID
+from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 from Products.PloneMeeting.utils import getLastEvent
 
@@ -434,8 +434,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         itemDev3 = self.create('MeetingItem')
         itemVen1 = self.create('MeetingItem', proposingGroup='vendors')
         itemVen2 = self.create('MeetingItem', proposingGroup='vendors')
-        itemPol1 = self.create('MeetingItem', proposingGroup=POLICE_GROUP_ID)
-        itemPol2 = self.create('MeetingItem', proposingGroup=POLICE_GROUP_ID)
+        itemPol1 = self.create('MeetingItem', proposingGroup=POLICE_GROUP_PREFIX)
+        itemPol2 = self.create('MeetingItem', proposingGroup=POLICE_GROUP_PREFIX)
         meeting = self.create('Meeting', date=DateTime())
         for item in [itemDev1, itemDev2, itemDev3,
                      itemVen1, itemVen2,
@@ -493,24 +493,27 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
              item.getCategory()) for item in orderedItems],
             [('normal', 'zone-de-police', 'groupincharge1', (), (), (), 'remboursement'),
              ('normal', 'zone-de-police', 'groupincharge1', (), (), (), 'remboursement'),
-             ('late', 'zone-de-police', 'groupincharge1', (), (), (), 'remboursement'),
+             ('late', 'zone-de-police-compta', 'groupincharge1', (), (), (), 'remboursement'),
              ('late', 'zone-de-police', 'groupincharge1', (), (), (), 'remboursement'),
              ('depose', 'zone-de-police', 'groupincharge1', (), (), (), 'remboursement'),
-             ('normal', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), (), 'affaires-juridiques'),
              ('normal', 'zone-de-police', 'groupincharge1',
+              ('meeting-config-council',), (), (), 'affaires-juridiques'),
+             ('normal', 'zone-de-police-compta', 'groupincharge1',
               ('meeting-config-council',), ('meeting-config-council',), (), 'affaires-juridiques'),
              ('normal', 'zone-de-police', 'groupincharge1',
               ('meeting-config-council',), (), ('meeting-config-council',), 'affaires-juridiques'),
-             ('normal', 'zone-de-police', 'groupincharge1',
+             ('normal', 'zone-de-police-compta', 'groupincharge1',
               ('meeting-config-council',), ('meeting-config-council',), (), 'remboursement'),
-             ('late', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), (), 'affaires-juridiques'),
-             ('late', 'zone-de-police', 'groupincharge1', ('meeting-config-council',), (), (), 'affaires-juridiques'),
+             ('late', 'zone-de-police', 'groupincharge1',
+              ('meeting-config-council',), (), (), 'affaires-juridiques'),
+             ('late', 'zone-de-police', 'groupincharge1',
+              ('meeting-config-council',), (), (), 'affaires-juridiques'),
              ('late', 'zone-de-police', 'groupincharge1',
               ('meeting-config-council',), (), ('meeting-config-council',), 'affaires-juridiques'),
-             ('late', 'zone-de-police', 'groupincharge1',
+             ('late', 'zone-de-police-compta', 'groupincharge1',
               ('meeting-config-council',), ('meeting-config-council',), (), 'remboursement'),
              ('normal', 'zone-de-police', 'groupincharge1', (), (), (), 'communication'),
-             ('normal', 'zone-de-police', 'groupincharge1', (), (), (), 'communication'),
+             ('normal', 'zone-de-police-compta', 'groupincharge1', (), (), (), 'communication'),
              ('normal', 'zone-de-police', 'groupincharge1', (), (), (), 'communication'),
              ('normal', 'vendors', 'groupincharge1', (), (), (), 'remboursement'),
              ('normal', 'vendors', 'groupincharge1', (), (), (), 'remboursement'),

@@ -65,7 +65,7 @@ from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import NEVER_LATE_CATEGORIES
 from Products.MeetingCharleroi.config import FINANCE_GIVEABLE_ADVICE_STATES
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
-from Products.MeetingCharleroi.config import POLICE_GROUP_ID
+from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 
 # disable most of wfAdaptations
 customWfAdaptations = ('no_publication', 'no_global_observation',
@@ -124,12 +124,13 @@ class CustomCharleroiMeeting(CustomMeeting):
 
     def _getPoliceItems(self, itemUids, categories=[], excludedCategories=[], listTypes=['normal']):
         """Get all items from the group 'Police'."""
+        tool = api.portal.get_tool('portal_plonemeeting')
         policeItems = self.getPrintableItemsByCategory(itemUids,
                                                        forceCategOrderFromConfig=True,
                                                        categories=categories,
                                                        excludedCategories=excludedCategories,
                                                        listTypes=listTypes,
-                                                       groupIds=['zone-de-police'])
+                                                       groupIds=tool.adapted().zplGroups())
         if policeItems:
             return policeItems
         else:
@@ -286,10 +287,12 @@ class CustomCharleroiMeeting(CustomMeeting):
                                                       categories=categories,
                                                       excludedCategories=excludedCategories)
         groupedStandardItems = []
+        tool = api.portal.get_tool('portal_plonemeeting')
+        zplGroups = tool.adapted().zplGroups()
         for groupedItems in everyItems:
             standardItems = [groupedItems[0]]
             standardItems += [item for item in groupedItems[1:]
-                              if item.getProposingGroup() != 'zone-de-police']
+                              if item.getProposingGroup() not in zplGroups]
 
             # if there is no item, do not keep the proposing group.
             if len(standardItems) > 1:
@@ -477,7 +480,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
            and 'on_police_then_other_groups'.'''
         item = self.getSelf()
         if insertMethod == 'on_police_then_other_groups':
-            if item.getProposingGroup() == POLICE_GROUP_ID:
+            if item.getProposingGroup().startswith(POLICE_GROUP_PREFIX):
                 return 0
             else:
                 return 1
@@ -532,14 +535,15 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
     def getItemRefForActe(self, oj=False):
         '''Compute the College item reference.'''
         item = self.getSelf()
-        isPoliceItem = bool(item.getProposingGroup() == 'zone-de-police')
+        tool = api.portal.get_tool('portal_plonemeeting')
+        isPoliceItem = bool(item.getProposingGroup().startswith(POLICE_GROUP_PREFIX))
         isCommuItem = bool(item.getCategory() == 'communication')
         toSendToCouncil = bool('meeting-config-council' in item.getOtherMeetingConfigsClonableTo())
         isPrivacySecret = bool(item.getPrivacy() == 'secret')
 
         additionalQuery = {}
-        policeItems = {'getProposingGroup': {'query': 'zone-de-police'}}
-        notPoliceItems = {'getProposingGroup': {'not': 'zone-de-police'}}
+        policeItems = {'getProposingGroup': {'query': tool.adapted().zplGroups()}}
+        notPoliceItems = {'getProposingGroup': {'not': tool.adapted().zplGroups()}}
         toSendToCouncilItems = {'sentToInfos': {'query': ['meeting-config-council__clonable_to',
                                                           'meeting-config-council__clonable_to_emergency',
                                                           'meeting-config-council__cloned_to',
@@ -882,6 +886,18 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
 
     def __init__(self, item):
         self.context = item
+
+    def zplGroups(self, ids=True):
+        """Return groups having id starting with POLICE_GROUP_PREFIX."""
+        tool = self.getSelf()
+        groups = tool.getMeetingGroups()
+        if ids:
+            groups = [group.getId() for group in groups
+                      if group.getId().startswith(POLICE_GROUP_PREFIX)]
+        else:
+            groups = [group for group in groups
+                      if group.getId().startswith(POLICE_GROUP_PREFIX)]
+        return groups
 
     def enableNonFinancesStyles(self, context):
         """Condition for enabling the meetingcharleroi_non_finances.css

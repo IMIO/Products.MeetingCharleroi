@@ -83,7 +83,7 @@ FINANCE_ADVICE_LEGAL_TEXT_NOT_GIVEN = "<p>Attendu l'absence d'avis du "\
 
 FINANCE_GROUP_ID = 'dirfin'
 
-POLICE_GROUP_ID = 'zone-de-police'
+POLICE_GROUP_PREFIX = 'zone-de-police'
 
 COMMUNICATION_CAT_ID = 'communication'
 

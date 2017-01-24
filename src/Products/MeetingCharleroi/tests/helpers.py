@@ -24,7 +24,7 @@ from plone import api
 from Products.PloneMeeting.config import MEETING_GROUP_SUFFIXES
 from Products.PloneMeeting.tests.helpers import PloneMeetingTestingHelpers
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
-from Products.MeetingCharleroi.config import POLICE_GROUP_ID
+from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.profiles.zcharleroi import import_data as charleroi_import_data
 from Products.MeetingCharleroi.setuphandlers import _configureCollegeCustomAdvisers
 from Products.MeetingCharleroi.setuphandlers import _createFinancesGroup
@@ -162,13 +162,16 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
            - add some default categories.'''
         # due to complex setup to manage college and council,
         # sometimes this method is called twice...
-        if POLICE_GROUP_ID in self.tool.objectIds():
+        if POLICE_GROUP_PREFIX in self.tool.objectIds():
             return
 
         self.changeUser('siteadmin')
         self.create('MeetingGroup',
-                    id=POLICE_GROUP_ID,
+                    id=POLICE_GROUP_PREFIX,
                     title="Zone de Police", acronym='ZPL')
+        self.create('MeetingGroup',
+                    id=POLICE_GROUP_PREFIX + '-compta',
+                    title="Zone de Police comptable spécial", acronym='ZPLCS')
         self.create('MeetingGroup',
                     id='groupincharge1',
                     title="Group in charge 1", acronym='GIC1')
@@ -176,15 +179,19 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                     id='groupincharge2',
                     title="Group in charge 2", acronym='GIC2')
         # police is added at the end of existing groups
-        self.assertEquals(self.tool.objectIds('MeetingGroup'), ['developers',
-                                                                'vendors',
-                                                                # disabled
-                                                                'endUsers',
-                                                                POLICE_GROUP_ID,
-                                                                'groupincharge1',
-                                                                'groupincharge2'])
+        self.assertEquals(self.tool.objectIds('MeetingGroup'),
+                          ['developers',
+                           'vendors',
+                           # disabled
+                           'endUsers',
+                           POLICE_GROUP_PREFIX,
+                           POLICE_GROUP_PREFIX + '-compta',
+                           'groupincharge1',
+                           'groupincharge2'])
         # set groupsInCharge for 'vendors' and 'developers'
-        self.tool.get(POLICE_GROUP_ID).setGroupInCharge(
+        self.tool.get(POLICE_GROUP_PREFIX).setGroupInCharge(
+            ({'date_to': '', 'group_id': 'groupincharge1', 'orderindex_': '1'},))
+        self.tool.get(POLICE_GROUP_PREFIX + '-compta').setGroupInCharge(
             ({'date_to': '', 'group_id': 'groupincharge1', 'orderindex_': '1'},))
         self.tool.vendors.setGroupInCharge(
             ({'date_to': '', 'group_id': 'groupincharge1', 'orderindex_': '1'},))
@@ -192,7 +199,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
             ({'date_to': '', 'group_id': 'groupincharge2', 'orderindex_': '1'},))
         # make 'pmManager' able to manage everything for 'vendors' and 'police'
         groupsTool = self.portal.portal_groups
-        for groupId in ('vendors', POLICE_GROUP_ID):
+        for groupId in ('vendors', POLICE_GROUP_PREFIX, POLICE_GROUP_PREFIX + '-compta'):
             for suffix in MEETING_GROUP_SUFFIXES:
                 groupsTool.addPrincipalToGroup('pmManager', '{0}_{1}'.format(groupId, suffix))
 
@@ -227,7 +234,8 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                     'title': template.title,
                     'description': template.description,
                     'category': template.category,
-                    'proposingGroup': template.proposingGroup == POLICE_GROUP_ID and POLICE_GROUP_ID or 'developers',
+                    'proposingGroup': template.proposingGroup.startswith(POLICE_GROUP_PREFIX) and
+                    template.proposingGroup or 'developers',
                     #'templateUsingGroups': template.templateUsingGroups,
                     'decision': template.decision}
             self.create('MeetingItemTemplate',

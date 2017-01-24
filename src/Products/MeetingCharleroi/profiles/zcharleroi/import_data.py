@@ -17,7 +17,7 @@ from Products.PloneMeeting.profiles import RecurringItemDescriptor
 from Products.PloneMeeting.profiles import UserDescriptor
 
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
-from Products.MeetingCharleroi.config import POLICE_GROUP_ID
+from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 
 today = DateTime().strftime('%Y/%m/%d')
 
@@ -218,8 +218,11 @@ conseiller = UserDescriptor('conseiller', [], email="test@test.be", fullname="Co
 
 emetteuravisPers = UserDescriptor('emetteuravisPers', [], email="test@test.be", fullname="Emetteur avis Personnel")
 
-police_grp = GroupDescriptor(POLICE_GROUP_ID, 'Zone de Police', 'ZPL',
+police_grp = GroupDescriptor(POLICE_GROUP_PREFIX, 'Zone de Police', 'ZPL',
                              groupInCharge=({'group_id': 'bourgmestre', 'date_to': ''},))
+police_compta_grp = GroupDescriptor(
+    POLICE_GROUP_PREFIX + '-compta', 'Zone de Police comptable spécial', 'ZPLCS',
+    groupInCharge=({'group_id': 'bourgmestre', 'date_to': ''},))
 dirgen_grp = GroupDescriptor('dirgen', 'Directeur Général', 'DG',
                              groupInCharge=({'group_id': 'bourgmestre', 'date_to': ''},))
 secr_grp = GroupDescriptor('secretariat', 'Secrétariat communal', 'Secr',
@@ -385,8 +388,9 @@ collegeMeeting.usedMeetingAttributes = ['startDate',
                                         'observations',
                                         'assemblyPolice']
 collegeMeeting.recordMeetingHistoryStates = []
-collegeMeeting.itemsListVisibleColumns = ('Creator', 'review_state', 'getCategory',
-                                          'proposing_group_acronym', 'advices', 'toDiscuss', 'actions')
+collegeMeeting.itemsListVisibleColumns = ('Creator', 'item_reference', 'review_state', 'getCategory',
+                                          'proposing_group_acronym', 'group_in_charge_acronym',
+                                          'advices', 'toDiscuss', 'actions')
 collegeMeeting.itemColumns = ('Creator', 'CreationDate', 'ModificationDate', 'review_state',
                               'getCategory', 'proposing_group_acronym', 'advices', 'toDiscuss',
                               'getItemIsSigned', 'linkedMeetingDate', 'actions')
@@ -520,6 +524,7 @@ collegeMeeting.powerAdvisersGroups = ('dirgen', 'dirfin', )
 collegeMeeting.itemBudgetInfosStates = ('proposed', 'validated', 'presented')
 collegeMeeting.useCopies = True
 collegeMeeting.selectableCopyGroups = [police_grp.getIdSuffixed('reviewers'),
+                                       police_compta_grp.getIdSuffixed('reviewers'),
                                        dirgen_grp.getIdSuffixed('reviewers'),
                                        dirfin_grp.getIdSuffixed('reviewers'),
                                        pers_grp.getIdSuffixed('reviewers')]
@@ -713,8 +718,9 @@ councilMeeting.usedMeetingAttributes = ['startDate',
                                         'authorityNotice',
                                         'observations', ]
 councilMeeting.recordMeetingHistoryStates = []
-councilMeeting.itemsListVisibleColumns = ('Creator', 'review_state', 'getCategory',
-                                          'proposing_group_acronym', 'advices', 'actions')
+councilMeeting.itemsListVisibleColumns = ('Creator', 'item_reference', 'review_state', 'getCategory',
+                                          'proposing_group_acronym', 'group_in_charge_acronym',
+                                          'advices', 'actions')
 councilMeeting.itemColumns = ('Creator', 'CreationDate', 'ModificationDate', 'review_state',
                               'getCategory', 'proposing_group_acronym', 'advices', 'linkedMeetingDate', 'actions')
 councilMeeting.xhtmlTransformFields = ('MeetingItem.description',
@@ -784,6 +790,7 @@ councilMeeting.meetingRestrictedPowerObserversStates = councilMeeting.meetingPow
 councilMeeting.powerAdvisersGroups = ()
 councilMeeting.useCopies = True
 councilMeeting.selectableCopyGroups = [police_grp.getIdSuffixed('reviewers'),
+                                       police_compta_grp.getIdSuffixed('reviewers'),
                                        dirgen_grp.getIdSuffixed('reviewers'),
                                        dirfin_grp.getIdSuffixed('reviewers'),
                                        pers_grp.getIdSuffixed('reviewers')]
@@ -899,7 +906,8 @@ councilMeeting.recurringItems = [
 
 data = PloneMeetingConfiguration(meetingFolderTitle='Mes séances',
                                  meetingConfigs=(collegeMeeting, councilMeeting),
-                                 groups=[police_grp, dirgen_grp, secr_grp, info_grp, pers_grp,
+                                 groups=[police_grp, police_compta_grp, dirgen_grp,
+                                         secr_grp, info_grp, pers_grp,
                                          dirfin_grp, compta_grp, trav_grp,
                                          bourg_grp, ech1_grp, ech2_grp, ech3_grp])
 data.enableUserPreferences = False
