@@ -164,11 +164,26 @@ collegeTemplates = [agendaTemplate, decisionsTemplate,
                     historyTemplate]
 
 # Pod templates ----------------------------------------------------------------
-agendaCouncilTemplate = PodTemplateDescriptor('oj', 'Ordre du jour')
-agendaCouncilTemplate.odt_file = 'council-oj.odt'
-agendaCouncilTemplate.pod_formats = ['odt', 'pdf', ]
-agendaCouncilTemplate.pod_portal_types = ['MeetingCouncil']
-agendaCouncilTemplate.tal_condition = 'python:tool.isManager(here)'
+agendaCouncilTemplateIni = PodTemplateDescriptor('oj-initial', 'Ordre du jour Initial')
+agendaCouncilTemplateIni.odt_file = 'council-oj.odt'
+agendaCouncilTemplateIni.pod_formats = ['odt', 'pdf', ]
+agendaCouncilTemplateIni.pod_portal_types = ['MeetingCouncil']
+agendaCouncilTemplateIni.tal_condition = 'python:tool.isManager(here)'
+agendaCouncilTemplateIni.context_variables = [{'name': u'oj_type', 'value': u'initial'}]
+
+agendaCouncilTemplateComp = PodTemplateDescriptor('oj-comp', 'Ordre du jour Complémentaire')
+agendaCouncilTemplateComp.odt_file = 'council-oj.odt'
+agendaCouncilTemplateComp.pod_formats = ['odt', 'pdf', ]
+agendaCouncilTemplateComp.pod_portal_types = ['MeetingCouncil']
+agendaCouncilTemplateComp.tal_condition = 'python:tool.isManager(here)'
+agendaCouncilTemplateComp.context_variables = [{'name': u'oj_type', 'value': u'full'}]
+
+agendaCouncilTemplateBg = PodTemplateDescriptor('oj-bg', 'Ordre du jour Bourgmestre')
+agendaCouncilTemplateBg.odt_file = 'council-oj.odt'
+agendaCouncilTemplateBg.pod_formats = ['odt', 'pdf', ]
+agendaCouncilTemplateBg.pod_portal_types = ['MeetingCouncil']
+agendaCouncilTemplateBg.tal_condition = 'python:tool.isManager(here)'
+agendaCouncilTemplateBg.context_variables = [{'name': u'oj_type', 'value': u'bg'}]
 
 decisionsCouncilTemplate = PodTemplateDescriptor('pv', 'Procès-verbal')
 decisionsCouncilTemplate.odt_file = 'council-pv.odt'
@@ -194,7 +209,7 @@ itemCouncilTemplate.pod_formats = ['odt', 'pdf', ]
 itemCouncilTemplate.pod_portal_types = ['MeetingItemCouncil']
 itemCouncilTemplate.tal_condition = 'python:here.hasMeeting()'
 
-councilTemplates = [agendaCouncilTemplate, decisionsCouncilTemplate,
+councilTemplates = [agendaCouncilTemplateIni, agendaCouncilTemplateComp, agendaCouncilTemplateBg, decisionsCouncilTemplate,
                     itemCouncilRapportTemplate, itemCouncilTemplate,
                     itemCouncilProjectTemplate, dashboardTemplate]
 

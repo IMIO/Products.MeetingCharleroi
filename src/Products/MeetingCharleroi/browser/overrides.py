@@ -23,6 +23,9 @@ FIN_ADVICE_LINE2 = "<p>Considérant son avis {0} du {1} joint en annexe ;</p>"
 FIN_ADVICE_ITEM = "<p><strong>Avis du Directeur financier :</strong></p><p>Type d'avis : {0}</p>" \
                   "<p>Demandé le : {1}</p><p>Émis le : {2}</p>"
 
+POLL_TYPE_ITEM = u"<p><strong>Mode de scrutin :</strong> {0}</p>"
+
+COMMISSION_TYPE_ITEM = "<p><strong>Commission :</strong> {0}</p>"
 
 class MCHMeetingBeforeFacetedInfosView(MeetingBeforeFacetedInfosView):
     """ """
@@ -198,17 +201,27 @@ class MCHMeetingDocumentGenerationHelperView(MCMeetingDocumentGenerationHelperVi
         """
         body = item.Description() and item.Description() + '<p></p>' or ''
         # insert finances advice
-        view = item.restrictedTraverse("@@document-generation")
-        helper = view.get_generation_context_helper()
-        finAdvice = ''
-        if helper._showFinancesAdvice():
-            adviceData = helper._financeAdviceData()
-            adviceTypeTranslated = adviceData['advice_type_translated']
-            delayStartedOnLocalized = adviceData['delay_infos']['delay_started_on_localized']
-            adviceGivenOnLocalized = adviceData['advice_given_on_localized']
-            finAdvice = FIN_ADVICE_ITEM.format(adviceTypeTranslated,
-                                               delayStartedOnLocalized,
-                                               adviceGivenOnLocalized)
-        if finAdvice:
-            body += finAdvice + '<p></p>'
+
+        fin_advice = self.format_finance_advice(item)
+        if fin_advice:
+            body += fin_advice + '<p></p>'
         return body
+
+    def format_finance_advice(self, item):
+        helper = self.getDGHV(item)
+        if helper._showFinancesAdvice():
+            advice_data = helper._financeAdviceData()
+            advice_type_translated = advice_data['advice_type_translated']
+            delay_started_on_localized = advice_data['delay_infos']['delay_started_on_localized']
+            advice_given_on_localized = advice_data['advice_given_on_localized']
+            return FIN_ADVICE_ITEM.format(advice_type_translated, delay_started_on_localized, advice_given_on_localized)
+
+        return None
+
+    def format_poll_type(self, item):
+        if item.getPollType():
+            return POLL_TYPE_ITEM.format(self.translate('polltype_' + item.getPollType(), domain='PloneMeeting'))
+        return None
+
+    def format_commission(self, item):
+        return COMMISSION_TYPE_ITEM.format(item.getProposingGroup(True).getGroupInChargeAt(item.created()).description())
