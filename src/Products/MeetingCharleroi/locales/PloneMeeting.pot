@@ -132,3 +132,12 @@ msgstr ""
 #. Default: "Late item"
 msgid "late"
 msgstr ""
+
+#. Default: "Bourgmestre observations"
+msgid "PloneMeeting_bourgmestreObservations"
+msgstr ""
+
+#. Default: "These informations are only visible and editable by meeting managers."
+msgid "bourgmestre_observations_descr"
+msgstr ""
+

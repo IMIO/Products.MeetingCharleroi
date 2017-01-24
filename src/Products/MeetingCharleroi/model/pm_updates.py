@@ -1,8 +1,50 @@
+# -*- coding: utf-8 -*-
+#
+# File: pm_updates.py
+#
+# Copyright (c) 2017 by Imio.be
+# Generator: ArchGenXML Version 2.7
+#            http://plone.org/products/archgenxml
+#
+# GNU General Public License (GPL)
+#
+
+from Products.Archetypes.atapi import RichWidget
+from Products.Archetypes.atapi import Schema
 from Products.Archetypes.atapi import TextAreaWidget
 from Products.Archetypes.atapi import TextField
-from Products.Archetypes.atapi import Schema
 from Products.PloneMeeting.Meeting import Meeting
+from Products.PloneMeeting.MeetingItem import MeetingItem
 from Products.PloneMeeting.MeetingConfig import MeetingConfig
+
+
+def update_item_schema(baseSchema):
+
+    specificSchema = Schema((
+        TextField(
+            name='bourgmestreObservations',
+            widget=RichWidget(
+                label_msgid="PloneMeeting_bourgmestreObservations",
+                description_msgid="bourgmestre_observations_descr",
+                condition="python: here.attributeIsUsed('bourgmestreObservations')",
+                rows=20,
+                label='BourgmestreObservations',
+                i18n_domain='PloneMeeting',
+            ),
+            default_content_type="text/html",
+            read_permission="PloneMeeting: Write item MeetingManager reserved fields",
+            searchable=False,
+            allowable_content_types=('text/html',),
+            default_output_type="text/x-html-safe",
+            optional=True,
+            write_permission="PloneMeeting: Write item MeetingManager reserved fields",
+        ),
+
+    ),)
+
+    completeItemSchema = baseSchema + specificSchema.copy()
+    return completeItemSchema
+MeetingItem.schema = update_item_schema(MeetingItem.schema)
 
 
 def update_meeting_schema(baseSchema):
@@ -38,8 +80,8 @@ def update_meeting_schema(baseSchema):
 
     ),)
 
-    completeConfigSchema = baseSchema + specificSchema.copy()
-    return completeConfigSchema
+    completeMeetingSchema = baseSchema + specificSchema.copy()
+    return completeMeetingSchema
 Meeting.schema = update_meeting_schema(Meeting.schema)
 
 

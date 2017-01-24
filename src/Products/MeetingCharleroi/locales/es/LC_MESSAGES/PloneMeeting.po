@@ -26,6 +26,10 @@ msgstr ""
 msgid "MeetingCharleroi_label_advice_motivation_categories"
 msgstr ""
 
+#. Default: "Bourgmestre observations"
+msgid "PloneMeeting_bourgmestreObservations"
+msgstr ""
+
 #. Default: "Default assembly police"
 msgid "PloneMeeting_label_assemblyPolice"
 msgstr ""
@@ -48,6 +52,10 @@ msgstr ""
 
 #. Default: "Define here the default assembly police (for example you may type a list of names and first names separated by colons or new lines) that will be automatically selected on newly created meetings."
 msgid "assembly_police_descr"
+msgstr ""
+
+#. Default: "These informations are only visible and editable by meeting managers."
+msgid "bourgmestre_observations_descr"
 msgstr ""
 
 #. Default: "The completeness has been asked again by the application when the item has been proposed to the finances."
