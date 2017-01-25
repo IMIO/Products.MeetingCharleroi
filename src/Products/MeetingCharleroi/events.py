@@ -143,9 +143,12 @@ def onItemDuplicatedToOtherMC(originalItem, event):
        newItem.portal_type == 'MeetingItemCouncil':
         if newItem.getPrivacy() == 'public':
             tool = api.portal.get_tool('portal_plonemeeting')
-            destMeetingConfig = tool.getMeetingConfig(originalItem)
-            newItem.setCategory(COUNCIL_DEFAULT_CATEGORY)
-            meeting = newItem._otherMCMeetingToBePresentedIn(destMeetingConfig)
+            destMeetingConfig = tool.getMeetingConfig(newItem)
+            # if no mapping was defined for category, use the default
+            # one, it is mandatory to insert the item in the meeting
+            if not newItem.getCategory():
+                newItem.setCategory(COUNCIL_DEFAULT_CATEGORY)
+            meeting = originalItem._otherMCMeetingToBePresentedIn(destMeetingConfig)
             if meeting:
                 newItem.setPreferredMeeting(meeting.UID())
                 wfTool = api.portal.get_tool('portal_workflow')

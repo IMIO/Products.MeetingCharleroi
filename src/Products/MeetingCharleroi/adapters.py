@@ -62,6 +62,7 @@ from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCouncilWorkflo
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowActions
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowConditions
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
+from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
 from Products.MeetingCharleroi.config import NEVER_LATE_CATEGORIES
 from Products.MeetingCharleroi.config import FINANCE_GIVEABLE_ADVICE_STATES
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
@@ -593,15 +594,14 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
     def getItemRefForActeCouncil(self, oj=False):
         '''Compute the Council item reference.'''
         item = self.getSelf()
-        specialCategories = ['proposes-par-un-conseiller', 'interventions', 'questions-actualite']
-        isSpecialItem = bool(item.getCategory() in specialCategories)
+        isSpecialItem = bool(item.getCategory() in COUNCIL_SPECIAL_CATEGORIES)
         isLateItem = bool(item.getListType() != 'normal')
 
         additionalQuery = {}
-        specialItems = {'getCategory': {'query': specialCategories}}
+        specialItems = {'getCategory': {'query': COUNCIL_SPECIAL_CATEGORIES}}
         normalItems = {
-            'getListType': {'query': 'normal'},
-            'getCategory': {'not': specialCategories}}
+            'listType': {'query': 'normal'},
+            'getCategory': {'not': COUNCIL_SPECIAL_CATEGORIES}}
         lateItems = {'listType': {'not': 'normal'}}
 
         meeting = item.getMeeting()

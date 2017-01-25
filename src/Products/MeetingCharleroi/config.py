@@ -112,8 +112,7 @@ CHARLEROI_EXTRA_ADVICE_SUFFIXES = {FINANCE_GROUP_ID: list(FINANCE_GROUP_SUFFIXES
 PMconfig.EXTRA_ADVICE_SUFFIXES = CHARLEROI_EXTRA_ADVICE_SUFFIXES
 
 # Council special categories, items added manually to Council and never considered 'late'
-COUNCIL_SPECIAL_CATEGORIES = ['entetes',
-                              'proposition-de-motion',
+COUNCIL_SPECIAL_CATEGORIES = ['proposition-de-motion',
                               'proposes-par-un-conseiller',
                               'interventions',
                               'questions-actualite']
@@ -123,7 +122,7 @@ COUNCIL_DEFAULT_CATEGORY = 'indeterminee'
 # items using these categories will always be inserted as normal items in the meeting
 NEVER_LATE_CATEGORIES = {
     'meeting-config-college': ['communication'],
-    'meeting-config-council': COUNCIL_SPECIAL_CATEGORIES,
+    'meeting-config-council': ['entetes'] + COUNCIL_SPECIAL_CATEGORIES,
     }
 
 # advice categories
