@@ -571,17 +571,14 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
             self.assertTrue(item.modified() > getLastEvent(meeting, 'freeze')['time'])
         self.assertEqual(
             [(item.getListType(), item.getCategory(), item.getPrivacy()) for item in special_items],
-            [
-                ('normal', 'entetes', 'public'),
-                ('normal', 'proposition-de-motion', 'public'),
-                ('normal', 'proposition-de-motion', 'public'),
-                ('normal', 'proposes-par-un-conseiller', 'public'),
-                ('normal', 'proposes-par-un-conseiller', 'public'),
-                ('normal', 'interventions', 'public'),
-                ('normal', 'questions-actualite', 'public'),
-                ('normal', 'questions-actualite', 'public'),
-                ('normal', 'questions-actualite', 'public'),
-                ('normal', 'entetes', 'secret')]
+            [('normal', 'proposition-de-motion', 'public'),
+             ('normal', 'proposition-de-motion', 'public'),
+             ('normal', 'proposes-par-un-conseiller', 'public'),
+             ('normal', 'proposes-par-un-conseiller', 'public'),
+             ('normal', 'interventions', 'public'),
+             ('normal', 'questions-actualite', 'public'),
+             ('normal', 'questions-actualite', 'public'),
+             ('normal', 'questions-actualite', 'public')]
             )
 
 
