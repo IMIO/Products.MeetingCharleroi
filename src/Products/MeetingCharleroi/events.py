@@ -139,17 +139,19 @@ def onItemDuplicatedToOtherMC(originalItem, event):
        - 'secret' items will stay in it's initial state.'''
     newItem = event.newItem
 
+    # check if current state is 'validated' to avoid breaking tests
     if originalItem.portal_type == 'MeetingItemCollege' and \
-       newItem.portal_type == 'MeetingItemCouncil':
-        if newItem.getPrivacy() == 'public':
-            tool = api.portal.get_tool('portal_plonemeeting')
-            destMeetingConfig = tool.getMeetingConfig(newItem)
-            # if no mapping was defined for category, use the default
-            # one, it is mandatory to insert the item in the meeting
-            if not newItem.getCategory():
-                newItem.setCategory(COUNCIL_DEFAULT_CATEGORY)
-            meeting = originalItem._otherMCMeetingToBePresentedIn(destMeetingConfig)
-            if meeting:
-                newItem.setPreferredMeeting(meeting.UID())
-                wfTool = api.portal.get_tool('portal_workflow')
-                wfTool.doActionFor(newItem, 'present')
+       newItem.portal_type == 'MeetingItemCouncil' and \
+       newItem.getPrivacy() == 'public' and \
+       newItem.queryState() == 'validated':
+        tool = api.portal.get_tool('portal_plonemeeting')
+        destMeetingConfig = tool.getMeetingConfig(newItem)
+        # if no mapping was defined for category, use the default
+        # one, it is mandatory to insert the item in the meeting
+        if not newItem.getCategory():
+            newItem.setCategory(COUNCIL_DEFAULT_CATEGORY)
+        meeting = originalItem._otherMCMeetingToBePresentedIn(destMeetingConfig)
+        if meeting:
+            newItem.setPreferredMeeting(meeting.UID())
+            wfTool = api.portal.get_tool('portal_workflow')
+            wfTool.doActionFor(newItem, 'present')
