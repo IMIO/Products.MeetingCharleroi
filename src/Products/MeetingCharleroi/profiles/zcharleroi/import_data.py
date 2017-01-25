@@ -256,10 +256,10 @@ compta_grp = GroupDescriptor('comptabilite', 'Service comptabilité', 'Compt',
                              groupInCharge=({'group_id': 'echevin2', 'date_to': ''},))
 trav_grp = GroupDescriptor('travaux', 'Service travaux', 'Trav',
                            groupInCharge=({'group_id': 'echevin3', 'date_to': ''},))
-bourg_grp = GroupDescriptor('bourgmestre', 'Bourgmestre', 'BG')
-ech1_grp = GroupDescriptor('echevin1', 'Echevin 1', 'Ech1')
-ech2_grp = GroupDescriptor('echevin2', 'Echevin 2', 'Ech2')
-ech3_grp = GroupDescriptor('echevin3', 'Echevin 3', 'Ech3')
+bourg_grp = GroupDescriptor('bourgmestre', 'Bourgmestre', 'BG', '1')
+ech1_grp = GroupDescriptor('echevin1', 'Echevin 1', 'Ech1', '2')
+ech2_grp = GroupDescriptor('echevin2', 'Echevin 2', 'Ech2', '3')
+ech3_grp = GroupDescriptor('echevin3', 'Echevin 3', 'Ech3', '4')
 
 dirgen_grp.creators.append(dgen)
 dirgen_grp.serviceheads.append(dgen)
@@ -727,7 +727,8 @@ councilMeeting.usedItemAttributes = ['motivation',
                                      'pollType',
                                      'pollTypeObservations',
                                      'itemInitiator',
-                                     'itemAssembly', ]
+                                     'itemAssembly',
+                                     'bourgmestreObservations',]
 councilMeeting.usedMeetingAttributes = ['startDate',
                                         'endDate',
                                         'signatures',
@@ -816,7 +817,7 @@ councilMeeting.selectableCopyGroups = [police_grp.getIdSuffixed('reviewers'),
                                        pers_grp.getIdSuffixed('reviewers')]
 councilMeeting.podTemplates = councilTemplates
 
-conseiller1_mu = MeetingUserDescriptor('BAKKDJ018', usages=['asker', ])
+conseiller1_mu = MeetingUserDescriptor('BAKKDJ018', 'f', usages=['asker', ])
 conseiller1 = UserDescriptor('BAKKDJ018', [], email="test@test.be", fullname="BAKKOUCHE Djamila")
 conseiller2_mu = MeetingUserDescriptor('BANGSE231', usages=['asker', ])
 conseiller2 = UserDescriptor('BANGSE231', [], email="test@test.be", fullname="BANGISA Serge")
@@ -824,33 +825,33 @@ conseiller3_mu = MeetingUserDescriptor('CASALE201', usages=['asker', ])
 conseiller3 = UserDescriptor('CASALE201', [], email="test@test.be", fullname="CASAERT Léon")
 conseiller4_mu = MeetingUserDescriptor('CHASOL115', usages=['asker', ])
 conseiller4 = UserDescriptor('CHASOL115', [], email="test@test.be", fullname="CHASTEL Olivier")
-conseiller5_mu = MeetingUserDescriptor('DEMALU140', usages=['asker', ])
+conseiller5_mu = MeetingUserDescriptor('DEMALU140', 'f', usages=['asker', ])
 conseiller5 = UserDescriptor('DEMALU140', [], email="test@test.be", fullname="DEMARET Lucie")
 conseiller6_mu = MeetingUserDescriptor('DEPRJE105', usages=['asker', ])
 conseiller6 = UserDescriptor('DEPRJE105', [], email="test@test.be", fullname="DEPREZ Jean-Pierre")
 conseiller7_mu = MeetingUserDescriptor('DESGXA103', usages=['asker', ])
 conseiller7 = UserDescriptor('DESGXA103', [], email="test@test.be", fullname="DESGAIN Xavier")
-conseiller8_mu = MeetingUserDescriptor('DEVIFA128', usages=['asker', ])
+conseiller8_mu = MeetingUserDescriptor('DEVIFA128', 'f', usages=['asker', ])
 conseiller8 = UserDescriptor('DEVIFA128', [], email="test@test.be", fullname="DEVILERS Fabienne")
 conseiller9_mu = MeetingUserDescriptor('DOGRMA293', usages=['asker', ])
 conseiller9 = UserDescriptor('DOGRMA293', [], email="test@test.be", fullname="DOGRU Mahmut")
 conseiller10_mu = MeetingUserDescriptor('DUFRAN251', usages=['asker', ])
 conseiller10 = UserDescriptor('DUFRAN251', [], email="test@test.be", fullname="DUFRANE Anthony")
-conseiller11_mu = MeetingUserDescriptor('ELBOMA166', usages=['asker', ])
+conseiller11_mu = MeetingUserDescriptor('ELBOMA166', 'f', usages=['asker', ])
 conseiller11 = UserDescriptor('ELBOMA166', [], email="test@test.be", fullname="EL BOUREZGUI Malika")
 conseiller12_mu = MeetingUserDescriptor('FELOMA103', usages=['asker', ])
 conseiller12 = UserDescriptor('FELOMA103', [], email="test@test.be", fullname="FELON Maxime")
-conseiller13_mu = MeetingUserDescriptor('FOTIDO146', usages=['asker', ])
+conseiller13_mu = MeetingUserDescriptor('FOTIDO146', 'f', usages=['asker', ])
 conseiller13 = UserDescriptor('FOTIDO146', [], email="test@test.be", fullname="FOTIA Dominique")
 conseiller14_mu = MeetingUserDescriptor('FRERAL093', usages=['asker', ])
 conseiller14 = UserDescriptor('FRERAL093', [], email="test@test.be", fullname="FRERE Albert")
-conseiller15_mu = MeetingUserDescriptor('GAHOLA116', usages=['asker', ])
+conseiller15_mu = MeetingUserDescriptor('GAHOLA116', 'f', usages=['asker', ])
 conseiller15 = UserDescriptor('GAHOLA116', [], email="test@test.be", fullname="GAHOUCHI Latifa")
 conseiller16_mu = MeetingUserDescriptor('HERMMA071', usages=['asker', ])
 conseiller16 = UserDescriptor('HERMMA071', [], email="test@test.be", fullname="HERMAN Maurice")
 conseiller17_mu = MeetingUserDescriptor('HEMBPH039', usages=['asker', ])
 conseiller17 = UserDescriptor('HEMBPH039', [], email="test@test.be", fullname="HEMBISE Philippe")
-conseiller18_mu = MeetingUserDescriptor('HOEBMA186', usages=['asker', ])
+conseiller18_mu = MeetingUserDescriptor('HOEBMA186', 'f', usages=['asker', ])
 conseiller18 = UserDescriptor('HOEBMA186', [], email="test@test.be", fullname="HOEBEKE Maryse")
 conseiller19_mu = MeetingUserDescriptor('IMANHI167', usages=['asker', ])
 conseiller19 = UserDescriptor('IMANHI167', [], email="test@test.be", fullname="IMANE Hicham")
@@ -864,7 +865,7 @@ conseiller23_mu = MeetingUserDescriptor('KILISE305', usages=['asker', ])
 conseiller23 = UserDescriptor('KILISE305', [], email="test@test.be", fullname="KILIC Serdar")
 conseiller24_mu = MeetingUserDescriptor('MAGNPA235', usages=['asker', ])
 conseiller24 = UserDescriptor('MAGNPA235', [], email="test@test.be", fullname="MAGNETTE Paul")
-conseiller25_mu = MeetingUserDescriptor('MANOLI138', usages=['asker', ])
+conseiller25_mu = MeetingUserDescriptor('MANOLI138', 'f', usages=['asker', ])
 conseiller25 = UserDescriptor('MANOLI138', [], email="test@test.be", fullname="MANOUVRIER Line")
 
 council_restrictedpowerobservers = PloneGroupDescriptor('meeting-config-council_restrictedpowerobservers',
