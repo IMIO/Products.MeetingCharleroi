@@ -13,6 +13,7 @@ from Products.MeetingCommunes.browser.overrides import MCMeetingDocumentGenerati
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.PloneMeeting.browser.views import MeetingBeforeFacetedInfosView
 from Products.PloneMeeting.utils import getLastEvent
+from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 
 
 FIN_ADVICE_LINE1 = "<p>Considérant la communication du dossier au Directeur financier faite en date du {0}, " \
@@ -30,8 +31,19 @@ COMMISSION_TYPE_ITEM = "<p><strong>Commission :</strong> {0}</p>"
 class MCHMeetingBeforeFacetedInfosView(MeetingBeforeFacetedInfosView):
     """ """
 
+class MCBaseDocumentGenerationHelperView(object):
+    def getPoliceGroups(self):
+        tool = api.portal.get_tool('portal_plonemeeting')
+        groups = tool.getMeetingGroups()
+        res = []
+        for group in groups:
+            if group.getId().startswith(POLICE_GROUP_PREFIX):
+                res.append(group.getId())
 
-class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
+        return res
+
+
+class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MCItemDocumentGenerationHelperView):
     """Specific printing methods used for item."""
 
     def _showFinancesAdvice(self):
@@ -172,7 +184,7 @@ class MCHItemDocumentGenerationHelperView(MCItemDocumentGenerationHelperView):
         return printable_history
 
 
-class MCHMeetingDocumentGenerationHelperView(MCMeetingDocumentGenerationHelperView):
+class MCHMeetingDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MCMeetingDocumentGenerationHelperView):
     """Specific printing methods used for meeting."""
 
     def printItemDelibeContentForCollege(self, item):
