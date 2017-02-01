@@ -105,35 +105,23 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
         return FIN_ADVICE_LINE1.format(delayStartedOnLocalized) + \
             FIN_ADVICE_LINE2.format(adviceTypeTranslated, adviceGivenOnLocalized)
 
-    def printDelibeContentForCollege(self):
+    def printDelibeContent(self):
         """Printed on a College item, get the whole body of the delibe in one shot."""
-        body = self.context.getMotivation() and self.context.getMotivation() + '<p></p>' or ''
+        body = self.context.getMotivation() and (self.context.getMotivation() + '<p></p>') or ''
+
         finAdvice = self.printFinancesAdvice()
         if finAdvice:
             body += finAdvice + '<p></p>'
-        body += "<p><strong>Décide:</strong> <br/></p>"
-        body += self.context.getDecision() + '<p></p>'
+
+        if self.context.getDecision():
+            body += "<p><strong>Décide:</strong></p><p></p>"
+            body += self.context.getDecision() + '<p></p>'
+
         if self.context.getSendToAuthority():
             body += "<p>Conformément aux prescrits des articles L3111-1 et suivants " \
                     "du Code de la démocratie locale et de la décentralisation relatifs " \
                     "à la Tutelle, la présente décision et ses pièces justificatives sont " \
                     "transmises aux Autorités de Tutelle.</p>"
-        return body
-
-    def printDelibeContentForCouncil(self):
-        """Printed on a Council item, get the whole body of the delibe in one shot."""
-        body = self.context.getMotivation() and self.context.getMotivation() + '<p></p>' or ''
-        finAdvice = self.printFinancesAdvice()
-        if finAdvice:
-            body += finAdvice + '<p></p>'
-        # body += self.printCollegeProposalInfos().encode("utf-8")
-        body += self.context.getDecision() + '<p></p>'
-        if self.context.getSendToAuthority():
-            body += "<p>Conformément aux prescrits des articles L3111-1 et suivants " \
-                    "du Code de la démocratie locale et de la décentralisation relatifs " \
-                    "à la Tutelle, la présente décision et ses pièces justificatives sont " \
-                    "transmises aux Autorités de Tutelle.<br/></p>"
-        body += self.context.getObservations() and self.context.getObservations() or ''
         return body
 
     def printFormatedItemType(self):
@@ -187,12 +175,12 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
 class MCHMeetingDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MCMeetingDocumentGenerationHelperView):
     """Specific printing methods used for meeting."""
 
-    def printItemDelibeContentForCollege(self, item):
+    def printItemDelibeContent(self, item):
         """
         """
         view = item.restrictedTraverse("@@document-generation")
         helper = view.get_generation_context_helper()
-        return helper.printDelibeContentForCollege()
+        return helper.printDelibeContent()
 
     def printItemDelibeContentForCouncil(self, item):
         """
@@ -200,13 +188,6 @@ class MCHMeetingDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView,
         view = item.restrictedTraverse("@@document-generation")
         helper = view.get_generation_context_helper()
         return helper.printDelibeContentForCouncil()
-
-    def printItemContentForCollegePV(self, item):
-        """
-        """
-        view = item.restrictedTraverse("@@document-generation")
-        helper = view.get_generation_context_helper()
-        return helper.printDelibeContentForCollege()
 
     def printItemPresentation(self, item):
         """

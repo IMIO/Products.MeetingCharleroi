@@ -758,6 +758,8 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
             newItem.setOtherMeetingConfigsClonableToPrivacy(item['otherMeetingConfigsClonableToPrivacy'])
             newItem.setTitle(item['title'])
             newItem.setProposingGroup(item['proposingGroup'])
+            newItem.setItemAssemblyExcused('Roger Bidon')
+            newItem.setItemAssemblyAbsents('Jean-Michel Jamaila')
             newItem.setCategory(item['category'])
             newItem.setToDiscuss(item['toDiscuss'])
             newItem.setOtherMeetingConfigsClonableTo(item['otherMeetingConfigsClonableTo'])
@@ -963,6 +965,8 @@ def _addCouncilDemoData(collegeMeeting,
                                      destFolder=userFolder,
                                      newPortalType=cfg2.getItemTypeName())
             newItem.setTitle(item['title'])
+            newItem.setItemAssemblyExcused('Roger Bidon')
+            newItem.setItemAssemblyAbsents('Jean-Michel Jamaila')
             newItem.setProposingGroup(item['proposingGroup'])
             newItem.setPreferredMeeting(meeting.UID())
             newItem.setPrivacy(item['privacy'])

@@ -326,17 +326,17 @@ class CustomCharleroiMeeting(CustomMeeting):
         return self._sortByGroupInChargeByDate(filteredItems)
 
     def _getStandardCommunicationItems(self, itemUids, listTypes=['normal']):
-        '''
+        """
         Get all items not from the group "Police" which are from the
         communication category..
-        '''
+        """
         return self._getStandardItems(itemUids,
                                       categories=['communication'],
                                       listTypes=listTypes)
 
     def getPrintableItemsForAgenda(self, itemUids, standard=True, itemType='prescriptive',
                                    listTypes=['normal']):
-        '''
+        """
         Return an ordered dict with the items' group in charge as key and another
         ordered dict as value. The second ordered dict has the items' categories as
         keys and the list of items as value.
@@ -344,7 +344,7 @@ class CustomCharleroiMeeting(CustomMeeting):
         to p_standard. p_itemType is expecting 'prescriptive', 'toCouncil' or
         'communication' and return respectively prescriptives, headed to
         council and communication items.
-        '''
+        """
         if standard is True:
             if itemType == 'prescriptive':
                 return self._getStandardPrescriptiveItems(itemUids, listTypes=listTypes)
