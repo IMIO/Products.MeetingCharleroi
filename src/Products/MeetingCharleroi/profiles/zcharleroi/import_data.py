@@ -743,9 +743,15 @@ councilMeeting.usedMeetingAttributes = ['startDate',
                                         'authorityNotice',
                                         'observations', ]
 councilMeeting.recordMeetingHistoryStates = []
-councilMeeting.itemsListVisibleColumns = ('Creator', 'item_reference', 'review_state', 'getCategory',
-                                          'proposing_group_acronym', 'group_in_charge_acronym',
-                                          'advices', 'actions')
+councilMeeting.itemsListVisibleColumns = ('Creator',
+                                          'item_reference',
+                                          'review_state',
+                                          'getCategory',
+                                          'proposing_group_acronym',
+                                          'group_in_charge_acronym',
+                                          'advices',
+                                          'pollType',
+                                          'actions')
 councilMeeting.itemColumns = ('Creator', 'CreationDate', 'ModificationDate', 'review_state',
                               'getCategory', 'proposing_group_acronym', 'advices', 'linkedMeetingDate', 'actions')
 councilMeeting.xhtmlTransformFields = ('MeetingItem.description',
@@ -819,6 +825,8 @@ councilMeeting.selectableCopyGroups = [police_grp.getIdSuffixed('reviewers'),
                                        dirgen_grp.getIdSuffixed('reviewers'),
                                        dirfin_grp.getIdSuffixed('reviewers'),
                                        pers_grp.getIdSuffixed('reviewers')]
+councilMeeting.usedPollTypes = ('secret', 'no_vote', 'secret_separated', 'freehand')
+
 councilMeeting.podTemplates = councilTemplates
 
 conseiller1_mu = MeetingUserDescriptor('BAKKDJ018', gender='f', duty='Conseillère', usages=['asker', ])

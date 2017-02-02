@@ -5,6 +5,7 @@ logger = logging.getLogger('MeetingCharleroi')
 
 from Products.PloneMeeting.migrations.migrate_to_4_0 import Migrate_To_4_0 as PMMigrate_To_4_0
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
+from Products.MeetingCharleroi.profiles.zcharleroi.import_data import councilMeeting
 
 
 # The migration class ----------------------------------------------------------
@@ -34,6 +35,15 @@ class Migrate_To_4_0(PMMigrate_To_4_0):
         mGroup._createPloneGroupForAllSuffixes()
         logger.info('Done.')
 
+    def _addDefaultCouncilors(self):
+        """ """
+        cfg = self.tool.get('meeting-config-council')
+        logger.info('Adding default councilors...')
+        if not cfg.meetingusers.objectIds():
+            for mUserData in councilMeeting.meetingUsers:
+                cfg.addMeetingUser(mUserData)
+        logger.info('Done.')
+
     def run(self):
         # change self.profile_name that is reinstalled at the beginning of the PM migration
         self.profile_name = u'profile-Products.MeetingCharleroi:default'
@@ -43,6 +53,7 @@ class Migrate_To_4_0(PMMigrate_To_4_0):
         logger.info('Migrating to MeetingCharleroi 4.0...')
         self._createSearches()
         self._createFinancialEditorsPloneGroup()
+        self._addDefaultCouncilors()
 
 
 # The migration function -------------------------------------------------------
@@ -51,7 +62,8 @@ def migrate(context):
 
        1) Reinstall Products.MeetingCharleroi and execute the Products.PloneMeeting migration;
        2) Call MeetingConfig.createSearches;
-       3) Add Plone group 'financial editors' for FINANCE_GROUP_ID.
+       3) Add Plone group 'financial editors' for FINANCE_GROUP_ID;
+       4) Add default Councilors.
     '''
     migrator = Migrate_To_4_0(context)
     migrator.run()
