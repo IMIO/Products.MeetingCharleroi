@@ -388,6 +388,7 @@ collegeMeeting.annexTypes = [annexe, annexeBudget, annexeCahier,
                              annexeDecision, annexeAvis, annexeAvisLegal]
 collegeMeeting.usedItemAttributes = ['completeness',
                                      'budgetInfos',
+                                     'manuallyLinkedItems',
                                      'motivation',
                                      'observations',
                                      'toDiscuss',

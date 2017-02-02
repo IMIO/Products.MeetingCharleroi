@@ -585,9 +585,9 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         # if for oj, manage the A and B items.
         if oj:
             if item.getToDiscuss():
-                ref = ref + 'B'
+                ref = ref + '/B'
             else:
-                ref = ref + 'A'
+                ref = ref + '/A'
 
         return ref
 
