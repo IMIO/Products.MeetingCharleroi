@@ -34,14 +34,14 @@ table.listing tr[class][class] td.meeting_item_listType_lateextracollege {
 }
 
 /* highlight special categories for MeetingManagers */
-body.userrole-manager .td_cell_proposition-de-motion,
-body.userrole-manager .td_cell_proposes-par-un-conseiller,
-body.userrole-manager .td_cell_interventions,
-body.userrole-manager .td_cell_questions-actualite,
-body.userrole-meetingmanager .td_cell_proposition-de-motion,
-body.userrole-meetingmanager .td_cell_proposes-par-un-conseiller,
-body.userrole-meetingmanager .td_cell_interventions,
-body.userrole-meetingmanager .td_cell_questions-actualite {
+body.template-meeting_view.userrole-manager .td_cell_proposition-de-motion,
+body.template-meeting_view.userrole-manager .td_cell_proposes-par-un-conseiller,
+body.template-meeting_view.userrole-manager .td_cell_interventions,
+body.template-meeting_view.userrole-manager .td_cell_questions-actualite,
+body.template-meeting_view.userrole-meetingmanager .td_cell_proposition-de-motion,
+body.template-meeting_view.userrole-meetingmanager .td_cell_proposes-par-un-conseiller,
+body.template-meeting_view.userrole-meetingmanager .td_cell_interventions,
+body.template-meeting_view.userrole-meetingmanager .td_cell_questions-actualite {
     color: red;
     font-weight: bold;
 }

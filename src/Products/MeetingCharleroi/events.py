@@ -10,6 +10,8 @@
 __author__ = """Gauthier BASTIEN <gauthier.bastien@imio.be>"""
 __docformat__ = 'plaintext'
 
+from datetime import datetime
+from imio.actionspanel import ActionsPanelMessageFactory as _AP
 from plone import api
 from Products.PloneMeeting.utils import sendMailIfRelevant
 from Products.MeetingCommunes.config import FINANCE_STATE_TO_GROUPS_MAPPINGS
@@ -50,6 +52,7 @@ def onAdviceTransition(advice, event):
         advice.advice_hide_during_redaction = True
 
     if newStateId == 'financial_advice_signed':
+        plone_utils = api.portal.get_tool('plone_utils')
         # final state of the wf, make sure advice is no more hidden during redaction
         advice.advice_hide_during_redaction = False
         # if item was still in state 'prevalidated_waiting_advices',
@@ -62,6 +65,7 @@ def onAdviceTransition(advice, event):
                                    'backTo_validated_from_waiting_advices',
                                    comment='item_wf_changed_finance_advice_positive')
                 item.REQUEST.set('mayValidate', False)
+                msg = _AP('backTo_validated_from_waiting_advices_done_descr')
             else:
                 item.REQUEST.set('maybackTo_proposed_to_refadmin_from_waiting_advices', True)
                 wfTool.doActionFor(item,
@@ -70,6 +74,8 @@ def onAdviceTransition(advice, event):
                 item.REQUEST.set('maybackTo_proposed_to_refadmin_from_waiting_advices', False)
                 sendMailIfRelevant(item, 'sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice',
                                    'MeetingReviewer', isRole=True)
+                msg = _AP('backTo_proposed_to_refadmin_from_waiting_advices_done_descr')
+            plone_utils.addPortalMessage(msg)
         else:
             # we need to _updateAdvices so change to
             # 'advice_hide_during_redaction' is taken into account
@@ -130,6 +136,19 @@ def onAdvicesUpdated(item, event):
             adviceInfo['advice_addable'] = False
             adviceInfo['advice_editable'] = False
             adviceInfo['delay_infos'] = item.getDelayInfosForAdvice(groupId)
+
+        # when a finance advice is just timed out, we will send the item back to the refadmin
+        if adviceInfo['delay_infos']['delay_status'] == 'timed_out' and \
+           'delay_infos' in event.old_adviceIndex[groupId] and not \
+           event.old_adviceIndex[groupId]['delay_infos']['delay_status'] == 'timed_out':
+            if item.queryState() == 'prevalidated_waiting_advices':
+                wfTool = api.portal.get_tool('portal_workflow')
+                item.adviceIndex[groupId]['delay_stopped_on'] = datetime.now()
+                item.REQUEST.set('maybackTo_proposed_to_refadmin_from_waiting_advices', True)
+                wfTool.doActionFor(item,
+                                   'backTo_proposed_to_refadmin_from_waiting_advices',
+                                   comment='item_wf_changed_finance_advice_timed_out')
+                item.REQUEST.set('maybackTo_proposed_to_refadmin_from_waiting_advices', False)
 
 
 def onItemDuplicatedToOtherMC(originalItem, event):

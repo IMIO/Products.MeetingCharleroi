@@ -806,7 +806,8 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
                 if self.context.REQUEST.get('mayValidate', False):
                     res = True
             elif destinationState == 'proposed_to_refadmin':
-                # when advice is not 'positive', it is sent back to ref admin
+                # item may be sent back to refadmin when completeness is not 'complete' or
+                # when the advice delay is exceeded, it is automatically sent back to refadmin
                 # in this case, we need the 'maybackTo_proposed_to_refadmin_from_waiting_advices'
                 # to True in the REQUEST
                 if self.context.REQUEST.get('maybackTo_proposed_to_refadmin_from_waiting_advices', False):

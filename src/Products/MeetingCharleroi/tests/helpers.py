@@ -117,6 +117,8 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         """ """
         # configure customAdvisers for 'meeting-config-college'
         _configureCollegeCustomAdvisers(self.portal)
+        cfg.setTransitionsReinitializingDelays(
+            charleroi_import_data.collegeMeeting.transitionsReinitializingDelays)
         # add finances group
         _createFinancesGroup(self.portal)
         # put users in finances group

@@ -22,6 +22,7 @@
 # 02110-1301, USA.
 #
 
+import datetime
 from DateTime import DateTime
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
@@ -482,3 +483,74 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         cloneItem = item.getBRefs('ItemPredecessor')[0]
         for adviceInfo in cloneItem.adviceIndex.values():
             self.assertTrue(adviceInfo['inherited'])
+
+    def test_ItemWithTimedOutAdviceIsAutomaticallySentBackToRefAdmin(self):
+        '''When an item is 'prevalidated_waiting_advices', if delay is exceeded
+           the 'backTo_proposed_to_refadmin_from_waiting_advices' is automatically
+           triggered.
+           If advice was already given but still not signed, 'advice_hide_during_redaction'
+           is set to True so advice is considered 'not_given' as if it was never added.'''
+        cfg = self.meetingConfig
+        self.changeUser('siteadmin')
+        self._configureFinancesAdvice(cfg)
+        cfg.setWorkflowAdaptations(charleroi_import_data.collegeMeeting.workflowAdaptations)
+        cfg.at_post_edit_script()
+
+        # first case, delay exceeded and advice was never given, the item is sent back to refadmin
+        self.changeUser('pmCreator1')
+        item = self.create('MeetingItem', title='The first item')
+        # ask finances advice
+        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
+        item.at_post_edit_script()
+        self.proposeItem(item)
+        # finances advice
+        self.changeUser('pmReviewer1')
+        self.do(item, 'wait_advices_from_prevalidated')
+        self.changeUser('pmFinController')
+        item.setCompleteness('completeness_complete')
+        item.updateLocalRoles()
+
+        # now does advice timed out
+        item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'] = datetime.datetime(2014, 1, 1)
+        item.updateLocalRoles()
+        # advice is timed out
+        self.assertTrue(item.adviceIndex[FINANCE_GROUP_ID]['delay_infos']['delay_status'] == 'no_more_giveable')
+        # item has been automatically sent back to refadmin
+        self.assertTrue(item.queryState() == 'proposed_to_refadmin')
+        # advice delay is kept
+        self.assertEqual(item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'],
+                         datetime.datetime(2014, 1, 1))
+
+        # second case, delay exceeded and advice exists but not signed
+        # 'advice_hide_during_redaction' is set to True on the advice
+        # and item is sent back to refadmin
+        self.changeUser('pmCreator1')
+        item = self.create('MeetingItem', title='The second item')
+        # ask finances advice
+        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
+        item.at_post_edit_script()
+        self.proposeItem(item)
+        # finances advice
+        self.changeUser('pmReviewer1')
+        self.do(item, 'wait_advices_from_prevalidated')
+        self.changeUser('pmFinController')
+        item.setCompleteness('completeness_complete')
+        # give advice positive with remarks
+        advice = createContentInContainer(
+            item,
+            'meetingadvicefinances',
+            **{'advice_group': FINANCE_GROUP_ID,
+               'advice_type': u'positive_finance',
+               'advice_comment': RichTextValue(u'My comment finances'),
+               'advice_category': u'acquisitions'})
+        self.do(advice, 'proposeToFinancialEditor')
+        self.assertTrue(item.adviceIndex[FINANCE_GROUP_ID]['hidden_during_redaction'])
+        # now does advice timed out
+        item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'] = datetime.datetime(2014, 1, 1)
+        item.updateLocalRoles()
+        # advice is timed out
+        self.assertTrue(item.adviceIndex[FINANCE_GROUP_ID]['delay_infos']['delay_status'] == 'no_more_giveable')
+        # item has been automatically sent back to refadmin
+        self.assertTrue(item.queryState() == 'proposed_to_refadmin')
+        # advice is still 'hidden_during_redaction'
+        self.assertTrue(item.adviceIndex[FINANCE_GROUP_ID]['hidden_during_redaction'])

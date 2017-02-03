@@ -15,9 +15,8 @@ msgstr ""
 "Domain: DOMAIN\n"
 
 #. Default: "The item has been automatically sent back to administrative referent because the finances advice was not 'Positive'."
-#, fuzzy
 msgid "item_wf_changed_finance_advice_not_positive"
-msgstr "Le point a été automatiquement renvoyé au référent administratif car l'avis rendu par le Directeur financier n'était pas favorable."
+msgstr "Le point a été automatiquement renvoyé au référent administratif car l'avis rendu par le Directeur financier n'était pas favorable.  Consultez l'avis pour plus d'informations."
 
 #. Default: "The item has been automatically validated because the relevant finance advice was positive."
 msgid "item_wf_changed_finance_advice_positive"

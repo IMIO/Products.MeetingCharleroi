@@ -2,7 +2,7 @@
 #
 # File: overrides.py
 #
-# Copyright (c) 2015 by Imio.be
+# Copyright (c) 2017 by Imio.be
 #
 # GNU General Public License (GPL)
 #
@@ -28,8 +28,10 @@ POLL_TYPE_ITEM = u"<p><strong>Mode de scrutin :</strong> {0}</p>"
 
 COMMISSION_TYPE_ITEM = "<p><strong>Commission :</strong> {0}</p>"
 
+
 class MCHMeetingBeforeFacetedInfosView(MeetingBeforeFacetedInfosView):
     """ """
+
 
 class MCBaseDocumentGenerationHelperView(object):
     def getPoliceGroups(self):
@@ -217,4 +219,5 @@ class MCHMeetingDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView,
         return None
 
     def format_commission(self, item):
-        return COMMISSION_TYPE_ITEM.format(item.getProposingGroup(True).getGroupInChargeAt(item.created()).description())
+        return COMMISSION_TYPE_ITEM.format(
+            item.getProposingGroup(True).getGroupInChargeAt(item.created()).description())

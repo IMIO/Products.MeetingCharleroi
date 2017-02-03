@@ -17,7 +17,15 @@ msgstr ""
 "Language-name: Deutsch\n"
 "X-Is-Fallback-For: de-at de-li de-lu de-ch de-de\n"
 
-#. Default: "This item is return to service head"
+#. Default: "This item was sent back to the service head"
 msgid "backToProposed_done_descr"
+msgstr ""
+
+#. Default: "This item was sent back to the refadmin"
+msgid "backTo_proposed_to_refadmin_from_waiting_advices_descr"
+msgstr ""
+
+#. Default: "This item was validated"
+msgid "backTo_validated_from_waiting_advices_descr"
 msgstr ""
 

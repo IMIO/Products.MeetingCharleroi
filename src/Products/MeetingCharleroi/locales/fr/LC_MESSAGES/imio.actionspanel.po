@@ -18,7 +18,15 @@ msgstr ""
 "Preferred-encodings: utf-8 latin1\n"
 "X-is-fallback-for: fr-be fr-ca fr-lu fr-mc fr-ch fr-fr\n"
 
-#. Default: "This item is return to service head"
+#. Default: "This item was sent back to the service head"
 msgid "backToProposed_done_descr"
-msgstr "Le point est retourné chez le chef de service"
+msgstr "Le point a été renvoyé au chef de service."
+
+#. Default: "This item was sent back to the refadmin"
+msgid "backTo_proposed_to_refadmin_from_waiting_advices_done_descr"
+msgstr "Le point a été renvoyé au référent administratif."
+
+#. Default: "This item was validated"
+msgid "backTo_validated_from_waiting_advices_done_descr"
+msgstr "Le point a été validé."
 
