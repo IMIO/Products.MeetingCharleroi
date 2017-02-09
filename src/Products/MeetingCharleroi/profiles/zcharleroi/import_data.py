@@ -119,13 +119,13 @@ council_categories = [
 
 # Pod templates ----------------------------------------------------------------
 agendaTemplate = PodTemplateDescriptor('oj', 'Ordre du jour')
-agendaTemplate.odt_file = 'oj.odt'
+agendaTemplate.odt_file = 'college-oj.odt'
 agendaTemplate.pod_formats = ['odt', 'pdf', ]
 agendaTemplate.pod_portal_types = ['MeetingCollege']
 agendaTemplate.tal_condition = 'python:tool.isManager(here)'
 
 decisionsTemplate = PodTemplateDescriptor('pv', 'Procès-verbal')
-decisionsTemplate.odt_file = 'pv.odt'
+decisionsTemplate.odt_file = 'college-pv.odt'
 decisionsTemplate.pod_formats = ['odt', 'pdf', ]
 decisionsTemplate.pod_portal_types = ['MeetingCollege']
 decisionsTemplate.tal_condition = 'python:tool.isManager(here)'
@@ -151,7 +151,8 @@ dfAdviceTemplate = PodTemplateDescriptor('df-advice', 'Avis DF')
 dfAdviceTemplate.odt_file = 'df-advice.odt'
 dfAdviceTemplate.pod_formats = ['odt', 'pdf', ]
 dfAdviceTemplate.pod_portal_types = ['MeetingItemCollege']
-dfAdviceTemplate.tal_condition = 'python:(here.meta_type=="MeetingItem") and context.adapted().showFinanceAdviceDocuments()'
+dfAdviceTemplate.tal_condition = \
+    'python:(here.meta_type=="MeetingItem") and context.adapted().showFinanceAdviceDocuments()'
 
 dashboardTemplate = PodTemplateDescriptor('recapitulatif', 'Récapitulatif', dashboard=True)
 dashboardTemplate.odt_file = 'recapitulatif-tb.odt'
@@ -213,7 +214,8 @@ itemCouncilTemplate.pod_formats = ['odt', 'pdf', ]
 itemCouncilTemplate.pod_portal_types = ['MeetingItemCouncil']
 itemCouncilTemplate.tal_condition = 'python:here.hasMeeting()'
 
-councilTemplates = [agendaCouncilTemplateIni, agendaCouncilTemplateComp, agendaCouncilTemplateBg, decisionsCouncilTemplate,
+councilTemplates = [agendaCouncilTemplateIni, agendaCouncilTemplateComp,
+                    agendaCouncilTemplateBg, decisionsCouncilTemplate,
                     itemCouncilRapportTemplate, itemCouncilTemplate,
                     itemCouncilProjectTemplate, dashboardTemplate]
 
@@ -728,7 +730,7 @@ councilMeeting.usedItemAttributes = ['motivation',
                                      'pollType',
                                      'pollTypeObservations',
                                      'itemInitiator',
-                                     'bourgmestreObservations',]
+                                     'bourgmestreObservations']
 councilMeeting.usedMeetingAttributes = ['startDate',
                                         'endDate',
                                         'signatures',

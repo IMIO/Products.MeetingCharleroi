@@ -41,7 +41,7 @@ class Migrate_To_4_0(PMMigrate_To_4_0):
         logger.info('Adding default councilors...')
         if not cfg.meetingusers.objectIds():
             for mUserData in councilMeeting.meetingUsers:
-                cfg.addMeetingUser(mUserData)
+                cfg.addMeetingUser(mUserData, '')
         logger.info('Done.')
 
     def run(self):
