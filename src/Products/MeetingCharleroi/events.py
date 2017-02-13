@@ -171,6 +171,13 @@ def onItemDuplicatedToOtherMC(originalItem, event):
             newItem.setCategory(COUNCIL_DEFAULT_CATEGORY)
         meeting = originalItem._otherMCMeetingToBePresentedIn(destMeetingConfig)
         if meeting:
+            # make sure we present in the right Council meeting
+            # if we are on the meeting College view
+            # this will be taken into account by getCurrentMeetingObject
+            originalPublishedObject = newItem.REQUEST.get('PUBLISHED')
+            newItem.REQUEST['PUBLISHED'] = meeting
             newItem.setPreferredMeeting(meeting.UID())
             wfTool = api.portal.get_tool('portal_workflow')
             wfTool.doActionFor(newItem, 'present')
+            # set back originally PUBLISHED object
+            newItem.REQUEST.set('PUBLISHED', originalPublishedObject)

@@ -26,6 +26,7 @@ from DateTime import DateTime
 from Products.MeetingCommunes.tests.testCustomMeeting import testCustomMeeting as mctcm
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
+from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 from Products.PloneMeeting.utils import getLastEvent
@@ -580,6 +581,38 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
              ('normal', 'questions-actualite', 'public'),
              ('normal', 'questions-actualite', 'public')]
             )
+
+    def test_CouncilPublicItemsAreInsertedUsingIndetemineeCategoryWhereSecretItemsAreLeftValidated(self):
+        """Items with confidentiality 'public' coming from College are inserted in a Council meeting
+           a will use the 'indeterminee' category.  Items with confidentiality 'secret' coming from the College
+           will stay 'validated' and are not automatically inserted into a meeting."""
+        self.changeUser('siteadmin')
+        self.setupCouncilConfig()
+        self._createCategories(self.meetingConfig2)
+        self.changeUser('pmManager')
+        # Council
+        self.setMeetingConfig('meeting-config-council')
+        council_meeting = self.create('Meeting', date=DateTime() + 1)
+        # College
+        self.setMeetingConfig('meeting-config-college')
+        publicItem = self.create('MeetingItem')
+        publicItem.setOtherMeetingConfigsClonableTo((u'meeting-config-council', ))
+        publicItem.setOtherMeetingConfigsClonableToPrivacy(())
+        secretItem = self.create('MeetingItem')
+        secretItem.setOtherMeetingConfigsClonableTo((u'meeting-config-council', ))
+        secretItem.setOtherMeetingConfigsClonableToPrivacy((u'meeting-config-council', ))
+        college_meeting = self.create('Meeting', date=DateTime('2017/02/12'))
+        self.presentItem(publicItem)
+        self.presentItem(secretItem)
+        self.closeMeeting(college_meeting)
+        council_publicItem = publicItem.getItemClonedToOtherMC('meeting-config-council')
+        council_secretItem = secretItem.getItemClonedToOtherMC('meeting-config-council')
+        # publicItem was presented into the council_meeting, no matter the 'PUBLISHED' object is the college_meeting
+        self.assertEqual(self.request['PUBLISHED'], college_meeting)
+        self.assertEqual(council_publicItem.getMeeting(), council_meeting)
+        self.assertEqual(council_publicItem.getCategory(), COUNCIL_DEFAULT_CATEGORY)
+        # secretItem is not presented and is still validated
+        self.assertFalse(council_secretItem.hasMeeting())
 
 
 def test_suite():
