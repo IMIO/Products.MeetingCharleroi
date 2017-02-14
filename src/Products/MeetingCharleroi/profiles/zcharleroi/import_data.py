@@ -22,12 +22,15 @@ from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 today = DateTime().strftime('%Y/%m/%d')
 
 # File types -------------------------------------------------------------------
-annexe = ItemAnnexTypeDescriptor('annexe', 'Annexe', u'attach.png', '')
-annexeBudget = ItemAnnexTypeDescriptor('annexeBudget', 'Article Budgétaire', u'budget.png', '')
-annexeCahier = ItemAnnexTypeDescriptor('annexeCahier', 'Cahier des Charges', u'cahier.gif', '')
-annexeDecision = ItemAnnexTypeDescriptor('annexeDecision', 'Annexe à la décision', u'attach.png', '', 'item_decision')
-annexeAvis = AnnexTypeDescriptor('annexeAvis', 'Annexe à un avis', u'attach.png', '', 'advice')
-annexeAvisLegal = AnnexTypeDescriptor('annexeAvisLegal', 'Extrait article de loi', u'legalAdvice.png', '', 'advice')
+annexe = ItemAnnexTypeDescriptor('annexe', 'Annexe', u'attach.png')
+annexeBudget = ItemAnnexTypeDescriptor('annexeBudget', 'Article Budgétaire', u'budget.png')
+annexeCahier = ItemAnnexTypeDescriptor('annexeCahier', 'Cahier des Charges', u'cahier.gif')
+annexeDecision = ItemAnnexTypeDescriptor('annexeDecision', 'Annexe à la décision', u'attach.png',
+                                         relatedTo='item_decision')
+annexeAvis = AnnexTypeDescriptor('annexeAvis', 'Annexe à un avis', u'attach.png',
+                                 relatedTo='advice')
+annexeAvisLegal = AnnexTypeDescriptor('annexeAvisLegal', 'Extrait article de loi', u'legalAdvice.png',
+                                      relatedTo='advice')
 
 # Categories -------------------------------------------------------------------
 recurring = CategoryDescriptor('recurrents', 'Récurrents')
