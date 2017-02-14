@@ -151,8 +151,11 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         advice_required_to_ask_advices = translate('advice_required_to_ask_advices',
                                                    domain='PloneMeeting',
                                                    context=self.request)
-        self.assertEqual(item.wfConditions().mayWait_advices_from_itemcreated().msg,
-                         advice_required_to_ask_advices)
+        self.assertEqual(
+            translate(
+                item.wfConditions().mayWait_advices_from_itemcreated().msg,
+                context=self.request),
+            advice_required_to_ask_advices)
         # now ask 'vendors' advice
         item.setOptionalAdvisers(('vendors', ))
         item.at_post_edit_script()
@@ -184,8 +187,11 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # no advice to ask
         self.assertEqual(self.transitions(item),
                          ['backToItemCreated', 'proposeToRefAdmin'])
-        self.assertEqual(item.wfConditions().mayWait_advices_from_proposed().msg,
-                         advice_required_to_ask_advices)
+        self.assertEqual(
+            translate(
+                item.wfConditions().mayWait_advices_from_proposed().msg,
+                context=self.request),
+            advice_required_to_ask_advices)
         item.setOptionalAdvisers(('developers', 'vendors', ))
         item.at_post_edit_script()
         self.assertEqual(self.transitions(item),
