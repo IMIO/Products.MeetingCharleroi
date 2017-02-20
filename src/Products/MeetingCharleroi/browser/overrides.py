@@ -51,12 +51,13 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
     def _showFinancesAdvice(self):
         """Finances advice is only shown :
            - if given (at worst it will be 'not_given_finance');
+           - if advice_type is not not_required_finance;
            - in any case if item is in Council;
            - if item is 'validated' to everybody;
            - if it is 'prevalidated_waiting_advices', to finances advisers."""
         adviceHolder = self._advice_holder()
         adviceObj = adviceHolder.getAdviceObj(FINANCE_GROUP_ID)
-        if not adviceObj:
+        if not adviceObj or adviceObj.advice_type == 'not_required_finance':
             return False
         item_state = self.context.queryState()
         tool = api.portal.get_tool('portal_plonemeeting')
@@ -119,9 +120,9 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
     def print_autority(self):
         if self.context.getSendToAuthority():
             return "<p>Conformément aux prescrits des articles L3111-1 et suivants " \
-                    "du Code de la démocratie locale et de la décentralisation relatifs " \
-                    "à la Tutelle, la présente décision et ses pièces justificatives sont " \
-                    "transmises aux Autorités de Tutelle.</p>"
+                "du Code de la démocratie locale et de la décentralisation relatifs " \
+                "à la Tutelle, la présente décision et ses pièces justificatives sont " \
+                "transmises aux Autorités de Tutelle.</p>"
         else:
             return ''
 
@@ -141,15 +142,15 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
     def printDelibeContent(self):
         """Printed on a College item, get the whole body of the delibe in one shot."""
         return self.print_motivation() + \
-               self.print_decision() + \
-               self.print_autority()
+            self.print_decision() + \
+            self.print_autority()
 
     def printDelibeContentCouncil(self):
         """Printed on a Council item, get the whole body of the delibe in one shot."""
         return self.print_motivation() + \
-               self.print_observation_and_poll() + \
-               self.print_decision() + \
-               self.print_autority()
+            self.print_observation_and_poll() + \
+            self.print_decision() + \
+            self.print_autority()
 
     def printFormatedItemType(self):
         """print type of item : NORMATIF - CONSEIL - COMMUNICATION - ENVOI TUTELLE"""
