@@ -26,6 +26,7 @@ from DateTime import DateTime
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.permissions import View
 from Products.MeetingCommunes.tests.testCustomMeetingItem import testCustomMeetingItem as mctcmi
+from Products.MeetingCharleroi.config import DECISION_ITEM_SENT_TO_COUNCIL
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 from Products.MeetingCharleroi.setuphandlers import _configureCollegeCustomAdvisers
 from Products.MeetingCharleroi.setuphandlers import _createFinancesGroup
@@ -247,6 +248,33 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
                                                    additional_catalog_query={'getProposingGroup': 'developers'})
         creator1DevRefs = [brain.getObject().getItemReference() for brain in orderedDevelopersBrains]
         self.assertEqual(devRefs, creator1DevRefs)
+
+    def test_ItemDecisionWhenSentToCouncil(self):
+        """When a College item is sent to Council, the decision field displays a special sentence."""
+        cfg = self.meetingConfig
+        cfg.setItemManualSentToOtherMCStates(('itemcreated', ))
+        cfg2Id = self.meetingConfig2.getId()
+
+        self.changeUser('pmCreator1')
+        item = self.create('MeetingItem')
+        item.setDecision(self.decisionText)
+        self.assertNotEqual(item.getDecision(), DECISION_ITEM_SENT_TO_COUNCIL)
+        item.setOtherMeetingConfigsClonableTo((cfg2Id,))
+        item.cloneToOtherMeetingConfig(cfg2Id)
+        councilItem = item.getItemClonedToOtherMC(cfg2Id)
+
+        # College item decision is different
+        self.assertEqual(item.getDecision(), DECISION_ITEM_SENT_TO_COUNCIL)
+        self.assertEqual(councilItem.getDecision(), self.decisionText)
+
+        # if College item is duplicated, the original decision is used
+        duplicatedItem = item.clone()
+        self.assertEqual(duplicatedItem.getDecision(), self.decisionText)
+
+        # if item sent to Council is removed, the original decision
+        # is displayed again on the College item
+        self.deleteAsManager(councilItem.UID())
+        self.assertEqual(item.getDecision(), self.decisionText)
 
 
 def test_suite():

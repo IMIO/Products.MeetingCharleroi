@@ -24,6 +24,7 @@
 from AccessControl import ClassSecurityInfo
 from DateTime import DateTime
 from Globals import InitializeClass
+from zope.annotation import IAnnotations
 from zope.interface import implements
 from zope.i18n import translate
 
@@ -35,6 +36,7 @@ from Products.CMFCore.utils import _checkPermission
 from Products.PloneMeeting.adapters import ItemPrettyLinkAdapter
 from Products.PloneMeeting.Meeting import Meeting
 from Products.PloneMeeting.MeetingConfig import MeetingConfig
+from Products.PloneMeeting.MeetingItem import MeetingItem
 from Products.PloneMeeting.interfaces import IMeetingConfigCustom
 from Products.PloneMeeting.interfaces import IMeetingCustom
 from Products.PloneMeeting.interfaces import IMeetingGroupCustom
@@ -63,6 +65,7 @@ from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWor
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowConditions
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
+from Products.MeetingCharleroi.config import DECISION_ITEM_SENT_TO_COUNCIL
 from Products.MeetingCharleroi.config import NEVER_LATE_CATEGORIES
 from Products.MeetingCharleroi.config import FINANCE_GIVEABLE_ADVICE_STATES
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
@@ -377,6 +380,21 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
 
     def __init__(self, item):
         self.context = item
+
+    MeetingItem.__pm_old_getDecision = MeetingItem.getDecision
+
+    def getDecision(self, **kwargs):
+        '''Overridde 'decision' field accessor.
+           Display specific message when College item is sent to Council.'''
+        decision = self.__pm_old_getDecision(**kwargs)
+        if self.portal_type == 'MeetingItemCollege':
+            annotation_key = self._getSentToOtherMCAnnotationKey('meeting-config-council')
+            ann = IAnnotations(self)
+            if ann.get(annotation_key, None):
+                decision = DECISION_ITEM_SENT_TO_COUNCIL
+        return decision
+    MeetingItem.getDecision = getDecision
+    MeetingItem.getRawDecision = getDecision
 
     def getCustomAdviceMessageFor(self, advice):
         '''If we are on a finance advice that is still not giveable because
