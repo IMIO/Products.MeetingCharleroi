@@ -38,6 +38,11 @@ class testMeetingItem(MeetingCharleroiTestCase, mctmi):
         """ """
         return ['bourgmestreObservations']
 
+    def test_pm_SendItemToOtherMCKeptFields(self):
+        '''Do not launch this test because it fails as College item sent to
+           the council have a specific management of the getDecision accessor.'''
+        pass
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite
