@@ -126,6 +126,14 @@ agendaTemplate.odt_file = 'college-oj.odt'
 agendaTemplate.pod_formats = ['odt', 'pdf', ]
 agendaTemplate.pod_portal_types = ['MeetingCollege']
 agendaTemplate.tal_condition = 'python:tool.isManager(here)'
+agendaTemplate.context_variables = [{'name': u'oj_type', 'value': u'full'}]
+
+agendaTemplateBg = PodTemplateDescriptor('oj-bg', 'Ordre du jour Bourgmestre')
+agendaTemplateBg.odt_file = 'college-oj.odt'
+agendaTemplateBg.pod_formats = ['odt', 'pdf', ]
+agendaTemplateBg.pod_portal_types = ['MeetingCollege']
+agendaTemplateBg.tal_condition = 'python:tool.isManager(here)'
+agendaTemplateBg.context_variables = [{'name': u'oj_type', 'value': u'bg'}]
 
 decisionsTemplate = PodTemplateDescriptor('pv', 'Procès-verbal')
 decisionsTemplate.odt_file = 'college-pv.odt'
@@ -166,7 +174,7 @@ historyTemplate.odt_file = 'history.odt'
 historyTemplate.pod_formats = ['odt', 'pdf', ]
 historyTemplate.pod_portal_types = ['MeetingItemCollege']
 
-collegeTemplates = [agendaTemplate, decisionsTemplate,
+collegeTemplates = [agendaTemplate, agendaTemplateBg, decisionsTemplate,
                     itemProjectTemplate, itemTemplate,
                     dfAdvicesTemplate, dashboardTemplate,
                     historyTemplate]
