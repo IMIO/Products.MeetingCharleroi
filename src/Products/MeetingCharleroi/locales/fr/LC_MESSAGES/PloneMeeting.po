@@ -123,9 +123,9 @@ msgstr "Directeur"
 msgid "reviewers"
 msgstr "Directeurs"
 
-#. Default: "An item was automatically sent back to the administrative referent because the signed finances advice was not positive"
+#. Default: "An item was automatically sent back to the administrative referent because the signed finances advice was not positive (notify 'MeetingReviewers')"
 msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice"
-msgstr "Un point a été automatiquement renvoyé aux référents administratifs parce que l'avis finances signé n'était pas 'Favorable'"
+msgstr "Un point a été automatiquement renvoyé aux référents administratifs parce que l'avis finances signé n'était pas 'Favorable' (prévient les directeurs du groupe proposant)"
 
 #. Default: "The item is entitled '${itemTitle}'. You can access it here: ${objectUrl}."
 msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_body"

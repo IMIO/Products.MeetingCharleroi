@@ -18,15 +18,15 @@ msgstr ""
 "Preferred-encodings: utf-8 latin1\n"
 "X-is-fallback-for: en-us en-ca\n"
 
-#. Default: "This item was sent back to the service head"
+#. Default: "This item was sent back to the service head."
 msgid "backToProposed_done_descr"
 msgstr ""
 
-#. Default: "This item was sent back to the refadmin"
-msgid "backTo_proposed_to_refadmin_from_waiting_advices_descr"
+#. Default: "This item was sent back to the refadmin."
+msgid "backTo_proposed_to_refadmin_from_waiting_advices_done_descr"
 msgstr ""
 
-#. Default: "This item was validated"
-msgid "backTo_validated_from_waiting_advices_descr"
+#. Default: "This item was validated."
+msgid "backTo_validated_from_waiting_advices_done_descr"
 msgstr ""
 

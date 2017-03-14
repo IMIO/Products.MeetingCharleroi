@@ -122,7 +122,7 @@ msgstr ""
 msgid "reviewers"
 msgstr ""
 
-#. Default: "An item was automatically sent back to the administrative referent because the signed finances advice was not positive"
+#. Default: "An item was automatically sent back to the administrative referent because the signed finances advice was not positive (notify 'MeetingReviewers')"
 msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice"
 msgstr ""
 
