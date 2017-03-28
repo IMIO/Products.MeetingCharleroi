@@ -89,12 +89,11 @@ COMMUNICATION_CAT_ID = 'communication'
 
 CHARLEROI_ADVICE_STATES_ALIVE = ('advice_under_edit',
                                  'proposed_to_financial_controller',
+                                 'proposed_to_financial_editor',
                                  'proposed_to_financial_reviewer',
                                  'proposed_to_financial_manager',
                                  'financial_advice_signed', )
-CHARLEROI_ADVICE_STATES_ENDED = ('advice_given', )
 PMconfig.ADVICE_STATES_ALIVE = CHARLEROI_ADVICE_STATES_ALIVE
-PMconfig.ADVICE_STATES_ENDED = CHARLEROI_ADVICE_STATES_ENDED
 
 # decision displayed for College item sent to Council
 DECISION_ITEM_SENT_TO_COUNCIL = "Ce point est à inscrire à l'ordre du jour du Conseil."

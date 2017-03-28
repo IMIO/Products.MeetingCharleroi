@@ -512,7 +512,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         raise NotImplementedError
 
     def mayChangeDelayTo(self, days):
-        """May current used change finance advice delay to given p_days?
+        """May current user change finance advice delay to given p_days?
            Given p_days could be :
            - 5 : in this case, only the proposingGroup (while having edit permission) may change to this delay;
            - 20 : in this case, only finance advisers may change to this delay;
