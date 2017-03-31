@@ -24,6 +24,7 @@
 
 import datetime
 from DateTime import DateTime
+from plone import api
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from Products.CMFCore.permissions import DeleteObjects
@@ -31,6 +32,7 @@ from Products.CMFCore.permissions import ModifyPortalContent
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.profiles.zcharleroi import import_data as charleroi_import_data
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
+from Products.PloneMeeting.config import ADVICE_STATES_ENDED
 from zope.i18n import translate
 
 
@@ -439,6 +441,60 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # advice is no more editable/deletable by finances
         self.assertFalse(self.hasPermission(ModifyPortalContent, advice))
         self.assertFalse(self.hasPermission(DeleteObjects, advice))
+
+    def test_FinanceAdviceFoundInUpdateDelayAwareAdvices(self):
+        """Check that every states of finance advice WF will be managed
+           by @@update-delay-aware-advices."""
+        '''Test the finances advice workflow.'''
+        cfg = self.meetingConfig
+        self.changeUser('siteadmin')
+        self._configureFinancesAdvice(cfg)
+        # put users in finances group
+        self._setupFinancesGroup()
+        update_advices_view = self.portal.restrictedTraverse('@@update-delay-aware-advices')
+        self.changeUser('pmCreator1')
+        item = self.create('MeetingItem', title='The first item')
+        # ask finances advice
+        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
+        self.proposeItem(item)
+        self.changeUser('pmReviewer1')
+        self.do(item, 'wait_advices_from_prevalidated')
+
+        # now act as the finances users
+        self.changeUser('pmFinController')
+        # set completeness
+        item.setCompleteness('completeness_complete')
+        item.at_post_edit_script()
+        # add advice
+        advice = createContentInContainer(
+            item,
+            'meetingadvicefinances',
+            **{'advice_group': FINANCE_GROUP_ID,
+               'advice_type': u'negative_finance',
+               'advice_comment': RichTextValue(u'My comment finances'),
+               'advice_category': u'acquisitions'})
+
+        query = update_advices_view._computeQuery()
+        catalog = api.portal.get_tool('portal_catalog')
+        self.assertTrue(item.UID() in [brain.UID for brain in catalog(**query)])
+
+        # send advice to finances editor
+        self.do(advice, 'proposeToFinancialEditor')
+        self.assertTrue(item.UID() in [brain.UID for brain in catalog(**query)])
+        # send advice to finances reviewer
+        self.changeUser('pmFinEditor')
+        self.do(advice, 'proposeToFinancialReviewer')
+        self.assertTrue(item.UID() in [brain.UID for brain in catalog(**query)])
+        # send advice to finances Manager
+        self.changeUser('pmFinReviewer')
+        self.do(advice, 'proposeToFinancialManager')
+        self.assertTrue(item.UID() in [brain.UID for brain in catalog(**query)])
+        # sign the advice
+        self.changeUser('pmFinManager')
+        self.do(advice, 'signFinancialAdvice')
+        # no more found now that advice is signed, at has been moved to 'advice_given'
+        self.assertTrue(advice.queryState() in ADVICE_STATES_ENDED)
+        self.assertFalse(item.UID() in [brain.UID for brain in catalog(**query)])
 
     def test_CollegePostPoneNextMeetingWithGivenAdvices(self):
         '''Check that postpone_next_meeting will work, especially because if finances advice
