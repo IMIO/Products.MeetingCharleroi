@@ -62,9 +62,12 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
     def _testWholeDecisionProcessCollege(self):
         '''This test covers the whole decision workflow. It begins with the
            creation of some items, and ends by closing a meeting.'''
+        self.setupCollegeConfig()
+        self._createRecurringItems(self.meetingConfig)
         # pmCreator1 creates an item with 1 annex and proposes it
         self.changeUser('pmCreator1')
-        item1 = self.create('MeetingItem', title='The first item')
+        item1 = self.create('MeetingItem', title='The first item',
+                            proposingGroupWithGroupInCharge='developers__groupincharge__groupincharge2')
         self.addAnnex(item1)
         self.addAnnex(item1, relatedTo='item_decision')
         self.do(item1, 'propose')
@@ -78,7 +81,8 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         # pmCreator2 creates and proposes an item
         self.changeUser('pmCreator2')
         item2 = self.create('MeetingItem', title='The second item',
-                            preferredMeeting=meeting.UID())
+                            preferredMeeting=meeting.UID(),
+                            proposingGroupWithGroupInCharge='vendors__groupincharge__groupincharge1')
         self.do(item2, 'propose')
         # pmReviewer1 validates item1 and adds an annex to it
         self.changeUser('pmServiceHead1')
@@ -111,9 +115,9 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         self.changeUser('pmManager')
         self.do(item2, 'present')
         self.addAnnex(item2)
-        # So now we should have 3 normal item (2 recurring + 1) and one late item in the meeting
-        self.failUnless(len(meeting.getItems()) == 4)
-        self.failUnless(len(meeting.getItems(listTypes='late')) == 1)
+        # So now we should have 5 items, 4 normal (3 recurrings + 1 normal) and one late
+        self.failUnless(len(meeting.getItems()) == 5)
+        self.failUnless(len(meeting.getItems(listTypes=['late'])) == 1)
         self.changeUser('pmManager')
         item1.setDecision(self.decisionText)
 
@@ -155,13 +159,15 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         self.assertEqual(itemWF.initial_state, 'validated')
 
         self.changeUser('pmManager')
-        item1 = self.create('MeetingItem', title='The first item')
+        item1 = self.create('MeetingItem', title='The first item',
+                            proposingGroupWithGroupInCharge='developers__groupincharge__groupincharge2')
         self.addAnnex(item1)
         self.addAnnex(item1, relatedTo='item_decision')
         self.assertEqual(item1.queryState(), 'validated')
         meeting = self.create('Meeting', date='2016/12/11 09:00:00')
         item2 = self.create('MeetingItem', title='The second item',
-                            preferredMeeting=meeting.UID())
+                            preferredMeeting=meeting.UID(),
+                            proposingGroupWithGroupInCharge='developers__groupincharge__groupincharge2')
         self.presentItem(item1)
         item1.setDecision(self.decisionText)
         self.decideMeeting(meeting)

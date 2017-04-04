@@ -408,7 +408,8 @@ collegeMeeting.usedItemAttributes = ['completeness',
                                      'otherMeetingConfigsClonableToPrivacy',
                                      'itemAssembly',
                                      'itemIsSigned',
-                                     'bourgmestreObservations']
+                                     'bourgmestreObservations',
+                                     'proposingGroupWithGroupInCharge']
 collegeMeeting.usedMeetingAttributes = ['startDate',
                                         'endDate',
                                         'approvalDate',
@@ -578,6 +579,7 @@ collegeMeeting.recurringItems = [
         description='Approuve le procès-verbal de la séance antérieure',
         category='recurrents',
         proposingGroup='secretariat',
+        proposingGroupWithGroupInCharge='secretariat__groupincharge__bourgmestre',
         decision='Procès-verbal approuvé'),
     RecurringItemDescriptor(
         id='recurringofficialreport1',
@@ -585,6 +587,7 @@ collegeMeeting.recurringItems = [
         description='Autorise et signe les bons de commande de la semaine',
         category='recurrents',
         proposingGroup='secretariat',
+        proposingGroupWithGroupInCharge='secretariat__groupincharge__bourgmestre',
         decision='Bons de commande signés'),
     RecurringItemDescriptor(
         id='recurringofficialreport2',
@@ -592,6 +595,7 @@ collegeMeeting.recurringItems = [
         description='Ordonnance et signe les mandats de paiement de la semaine',
         category='recurrents',
         proposingGroup='secretariat',
+        proposingGroupWithGroupInCharge='secretariat__groupincharge__bourgmestre',
         decision='Mandats de paiement de la semaine approuvés'), ]
 collegeMeeting.itemTemplates = [
     ItemTemplateDescriptor(
@@ -599,8 +603,9 @@ collegeMeeting.itemTemplates = [
         title='Tutelle CPAS',
         description='Tutelle CPAS',
         category='divers',
-        proposingGroup='secretariat',
-        templateUsingGroups=['secretariat', 'dirgen', ],
+        proposingGroup='',
+        proposingGroupWithGroupInCharge='',
+        templateUsingGroups=[],
         decision="""<p>Vu la loi du 8 juillet 1976 organique des centres publics d'action sociale et plus particulièrement son article 111;</p>
 <p>Vu l'Arrêté du Gouvernement Wallon du 22 avril 2004 portant codification de la législation relative aux pouvoirs locaux tel que confirmé par le décret du 27 mai 2004 du Conseil régional wallon;</p>
 <p>Attendu que les décisions suivantes du Bureau permanent/du Conseil de l'Action sociale du XXX ont été reçues le XXX dans le cadre de la tutelle générale sur les centres publics d'action sociale :</p>
@@ -619,6 +624,7 @@ collegeMeeting.itemTemplates = [
         description='Contrôle médical systématique agent contractuel',
         category='divers',
         proposingGroup='personnel',
+        proposingGroupWithGroupInCharge='personnel__groupincharge__echevin1',
         templateUsingGroups=['personnel', ],
         decision="""
             <p>Vu la loi du 26 mai 2002 instituant le droit à l’intégration sociale;</p>
@@ -639,6 +645,7 @@ collegeMeeting.itemTemplates = [
         description='Engagement temporaire',
         category='divers',
         proposingGroup='personnel',
+        proposingGroupWithGroupInCharge='personnel__groupincharge__echevin1',
         templateUsingGroups=['personnel', ],
         decision="""<p>Considérant qu’il y a lieu de pourvoir au remplacement de Madame XXX, XXX bénéficiant d’une interruption de carrière pour convenances personnelles pour l’année scolaire 2009/2010. &nbsp;</p>
 <p>Attendu qu’un appel public a été lancé au mois de mai dernier;</p>
@@ -660,6 +667,7 @@ collegeMeeting.itemTemplates = [
         description='Prestation réduite',
         category='divers',
         proposingGroup='personnel',
+        proposingGroupWithGroupInCharge='personnel__groupincharge__echevin1',
         templateUsingGroups=['personnel', ],
         decision="""<p>Vu la loi de redressement du 22 janvier 1985 (article 99 et suivants) et de l’Arrêté Royal du 12 août 1991 (tel que modifié) relatifs à l’interruption de carrière professionnelle dans l’enseignement;</p>
 <p>Vu la lettre du XXX par laquelle Madame XXX, institutrice maternelle, sollicite le renouvellement pendant l’année scolaire 2009/2010 de son congé pour prestations réduites mi-temps pour convenances personnelles dont elle bénéficie depuis le 01 septembre 2006;</p>
@@ -741,7 +749,8 @@ councilMeeting.usedItemAttributes = ['motivation',
                                      'pollType',
                                      'pollTypeObservations',
                                      'itemInitiator',
-                                     'bourgmestreObservations']
+                                     'bourgmestreObservations',
+                                     'proposingGroupWithGroupInCharge']
 councilMeeting.usedMeetingAttributes = ['startDate',
                                         'endDate',
                                         'signatures',
@@ -947,6 +956,7 @@ councilMeeting.recurringItems = [
         description='Approuve le procès-verbal de la séance antérieure',
         category='entetes',
         proposingGroup='secretariat',
+        proposingGroupWithGroupInCharge='secretariat__groupincharge__bourgmestre',
         decision='Procès-verbal approuvé'), ]
 
 data = PloneMeetingConfiguration(meetingFolderTitle='Mes séances',
