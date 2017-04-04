@@ -92,10 +92,8 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         cfg2 = self.meetingConfig2
         cfg2Id = cfg2.getId()
         # items will be immediatelly presented to the Council meeting while sent
+        self.setupCollegeConfig()
         self.setupCouncilConfig()
-        cfg.setMeetingConfigsToCloneTo(
-            ({'meeting_config': cfg2Id,
-              'trigger_workflow_transitions_until': '%s.%s' % (cfg2Id, 'validate')}, ))
         cfg.setItemAutoSentToOtherMCStates(('itemfrozen', ))
         # create 2 College meetings, one extraordinarySession and one normal session
         # then send an item from each to a Council meeting
@@ -110,6 +108,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         item1 = self.create('MeetingItem')
         item1.setDecision(self.decisionText)
         item1.setOtherMeetingConfigsClonableTo((cfg2Id,))
+        item1.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
         self.presentItem(item1)
         self.freezeMeeting(collegeMeeting1)
         collegeMeeting2 = self.create('Meeting', date=DateTime('2016/12/20'))
@@ -117,6 +116,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         item2 = self.create('MeetingItem')
         item2.setDecision(self.decisionText)
         item2.setOtherMeetingConfigsClonableTo((cfg2Id,))
+        item2.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
         self.presentItem(item2)
         self.freezeMeeting(collegeMeeting2)
 

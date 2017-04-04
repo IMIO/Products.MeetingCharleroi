@@ -758,6 +758,11 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
             newItem.setOtherMeetingConfigsClonableToPrivacy(item['otherMeetingConfigsClonableToPrivacy'])
             newItem.setTitle(item['title'])
             newItem.setProposingGroup(item['proposingGroup'])
+            # manage MeetingItem.groupInCharge
+            groupInCharge = newItem.getProposingGroup(theObject=True).getGroupsInCharge()[0]
+            value = '{0}__groupincharge__{1}'.format(newItem.getProposingGroup(),
+                                                     groupInCharge)
+            newItem.setProposingGroupWithGroupInCharge(value)
             newItem.setItemAssemblyExcused('Roger Bidon')
             newItem.setItemAssemblyAbsents('Jean-Michel Jamaila')
             newItem.setCategory(item['category'])
@@ -968,6 +973,11 @@ def _addCouncilDemoData(collegeMeeting,
             newItem.setItemAssemblyExcused('Roger Bidon')
             newItem.setItemAssemblyAbsents('Jean-Michel Jamaila')
             newItem.setProposingGroup(item['proposingGroup'])
+            # manage MeetingItem.groupInCharge
+            groupInCharge = newItem.getProposingGroup(theObject=True).getGroupsInCharge()[0]
+            value = '{0}__groupincharge__{1}'.format(newItem.getProposingGroup(),
+                                                     groupInCharge)
+            newItem.setProposingGroupWithGroupInCharge(value)
             newItem.setPreferredMeeting(meeting.UID())
             newItem.setPrivacy(item['privacy'])
             newItem.setItemInitiator(item['itemInitiator'])

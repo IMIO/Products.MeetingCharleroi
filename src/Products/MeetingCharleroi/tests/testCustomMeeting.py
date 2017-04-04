@@ -552,6 +552,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         commItem = self.create('MeetingItem')
         commItem.setCategory('communication')
         commItem.setPreferredMeeting(collegeMeeting.UID())
+        commItem.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
         self.presentItem(commItem)
         self.assertEqual(commItem.getMeeting(), collegeMeeting)
         self.assertEqual(commItem.getListType(), 'normal')
@@ -598,15 +599,27 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         publicItem = self.create('MeetingItem')
         publicItem.setOtherMeetingConfigsClonableTo((u'meeting-config-council', ))
         publicItem.setOtherMeetingConfigsClonableToPrivacy(())
+        publicItem.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
         secretItem = self.create('MeetingItem')
         secretItem.setOtherMeetingConfigsClonableTo((u'meeting-config-council', ))
         secretItem.setOtherMeetingConfigsClonableToPrivacy((u'meeting-config-council', ))
+        secretItem.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
         college_meeting = self.create('Meeting', date=DateTime('2017/02/12'))
         self.presentItem(publicItem)
         self.presentItem(secretItem)
         self.closeMeeting(college_meeting)
         council_publicItem = publicItem.getItemClonedToOtherMC('meeting-config-council')
+        # groupInCharge was kept
+        self.assertEqual(
+            (council_publicItem.getProposingGroup(), council_publicItem.getGroupInCharge()),
+            (publicItem.getProposingGroup(), publicItem.getGroupInCharge())
+            )
         council_secretItem = secretItem.getItemClonedToOtherMC('meeting-config-council')
+        # groupInCharge was kept
+        self.assertEqual(
+            (council_secretItem.getProposingGroup(), council_secretItem.getGroupInCharge()),
+            (secretItem.getProposingGroup(), secretItem.getGroupInCharge())
+            )
         # publicItem was presented into the council_meeting, no matter the 'PUBLISHED' object is the college_meeting
         self.assertEqual(self.request['PUBLISHED'], college_meeting)
         self.assertEqual(council_publicItem.getMeeting(), council_meeting)

@@ -247,11 +247,14 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         else:
             items = charleroi_import_data.councilMeeting.recurringItems
         for item in items:
+            group_in_charge_value = 'developers__groupincharge__{0}'.format(
+                self.tool.developers.getGroupsInCharge()[0])
             data = {'id': item.id,
                     'title': item.title,
                     'description': item.description,
                     'category': item.category,
                     'proposingGroup': 'developers',
+                    'proposingGroupWithGroupInCharge': group_in_charge_value,
                     'decision': item.decision,
                     'meetingTransitionInsertingMe': item.meetingTransitionInsertingMe}
             self.create('MeetingItemRecurring',
@@ -277,7 +280,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         cfg2.setInsertingMethodsOnAddItem(charleroi_import_data.councilMeeting.insertingMethodsOnAddItem)
         cfg2.at_post_edit_script()
 
-    def setupCollegeDemoData(self):
+    def setupCollegeConfig(self):
         """ """
         cfg = self.meetingConfig
 
@@ -291,6 +294,9 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         cfg.setToDiscussSetOnItemInsert(False)
         cfg.setMeetingConfigsToCloneTo(charleroi_import_data.collegeMeeting.meetingConfigsToCloneTo)
 
+    def setupCollegeDemoData(self):
+        """ """
+        self.setupCollegeConfig()
         # create items and meetings using demo data
         self.changeUser('pmManager')
         collegeMeeting, collegeExtraMeeting = _demoData(
