@@ -251,24 +251,24 @@ conseiller = UserDescriptor('conseiller', [], email="test@test.be", fullname="Co
 emetteuravisPers = UserDescriptor('emetteuravisPers', [], email="test@test.be", fullname="Emetteur avis Personnel")
 
 police_grp = GroupDescriptor(POLICE_GROUP_PREFIX, 'Zone de Police', 'ZPL',
-                             groupInCharge=({'group_id': 'bourgmestre', 'date_to': ''},))
+                             groupsInCharge=('bourgmestre',))
 police_compta_grp = GroupDescriptor(
     POLICE_GROUP_PREFIX + '-compta', 'Zone de Police comptable spécial', 'ZPLCS',
-    groupInCharge=({'group_id': 'bourgmestre', 'date_to': ''},))
+    groupsInCharge=('bourgmestre',))
 dirgen_grp = GroupDescriptor('dirgen', 'Directeur Général', 'DG',
-                             groupInCharge=({'group_id': 'bourgmestre', 'date_to': ''},))
+                             groupsInCharge=('bourgmestre',))
 secr_grp = GroupDescriptor('secretariat', 'Secrétariat communal', 'Secr',
-                           groupInCharge=({'group_id': 'bourgmestre', 'date_to': ''},))
+                           groupsInCharge=('bourgmestre',))
 info_grp = GroupDescriptor('informatique', 'Service informatique', 'Info',
-                           groupInCharge=({'group_id': 'echevin2', 'date_to': ''},))
+                           groupsInCharge=('echevin2',))
 pers_grp = GroupDescriptor('personnel', 'Service du personnel', 'Pers',
-                           groupInCharge=({'group_id': 'echevin1', 'date_to': ''},))
+                           groupsInCharge=('echevin1',))
 dirfin_grp = GroupDescriptor('dirfin', 'Directeur Financier', 'DF',
-                             groupInCharge=({'group_id': 'echevin2', 'date_to': ''},))
+                             groupsInCharge=('echevin2',))
 compta_grp = GroupDescriptor('comptabilite', 'Service comptabilité', 'Compt',
-                             groupInCharge=({'group_id': 'echevin2', 'date_to': ''},))
+                             groupsInCharge=('echevin2',))
 trav_grp = GroupDescriptor('travaux', 'Service travaux', 'Trav',
-                           groupInCharge=({'group_id': 'echevin3', 'date_to': ''},))
+                           groupsInCharge=('echevin3',))
 bourg_grp = GroupDescriptor('bourgmestre', 'Bourgmestre', 'BG', '1')
 ech1_grp = GroupDescriptor('echevin1', 'Echevin 1', 'Ech1', '2')
 ech2_grp = GroupDescriptor('echevin2', 'Echevin 2', 'Ech2', '3')

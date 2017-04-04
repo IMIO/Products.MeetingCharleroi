@@ -44,9 +44,43 @@ class Migrate_To_4_0(PMMigrate_To_4_0):
                 cfg.addMeetingUser(mUserData, '')
         logger.info('Done.')
 
+    def _updateGroupsInCharge(self):
+        """The 'groupsInCharge' functionnality evolved."""
+        logger.info('Adapting groupsInCharge...')
+        for grp in self.tool.objectValues('MeetingGroup'):
+            if not hasattr(grp, 'groupInCharge'):
+                # already migrated
+                logger.info('Done.')
+                return
+
+            groupsInCharge = [val['group_id'] for val in grp.groupInCharge]
+            grp.setGroupsInCharge(groupsInCharge)
+
+        # enable the 'proposingGroupWithGroupInCharge' item optional field
+        for cfg in self.tool.objectValues('MeetingConfig'):
+            usedItemAttrs = list(cfg.getUsedItemAttributes())
+            usedItemAttrs.append('proposingGroupWithGroupInCharge')
+            cfg.setUsedItemAttributes(usedItemAttrs)
+
+        # update every items
+        brains = self.portal.portal_catalog(meta_type='MeetingItem')
+        for brain in brains:
+            item = brain.getObject()
+            proposingGroup = item.getProposingGroup(True)
+            if not proposingGroup:
+                # item isDefinedInTool
+                continue
+            groupsInCharge = proposingGroup.getGroupsInCharge()
+            groupInCharge = groupsInCharge and groupsInCharge[0] or ''
+            value = '{0}__groupincharge__{1}'.format(proposingGroup.getId(),
+                                                     groupInCharge)
+            item.setProposingGroupWithGroupInCharge(value)
+        logger.info('Done.')
+
     def run(self):
         # change self.profile_name that is reinstalled at the beginning of the PM migration
         self.profile_name = u'profile-Products.MeetingCharleroi:default'
+        self._updateGroupsInCharge()
         # call steps from Products.PloneMeeting
         PMMigrate_To_4_0.run(self)
         # now MeetingCharleroi specific steps
