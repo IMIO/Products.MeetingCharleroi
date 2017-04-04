@@ -191,14 +191,10 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                            'groupincharge1',
                            'groupincharge2'])
         # set groupsInCharge for 'vendors' and 'developers'
-        self.tool.get(POLICE_GROUP_PREFIX).setGroupInCharge(
-            ({'date_to': '', 'group_id': 'groupincharge1', 'orderindex_': '1'},))
-        self.tool.get(POLICE_GROUP_PREFIX + '-compta').setGroupInCharge(
-            ({'date_to': '', 'group_id': 'groupincharge1', 'orderindex_': '1'},))
-        self.tool.vendors.setGroupInCharge(
-            ({'date_to': '', 'group_id': 'groupincharge1', 'orderindex_': '1'},))
-        self.tool.developers.setGroupInCharge(
-            ({'date_to': '', 'group_id': 'groupincharge2', 'orderindex_': '1'},))
+        self.tool.get(POLICE_GROUP_PREFIX).setGroupsInCharge(('groupincharge1',))
+        self.tool.get(POLICE_GROUP_PREFIX + '-compta').setGroupsInCharge(('groupincharge1',))
+        self.tool.vendors.setGroupsInCharge(('groupincharge1',))
+        self.tool.developers.setGroupsInCharge(('groupincharge2',))
         # make 'pmManager' able to manage everything for 'vendors' and 'police'
         groupsTool = self.portal.portal_groups
         for groupId in ('vendors', POLICE_GROUP_PREFIX, POLICE_GROUP_PREFIX + '-compta'):

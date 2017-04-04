@@ -487,7 +487,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         self.assertEquals([
             (item.getListType(),
              item.getProposingGroup(),
-             item.getProposingGroup(theObject=True).getGroupInChargeAt(collegeMeeting.getDate()).getId(),
+             item.getGroupInCharge(),
              item.getOtherMeetingConfigsClonableTo(),
              item.getOtherMeetingConfigsClonableToPrivacy(),
              item.getOtherMeetingConfigsClonableToEmergency(),
