@@ -105,7 +105,8 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                               'proposed_to_refadmin': 'proposed_to_refadmin',
                               'prevalidated': 'prevalidated',
                               'validated': 'validated',
-                              'presented': 'presented'}
+                              'presented': 'presented',
+                              'itemfrozen': 'itemfrozen'}
 
     # in which state an item must be after an particular meeting transition?
     ITEM_WF_STATE_AFTER_MEETING_TRANSITION = {'publish_decisions': 'accepted',
