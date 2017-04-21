@@ -34,19 +34,19 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
     def test_pm_WFA_availableWFAdaptations(self):
         '''Test what are the available wfAdaptations.'''
         # we removed the 'archiving' and 'creator_initiated_decisions' wfAdaptations
-        self.assertEquals(set(self.meetingConfig.listWorkflowAdaptations()),
-                          set(('no_global_observation',
-                               'no_publication',
-                               'pre_validation',
-                               'items_come_validated',
-                               'return_to_proposing_group',
-                               'waiting_advices',
-                               'charleroi_add_refadmin',
-                               'postpone_next_meeting',
-                               'mark_not_applicable',
-                               'removed',
-                               'only_creator_may_delete'
-                               )))
+        self.assertEquals(sorted(self.meetingConfig.listWorkflowAdaptations().keys()),
+                          ['charleroi_add_refadmin',
+                           'hide_decisions_when_under_writing',
+                           'items_come_validated',
+                           'mark_not_applicable',
+                           'no_global_observation',
+                           'no_publication',
+                           'only_creator_may_delete',
+                           'postpone_next_meeting',
+                           'pre_validation',
+                           'removed',
+                           'return_to_proposing_group',
+                           'waiting_advices'])
 
     def test_pm_Validate_workflowAdaptations_added_items_come_validated(self):
         """ """
