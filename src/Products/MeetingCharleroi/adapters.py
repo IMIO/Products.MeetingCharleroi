@@ -29,7 +29,9 @@ from zope.interface import implements
 from zope.i18n import translate
 
 from collections import OrderedDict
+from imio.helpers.cache import cleanRamCacheFor
 from plone import api
+from plone.memoize import ram
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.permissions import ReviewPortalContent
 from Products.CMFCore.utils import _checkPermission
@@ -118,6 +120,16 @@ class CustomCharleroiMeeting(CustomMeeting):
 
     def __init__(self, meeting):
         self.context = meeting
+
+    Meeting.__pm_old_updateItemReferences = Meeting.updateItemReferences
+
+    def updateItemReferences(self, startNumber=0, check_needed=False):
+        """ """
+        # clean ram.cache for item reference computation
+        cleanRamCacheFor('Products.MeetingCharleroi.adapters._itemNumberCalculationQueryUids')
+        # call old monkeypatched method
+        self.__pm_old_updateItemReferences(startNumber, check_needed)
+    Meeting.updateItemReferences = updateItemReferences
 
     def getDefaultAssemblyPolice(self):
         """ """
@@ -641,19 +653,29 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         ref = ref + '/' + str(itemNumber)
         return ref
 
-    def _itemNumberCalculation(self, item, meeting, additionalQuery={}):
-        '''Compute the item number for PV '''
+    def _itemNumberCalculationQueryUids_cachekey(method, self, meeting, additionalQuery):
+        '''cachekey method for self._itemNumberCalculationQueryUids.'''
+        return (self.context.REQUEST._debug, meeting, additionalQuery)
+
+    @ram.cache(_itemNumberCalculationQueryUids_cachekey)
+    def _itemNumberCalculationQueryUids(self, meeting, additionalQuery):
+        """ """
         # do the query unrestricted so we have same result for users
         # that do not have access to every items of the meeting
         brains = meeting.getItems(useCatalog=True,
                                   ordered=True,
                                   additional_catalog_query=additionalQuery,
                                   unrestricted=True)
+        return [brain.UID for brain in brains]
+
+    def _itemNumberCalculation(self, item, meeting, additionalQuery={}):
+        '''Compute the item number used in the reference.'''
+        uids = self._itemNumberCalculationQueryUids(meeting, additionalQuery)
         number = 0
         found = False
-        for brain in brains:
+        for uid in uids:
             number += 1
-            if brain.UID == item.UID():
+            if uid == item.UID():
                 found = True
                 break
         if not found:
