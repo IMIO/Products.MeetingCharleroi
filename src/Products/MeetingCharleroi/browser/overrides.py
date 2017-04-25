@@ -213,7 +213,7 @@ class MCHMeetingDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView,
     def printItemDelibeContentForCouncil(self, item):
         """
         """
-        view = item.restricd src/PendingDeprecationWarning  ("@@document-generation")
+        view = item.restricedTraverse("@@document-generation")
         helper = view.get_generation_context_helper()
         return helper.printDelibeContentCouncil()
 
