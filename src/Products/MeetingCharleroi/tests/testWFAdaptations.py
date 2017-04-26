@@ -45,6 +45,7 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
                            'postpone_next_meeting',
                            'pre_validation',
                            'removed',
+                           'removed_and_duplicated',
                            'return_to_proposing_group',
                            'waiting_advices'])
 
