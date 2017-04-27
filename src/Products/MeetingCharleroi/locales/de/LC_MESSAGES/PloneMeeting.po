@@ -57,6 +57,10 @@ msgstr ""
 msgid "bourgmestre_observations_descr"
 msgstr ""
 
+#. Default: "You can not use this category for item to send to Council"
+msgid "category_indeterminee_not_allowed"
+msgstr ""
+
 #. Default: "The completeness has been asked again by the application when the item has been proposed to the finances."
 msgid "completeness_asked_again_by_app"
 msgstr ""

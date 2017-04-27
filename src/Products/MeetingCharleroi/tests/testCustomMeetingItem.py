@@ -23,9 +23,11 @@
 #
 
 from DateTime import DateTime
+from zope.i18n import translate
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.permissions import View
 from Products.MeetingCommunes.tests.testCustomMeetingItem import testCustomMeetingItem as mctcmi
+from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import DECISION_ITEM_SENT_TO_COUNCIL
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 from Products.MeetingCharleroi.setuphandlers import _configureCollegeCustomAdvisers
@@ -275,6 +277,24 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         # is displayed again on the College item
         self.deleteAsManager(councilItem.UID())
         self.assertEqual(item.getDecision(), self.decisionText)
+
+    def test_CategoryIndetermineeNotAllowedIfCollegeItemToSendToCouncil(self):
+        """Use of category 'indeterminee' on MeetingItemCollege is not allowed
+           if item will be sent to Council."""
+        self.changeUser('pmCreator1')
+        item = self.create('MeetingItem')
+        item.setOtherMeetingConfigsClonableTo(('meeting-config-council',))
+        msg = translate(msgid='category_indeterminee_not_allowed',
+                        domain='PloneMeeting',
+                        context=self.request)
+        # as item is to send to Council, category 'indeterminee' can be used
+        self.failIf(item.validate_category(COUNCIL_DEFAULT_CATEGORY))
+        self.failIf(item.validate_category('another_category'))
+
+        # but can not be used for items not to send to Council
+        item.setOtherMeetingConfigsClonableTo(())
+        self.assertEqual(item.validate_category(COUNCIL_DEFAULT_CATEGORY), msg)
+        self.failIf(item.validate_category('another_category'))
 
 
 def test_suite():

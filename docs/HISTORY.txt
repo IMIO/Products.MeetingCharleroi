@@ -11,3 +11,5 @@ Products.MeetingCharleroi Changelog
 - Rely on inserting order 'on_groups_in_charge'
 - Added listType 'depose'
 - Use WFAdaptation 'mark_not_applicable'
+- Category 'indeterminee' can not be used on MeetingItemCollege if not to send
+  to 'meting-config-council'

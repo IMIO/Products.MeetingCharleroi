@@ -66,6 +66,7 @@ from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCouncilWorkflo
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowActions
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowConditions
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
+from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
 from Products.MeetingCharleroi.config import DECISION_ITEM_SENT_TO_COUNCIL
 from Products.MeetingCharleroi.config import NEVER_LATE_CATEGORIES
@@ -409,6 +410,24 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         return decision
     MeetingItem.getDecision = getDecision
     MeetingItem.getRawDecision = getDecision
+
+    MeetingItem.__pm_old_validate_category = MeetingItem.validate_category
+
+    def validate_category(self, value):
+        '''For MeetingItemCollege, category 'indeterminee' can not be used if
+           item will be sent to Council.'''
+        res = self.__pm_old_validate_category(value)
+        if res:
+            return res
+        if not 'meeting-config-council' in self.REQUEST.get(
+            'otherMeetingConfigsClonableTo',
+            self.getOtherMeetingConfigsClonableTo()) and \
+           value == COUNCIL_DEFAULT_CATEGORY:
+            msg = translate('category_indeterminee_not_allowed',
+                            domain='PloneMeeting',
+                            context=self.REQUEST)
+            return msg
+    MeetingItem.validate_category = validate_category
 
     def getCustomAdviceMessageFor(self, advice):
         '''If we are on a finance advice that is still not giveable because

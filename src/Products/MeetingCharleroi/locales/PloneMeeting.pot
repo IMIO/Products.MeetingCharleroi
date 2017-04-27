@@ -141,3 +141,6 @@ msgstr ""
 msgid "bourgmestre_observations_descr"
 msgstr ""
 
+#. Default: "You can not use this category for item to send to Council"
+msgid "category_indeterminee_not_allowed"
+msgstr ""
