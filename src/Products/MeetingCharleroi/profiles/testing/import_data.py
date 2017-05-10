@@ -294,6 +294,7 @@ collegeMeeting.annexTypes = [financialAnalysis, budgetAnalysisCfg1, overheadAnal
                              itemAnnex, decisionAnnex, marketingAnalysis,
                              adviceAnnex, adviceLegalAnalysis, meetingAnnex]
 collegeMeeting.usedItemAttributes = ('toDiscuss', 'associatedGroups', 'itemIsSigned',)
+collegeMeeting.maxShownListings = '100' 
 collegeMeeting.itemWorkflow = 'meetingitemcommunes_workflow'
 collegeMeeting.meetingWorkflow = 'meetingcommunes_workflow'
 collegeMeeting.itemConditionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCollegeWorkflowConditions'
