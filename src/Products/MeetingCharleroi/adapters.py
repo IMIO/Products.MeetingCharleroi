@@ -65,6 +65,7 @@ from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCouncilWorkflo
 from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCouncilWorkflowConditions
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowActions
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowConditions
+from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
@@ -269,9 +270,10 @@ class CustomCharleroiMeeting(CustomMeeting):
         Get all items from the group "Police" which are not from the
         communication category and not supposed to go to Council.
         """
-        policeItems = self._getPoliceItems(itemUids,
-                                           excludedCategories=['communication'],
-                                           listTypes=listTypes)
+        policeItems = self._getPoliceItems(
+            itemUids,
+            excludedCategories=[COMMUNICATION_CAT_ID, CC_ARRET_OJ_CAT_ID],
+            listTypes=listTypes)
 
         filteredItems = self._getItemsHeadedToAnotherMeetingConfig(policeItems, '')
         return self._sortByGroupInCharge(filteredItems)
@@ -281,9 +283,10 @@ class CustomCharleroiMeeting(CustomMeeting):
         Get all items from the group "Police" which are not from the
         communication category and supposed to go to council.
         """
-        policeItems = self._getPoliceItems(itemUids,
-                                           excludedCategories=['communication'],
-                                           listTypes=listTypes)
+        policeItems = self._getPoliceItems(
+            itemUids,
+            excludedCategories=[COMMUNICATION_CAT_ID, CC_ARRET_OJ_CAT_ID],
+            listTypes=listTypes)
 
         filteredItems = self._getItemsHeadedToAnotherMeetingConfig(policeItems,
                                                                    'meeting-config-council')
@@ -294,9 +297,10 @@ class CustomCharleroiMeeting(CustomMeeting):
         Get all items from the group "Police" which are from the
         communication category.
         """
-        return self._getPoliceItems(itemUids,
-                                    categories=['communication'],
-                                    listTypes=listTypes)
+        return self._getPoliceItems(
+            itemUids,
+            categories=[COMMUNICATION_CAT_ID, CC_ARRET_OJ_CAT_ID],
+            listTypes=listTypes)
 
     def _getStandardItems(self, itemUids, categories=[], excludedCategories=[], listTypes=['normal']):
         """Get all items, except those from the group 'Police'."""
@@ -323,9 +327,10 @@ class CustomCharleroiMeeting(CustomMeeting):
         Get items which are not from the group Police, not from the
         communication category and not supposed to go to council.
         '''
-        standardItems = self._getStandardItems(itemUids,
-                                               excludedCategories=['communication'],
-                                               listTypes=listTypes)
+        standardItems = self._getStandardItems(
+            itemUids,
+            excludedCategories=[COMMUNICATION_CAT_ID, CC_ARRET_OJ_CAT_ID],
+            listTypes=listTypes)
 
         filteredItems = self._getItemsHeadedToAnotherMeetingConfig(standardItems, '')
         return self._sortByGroupInCharge(filteredItems)
@@ -335,9 +340,10 @@ class CustomCharleroiMeeting(CustomMeeting):
         Get items which are not from the group Police, not from the
         communication category and supposed to go to council.
         '''
-        standardItems = self._getStandardItems(itemUids,
-                                               excludedCategories=['communication'],
-                                               listTypes=listTypes)
+        standardItems = self._getStandardItems(
+            itemUids,
+            excludedCategories=[COMMUNICATION_CAT_ID, CC_ARRET_OJ_CAT_ID],
+            listTypes=listTypes)
 
         filteredItems = self._getItemsHeadedToAnotherMeetingConfig(standardItems,
                                                                    'meeting-config-council')
@@ -346,11 +352,22 @@ class CustomCharleroiMeeting(CustomMeeting):
     def _getStandardCommunicationItems(self, itemUids, listTypes=['normal']):
         """
         Get all items not from the group "Police" which are from the
-        communication category..
+        COMMUNICATION_CAT_ID category..
         """
-        return self._getStandardItems(itemUids,
-                                      categories=['communication'],
-                                      listTypes=listTypes)
+        return self._getStandardItems(
+            itemUids,
+            categories=[COMMUNICATION_CAT_ID],
+            listTypes=listTypes)
+
+    def _getStandardCCArretOJItems(self, itemUids, listTypes=['normal']):
+        """
+        Get all items not from the group "Police" which are from the
+        CC_ARRET_OJ_CAT_ID category..
+        """
+        return self._getStandardItems(
+            itemUids,
+            categories=[CC_ARRET_OJ_CAT_ID],
+            listTypes=listTypes)
 
     def getPrintableItemsForAgenda(self, itemUids, standard=True, itemType='prescriptive',
                                    listTypes=['normal']):
@@ -360,7 +377,7 @@ class CustomCharleroiMeeting(CustomMeeting):
         keys and the list of items as value.
         Items are filtered between "police items" and "standard items" thanks
         to p_standard. p_itemType is expecting 'prescriptive', 'toCouncil' or
-        'communication' and return respectively prescriptives, headed to
+        COMMUNICATION_CAT_ID and return respectively prescriptives, headed to
         council and communication items.
         """
         if standard is True:
@@ -371,9 +388,11 @@ class CustomCharleroiMeeting(CustomMeeting):
                                                              listTypes=listTypes)
             elif itemType == 'communication':
                 return self._getStandardCommunicationItems(itemUids, listTypes=listTypes)
+            elif itemType == 'cc-arret-oj':
+                return self._getStandardCCArretOJItems(itemUids, listTypes=listTypes)
             else:
                 return 'The itemType given to getPrintableItemsForAgenda '\
-                       'must be prescriptive, toCouncil or communication'
+                       'must be prescriptive, toCouncil, communication or cc-arret-oj'
         else:
             if itemType == 'prescriptive':
                 return self._getPolicePrescriptiveItems(itemUids, listTypes=listTypes)
@@ -524,7 +543,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         if insertMethod == 'on_police_then_other_groups':
             return 2
         if insertMethod == 'on_communication':
-            return 2
+            return 3
         raise NotImplementedError
 
     def _findCustomOrderFor(self, insertMethod):
@@ -539,8 +558,10 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         elif insertMethod == 'on_communication':
             if item.getCategory() == COMMUNICATION_CAT_ID:
                 return 0
-            else:
+            elif item.getCategory() == CC_ARRET_OJ_CAT_ID:
                 return 1
+            else:
+                return 2
         raise NotImplementedError
 
     def mayChangeDelayTo(self, days):
@@ -589,7 +610,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         item = self.getSelf()
         tool = api.portal.get_tool('portal_plonemeeting')
         isPoliceItem = bool(item.getProposingGroup().startswith(POLICE_GROUP_PREFIX))
-        isCommuItem = bool(item.getCategory() == 'communication')
+        isCommuItem = bool(item.getCategory() == COMMUNICATION_CAT_ID)
         toSendToCouncil = bool('meeting-config-council' in item.getOtherMeetingConfigsClonableTo())
         isPrivacySecret = bool(item.getPrivacy() == 'secret')
 
@@ -601,7 +622,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
                                                           'meeting-config-council__cloned_to',
                                                           'meeting-config-council__cloned_to_emergency']}}
         notToSendToCouncilItems = {'sentToInfos': {'query': 'not_to_be_cloned_to'}}
-        notCommunicationItems = {'getCategory': {'not': 'communication'}}
+        notCommunicationItems = {'getCategory': {'not': COMMUNICATION_CAT_ID}}
         secretItems = {'privacy': {'query': 'secret'}}
 
         ref = '-'

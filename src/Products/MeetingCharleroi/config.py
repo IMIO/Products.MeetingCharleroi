@@ -85,6 +85,7 @@ FINANCE_GROUP_ID = 'dirfin'
 
 POLICE_GROUP_PREFIX = 'zone-de-police'
 
+CC_ARRET_OJ_CAT_ID = 'conseil-communal-arret-de-lordre-du-jour'
 COMMUNICATION_CAT_ID = 'communication'
 
 CHARLEROI_ADVICE_STATES_ALIVE = ('advice_under_edit',

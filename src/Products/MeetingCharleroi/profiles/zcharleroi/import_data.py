@@ -16,6 +16,7 @@ from Products.PloneMeeting.profiles import PodTemplateDescriptor
 from Products.PloneMeeting.profiles import RecurringItemDescriptor
 from Products.PloneMeeting.profiles import UserDescriptor
 
+from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 
@@ -72,6 +73,9 @@ college_categories = [
     CategoryDescriptor('droit-constates',
                        'Droits constatés',
                        description='L’Echevin|E. Goffart'),
+    CategoryDescriptor(CC_ARRET_OJ_CAT_ID,
+                       'Conseil communal - Arrêt de l\'ordre du jour',
+                       description=''),
     CategoryDescriptor(COMMUNICATION_CAT_ID,
                        'Communication',
                        description=''),

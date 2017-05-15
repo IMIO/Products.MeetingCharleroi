@@ -23,6 +23,7 @@ from plone.dexterity.utils import createContentInContainer
 from Products.CMFPlone.utils import _createObjectByType
 from imio.helpers.catalog import addOrUpdateIndexes
 from Products.PloneMeeting.exportimport.content import ToolInitializer
+from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
@@ -50,7 +51,7 @@ def postInstall(context):
         return
     logStep("postInstall", context)
     site = context.getSite()
-    #need to reinstall PloneMeeting after reinstalling MC workflows to re-apply wfAdaptations
+    # need to reinstall PloneMeeting after reinstalling MC workflows to re-apply wfAdaptations
     reinstallPloneMeeting(context, site)
     showHomeTab(context, site)
     reorderSkinsLayers(context, site)
@@ -451,6 +452,15 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'proposingGroup': firstTwoGroupIds[0],
          'category': 'remboursement',
          'toDiscuss': False,
+         'otherMeetingConfigsClonableToEmergency': (),
+         'otherMeetingConfigsClonableToPrivacy': (),
+         'otherMeetingConfigsClonableTo': ()},
+        # conseil arret oj
+        {'templateId': templateId,
+         'title': u'Conseil Communal - OJ',
+         'proposingGroup': firstTwoGroupIds[0],
+         'category': CC_ARRET_OJ_CAT_ID,
+         'toDiscuss': True,
          'otherMeetingConfigsClonableToEmergency': (),
          'otherMeetingConfigsClonableToPrivacy': (),
          'otherMeetingConfigsClonableTo': ()},
