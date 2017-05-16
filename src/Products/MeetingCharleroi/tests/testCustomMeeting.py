@@ -539,6 +539,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
               ('meeting-config-council',), ('meeting-config-council',), (), 'remboursement'),
              ('late', 'developers', 'groupincharge2',
               ('meeting-config-council',), ('meeting-config-council',), ('meeting-config-council',), 'remboursement'),
+             ('normal', 'developers', 'groupincharge2', (), (), (), 'conseil-communal-arret-de-lordre-du-jour'),
              ('normal', 'developers', 'groupincharge2', (), (), (), 'communication'),
              ('normal', 'developers', 'groupincharge2', (), (), (), 'communication'),
              ('normal', 'developers', 'groupincharge2', (), (), (), 'communication')])

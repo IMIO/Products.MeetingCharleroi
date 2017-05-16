@@ -156,6 +156,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
              '2017/2/1', '2017/2/2', '2017/2/3', '2017/2/4', '2017/2/5', '2017/2/6', '2017/2/7',  # normal items
              '2017/2/C/1', '2017/2/C/2', '2017/2/C/3', '2017/2/C/4', '2017/2/C/5',  # items to Council
              '2017/2/C/6', '2017/2/C/7', '2017/2/C/8', '2017/2/C/9', '2017/2/C/10',
+             '2017/2/8',  # OJ Council
              '-', '-', '-']  # communications
             )
 
