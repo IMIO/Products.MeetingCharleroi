@@ -93,7 +93,7 @@ msgstr ""
 msgid "on_police_then_other_groups"
 msgstr ""
 
-#. Default: "On 'Communication' (communication items then items that are not communications)"
+#. Default: "On 'Communication/Agenda Council' (items using 'Communication/Agenda Council' category then items of other categories)"
 msgid "on_communication"
 msgstr ""
 

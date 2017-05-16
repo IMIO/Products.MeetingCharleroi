@@ -102,9 +102,9 @@ msgstr "Présents pour la Zone de Police"
 msgid "no_finances_advice_asked"
 msgstr "L'avis des finances n'a pas été demandé sur ce point."
 
-#. Default: "On 'Communication' (communication items then items that are not communications)"
+#. Default: "On 'Communication/Agenda Council' (items using 'Communication/Agenda Council' category then items of other categories)"
 msgid "on_communication"
-msgstr "Par 'Communication' (points 'Communication' puis points autres que 'Communication')"
+msgstr "Par 'Communication/Conseil communal - Arrêt de l\'ordre du jour' (points utilisant les catégories 'Communication/Conseil communal - Arrêt de l\'ordre du jour' puis les points utilisant les autres catégories)"
 
 #. Default: "First items of 'Police' then other groups items"
 msgid "on_police_then_other_groups"

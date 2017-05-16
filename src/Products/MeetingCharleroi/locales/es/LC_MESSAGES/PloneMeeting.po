@@ -102,7 +102,7 @@ msgstr ""
 msgid "no_finances_advice_asked"
 msgstr ""
 
-#. Default: "On 'Communication' (communication items then items that are not communications)"
+#. Default: "On 'Communication/Agenda Council' (items using 'Communication/Agenda Council' category then items of other categories)"
 msgid "on_communication"
 msgstr ""
 
