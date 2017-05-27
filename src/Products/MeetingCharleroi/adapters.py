@@ -438,9 +438,10 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         res = self.__pm_old_validate_category(value)
         if res:
             return res
-        if not 'meeting-config-council' in self.REQUEST.get(
-            'otherMeetingConfigsClonableTo',
-            self.getOtherMeetingConfigsClonableTo()) and \
+        if self.portal_type == 'MeetingItemCollege' and \
+           not 'meeting-config-council' in self.REQUEST.get(
+                'otherMeetingConfigsClonableTo',
+                self.getOtherMeetingConfigsClonableTo()) and \
            value == COUNCIL_DEFAULT_CATEGORY:
             msg = translate('category_indeterminee_not_allowed',
                             domain='PloneMeeting',

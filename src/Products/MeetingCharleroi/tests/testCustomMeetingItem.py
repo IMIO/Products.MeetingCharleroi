@@ -298,6 +298,13 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         self.assertEqual(item.validate_category(COUNCIL_DEFAULT_CATEGORY), msg)
         self.failIf(item.validate_category('another_category'))
 
+        # does not fail when used on MeetingItemCouncil
+        self.setMeetingConfig(self.meetingConfig2.getId())
+        self.changeUser('pmManager')
+        council_item = self.create('MeetingItem')
+        self.assertEqual(council_item.portal_type, 'MeetingItemCouncil')
+        self.failIf(council_item.validate_category(COUNCIL_DEFAULT_CATEGORY))
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite
