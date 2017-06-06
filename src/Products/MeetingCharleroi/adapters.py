@@ -430,6 +430,16 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
     MeetingItem.getDecision = getDecision
     MeetingItem.getRawDecision = getDecision
 
+    security.declarePrivate('setDecision')
+
+    def setDecision(self, value, **kwargs):
+        '''Overrides the field 'decision' mutator to avoid to lose original
+           decision when DECISION_ITEM_SENT_TO_COUNCIL is in use.'''
+        if value.strip() == DECISION_ITEM_SENT_TO_COUNCIL:
+            return
+        self.getField('decision').set(self, value, **kwargs)
+    MeetingItem.setDecision = setDecision
+
     MeetingItem.__pm_old_validate_category = MeetingItem.validate_category
 
     def validate_category(self, value):

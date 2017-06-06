@@ -97,7 +97,7 @@ CHARLEROI_ADVICE_STATES_ALIVE = ('advice_under_edit',
 PMconfig.ADVICE_STATES_ALIVE = CHARLEROI_ADVICE_STATES_ALIVE
 
 # decision displayed for College item sent to Council
-DECISION_ITEM_SENT_TO_COUNCIL = "Ce point est à inscrire à l'ordre du jour du Conseil."
+DECISION_ITEM_SENT_TO_COUNCIL = "<p>Ce point est à inscrire à l'ordre du jour du Conseil.</p>"
 
 # in those states, finance advice can still be given
 FINANCE_GIVEABLE_ADVICE_STATES = ('prevalidated_waiting_advices', )

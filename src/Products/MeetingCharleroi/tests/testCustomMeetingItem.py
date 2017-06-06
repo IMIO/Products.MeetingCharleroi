@@ -280,6 +280,41 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         self.deleteAsManager(councilItem.UID())
         self.assertEqual(item.getDecision(), self.decisionText)
 
+    def test_ItemDecisionNotLostWhenItemNotToSendToCouncilAnymore(self):
+        """When a College item is to send to Council, the decision field displays a special sentence.
+           Make sure when removing fact that item is to send to Council, original decision is not lost."""
+        cfg = self.meetingConfig
+        cfg.setItemManualSentToOtherMCStates(('itemcreated', ))
+        cfg2Id = self.meetingConfig2.getId()
+
+        self.changeUser('pmCreator1')
+        item = self.create('MeetingItem')
+        item.setDecision(self.decisionText)
+        item.setOtherMeetingConfigsClonableTo((cfg2Id,))
+        councilItem = item.cloneToOtherMeetingConfig(cfg2Id)
+        self.assertEqual(item.getDecision(), DECISION_ITEM_SENT_TO_COUNCIL)
+
+        # editing the item should not lose the original decision
+        item.processForm(
+            values={'otherMeetingConfigsClonableTo': (cfg2Id, ),
+                    'decision': DECISION_ITEM_SENT_TO_COUNCIL})
+        self.assertEqual(item.getDecision(), DECISION_ITEM_SENT_TO_COUNCIL)
+        # not thru the accessor
+        self.assertEqual(item.decision(), self.decisionText)
+
+        # now, removing to send to Council will not lose original decision neither
+        item.processForm(
+            values={'otherMeetingConfigsClonableTo': (),
+                    'decision': DECISION_ITEM_SENT_TO_COUNCIL})
+        self.assertEqual(item.getDecision(), DECISION_ITEM_SENT_TO_COUNCIL)
+        # not thru the accessor
+        self.assertEqual(item.decision(), self.decisionText)
+
+        # if item sent to Council is removed, the original decision
+        # is displayed again on the College item
+        self.deleteAsManager(councilItem.UID())
+        self.assertEqual(item.getDecision(), self.decisionText)
+
     def test_CategoryIndetermineeNotAllowedIfCollegeItemToSendToCouncil(self):
         """Use of category 'indeterminee' on MeetingItemCollege is not allowed
            if item will be sent to Council."""
