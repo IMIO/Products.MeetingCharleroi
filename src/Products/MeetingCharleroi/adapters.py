@@ -228,7 +228,17 @@ class CustomCharleroiMeeting(CustomMeeting):
 
         for categorizedItems in itemsList:
             for item in categorizedItems[1:]:
-                nextMeetingDate = item._otherMCMeetingToBePresentedIn(councilMC)
+
+                # Take the relevant meeting according to the cloned item having a meeting or not.
+                if item.getOtherMeetingConfigsClonableTo():
+                    other_meeting_config_item = item.getItemClonedToOtherMC(item.getOtherMeetingConfigsClonableTo()[0])
+                    if other_meeting_config_item and other_meeting_config_item.hasMeeting():
+                        nextMeetingDate = other_meeting_config_item.getMeeting()
+                    else:
+                        nextMeetingDate = item._otherMCMeetingToBePresentedIn(councilMC)
+                else:
+                    nextMeetingDate = item._otherMCMeetingToBePresentedIn(councilMC)
+
                 groupInCharge = item.getGroupInCharge(theObject=True)
                 # if we already have the next meeting date in the dict.
                 if nextMeetingDate in byDateItems:
