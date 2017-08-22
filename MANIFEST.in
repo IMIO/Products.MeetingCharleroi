@@ -1,2 +1,27 @@
 recursive-include Products *
 global-exclude *pyc
+global-exclude *svnignore
+include *.conf
+include *.ignore
+include *.py
+include Makefile
+include base.cfg
+include buildout.cfg
+include dev.cfg
+include versions-base.cfg
+include versions-dev.cfg
+recursive-include docs *.GPL
+recursive-include docs *.txt
+recursive-include src *.css
+recursive-include src *.gif
+recursive-include src *.ods
+recursive-include src *.odt
+recursive-include src *.png
+recursive-include src *.po
+recursive-include src *.pot
+recursive-include src *.pt
+recursive-include src *.sh
+recursive-include src *.txt
+recursive-include src *.xml
+recursive-include src *.zcml
+
