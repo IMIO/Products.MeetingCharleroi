@@ -1,7 +1,7 @@
 Products.MeetingCharleroi Changelog
 ==================================
 
-4.0 (unreleased)
+4.0 (2017-08-22)
 ----------------
 - Added email notification to the MeetingReviewer when an item is validated
   automatically because the freshly signed finances advice was positive
