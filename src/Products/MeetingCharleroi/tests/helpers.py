@@ -99,14 +99,16 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                       'backToItemFrozen',
                       'backToPresented', )}
 
-    WF_STATE_NAME_MAPPINGS = {'itemcreated': 'itemcreated',
-                              'proposed_first_level': 'proposed_to_refadmin',
-                              'proposed': 'prevalidated',
-                              'proposed_to_refadmin': 'proposed_to_refadmin',
-                              'prevalidated': 'prevalidated',
-                              'validated': 'validated',
-                              'presented': 'presented',
-                              'itemfrozen': 'itemfrozen'}
+    WF_ITEM_STATE_NAME_MAPPINGS_1 = {
+        'itemcreated': 'itemcreated',
+        'proposed_first_level': 'proposed_to_refadmin',
+        'proposed': 'prevalidated',
+        'proposed_to_refadmin': 'proposed_to_refadmin',
+        'prevalidated': 'prevalidated',
+        'validated': 'validated',
+        'presented': 'presented',
+        'itemfrozen': 'itemfrozen'}
+    WF_ITEM_STATE_NAME_MAPPINGS_2 = WF_ITEM_STATE_NAME_MAPPINGS_1
 
     # in which state an item must be after an particular meeting transition?
     ITEM_WF_STATE_AFTER_MEETING_TRANSITION = {'publish_decisions': 'accepted',
