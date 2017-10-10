@@ -30,9 +30,6 @@ class testUtils(MeetingCharleroiTestCase, mctu):
     """
         Tests the Extensions/utils methods.
     """
-    def setUp(self):
-        """ """
-        mctu.setUp(self)
 
 
 def test_suite():
