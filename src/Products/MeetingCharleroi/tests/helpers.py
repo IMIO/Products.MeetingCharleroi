@@ -206,12 +206,12 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
 
         self._removeConfigObjectsFor(self.meetingConfig,
                                      folders=['recurringitems', 'itemtemplates', 'categories'])
-        self._createCategories(self.meetingConfig)
-        self._createItemTemplates(self.meetingConfig)
+        self._createCategories()
+        self._createItemTemplates()
 
-    def _createCategories(self, cfg):
+    def _createCategories(self):
         """ """
-        if cfg.getId() == 'meeting-config-college':
+        if self.meetingConfig.getId() == 'meeting-config-college':
             categories = charleroi_import_data.collegeMeeting.categories
         else:
             categories = charleroi_import_data.councilMeeting.categories
@@ -220,13 +220,11 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
             data = {'id': cat.id,
                     'title': cat.title,
                     'description': cat.description}
-            self.create('MeetingCategory',
-                        meetingConfig=cfg,
-                        **data)
+            self.create('MeetingCategory', **data)
 
-    def _createItemTemplates(self, cfg):
+    def _createItemTemplates(self):
         """ """
-        if cfg.getId() == 'meeting-config-college':
+        if self.meetingConfig.getId() == 'meeting-config-college':
             templates = charleroi_import_data.collegeMeeting.itemTemplates
         else:
             templates = charleroi_import_data.councilMeeting.itemTemplates
@@ -237,15 +235,13 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                     'category': template.category,
                     'proposingGroup': template.proposingGroup.startswith(POLICE_GROUP_PREFIX) and
                     template.proposingGroup or 'developers',
-                    #'templateUsingGroups': template.templateUsingGroups,
+                    # 'templateUsingGroups': template.templateUsingGroups,
                     'decision': template.decision}
-            self.create('MeetingItemTemplate',
-                        meetingConfig=cfg,
-                        **data)
+            self.create('MeetingItemTemplate', **data)
 
-    def _createRecurringItems(self, cfg):
+    def _createRecurringItems(self):
         """ """
-        if cfg.getId() == 'meeting-config-college':
+        if self.meetingConfig.getId() == 'meeting-config-college':
             items = charleroi_import_data.collegeMeeting.recurringItems
         else:
             items = charleroi_import_data.councilMeeting.recurringItems
@@ -260,9 +256,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                     'proposingGroupWithGroupInCharge': group_in_charge_value,
                     'decision': item.decision,
                     'meetingTransitionInsertingMe': item.meetingTransitionInsertingMe}
-            self.create('MeetingItemRecurring',
-                        meetingConfig=cfg,
-                        **data)
+            self.create('MeetingItemRecurring', **data)
 
     def setupCouncilConfig(self):
         """ """
@@ -314,12 +308,15 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         self.changeUser('siteadmin')
         self._removeConfigObjectsFor(self.meetingConfig2,
                                      folders=['recurringitems', 'itemtemplates', 'categories'])
-        self._createCategories(self.meetingConfig2)
-        self._createItemTemplates(self.meetingConfig2)
-        self._createRecurringItems(self.meetingConfig2)
+        current_cfg = self.meetingConfig
+        self.setMeetingConfig(self.meetingConfig2.getId())
+        self._createCategories()
+        self._createItemTemplates()
+        self._createRecurringItems()
         self.setupCouncilConfig()
         councilMeeting = _addCouncilDemoData(collegeMeeting,
                                              collegeExtraMeeting,
                                              userId='pmManager',
                                              firstTwoGroupIds=('developers', 'vendors'))
+        self.setMeetingConfig(current_cfg.getId())
         return councilMeeting
