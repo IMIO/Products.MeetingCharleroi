@@ -183,7 +183,6 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
         return ''
 
     def printHistoryForFinancesAdvice(self, advice):
-        import ipdb; ipdb.set_trace()
         printable_history = []
         if advice and advice.getHistory():
             m_tool = api.portal.get_tool('portal_membership')
