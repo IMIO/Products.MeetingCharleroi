@@ -9,13 +9,8 @@
 # GNU General Public License (GPL)
 #
 
-__author__ = """Gauthier Bastien <g.bastien@imio.be>, Andre NUYENS <a.nuyens@imio.be>"""
-__docformat__ = 'plaintext'
-
-
 import os
 import logging
-logger = logging.getLogger('MeetingCharleroi: setuphandlers')
 from DateTime import DateTime
 from plone import api
 from plone.app.textfield.value import RichTextValue
@@ -29,6 +24,11 @@ from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.config import PROJECTNAME
+
+__author__ = """Gauthier Bastien <g.bastien@imio.be>, Andre NUYENS <a.nuyens@imio.be>"""
+__docformat__ = 'plaintext'
+
+logger = logging.getLogger('MeetingCharleroi: setuphandlers')
 
 
 def isNotMeetingCharleroiProfile(context):
@@ -100,9 +100,9 @@ def initializeTool(context):
         return
 
     logStep("initializeTool", context)
-    #PloneMeeting is no more a dependency to avoid
-    #magic between quickinstaller and portal_setup
-    #so install it manually
+    # PloneMeeting is no more a dependency to avoid
+    # magic between quickinstaller and portal_setup
+    # so install it manually
     _installPloneMeeting(context)
     return ToolInitializer(context, PROJECTNAME).run()
 

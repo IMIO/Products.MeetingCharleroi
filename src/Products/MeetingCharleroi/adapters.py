@@ -270,9 +270,10 @@ class CustomCharleroiMeeting(CustomMeeting):
         for date in byDateItems.items():
             res[date[0]] = OrderedDict(sorted(date[1].items(), key=lambda t: t[0].getOrder()))
         # sort by meeting date
-        res = OrderedDict(sorted(res.items(),
-                                 key=lambda t: (t[0] and t[0].getDate().strftime('%Y%m%d')
-                                                or DateTime('1950/01/01'))))
+        res = OrderedDict(
+            sorted(
+                res.items(),
+                key=lambda t: (t[0] and t[0].getDate().strftime('%Y%m%d') or DateTime('1950/01/01'))))
         return res
 
     def _getPolicePrescriptiveItems(self, itemUids, listTypes=['normal']):
@@ -459,7 +460,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         if res:
             return res
         if self.portal_type == 'MeetingItemCollege' and \
-           not 'meeting-config-council' in self.REQUEST.get(
+           'meeting-config-council' not in self.REQUEST.get(
                 'otherMeetingConfigsClonableTo',
                 self.getOtherMeetingConfigsClonableTo()) and \
            value == COUNCIL_DEFAULT_CATEGORY:
@@ -549,7 +550,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
 
         # a finance controller may evaluate if advice is actually asked
         # and may not change completeness if advice is currently given or has been given
-        if not FINANCE_GROUP_ID in item.adviceIndex or \
+        if FINANCE_GROUP_ID not in item.adviceIndex or \
            not '%s_financialcontrollers' % FINANCE_GROUP_ID in member.getGroups():
             return False
 
@@ -596,7 +597,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
            we check that 'managing_available_delays' is in the REQUEST."""
         # in case nothing was already selected
         # the only available value is 10
-        if not FINANCE_GROUP_ID in self.context.adviceIndex:
+        if FINANCE_GROUP_ID not in self.context.adviceIndex:
             if days == 10:
                 return True
             else:
@@ -1063,7 +1064,7 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
             # add the 'proposed_to_refadmin' state after proposed state and before prevalidated state
             itemStates = itemWorkflow.states
             if 'proposed_to_refadmin' not in itemStates and 'prevalidated' in itemStates:
-                #create proposed_to_refadmin state
+                # create proposed_to_refadmin state
                 wf = itemWorkflow
                 if 'proposed_to_refadmin' not in wf.states:
                     wf.states.addState('proposed_to_refadmin')

@@ -590,10 +590,10 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
            will stay 'validated' and are not automatically inserted into a meeting."""
         self.changeUser('siteadmin')
         self.setupCouncilConfig()
-        self._createCategories(self.meetingConfig2)
+        self.setMeetingConfig('meeting-config-council')
+        self._createCategories()
         self.changeUser('pmManager')
         # Council
-        self.setMeetingConfig('meeting-config-council')
         council_meeting = self.create('Meeting', date=DateTime() + 1)
         # College
         self.setMeetingConfig('meeting-config-college')

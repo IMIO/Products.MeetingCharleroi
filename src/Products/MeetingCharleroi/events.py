@@ -7,9 +7,6 @@
 # GNU General Public License (GPL)
 #
 
-__author__ = """Gauthier BASTIEN <gauthier.bastien@imio.be>"""
-__docformat__ = 'plaintext'
-
 from datetime import datetime
 from imio.actionspanel import ActionsPanelMessageFactory as _AP
 from plone import api
@@ -17,6 +14,9 @@ from Products.PloneMeeting.utils import sendMailIfRelevant
 from Products.MeetingCommunes.config import FINANCE_STATE_TO_GROUPS_MAPPINGS
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
+
+__author__ = """Gauthier BASTIEN <gauthier.bastien@imio.be>"""
+__docformat__ = 'plaintext'
 
 
 def onAdviceTransition(advice, event):
@@ -85,7 +85,7 @@ def onAdviceTransition(advice, event):
     # this is the case if we validate an item and it triggers the fact that advice delay is exceeded
     # this should never be the case as advice delay should have been updated during nightly cron...
     # but if we are in a '_updateAdvices', do not _updateAdvices again...
-    if not newStateId in FINANCE_STATE_TO_GROUPS_MAPPINGS:
+    if newStateId not in FINANCE_STATE_TO_GROUPS_MAPPINGS:
         if not item.REQUEST.get('currentlyUpdatingAdvice', False):
             item.updateLocalRoles()
         return

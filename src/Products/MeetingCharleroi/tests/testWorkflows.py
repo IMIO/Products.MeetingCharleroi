@@ -63,7 +63,7 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         '''This test covers the whole decision workflow. It begins with the
            creation of some items, and ends by closing a meeting.'''
         self.setupCollegeConfig()
-        self._createRecurringItems(self.meetingConfig)
+        self._createRecurringItems()
         # pmCreator1 creates an item with 1 annex and proposes it
         self.changeUser('pmCreator1')
         item1 = self.create('MeetingItem', title='The first item',
