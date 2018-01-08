@@ -18,3 +18,4 @@ Products.MeetingCharleroi Changelog
 - Rely on inserting order 'on_groups_in_charge'
 - Added listType 'depose'
 - Use WFAdaptation 'mark_not_applicable'
+- Be defensive when using getProperty on a member object, do not fail if member is None
