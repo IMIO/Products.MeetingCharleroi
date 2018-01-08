@@ -4,8 +4,7 @@ Products.MeetingCharleroi Changelog
 4.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Be defensive when using getProperty on a member object, do not fail if member is None
 
 4.0 (2017-08-22)
 ----------------

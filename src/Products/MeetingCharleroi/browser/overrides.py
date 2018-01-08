@@ -176,17 +176,22 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
         lastEvent = getLastEvent(self.context, transition=transition)
         if lastEvent:
             mTool = api.portal.get_tool('portal_membership')
-            return {'author': mTool.getMemberById(str(lastEvent['actor'])).getProperty('fullname'),
+            author_id = str(lastEvent['actor'])
+            author = mTool.getMemberById(author_id)
+            return {'author': author and author.getProperty('fullname') or author_id,
                     'date': lastEvent['time'].strftime('%d/%m/%Y %H:%M')}
         return ''
 
     def printHistoryForFinancesAdvice(self, advice):
+        import ipdb; ipdb.set_trace()
         printable_history = []
         if advice and advice.getHistory():
             m_tool = api.portal.get_tool('portal_membership')
             for changeHistory in advice.getHistory():
+                author_id = changeHistory['actor']
+                author = m_tool.getMemberById(author_id)
                 printable_history_item = {
-                    'author': m_tool.getMemberById(changeHistory['actor']).getProperty('fullname'),
+                    'author': author and author.getProperty('fullname') or author_id,
                     'date': changeHistory['time'].strftime('%d/%m/%Y %H:%M'),
                     'review_state_translated': self.translate(changeHistory['review_state'])}
 
