@@ -32,6 +32,11 @@ import os
 
 logger = logging.getLogger('MeetingCharleroi: setuphandlers')
 
+__author__ = """Gauthier Bastien <g.bastien@imio.be>, Andre NUYENS <a.nuyens@imio.be>"""
+__docformat__ = 'plaintext'
+
+logger = logging.getLogger('MeetingCharleroi: setuphandlers')
+
 
 def isNotMeetingCharleroiProfile(context):
     return context.readDataFile("MeetingCharleroi_marker.txt") is None
