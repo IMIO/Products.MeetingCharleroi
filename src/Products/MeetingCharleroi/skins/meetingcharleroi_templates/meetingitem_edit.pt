@@ -77,9 +77,6 @@
            <td tal:condition="python:'privacy' in usedAttrs">
             <metal:field use-macro="python:here.widget('privacy', mode='edit')"/>
            </td>
-           <td tal:condition="python:'listType' in usedAttrs">
-            <metal:field use-macro="python:here.widget('listType', mode='edit')"/>
-           </td>
            <td tal:condition="python:'itemKeywords' in usedAttrs">
             <metal:field use-macro="python:here.widget('itemKeywords', mode='edit')"/>
            </td>
@@ -134,7 +131,9 @@
 
     <tal:comment replace="nothing">Budget-related information</tal:comment>
     <metal:field use-macro="python:here.widget('budgetRelated', mode='edit')"/>
-    <metal:field use-macro="python:here.widget('budgetInfos', mode='edit')"/>
+    <div id="hideBudgetInfosIfNotBudgetRelated">
+        <metal:field use-macro="python:here.widget('budgetInfos', mode='edit')"/>
+    </div>
 
     <metal:field use-macro="python:here.widget('oralQuestion', mode='edit')"/>
     <metal:field use-macro="python:here.widget('itemInitiator', mode='edit')"/>
