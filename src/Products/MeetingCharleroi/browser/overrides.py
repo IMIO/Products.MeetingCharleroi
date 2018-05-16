@@ -48,7 +48,7 @@ class MCBaseDocumentGenerationHelperView(object):
 class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MCItemDocumentGenerationHelperView):
     """Specific printing methods used for item."""
 
-    def _showFinancesAdvice(self):
+    def showFinancesAdvice(self):
         """Finances advice is only shown :
            - if given (at worst it will be 'not_given_finance');
            - if advice_type is not not_required_finance;
@@ -99,7 +99,7 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
 
     def printFinancesAdvice(self):
         """Print the legal text regarding Finances advice."""
-        if not self._showFinancesAdvice():
+        if not self.showFinancesAdvice():
             return ''
         adviceData = self._financeAdviceData()
         delayStartedOnLocalized = adviceData['delay_infos']['delay_started_on_localized']
@@ -234,7 +234,7 @@ class MCHMeetingDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView,
 
     def format_finance_advice(self, item):
         helper = self.getDGHV(item)
-        if helper._showFinancesAdvice():
+        if helper.showFinancesAdvice():
             advice_data = helper._financeAdviceData()
             advice_type_translated = advice_data['advice_type_translated']
             delay_started_on_localized = advice_data['delay_infos']['delay_started_on_localized']
