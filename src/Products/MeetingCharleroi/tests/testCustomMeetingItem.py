@@ -147,16 +147,23 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         collegeMeeting, collegeExtraMeeting = self.setupCollegeDemoData()
         self.changeUser('pmManager')
         orderedBrains = collegeMeeting.getItems(ordered=True, useCatalog=True)
+        year = collegeMeeting.getDate().year()
         self.assertEqual(
             [brain.getObject().getItemReference() for brain in orderedBrains],
-            ['2017/2/ZP/1', '2017/2/ZP/2', '2017/2/ZP/3', '2017/2/ZP/4', '2017/2/ZP/5',  # ZP items
-             '2017/2/ZP/C/1', '2017/2/ZP/C/2', '2017/2/ZP/C/3', '2017/2/ZP/C/4',  # ZP items to Council
-             '2017/2/ZP/C/5', '2017/2/ZP/C/6', '2017/2/ZP/C/7', '2017/2/ZP/C/8',
+            ['{0}/2/ZP/1'.format(year), '{0}/2/ZP/2'.format(year), '{0}/2/ZP/3'.format(year),
+             '{0}/2/ZP/4'.format(year), '{0}/2/ZP/5'.format(year),  # ZP items
+             '{0}/2/ZP/C/1'.format(year), '{0}/2/ZP/C/2'.format(year),
+             '{0}/2/ZP/C/3'.format(year), '{0}/2/ZP/C/4'.format(year),  # ZP items to Council
+             '{0}/2/ZP/C/5'.format(year), '{0}/2/ZP/C/6'.format(year),
+             '{0}/2/ZP/C/7'.format(year), '{0}/2/ZP/C/8'.format(year),
              '-', '-', '-',  # ZP Communications
-             '2017/2/1', '2017/2/2', '2017/2/3', '2017/2/4', '2017/2/5', '2017/2/6', '2017/2/7',  # normal items
-             '2017/2/C/1', '2017/2/C/2', '2017/2/C/3', '2017/2/C/4', '2017/2/C/5',  # items to Council
-             '2017/2/C/6', '2017/2/C/7', '2017/2/C/8', '2017/2/C/9', '2017/2/C/10',
-             '2017/2/8',  # OJ Council
+             '{0}/2/1'.format(year), '{0}/2/2'.format(year), '{0}/2/3'.format(year),
+             '{0}/2/4'.format(year), '{0}/2/5'.format(year), '{0}/2/6'.format(year),
+             '{0}/2/7'.format(year),  # normal items
+             '{0}/2/C/1'.format(year), '{0}/2/C/2'.format(year), '{0}/2/C/3'.format(year),
+             '{0}/2/C/4'.format(year), '{0}/2/C/5'.format(year),  # items to Council
+             '{0}/2/C/6'.format(year), '{0}/2/C/7'.format(year), '{0}/2/C/8'.format(year),
+             '{0}/2/C/9'.format(year), '{0}/2/C/10'.format(year), '{0}/2/8'.format(year),  # OJ Council
              '-', '-', '-']  # communications
             )
 
@@ -168,10 +175,10 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         devRefs = [brain.getObject().getItemReference() for brain in orderedDevelopersBrains]
         self.assertEqual(
             devRefs,
-            ['2017/2/3', '2017/2/4',
-             '2017/2/C/4', '2017/2/C/5', '2017/2/C/6',
-             '2017/2/C/7', '2017/2/C/8', '2017/2/C/9', '2017/2/C/10',
-             '2017/2/8',  # OJ Council
+            ['{0}/2/3'.format(year), '{0}/2/4'.format(year),
+             '{0}/2/C/4'.format(year), '{0}/2/C/5'.format(year), '{0}/2/C/6'.format(year),
+             '{0}/2/C/7'.format(year), '{0}/2/C/8'.format(year), '{0}/2/C/9'.format(year),
+             '{0}/2/C/10'.format(year), '{0}/2/8'.format(year),  # OJ Council
              '-', '-', '-'])
         self.changeUser('pmCreator1')
         orderedDevelopersBrains = collegeMeeting.getItems(
@@ -185,40 +192,41 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         meeting = self.setupCouncilDemoData()
         self.changeUser('pmManager')
         orderedBrains = meeting.getItems(ordered=True, useCatalog=True)
+        year = meeting.getDate().year()
         self.assertEqual(
             [brain.getObject().getItemReference() for brain in orderedBrains],
-            ['2017/1/1',
-             '2017/1/2',
-             '2017/1/U/1',
-             '2017/1/3',
-             '2017/1/S/1',
-             '2017/1/S/2',
-             '2017/1/S/3',
-             '2017/1/S/4',
-             '2017/1/S/5',
-             '2017/1/S/6',
-             '2017/1/S/7',
-             '2017/1/S/8',
-             '2017/1/4',
-             '2017/1/5',
-             '2017/1/6',
-             '2017/1/7',
-             '2017/1/8',
-             '2017/1/9',
-             '2017/1/10',
-             '2017/1/U/2',
-             '2017/1/U/3',
-             '2017/1/U/4',
-             '2017/1/11',
-             '2017/1/12',
-             '2017/1/13',
-             '2017/1/14',
-             '2017/1/15',
-             '2017/1/16',
-             '2017/1/17',
-             '2017/1/18',
-             '2017/1/U/5',
-             '2017/1/U/6'])
+            ['{0}/1/1'.format(year),
+             '{0}/1/2'.format(year),
+             '{0}/1/U/1'.format(year),
+             '{0}/1/3'.format(year),
+             '{0}/1/S/1'.format(year),
+             '{0}/1/S/2'.format(year),
+             '{0}/1/S/3'.format(year),
+             '{0}/1/S/4'.format(year),
+             '{0}/1/S/5'.format(year),
+             '{0}/1/S/6'.format(year),
+             '{0}/1/S/7'.format(year),
+             '{0}/1/S/8'.format(year),
+             '{0}/1/4'.format(year),
+             '{0}/1/5'.format(year),
+             '{0}/1/6'.format(year),
+             '{0}/1/7'.format(year),
+             '{0}/1/8'.format(year),
+             '{0}/1/9'.format(year),
+             '{0}/1/10'.format(year),
+             '{0}/1/U/2'.format(year),
+             '{0}/1/U/3'.format(year),
+             '{0}/1/U/4'.format(year),
+             '{0}/1/11'.format(year),
+             '{0}/1/12'.format(year),
+             '{0}/1/13'.format(year),
+             '{0}/1/14'.format(year),
+             '{0}/1/15'.format(year),
+             '{0}/1/16'.format(year),
+             '{0}/1/17'.format(year),
+             '{0}/1/18'.format(year),
+             '{0}/1/U/5'.format(year),
+             '{0}/1/U/6'.format(year)])
 
         # now check with 'pmCreator1' that may only see items of 'developers'
         # compare with what is returned for a user that may see everything
@@ -227,26 +235,26 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         devRefs = [brain.getObject().getItemReference() for brain in orderedDevelopersBrains]
         self.assertEqual(
             devRefs,
-            ['2017/1/1',
-             '2017/1/2',
-             '2017/1/U/1',
-             '2017/1/3',
-             '2017/1/S/1',
-             '2017/1/S/2',
-             '2017/1/S/3',
-             '2017/1/S/4',
-             '2017/1/S/5',
-             '2017/1/S/6',
-             '2017/1/S/7',
-             '2017/1/S/8',
-             '2017/1/6',
-             '2017/1/7',
-             '2017/1/U/2',
-             '2017/1/11',
-             '2017/1/13',
-             '2017/1/15',
-             '2017/1/17',
-             '2017/1/U/5'])
+            ['{0}/1/1'.format(year),
+             '{0}/1/2'.format(year),
+             '{0}/1/U/1'.format(year),
+             '{0}/1/3'.format(year),
+             '{0}/1/S/1'.format(year),
+             '{0}/1/S/2'.format(year),
+             '{0}/1/S/3'.format(year),
+             '{0}/1/S/4'.format(year),
+             '{0}/1/S/5'.format(year),
+             '{0}/1/S/6'.format(year),
+             '{0}/1/S/7'.format(year),
+             '{0}/1/S/8'.format(year),
+             '{0}/1/6'.format(year),
+             '{0}/1/7'.format(year),
+             '{0}/1/U/2'.format(year),
+             '{0}/1/11'.format(year),
+             '{0}/1/13'.format(year),
+             '{0}/1/15'.format(year),
+             '{0}/1/17'.format(year),
+             '{0}/1/U/5'.format(year)])
         self.changeUser('pmCreator1')
         orderedDevelopersBrains = meeting.getItems(ordered=True, useCatalog=True,
                                                    additional_catalog_query={'getProposingGroup': 'developers'})
