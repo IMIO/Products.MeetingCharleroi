@@ -739,6 +739,9 @@ councilMeeting.itemCreatedOnlyUsingTemplate = True
 councilMeeting.listTypes = DEFAULT_LIST_TYPES + \
     [{'identifier': 'lateextracollege',
       'label': u'Urgence (Collège extraordinaire)',
+      'used_in_inserting_method': '1'},
+     {'identifier': 'communication',
+      'label': u'Communication',
       'used_in_inserting_method': '1'}]
 councilMeeting.selectablePrivacies = ('secret_heading', 'public', 'secret')
 councilMeeting.useGroupsAsCategories = False
