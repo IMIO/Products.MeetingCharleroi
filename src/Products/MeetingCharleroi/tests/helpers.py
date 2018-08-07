@@ -269,6 +269,8 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         cfg2.setListTypes(charleroi_import_data.councilMeeting.listTypes)
         cfg2.setSelectablePrivacies(charleroi_import_data.councilMeeting.selectablePrivacies)
         cfg2.setWorkflowAdaptations(charleroi_import_data.councilMeeting.workflowAdaptations)
+        for category in charleroi_import_data.councilMeeting.categories:
+            cfg2.addCategory(category)
         # items come validated
         cfg2.setTransitionsForPresentingAnItem(('present', ))
         cfg2.setItemReferenceFormat(charleroi_import_data.councilMeeting.itemReferenceFormat)
