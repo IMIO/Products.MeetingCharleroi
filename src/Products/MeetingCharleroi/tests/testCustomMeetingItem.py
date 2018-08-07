@@ -23,15 +23,16 @@
 #
 
 from DateTime import DateTime
-from zope.i18n import translate
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.permissions import View
-from Products.MeetingCommunes.tests.testCustomMeetingItem import testCustomMeetingItem as mctcmi
+from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import DECISION_ITEM_SENT_TO_COUNCIL
-from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 from Products.MeetingCharleroi.setuphandlers import _configureCollegeCustomAdvisers
 from Products.MeetingCharleroi.setuphandlers import _createFinancesGroup
+from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
+from Products.MeetingCommunes.tests.testCustomMeetingItem import testCustomMeetingItem as mctcmi
+from zope.i18n import translate
 
 
 class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
@@ -96,6 +97,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         # items will be immediatelly presented to the Council meeting while sent
         self.setupCollegeConfig()
         self.setupCouncilConfig()
+
         cfg.setItemAutoSentToOtherMCStates(('itemfrozen', ))
         # create 2 College meetings, one extraordinarySession and one normal session
         # then send an item from each to a Council meeting
@@ -119,6 +121,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         item2.setDecision(self.decisionText)
         item2.setOtherMeetingConfigsClonableTo((cfg2Id,))
         item2.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+
         self.presentItem(item2)
         self.freezeMeeting(collegeMeeting2)
 
@@ -128,19 +131,79 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         itemFromExtraSession = item2.getItemClonedToOtherMC(cfg2Id)
         itemFromExtraSession.setPreferredMeeting(councilMeeting.UID())
         itemFromExtraSession.setCategory('deployment')
+
+        communicationitem = itemFromExtraSession.clone()
+        communicationitem.setCategory(COMMUNICATION_CAT_ID)
+
         self.presentItem(itemFromExtraSession)
         self.assertEqual(itemFromExtraSession.getListType(), 'lateextracollege')
+
+        self.presentItem(communicationitem)
+        self.assertNotEqual(communicationitem.getListType(), 'lateextracollege')
 
         itemNotFromExtraSession = item1.getItemClonedToOtherMC(cfg2Id)
         itemNotFromExtraSession.setPreferredMeeting(councilMeeting.UID())
         itemNotFromExtraSession.setCategory('deployment')
+
         self.presentItem(itemNotFromExtraSession)
         self.assertEqual(itemNotFromExtraSession.getListType(), 'late')
 
         # items are inserted following listType and listType 'lateextracollege'
         # will be after 'late'
         self.assertEqual([item.getListType() for item in councilMeeting.getItems(ordered=True)],
-                         ['late', 'lateextracollege'])
+                         ['late', 'lateextracollege', 'communication'])
+
+    def test_ListTypeCommunication(self):
+        self.setupCollegeConfig()
+        self.setupCouncilConfig()
+        self.create('MeetingCategory', id='%ss'%COMMUNICATION_CAT_ID, title='Communications')
+
+        self.changeUser('pmManager')
+        collegeMeeting = self.create('Meeting', date=DateTime('2016/12/15'))
+        item1 = self.create('MeetingItem')
+        item1.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        self.presentItem(item1)
+        item2 = self.create('MeetingItem', category=COMMUNICATION_CAT_ID)
+        item2.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        self.presentItem(item2)
+        self.freezeMeeting(collegeMeeting)
+        item3 = self.create('MeetingItem', category='%ss'%COMMUNICATION_CAT_ID, preferredMeeting=collegeMeeting.UID())
+        item3.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        self.presentItem(item3)
+        item4 = self.create('MeetingItem')
+        item4.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        self.presentItem(item4)
+
+        listTypes = set([item.getListType() for item in collegeMeeting.getItems(ordered=True)])
+        self.assertSetEqual(listTypes, {'late', 'normal'})
+
+        self.setMeetingConfig(self.meetingConfig2.getId())
+        councilMeeting = self.create('Meeting', date=DateTime('2017/01/01'))
+        self.setCurrentMeeting(councilMeeting)
+
+        self.changeUser('siteadmin')
+        self.create('MeetingCategory', id='%ss'%COMMUNICATION_CAT_ID, title='Communications')
+
+        self.changeUser('pmManager')
+        item1 = self.create('MeetingItem')
+        item1.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        self.presentItem(item1)
+        item2 = self.create('MeetingItem', category=COMMUNICATION_CAT_ID)
+        item2.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        self.presentItem(item2)
+        self.assertEqual(item2.getListType(), 'communication')
+        self.freezeMeeting(councilMeeting)
+        item3 = self.create('MeetingItem', category='%ss'%COMMUNICATION_CAT_ID, preferredMeeting=councilMeeting.UID())
+        item3.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        self.presentItem(item3)
+        self.assertEqual(item3.getListType(), 'communication')
+        item4 = self.create('MeetingItem', preferredMeeting=councilMeeting.UID())
+        item4.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        self.presentItem(item4)
+
+        self.assertEqual([item.getListType() for item in councilMeeting.getItems(ordered=True)],
+                         ['normal', 'late', 'communication', 'communication'])
+
 
     def test_ItemRefForActeCollege(self):
         """Test the method rendering the item reference of items in a College meeting."""
