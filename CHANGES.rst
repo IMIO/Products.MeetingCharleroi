@@ -8,6 +8,11 @@ Products.MeetingCharleroi Changelog
 - Category 'indeterminee' can not be used on MeetingItemCollege if not to send to 'meting-config-council'
 - Added possibility to send and item that is 'prevalidated' back to 'proposed' and 'itemcreated'
 
+4.1 (unreleased)
+----------------
+
+- Be defensive when using getProperty on a member object, do not fail if member is None
+
 4.0 (2017-08-22)
 ----------------
 - Added email notification to the MeetingReviewer when an item is validated

@@ -19,7 +19,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 # 02110-1301, USA.
 #
-# ------------------------------------------------------------------------------
+
 from AccessControl import ClassSecurityInfo
 from collections import OrderedDict
 from collective.contact.plonegroup.utils import get_organizations
@@ -73,7 +73,6 @@ from zope.i18n import translate
 from zope.interface import implements
 
 import re
-
 
 # disable most of wfAdaptations
 customWfAdaptations = ('no_publication', 'no_global_observation',
@@ -968,7 +967,6 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         communication = self._getCommunicationListType()
         if communication:
             return communication
-
         return self.context.getListTypeNormalValue(meeting)
 
 

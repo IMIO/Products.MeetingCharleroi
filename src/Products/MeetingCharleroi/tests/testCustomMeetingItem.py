@@ -28,10 +28,17 @@ from Products.CMFCore.permissions import View
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import DECISION_ITEM_SENT_TO_COUNCIL
+<<<<<<< 8ab7175ce4247ed9c11d4042146f0c9d49f9bb66
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 from Products.MeetingCharleroi.utils import finance_group_uid
 from Products.MeetingCommunes.tests.testCustomMeetingItem import testCustomMeetingItem as mctcmi
 from Products.PloneMeeting.utils import org_id_to_uid
+=======
+from Products.MeetingCharleroi.setuphandlers import _configureCollegeCustomAdvisers
+from Products.MeetingCharleroi.setuphandlers import _createFinancesGroup
+from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
+from Products.MeetingCommunes.tests.testCustomMeetingItem import testCustomMeetingItem as mctcmi
+>>>>>>> merge new_list_type_council
 from zope.i18n import translate
 
 
@@ -91,6 +98,10 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         cfg2Id = cfg2.getId()
         # items will be immediatelly presented to the Council meeting while sent
         self.setupCollegeConfig()
+<<<<<<< 8ab7175ce4247ed9c11d4042146f0c9d49f9bb66
+=======
+        self.setupCouncilConfig()
+>>>>>>> merge new_list_type_council
 
         cfg.setItemAutoSentToOtherMCStates(('itemfrozen', ))
         # create 2 College meetings, one extraordinarySession and one normal session
@@ -117,7 +128,11 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         item2 = self.create('MeetingItem')
         item2.setDecision(self.decisionText)
         item2.setOtherMeetingConfigsClonableTo((cfg2Id,))
+<<<<<<< 8ab7175ce4247ed9c11d4042146f0c9d49f9bb66
         item2.setProposingGroupWithGroupInCharge(dev_group_in_charge)
+=======
+        item2.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+>>>>>>> merge new_list_type_council
 
         self.presentItem(item2)
         self.freezeMeeting(collegeMeeting2)
@@ -152,14 +167,20 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
     def test_ListTypeCommunication(self):
         self.setupCollegeConfig()
+<<<<<<< 8ab7175ce4247ed9c11d4042146f0c9d49f9bb66
 
         self.create('MeetingCategory',
                     id='%ss' % COMMUNICATION_CAT_ID,
                     title='Communications')
+=======
+        self.setupCouncilConfig()
+        self.create('MeetingCategory', id='%ss'%COMMUNICATION_CAT_ID, title='Communications')
+>>>>>>> merge new_list_type_council
 
         self.changeUser('pmManager')
         collegeMeeting = self.create('Meeting', date=DateTime('2016/12/15'))
         item1 = self.create('MeetingItem')
+<<<<<<< 8ab7175ce4247ed9c11d4042146f0c9d49f9bb66
         gic2_uid = org_id_to_uid('groupincharge2')
         dev_group_in_charge = '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid)
         item1.setProposingGroupWithGroupInCharge(dev_group_in_charge)
@@ -175,12 +196,26 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         self.presentItem(item3)
         item4 = self.create('MeetingItem')
         item4.setProposingGroupWithGroupInCharge(dev_group_in_charge)
+=======
+        item1.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        self.presentItem(item1)
+        item2 = self.create('MeetingItem', category=COMMUNICATION_CAT_ID)
+        item2.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        self.presentItem(item2)
+        self.freezeMeeting(collegeMeeting)
+        item3 = self.create('MeetingItem', category='%ss'%COMMUNICATION_CAT_ID, preferredMeeting=collegeMeeting.UID())
+        item3.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        self.presentItem(item3)
+        item4 = self.create('MeetingItem')
+        item4.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+>>>>>>> merge new_list_type_council
         self.presentItem(item4)
 
         listTypes = set([item.getListType() for item in collegeMeeting.getItems(ordered=True)])
         self.assertSetEqual(listTypes, {'late', 'normal'})
 
         self.setMeetingConfig(self.meetingConfig2.getId())
+<<<<<<< 8ab7175ce4247ed9c11d4042146f0c9d49f9bb66
         self.setupCouncilConfig()
         self.create('MeetingCategory', id='%ss' % COMMUNICATION_CAT_ID, title='Communications')
 
@@ -204,10 +239,37 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         self.assertEqual(item3.getListType(), 'communication')
         item4 = self.create('MeetingItem', preferredMeeting=councilMeeting.UID())
         item4.setProposingGroupWithGroupInCharge(dev_group_in_charge)
+=======
+        councilMeeting = self.create('Meeting', date=DateTime('2017/01/01'))
+        self.setCurrentMeeting(councilMeeting)
+
+        self.changeUser('siteadmin')
+        self.create('MeetingCategory', id='%ss'%COMMUNICATION_CAT_ID, title='Communications')
+
+        self.changeUser('pmManager')
+        item1 = self.create('MeetingItem')
+        item1.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        self.presentItem(item1)
+        item2 = self.create('MeetingItem', category=COMMUNICATION_CAT_ID)
+        item2.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        self.presentItem(item2)
+        self.assertEqual(item2.getListType(), 'communication')
+        self.freezeMeeting(councilMeeting)
+        item3 = self.create('MeetingItem', category='%ss'%COMMUNICATION_CAT_ID, preferredMeeting=councilMeeting.UID())
+        item3.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        self.presentItem(item3)
+        self.assertEqual(item3.getListType(), 'communication')
+        item4 = self.create('MeetingItem', preferredMeeting=councilMeeting.UID())
+        item4.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+>>>>>>> merge new_list_type_council
         self.presentItem(item4)
 
         self.assertEqual([item.getListType() for item in councilMeeting.getItems(ordered=True)],
                          ['normal', 'late', 'communication', 'communication'])
+<<<<<<< 8ab7175ce4247ed9c11d4042146f0c9d49f9bb66
+=======
+
+>>>>>>> merge new_list_type_council
 
     def test_ItemRefForActeCollege(self):
         """Test the method rendering the item reference of items in a College meeting."""
