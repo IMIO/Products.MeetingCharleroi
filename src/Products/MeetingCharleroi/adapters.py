@@ -20,60 +20,60 @@
 # 02110-1301, USA.
 #
 # ------------------------------------------------------------------------------
+import re
+from collections import OrderedDict
 
 from AccessControl import ClassSecurityInfo
 from DateTime import DateTime
 from Globals import InitializeClass
-from zope.annotation import IAnnotations
-from zope.interface import implements
-from zope.i18n import translate
-
-from collections import OrderedDict
-from imio.helpers.cache import cleanRamCacheFor
-from plone import api
-from plone.memoize import ram
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.permissions import ReviewPortalContent
 from Products.CMFCore.utils import _checkPermission
-from Products.PloneMeeting.adapters import ItemPrettyLinkAdapter
+from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
+from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
+from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
+from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
+from Products.MeetingCharleroi.config import DECISION_ITEM_SENT_TO_COUNCIL
+from Products.MeetingCharleroi.config import FINANCE_GIVEABLE_ADVICE_STATES
+from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
+from Products.MeetingCharleroi.config import NEVER_LATE_CATEGORIES
+from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
+from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCollegeWorkflowActions
+from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCollegeWorkflowConditions
+from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCouncilWorkflowActions
+from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCouncilWorkflowConditions
+from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCollegeWorkflowActions
+from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCollegeWorkflowConditions
+from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowActions
+from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowConditions
+from Products.MeetingCommunes.adapters import CustomMeeting
+from Products.MeetingCommunes.adapters import CustomMeetingConfig
+from Products.MeetingCommunes.adapters import CustomMeetingGroup
+from Products.MeetingCommunes.adapters import CustomMeetingItem
+from Products.MeetingCommunes.adapters import CustomToolPloneMeeting
+from Products.MeetingCommunes.adapters import MeetingCollegeWorkflowActions
+from Products.MeetingCommunes.adapters import MeetingCollegeWorkflowConditions
+from Products.MeetingCommunes.adapters import MeetingItemCollegeWorkflowActions
+from Products.MeetingCommunes.adapters import MeetingItemCollegeWorkflowConditions
 from Products.PloneMeeting.Meeting import Meeting
 from Products.PloneMeeting.MeetingConfig import MeetingConfig
 from Products.PloneMeeting.MeetingItem import MeetingItem
+from Products.PloneMeeting.adapters import ItemPrettyLinkAdapter
 from Products.PloneMeeting.interfaces import IMeetingConfigCustom
 from Products.PloneMeeting.interfaces import IMeetingCustom
 from Products.PloneMeeting.interfaces import IMeetingGroupCustom
 from Products.PloneMeeting.interfaces import IMeetingItemCustom
 from Products.PloneMeeting.interfaces import IToolPloneMeetingCustom
 from Products.PloneMeeting.model import adaptations
-from Products.PloneMeeting.model.adaptations import grantPermission
 from Products.PloneMeeting.model.adaptations import WF_APPLIED
+from Products.PloneMeeting.model.adaptations import grantPermission
 from Products.PloneMeeting.utils import getLastEvent
-from Products.MeetingCommunes.adapters import CustomMeeting
-from Products.MeetingCommunes.adapters import CustomMeetingConfig
-from Products.MeetingCommunes.adapters import CustomMeetingGroup
-from Products.MeetingCommunes.adapters import CustomMeetingItem
-from Products.MeetingCommunes.adapters import CustomToolPloneMeeting
-from Products.MeetingCommunes.adapters import MeetingItemCollegeWorkflowActions
-from Products.MeetingCommunes.adapters import MeetingItemCollegeWorkflowConditions
-from Products.MeetingCommunes.adapters import MeetingCollegeWorkflowActions
-from Products.MeetingCommunes.adapters import MeetingCollegeWorkflowConditions
-from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCollegeWorkflowActions
-from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCollegeWorkflowConditions
-from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCollegeWorkflowActions
-from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCollegeWorkflowConditions
-from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCouncilWorkflowActions
-from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCouncilWorkflowConditions
-from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowActions
-from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowConditions
-from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
-from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
-from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
-from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
-from Products.MeetingCharleroi.config import DECISION_ITEM_SENT_TO_COUNCIL
-from Products.MeetingCharleroi.config import NEVER_LATE_CATEGORIES
-from Products.MeetingCharleroi.config import FINANCE_GIVEABLE_ADVICE_STATES
-from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
-from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
+from imio.helpers.cache import cleanRamCacheFor
+from plone import api
+from plone.memoize import ram
+from zope.annotation import IAnnotations
+from zope.i18n import translate
+from zope.interface import implements
 
 # disable most of wfAdaptations
 customWfAdaptations = ('no_publication', 'no_global_observation',
@@ -751,7 +751,27 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         helper = docgen.get_generation_context_helper()
         return helper.showFinancesAdvice()
 
+    def _getCommunicationListType(self):
+        '''If listType 'communication' is used in the meetingConfig, and the category of this meetingItem is also 'communication'.
+           Then the listType 'communication' should always be applied. '''
+        item = self.getSelf()
+        tool = api.portal.get_tool('portal_plonemeeting')
+        cfg = tool.getMeetingConfig(item)
+        pattern = r'^%s.?$'%COMMUNICATION_CAT_ID
+        prog = re.compile(pattern)
+
+        listTypes = [listType['identifier'] for listType in cfg.getListTypes()]
+        if 'communication' in listTypes and prog.match(item.getCategory()):
+            return 'communication'
+        return None
+
     def getListTypeLateValue(self, meeting):
+        '''If listType 'communication' is used in the meetingConfig, and the category of this meetingItem is also 'communication'.
+           Then the listType 'communication' should always be applied. '''
+        communication = self._getCommunicationListType()
+        if communication:
+            return communication
+
         '''Returns 'late' by default except if item is inserted into a Council meeting
            and is coming from a College item presented to an extraordinary meeting.'''
         if self.context.portal_type == 'MeetingItemCouncil':
@@ -762,6 +782,16 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
                 return 'lateextracollege'
 
         return self.context.getListTypeLateValue(meeting)
+
+    def getListTypeNormalValue(self, meeting):
+        '''If listType 'communication' is used in the meetingConfig, and the category of this meetingItem is also 'communication'.
+           Then the listType 'communication' should always be applied. '''
+        communication = self._getCommunicationListType()
+        if communication:
+            return communication
+
+        return self.context.getListTypeNormalValue(meeting)
+
 
 
 class CustomCharleroiMeetingGroup(CustomMeetingGroup):

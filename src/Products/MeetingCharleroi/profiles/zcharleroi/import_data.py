@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from DateTime import DateTime
-
+from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
+from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
+from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.PloneMeeting.config import DEFAULT_LIST_TYPES
 from Products.PloneMeeting.profiles import AnnexTypeDescriptor
 from Products.PloneMeeting.profiles import CategoryDescriptor
@@ -16,9 +17,7 @@ from Products.PloneMeeting.profiles import PodTemplateDescriptor
 from Products.PloneMeeting.profiles import RecurringItemDescriptor
 from Products.PloneMeeting.profiles import UserDescriptor
 
-from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
-from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
-from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
+from DateTime import DateTime
 
 today = DateTime().strftime('%Y/%m/%d')
 
@@ -121,7 +120,9 @@ council_categories = [
                        'Divers'),
     CategoryDescriptor('contentieux',
                        'Contentieux'),
-
+    CategoryDescriptor(COMMUNICATION_CAT_ID,
+                       'Communication',
+                       description=''),
 ]
 
 # Pod templates ----------------------------------------------------------------
