@@ -216,11 +216,13 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         else:
             categories = charleroi_import_data.councilMeeting.categories
         # create categories
+        existing = [cat.getId() for cat in self.meetingConfig.getCategories(onlySelectable=False)]
         for cat in categories:
-            data = {'id': cat.id,
-                    'title': cat.title,
-                    'description': cat.description}
-            self.create('MeetingCategory', **data)
+            if cat.id not in existing:
+                data = {'id': cat.id,
+                        'title': cat.title,
+                        'description': cat.description}
+                self.create('MeetingCategory', **data)
 
     def _createItemTemplates(self):
         """ """
@@ -260,6 +262,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
 
     def setupCouncilConfig(self):
         """ """
+        self.changeUser('siteadmin')
         cfg = getattr(self.tool, 'meeting-config-college')
         cfg.setItemManualSentToOtherMCStates(charleroi_import_data.collegeMeeting.itemManualSentToOtherMCStates)
 
@@ -269,8 +272,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         cfg2.setListTypes(charleroi_import_data.councilMeeting.listTypes)
         cfg2.setSelectablePrivacies(charleroi_import_data.councilMeeting.selectablePrivacies)
         cfg2.setWorkflowAdaptations(charleroi_import_data.councilMeeting.workflowAdaptations)
-        for category in charleroi_import_data.councilMeeting.categories:
-            cfg2.addCategory(category)
+
         # items come validated
         cfg2.setTransitionsForPresentingAnItem(('present', ))
         cfg2.setItemReferenceFormat(charleroi_import_data.councilMeeting.itemReferenceFormat)
@@ -278,6 +280,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         # setup inserting methods
         cfg2.setInsertingMethodsOnAddItem(charleroi_import_data.councilMeeting.insertingMethodsOnAddItem)
         cfg2.at_post_edit_script()
+        self._createCategories()
 
     def setupCollegeConfig(self):
         """ """
@@ -312,7 +315,6 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                                      folders=['recurringitems', 'itemtemplates', 'categories'])
         current_cfg = self.meetingConfig
         self.setMeetingConfig(self.meetingConfig2.getId())
-        self._createCategories()
         self._createItemTemplates()
         self._createRecurringItems()
         self.setupCouncilConfig()

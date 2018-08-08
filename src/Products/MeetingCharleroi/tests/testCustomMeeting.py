@@ -588,10 +588,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         """Items with confidentiality 'public' coming from College are inserted in a Council meeting
            a will use the 'indeterminee' category.  Items with confidentiality 'secret' coming from the College
            will stay 'validated' and are not automatically inserted into a meeting."""
-        self.changeUser('siteadmin')
-        self.setupCouncilConfig()
         self.setMeetingConfig('meeting-config-council')
-        self._createCategories()
+        self.setupCouncilConfig()
         self.changeUser('pmManager')
         # Council
         council_meeting = self.create('Meeting', date=DateTime() + 1)

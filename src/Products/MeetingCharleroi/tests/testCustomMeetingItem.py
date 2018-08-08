@@ -96,7 +96,6 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         cfg2Id = cfg2.getId()
         # items will be immediatelly presented to the Council meeting while sent
         self.setupCollegeConfig()
-        self.setupCouncilConfig()
 
         cfg.setItemAutoSentToOtherMCStates(('itemfrozen', ))
         # create 2 College meetings, one extraordinarySession and one normal session
@@ -104,6 +103,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         self.changeUser('pmManager')
         # create the Council meeting
         self.setMeetingConfig(cfg2Id)
+        self.setupCouncilConfig()
         councilMeeting = self.create('Meeting', date=DateTime('2017/01/01'))
         self.freezeMeeting(councilMeeting)
         # create elements in College
@@ -155,7 +155,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
     def test_ListTypeCommunication(self):
         self.setupCollegeConfig()
-        self.setupCouncilConfig()
+
         self.create('MeetingCategory', id='%ss'%COMMUNICATION_CAT_ID, title='Communications')
 
         self.changeUser('pmManager')
@@ -178,11 +178,11 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         self.assertSetEqual(listTypes, {'late', 'normal'})
 
         self.setMeetingConfig(self.meetingConfig2.getId())
+        self.setupCouncilConfig()
+        self.create('MeetingCategory', id='%ss' % COMMUNICATION_CAT_ID, title='Communications')
+
         councilMeeting = self.create('Meeting', date=DateTime('2017/01/01'))
         self.setCurrentMeeting(councilMeeting)
-
-        self.changeUser('siteadmin')
-        self.create('MeetingCategory', id='%ss'%COMMUNICATION_CAT_ID, title='Communications')
 
         self.changeUser('pmManager')
         item1 = self.create('MeetingItem')
