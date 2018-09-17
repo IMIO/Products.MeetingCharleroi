@@ -439,7 +439,19 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
                 decision = DECISION_ITEM_SENT_TO_COUNCIL
         return decision
     MeetingItem.getDecision = getDecision
-    MeetingItem.getRawDecision = getDecision
+
+    MeetingItem.__pm_old_getRawDecision = MeetingItem.getRawDecision
+    def getRawDecision(self, **kwargs):
+        '''Overridde 'decision' field accessor.
+           Display specific message when College item is sent to Council.'''
+        decision = self.__pm_old_getRawDecision(**kwargs)
+        if self.portal_type == 'MeetingItemCollege':
+            annotation_key = self._getSentToOtherMCAnnotationKey('meeting-config-council')
+            ann = IAnnotations(self)
+            if ann.get(annotation_key, None):
+                decision = DECISION_ITEM_SENT_TO_COUNCIL
+        return decision
+    MeetingItem.getRawDecision = getRawDecision
 
     security.declarePrivate('setDecision')
 
