@@ -6,7 +6,7 @@
 #
 # GNU General Public License (GPL)
 #
-
+from Products.CMFPlone.utils import safe_unicode
 from plone import api
 from Products.MeetingCommunes.browser.overrides import MCItemDocumentGenerationHelperView
 from Products.MeetingCommunes.browser.overrides import MCMeetingDocumentGenerationHelperView
@@ -21,8 +21,8 @@ FIN_ADVICE_LINE1 = "<p>Considérant la communication du dossier au Directeur fin
                    "Code de la Démocratie locale et de la Décentralisation ;</p>"
 FIN_ADVICE_LINE2 = "<p>Considérant son avis {0} du {1} joint en annexe ;</p>"
 
-FIN_ADVICE_ITEM = "<p><strong>Avis du Directeur financier :</strong></p><p>Type d'avis : {0}</p>" \
-                  "<p>Demandé le : {1}</p><p>Émis le : {2}</p>"
+FIN_ADVICE_ITEM = u"<p><strong>Avis du Directeur financier :</strong></p><p>Type d'avis : {0}</p>" \
+                  u"<p>Demandé le : {1}</p><p>Émis le : {2}</p>"
 
 POLL_TYPE_ITEM = u"<p><strong>Mode de scrutin :</strong> {0}</p>"
 
@@ -76,15 +76,7 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
         """ """
         # if item is in Council, get the adviceData from it's predecessor
         adviceData = self.real_context.getAdviceDataFor(self.real_context, FINANCE_GROUP_ID)
-        adviceTypeTranslated = ''
-        if adviceData['type'] in ('positive_finance', 'positive_with_remarks_finance'):
-            adviceTypeTranslated = 'favorable'
-        elif adviceData['type'] == 'negative_finance':
-            adviceTypeTranslated = 'défavorable'
-        elif adviceData['type'] == 'cautious_finance':
-            adviceTypeTranslated = 'réservé'
-        elif adviceData['type'] == 'not_given_finance':
-            adviceTypeTranslated = 'non remis'
+        adviceTypeTranslated = adviceData['type_translated'].replace('Avis finances ', '')
         adviceData['advice_type_translated'] = adviceTypeTranslated
 
         for dealayChange in adviceData['delay_changes_history']:
@@ -224,19 +216,19 @@ class MCHMeetingDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView,
     def printItemPresentation(self, item):
         """
         """
-        body = item.Description() and item.Description() + '<p></p>' or ''
+        body = item.Description() and safe_unicode(item.Description()) + u'<p></p>' or u''
         # insert finances advice
 
         fin_advice = self.format_finance_advice(item)
         if fin_advice:
-            body += fin_advice + '<p></p>'
+            body += fin_advice + u'<p></p>'
         return body
 
     def format_finance_advice(self, item):
         helper = self.getDGHV(item)
         if helper.showFinancesAdvice():
             advice_data = helper._financeAdviceData()
-            advice_type_translated = advice_data['advice_type_translated']
+            advice_type_translated = safe_unicode(advice_data['advice_type_translated'])
             delay_started_on_localized = advice_data['delay_infos']['delay_started_on_localized']
             advice_given_on_localized = advice_data['advice_given_on_localized']
             return FIN_ADVICE_ITEM.format(advice_type_translated, delay_started_on_localized, advice_given_on_localized)
