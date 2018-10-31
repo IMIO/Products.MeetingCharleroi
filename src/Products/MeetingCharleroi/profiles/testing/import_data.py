@@ -57,7 +57,7 @@ collegeMeeting.transitionsForPresentingAnItem = ['propose', 'proposeToRefAdmin',
 collegeMeeting.itemAdviceStates = ['prevalidated', ]
 collegeMeeting.itemAdviceEditStates = ['prevalidated', 'validated']
 collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
-                                      'pre_validation', 'charleroi_add_refadmin',
+                                      'pre_validation', 'charleroi_add_refadmin', 'charleroi_return_to_any_state_when_prevalidated',
                                       'waiting_advices']
 # Council
 councilMeeting = deepcopy(mc_import_data.councilMeeting)
