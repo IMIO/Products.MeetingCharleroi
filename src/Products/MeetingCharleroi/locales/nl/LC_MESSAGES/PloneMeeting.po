@@ -59,6 +59,10 @@ msgstr ""
 msgid "category_indeterminee_not_allowed"
 msgstr ""
 
+#. Default: "You must select the category undefined for item to send to Council"
+msgid "category_must_be_indeterminee"
+msgstr ""
+
 #. Default: "The completeness has been asked again by the application when the item has been proposed to the finances."
 msgid "completeness_asked_again_by_app"
 msgstr ""
