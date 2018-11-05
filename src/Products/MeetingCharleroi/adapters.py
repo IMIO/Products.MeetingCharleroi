@@ -623,20 +623,22 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
     MeetingItem.__pm_old_validate_category = MeetingItem.validate_category
 
     def validate_category(self, value):
-        '''For MeetingItemCollege, category 'indeterminee' can not be used if
-           item will be sent to Council.'''
+        '''For MeetingItemCollege, category 'indeterminee' can NOT be used if item will NOT be sent to Council.
+           But it MUST be selected when the item IS to be sent to meeting-config-council '''
         res = self.__pm_old_validate_category(value)
         if res:
             return res
-        if self.portal_type == 'MeetingItemCollege' and \
-           'meeting-config-council' not in self.REQUEST.get(
-                'otherMeetingConfigsClonableTo',
-                self.getOtherMeetingConfigsClonableTo()) and \
-           value == COUNCIL_DEFAULT_CATEGORY:
-            msg = translate('category_indeterminee_not_allowed',
-                            domain='PloneMeeting',
-                            context=self.REQUEST)
-            return msg
+
+        if self.portal_type == 'MeetingItemCollege':
+            configToCloneTo = self.REQUEST.get('otherMeetingConfigsClonableTo', self.getOtherMeetingConfigsClonableTo())
+            if 'meeting-config-council' in configToCloneTo and value != COUNCIL_DEFAULT_CATEGORY:
+                msg = translate('category_must_be_indeterminee', domain='PloneMeeting', context=self.REQUEST)
+                return msg
+
+            elif 'meeting-config-council' not in configToCloneTo and value == COUNCIL_DEFAULT_CATEGORY:
+                msg = translate('category_indeterminee_not_allowed', domain='PloneMeeting', context=self.REQUEST)
+                return msg
+
     MeetingItem.validate_category = validate_category
 
     def getCustomAdviceMessageFor(self, advice):
