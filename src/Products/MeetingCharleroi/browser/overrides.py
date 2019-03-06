@@ -16,10 +16,10 @@ from Products.PloneMeeting.utils import getLastEvent
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 
 
-FIN_ADVICE_LINE1 = "<p>Considérant la communication du dossier au Directeur financier faite en date du {0}, " \
-                   "conformément à l'article L1124-40 §1er, 3° et 4° du " \
-                   "Code de la Démocratie locale et de la Décentralisation ;</p>"
-FIN_ADVICE_LINE2 = "<p>Considérant son avis {0} du {1} joint en annexe ;</p>"
+FIN_ADVICE_LINE1 = u"<p>Considérant la communication du dossier au Directeur financier faite en date du {0}, " \
+                   u"conformément à l'article L1124-40 §1er, 3° et 4° du " \
+                   u"Code de la Démocratie locale et de la Décentralisation ;</p>"
+FIN_ADVICE_LINE2 = u"<p>Considérant son avis {0} du {1} joint en annexe ;</p>"
 
 FIN_ADVICE_ITEM = u"<p><strong>Avis du Directeur financier :</strong></p><p>Type d'avis : {0}</p>" \
                   u"<p>Demandé le : {1}</p><p>Émis le : {2}</p>"
@@ -96,40 +96,40 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
         adviceData = self._financeAdviceData()
         delayStartedOnLocalized = adviceData['delay_infos']['delay_started_on_localized']
         adviceGivenOnLocalized = adviceData['advice_given_on_localized']
-        adviceTypeTranslated = adviceData['advice_type_translated']
+        adviceTypeTranslated = safe_unicode(adviceData['advice_type_translated'])
         return FIN_ADVICE_LINE1.format(delayStartedOnLocalized) + \
             FIN_ADVICE_LINE2.format(adviceTypeTranslated, adviceGivenOnLocalized)
 
     def print_motivation(self):
-        body = self.context.getMotivation() and (self.context.getMotivation() + '<p></p>') or ''
+        body = self.context.getMotivation() and (safe_unicode(self.context.getMotivation()) + u'<p></p>') or ''
 
         finAdvice = self.printFinancesAdvice()
         if finAdvice:
-            body += finAdvice + '<p></p>'
+            body += finAdvice + u'<p></p>'
 
         return body
 
     def print_autority(self):
         if self.context.getSendToAuthority():
-            return "<p>Conformément aux prescrits des articles L3111-1 et suivants " \
-                "du Code de la démocratie locale et de la décentralisation relatifs " \
-                "à la Tutelle, la présente décision et ses pièces justificatives sont " \
-                "transmises aux Autorités de Tutelle.</p>"
+            return u"<p>Conformément aux prescrits des articles L3111-1 et suivants " \
+                u"du Code de la démocratie locale et de la décentralisation relatifs " \
+                u"à la Tutelle, la présente décision et ses pièces justificatives sont " \
+                u"transmises aux Autorités de Tutelle.</p>"
         else:
-            return ''
+            return u''
 
     def print_decision(self):
-        body = ''
+        body = u''
         if self.context.getDecision():
-            body += "<p><strong>Décide:</strong></p><p></p>"
-            body += self.context.getDecision() + '<p></p>'
+            body += u"<p><strong>Décide:</strong></p><p></p>"
+            body += safe_unicode(self.context.getDecision()) + u'<p></p>'
         return body
 
     def print_observation_and_poll(self):
         if self.context.getObservations():
-            return self.context.getObservations() + '<p></p>'
+            return safe_unicode(self.context.getObservations()) + u'<p></p>'
         else:
-            return ''
+            return u''
 
     def printDelibeContent(self):
         """Printed on a College item, get the whole body of the delibe in one shot."""
