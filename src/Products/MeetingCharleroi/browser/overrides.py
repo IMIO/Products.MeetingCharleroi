@@ -6,14 +6,15 @@
 #
 # GNU General Public License (GPL)
 #
-from Products.CMFPlone.utils import safe_unicode
+
+from imio.history.utils import getLastWFAction
 from plone import api
+from Products.CMFPlone.utils import safe_unicode
+from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
+from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCommunes.browser.overrides import MCItemDocumentGenerationHelperView
 from Products.MeetingCommunes.browser.overrides import MCMeetingDocumentGenerationHelperView
-from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.PloneMeeting.browser.views import MeetingBeforeFacetedInfosView
-from Products.PloneMeeting.utils import getLastEvent
-from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 
 
 FIN_ADVICE_LINE1 = u"<p>Considérant la communication du dossier au Directeur financier faite en date du {0}, " \
@@ -165,7 +166,7 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
 
     def printLastEventFor(self, transition):
         """print user who have the last action for this item"""
-        lastEvent = getLastEvent(self.context, transition=transition)
+        lastEvent = getLastWFAction(self.context, transition=transition)
         if lastEvent:
             mTool = api.portal.get_tool('portal_membership')
             author_id = str(lastEvent['actor'])

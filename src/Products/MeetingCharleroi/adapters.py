@@ -20,12 +20,14 @@
 # 02110-1301, USA.
 #
 # ------------------------------------------------------------------------------
-import re
-from collections import OrderedDict
-
 from AccessControl import ClassSecurityInfo
+from collections import OrderedDict
 from DateTime import DateTime
 from Globals import InitializeClass
+from imio.helpers.cache import cleanRamCacheFor
+from imio.history.utils import getLastWFAction
+from plone import api
+from plone.memoize import ram
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.permissions import ReviewPortalContent
 from Products.CMFCore.utils import _checkPermission
@@ -48,32 +50,30 @@ from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWor
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowConditions
 from Products.MeetingCommunes.adapters import CustomMeeting
 from Products.MeetingCommunes.adapters import CustomMeetingConfig
-from Products.MeetingCommunes.adapters import CustomMeetingGroup
 from Products.MeetingCommunes.adapters import CustomMeetingItem
 from Products.MeetingCommunes.adapters import CustomToolPloneMeeting
-from Products.MeetingCommunes.adapters import MeetingCollegeWorkflowActions
-from Products.MeetingCommunes.adapters import MeetingCollegeWorkflowConditions
-from Products.MeetingCommunes.adapters import MeetingItemCollegeWorkflowActions
-from Products.MeetingCommunes.adapters import MeetingItemCollegeWorkflowConditions
-from Products.PloneMeeting.Meeting import Meeting
-from Products.PloneMeeting.MeetingConfig import MeetingConfig
-from Products.PloneMeeting.MeetingItem import MeetingItem
+from Products.MeetingCommunes.adapters import MeetingCommunesWorkflowActions
+from Products.MeetingCommunes.adapters import MeetingCommunesWorkflowConditions
+from Products.MeetingCommunes.adapters import MeetingItemCommunesWorkflowActions
+from Products.MeetingCommunes.adapters import MeetingItemCommunesWorkflowConditions
 from Products.PloneMeeting.adapters import ItemPrettyLinkAdapter
 from Products.PloneMeeting.interfaces import IMeetingConfigCustom
 from Products.PloneMeeting.interfaces import IMeetingCustom
-from Products.PloneMeeting.interfaces import IMeetingGroupCustom
 from Products.PloneMeeting.interfaces import IMeetingItemCustom
 from Products.PloneMeeting.interfaces import IToolPloneMeetingCustom
+from Products.PloneMeeting.Meeting import Meeting
+from Products.PloneMeeting.MeetingConfig import MeetingConfig
+from Products.PloneMeeting.MeetingItem import MeetingItem
+# states taken into account by the 'no_global_observation' wfAdaptation
 from Products.PloneMeeting.model import adaptations
-from Products.PloneMeeting.model.adaptations import WF_APPLIED
 from Products.PloneMeeting.model.adaptations import grantPermission
-from Products.PloneMeeting.utils import getLastEvent
-from imio.helpers.cache import cleanRamCacheFor
-from plone import api
-from plone.memoize import ram
+from Products.PloneMeeting.model.adaptations import WF_APPLIED
 from zope.annotation import IAnnotations
 from zope.i18n import translate
 from zope.interface import implements
+
+import re
+
 
 # disable most of wfAdaptations
 customWfAdaptations = ('no_publication', 'no_global_observation',
@@ -82,12 +82,10 @@ customWfAdaptations = ('no_publication', 'no_global_observation',
                        'return_to_proposing_group', 'charleroi_add_refadmin',
                        'waiting_advices', 'postpone_next_meeting',
                        'mark_not_applicable', 'removed', 'removed_and_duplicated',
-                       'hide_decisions_when_under_writing')
+                       'hide_decisions_when_under_writing', 'refused')
 MeetingConfig.wfAdaptations = customWfAdaptations
 originalPerformWorkflowAdaptations = adaptations.performWorkflowAdaptations
 
-# states taken into account by the 'no_global_observation' wfAdaptation
-from Products.PloneMeeting.model import adaptations
 noGlobalObsStates = ('itempublished', 'itemfrozen', 'accepted', 'refused',
                      'delayed', 'accepted_but_modified', 'pre_accepted')
 adaptations.noGlobalObsStates = noGlobalObsStates
@@ -441,6 +439,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
     MeetingItem.getDecision = getDecision
 
     MeetingItem.__pm_old_getRawDecision = MeetingItem.getRawDecision
+
     def getRawDecision(self, **kwargs):
         '''Overridde 'decision' field accessor.
            Display specific message when College item is sent to Council.'''
@@ -497,7 +496,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
                                   domain="PloneMeeting",
                                   context=item.REQUEST,
                                   default="Advice is still not giveable because item is not considered complete.")}
-            elif getLastEvent(item, 'proposeToFinance') and \
+            elif getLastWFAction(item, 'proposeToFinance') and \
                 item.queryState() in ('itemcreated',
                                       'itemcreated_waiting_advices',
                                       'proposed_to_internal_reviewer',
@@ -764,12 +763,13 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         return helper.showFinancesAdvice()
 
     def _getCommunicationListType(self):
-        '''If listType 'communication' is used in the meetingConfig, and the category of this meetingItem is also 'communication'.
+        '''If listType 'communication' is used in the meetingConfig, and the category of
+           this meetingItem is also 'communication'.
            Then the listType 'communication' should always be applied. '''
         item = self.getSelf()
         tool = api.portal.get_tool('portal_plonemeeting')
         cfg = tool.getMeetingConfig(item)
-        pattern = r'^%s.?$'%COMMUNICATION_CAT_ID
+        pattern = r'^%s.?$' % COMMUNICATION_CAT_ID
         prog = re.compile(pattern)
 
         listTypes = [listType['identifier'] for listType in cfg.getListTypes()]
@@ -778,7 +778,8 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         return None
 
     def getListTypeLateValue(self, meeting):
-        '''If listType 'communication' is used in the meetingConfig, and the category of this meetingItem is also 'communication'.
+        '''If listType 'communication' is used in the meetingConfig, and the category of
+           this meetingItem is also 'communication'.
            Then the listType 'communication' should always be applied. '''
         communication = self._getCommunicationListType()
         if communication:
@@ -796,25 +797,14 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         return self.context.getListTypeLateValue(meeting)
 
     def getListTypeNormalValue(self, meeting):
-        '''If listType 'communication' is used in the meetingConfig, and the category of this meetingItem is also 'communication'.
+        '''If listType 'communication' is used in the meetingConfig, and the category of
+           this meetingItem is also 'communication'.
            Then the listType 'communication' should always be applied. '''
         communication = self._getCommunicationListType()
         if communication:
             return communication
 
         return self.context.getListTypeNormalValue(meeting)
-
-
-
-class CustomCharleroiMeetingGroup(CustomMeetingGroup):
-    '''Adapter that adapts a meeting group implementing IMeetingGroup to the
-       interface IMeetingGroupCustom.'''
-
-    implements(IMeetingGroupCustom)
-    security = ClassSecurityInfo()
-
-    def __init__(self, item):
-        self.context = item
 
 
 class CustomCharleroiMeetingConfig(CustomMeetingConfig):
@@ -836,7 +826,7 @@ class CustomCharleroiMeetingConfig(CustomMeetingConfig):
         return ['on_communication', 'on_police_then_other_groups']
 
 
-class MeetingCharleroiCollegeWorkflowActions(MeetingCollegeWorkflowActions):
+class MeetingCharleroiCollegeWorkflowActions(MeetingCommunesWorkflowActions):
     '''Adapter that adapts a meeting item implementing IMeetingItem to the
        interface IMeetingCharleroiCollegeWorkflowActions'''
 
@@ -844,7 +834,7 @@ class MeetingCharleroiCollegeWorkflowActions(MeetingCollegeWorkflowActions):
     security = ClassSecurityInfo()
 
 
-class MeetingCharleroiCollegeWorkflowConditions(MeetingCollegeWorkflowConditions):
+class MeetingCharleroiCollegeWorkflowConditions(MeetingCommunesWorkflowConditions):
     '''Adapter that adapts a meeting item implementing IMeetingItem to the
        interface IMeetingCharleroiCollegeWorkflowConditions'''
 
@@ -852,7 +842,7 @@ class MeetingCharleroiCollegeWorkflowConditions(MeetingCollegeWorkflowConditions
     security = ClassSecurityInfo()
 
 
-class MeetingItemCharleroiCollegeWorkflowActions(MeetingItemCollegeWorkflowActions):
+class MeetingItemCharleroiCollegeWorkflowActions(MeetingItemCommunesWorkflowActions):
     '''Adapter that adapts a meeting item implementing IMeetingItem to the
        interface IMeetingItemCharleroiCollegeWorkflowActions'''
 
@@ -902,7 +892,7 @@ class MeetingItemCharleroiCollegeWorkflowActions(MeetingItemCollegeWorkflowActio
         self._doWaitAdvices()
 
 
-class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowConditions):
+class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowConditions):
     '''Adapter that adapts a meeting item implementing IMeetingItem to the
        interface IMeetingItemCharleroiCollegeWorkflowConditions'''
 
@@ -929,7 +919,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
     security.declarePublic('mayValidate')
 
     def mayValidate(self):
-        res = MeetingItemCollegeWorkflowConditions.mayValidate(self)
+        res = MeetingItemCommunesWorkflowConditions.mayValidate(self)
         if res and not self.context.REQUEST.get('postponing_item', False):
             # if finances advice is asked, item may only be validated
             # if the advice have actually be given
@@ -942,7 +932,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
 
     def mayCorrect(self, destinationState=None):
         '''See docstring in interfaces.py'''
-        res = MeetingItemCollegeWorkflowConditions(self.context).mayCorrect(destinationState)
+        res = MeetingItemCommunesWorkflowConditions(self.context).mayCorrect(destinationState)
         tool = api.portal.get_tool('portal_plonemeeting')
         # if item is sent to finances, only finances advisers and MeetingManagers may send it back
         if self.context.queryState() == 'prevalidated_waiting_advices':
@@ -978,7 +968,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCollegeWorkflowCo
             return False
 
         # return original behavior
-        return MeetingItemCollegeWorkflowConditions.isLateFor(self, meeting)
+        return MeetingItemCommunesWorkflowConditions.isLateFor(self, meeting)
 
 
 class MeetingCharleroiCouncilWorkflowActions(MeetingCharleroiCollegeWorkflowActions):
@@ -1089,8 +1079,8 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
             # Update connections between states and transitions
             wf.states['itemfrozen'].setProperties(
                 title='itemfrozen', description='',
-                transitions=['accept', 'accept_but_modify', 'refuse', 'delay', 'pre_accept', 'backToPresented'])
-            for decidedState in ['accepted', 'refused', 'delayed', 'accepted_but_modified']:
+                transitions=['accept', 'accept_but_modify', 'delay', 'pre_accept', 'backToPresented'])
+            for decidedState in ['accepted', 'delayed', 'accepted_but_modified']:
                 wf.states[decidedState].setProperties(
                     title=decidedState, description='',
                     transitions=['backToItemFrozen', ])
@@ -1194,7 +1184,6 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
 InitializeClass(CustomCharleroiMeeting)
 InitializeClass(CustomCharleroiMeetingItem)
 InitializeClass(CustomCharleroiMeetingConfig)
-InitializeClass(CustomCharleroiMeetingGroup)
 InitializeClass(MeetingCharleroiCollegeWorkflowActions)
 InitializeClass(MeetingCharleroiCollegeWorkflowConditions)
 InitializeClass(MeetingItemCharleroiCollegeWorkflowActions)

@@ -9,21 +9,10 @@
 # GNU General Public License (GPL)
 #
 
-__author__ = """Gauthier Bastien <g.bastien@imio.be>, Andre NUYENS <a.nuyens@imio.be>"""
-__docformat__ = 'plaintext'
-
-
-# Product configuration.
-#
-# The contents of this module will be imported into __init__.py, the
-# workflow configuration and every content type module.
-#
-# If you wish to perform custom configuration, you may put a file
-# AppConfig.py in your product's root directory. The items in there
-# will be included (by importing) in this file if found.
-
 from collections import OrderedDict
 from Products.CMFCore.permissions import setDefaultRoles
+from Products.PloneMeeting import config as PMconfig
+
 
 PROJECTNAME = "MeetingCharleroi"
 
@@ -41,33 +30,14 @@ DEPENDENCIES = []
 # override in custom configuration
 PRODUCT_DEPENDENCIES = []
 
-##code-section config-bottom #fill in your manual code here
-from Products.PloneMeeting import config as PMconfig
 CHARLEROIROLES = {}
 CHARLEROIROLES['serviceheads'] = 'MeetingServiceHead'
 PMconfig.MEETINGROLES.update(CHARLEROIROLES)
-PMconfig.MEETING_GROUP_SUFFIXES = PMconfig.MEETINGROLES.keys()
 
-CHARLEROIMEETINGREVIEWERS = OrderedDict([('reviewers', 'prevalidated'),
-                                         ('prereviewers', 'proposed_to_refadmin'),
-                                         ('serviceheads', 'proposed'), ])
+CHARLEROIMEETINGREVIEWERS = {'*': OrderedDict([('reviewers', 'prevalidated'),
+                                               ('prereviewers', 'proposed_to_refadmin'),
+                                               ('serviceheads', 'proposed'), ]), }
 PMconfig.MEETINGREVIEWERS = CHARLEROIMEETINGREVIEWERS
-
-# Define PloneMeeting-specific permissions
-AddAnnex = 'PloneMeeting: Add annex'
-setDefaultRoles(AddAnnex, ('Manager', 'Owner'))
-# We need 'AddAnnex', which is a more specific permission than
-# 'PloneMeeting: Add MeetingFile', because decision-related annexes, which are
-# also MeetingFile instances, must be secured differently.
-# There is no permission linked to annex deletion. Deletion of annexes is allowed
-# if one has the permission 'Modify portal content' on the corresponding item.
-ReadDecision = 'PloneMeeting: Read decision'
-WriteDecision = 'PloneMeeting: Write decision'
-setDefaultRoles(ReadDecision, ('Manager',))
-setDefaultRoles(WriteDecision, ('Manager',))
-
-STYLESHEETS = [{'id': 'meetingcharleroi.css',
-                'title': "MeetingCharleroi CSS styles"}]
 
 # text about FD advice used in templates
 FINANCE_ADVICE_LEGAL_TEXT_PRE = "<p>Attendu la demande d'avis adressée sur "\
@@ -81,9 +51,9 @@ FINANCE_ADVICE_LEGAL_TEXT_NOT_GIVEN = "<p>Attendu l'absence d'avis du "\
     "Directeur financier rendu dans le délai prescrit à l'article L1124-40 "\
     "du Code de la démocratie locale et de la décentralisation,</p>"
 
-FINANCE_GROUP_ID = 'dirfin'
+FINANCE_GROUP_ID = u'dirfin'
 
-POLICE_GROUP_PREFIX = 'zone-de-police'
+POLICE_GROUP_PREFIX = u'zone-de-police'
 
 CC_ARRET_OJ_CAT_ID = 'conseil-communal-arret-de-lordre-du-jour'
 COMMUNICATION_CAT_ID = 'communication'
@@ -107,12 +77,15 @@ FINANCE_ADVICE_HISTORIZE_COMMENTS = 'financial_advice_signed_historized_comments
 
 # copy/pasted from MeetingCommunes because importing from MeetingCommunes break
 # the constant monkey patches...
-FINANCE_GROUP_SUFFIXES = ('financialcontrollers',
-                          'financialeditors',
-                          'financialreviewers',
-                          'financialmanagers')
-CHARLEROI_EXTRA_ADVICE_SUFFIXES = {FINANCE_GROUP_ID: list(FINANCE_GROUP_SUFFIXES)}
-PMconfig.EXTRA_ADVICE_SUFFIXES = CHARLEROI_EXTRA_ADVICE_SUFFIXES
+
+# group suffixes
+PMconfig.EXTRA_GROUP_SUFFIXES = [
+    {'fct_title': u'serviceheads', 'fct_id': u'serviceheads', 'fct_orgs': []},
+    {'fct_title': u'financialcontrollers', 'fct_id': u'financialcontrollers', 'fct_orgs': [FINANCE_GROUP_ID]},
+    {'fct_title': u'financialeditors', 'fct_id': u'financialeditors', 'fct_orgs': [FINANCE_GROUP_ID]},
+    {'fct_title': u'financialreviewers', 'fct_id': u'financialreviewers', 'fct_orgs': [FINANCE_GROUP_ID]},
+    {'fct_title': u'financialmanagers', 'fct_id': u'financialmanagers', 'fct_orgs': [FINANCE_GROUP_ID]},
+]
 
 # Council special categories, items added manually to Council and never considered 'late'
 COUNCIL_SPECIAL_CATEGORIES = ['proposition-de-motion',
@@ -125,8 +98,7 @@ COUNCIL_DEFAULT_CATEGORY = 'indeterminee'
 # items using these categories will always be inserted as normal items in the meeting
 NEVER_LATE_CATEGORIES = {
     'meeting-config-college': ['communication'],
-    'meeting-config-council': ['entetes'] + COUNCIL_SPECIAL_CATEGORIES,
-    }
+    'meeting-config-council': ['entetes'] + COUNCIL_SPECIAL_CATEGORIES, }
 
 # advice categories
 ADVICE_CATEGORIES = (

@@ -1,9 +1,6 @@
 <?xml version="1.0"?>
 <import-steps>
 
- 
-
-
  <import-step 
     id="MeetingCharleroi-Update-RoleMappings" 
     handler="Products.MeetingCharleroi.setuphandlers.updateRoleMappings"
@@ -22,7 +19,6 @@
    manual coded post-install for MeetingCharleroi
  </import-step>
 
-<!-- ##code-section ADDITIONALSTEPS -->
  <import-step
     id="MeetingCharleroi-reorderCss"
     handler="Products.MeetingCharleroi.setuphandlers.reorderCss"
@@ -31,7 +27,6 @@
    <dependency step="MeetingCharleroi-postInstall"/>
    Make sure CSS order is correct.
  </import-step>
-<!-- ##/code-section ADDITIONALSTEPS -->
 
 </import-steps>
  

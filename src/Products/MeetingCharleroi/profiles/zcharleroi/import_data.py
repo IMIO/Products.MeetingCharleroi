@@ -1,23 +1,26 @@
 # -*- coding: utf-8 -*-
 
+from DateTime import DateTime
 from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
+from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.PloneMeeting.config import DEFAULT_LIST_TYPES
+from Products.PloneMeeting.indexes import DELAYAWARE_ROW_ID_PATTERN
 from Products.PloneMeeting.profiles import AnnexTypeDescriptor
 from Products.PloneMeeting.profiles import CategoryDescriptor
-from Products.PloneMeeting.profiles import GroupDescriptor
+from Products.PloneMeeting.profiles import HeldPositionDescriptor
 from Products.PloneMeeting.profiles import ItemAnnexTypeDescriptor
 from Products.PloneMeeting.profiles import ItemTemplateDescriptor
 from Products.PloneMeeting.profiles import MeetingConfigDescriptor
-from Products.PloneMeeting.profiles import MeetingUserDescriptor
+from Products.PloneMeeting.profiles import OrgDescriptor
+from Products.PloneMeeting.profiles import PersonDescriptor
 from Products.PloneMeeting.profiles import PloneGroupDescriptor
 from Products.PloneMeeting.profiles import PloneMeetingConfiguration
 from Products.PloneMeeting.profiles import PodTemplateDescriptor
 from Products.PloneMeeting.profiles import RecurringItemDescriptor
 from Products.PloneMeeting.profiles import UserDescriptor
 
-from DateTime import DateTime
 
 today = DateTime().strftime('%Y/%m/%d')
 
@@ -129,34 +132,34 @@ council_categories = [
 agendaTemplate = PodTemplateDescriptor('oj', 'Ordre du jour')
 agendaTemplate.odt_file = 'college-oj.odt'
 agendaTemplate.pod_formats = ['odt', 'pdf', ]
-agendaTemplate.pod_portal_types = ['MeetingCollege']
-agendaTemplate.tal_condition = 'python:tool.isManager(here)'
+agendaTemplate.pod_portal_types = ['Meeting']
+agendaTemplate.tal_condition = u'python:tool.isManager(here)'
 agendaTemplate.context_variables = [{'name': u'oj_type', 'value': u'full'}]
 
 agendaTemplateBg = PodTemplateDescriptor('oj-bg', 'Ordre du jour Bourgmestre')
 agendaTemplateBg.odt_file = 'college-oj.odt'
 agendaTemplateBg.pod_formats = ['odt', 'pdf', ]
-agendaTemplateBg.pod_portal_types = ['MeetingCollege']
-agendaTemplateBg.tal_condition = 'python:tool.isManager(here)'
+agendaTemplateBg.pod_portal_types = ['Meeting']
+agendaTemplateBg.tal_condition = u'python:tool.isManager(here)'
 agendaTemplateBg.context_variables = [{'name': u'oj_type', 'value': u'bg'}]
 
 decisionsTemplate = PodTemplateDescriptor('pv', 'Procès-verbal')
 decisionsTemplate.odt_file = 'college-pv.odt'
 decisionsTemplate.pod_formats = ['odt', 'pdf', ]
-decisionsTemplate.pod_portal_types = ['MeetingCollege']
-decisionsTemplate.tal_condition = 'python:tool.isManager(here)'
+decisionsTemplate.pod_portal_types = ['Meeting']
+decisionsTemplate.tal_condition = u'python:tool.isManager(here)'
 
 itemProjectTemplate = PodTemplateDescriptor('projet-deliberation', 'Projet délibération')
 itemProjectTemplate.odt_file = 'projet-deliberation.odt'
 itemProjectTemplate.pod_formats = ['odt', 'pdf', ]
-itemProjectTemplate.pod_portal_types = ['MeetingItemCollege']
-itemProjectTemplate.tal_condition = 'python:not here.hasMeeting()'
+itemProjectTemplate.pod_portal_types = ['MeetingItem']
+itemProjectTemplate.tal_condition = u'python:not here.hasMeeting()'
 
 itemTemplate = PodTemplateDescriptor('deliberation', 'Délibération')
 itemTemplate.odt_file = 'deliberation.odt'
 itemTemplate.pod_formats = ['odt', 'pdf', ]
-itemTemplate.pod_portal_types = ['MeetingItemCollege']
-itemTemplate.tal_condition = 'python:here.hasMeeting()'
+itemTemplate.pod_portal_types = ['MeetingItem']
+itemTemplate.tal_condition = u'python:here.hasMeeting()'
 
 dfAdvicesTemplate = PodTemplateDescriptor('synthese-avis-df', 'Synthèse Avis DF', dashboard=True)
 dfAdvicesTemplate.odt_file = 'synthese-avis-df.odt'
@@ -166,18 +169,18 @@ dfAdvicesTemplate.dashboard_collections_ids = ['searchitemswithfinanceadvice']
 dfAdviceTemplate = PodTemplateDescriptor('df-advice', 'Avis DF')
 dfAdviceTemplate.odt_file = 'df-advice.odt'
 dfAdviceTemplate.pod_formats = ['odt', 'pdf', ]
-dfAdviceTemplate.pod_portal_types = ['MeetingItemCollege']
+dfAdviceTemplate.pod_portal_types = ['MeetingItem']
 dfAdviceTemplate.tal_condition = \
-    'python:(here.meta_type=="MeetingItem") and context.adapted().showFinanceAdviceDocuments()'
+    u'python:(here.meta_type=="MeetingItem") and context.adapted().showFinanceAdviceDocuments()'
 
 dashboardTemplate = PodTemplateDescriptor('recapitulatif', 'Récapitulatif', dashboard=True)
 dashboardTemplate.odt_file = 'recapitulatif-tb.odt'
-dashboardTemplate.tal_condition = 'python: context.absolute_url().endswith("/searches_items")'
+dashboardTemplate.tal_condition = u'python: context.absolute_url().endswith("/searches_items")'
 
 historyTemplate = PodTemplateDescriptor('historique', 'Historique')
 historyTemplate.odt_file = 'history.odt'
 historyTemplate.pod_formats = ['odt', 'pdf', ]
-historyTemplate.pod_portal_types = ['MeetingItemCollege']
+historyTemplate.pod_portal_types = ['MeetingItem']
 
 collegeTemplates = [agendaTemplate, agendaTemplateBg, decisionsTemplate,
                     itemProjectTemplate, itemTemplate,
@@ -188,47 +191,47 @@ collegeTemplates = [agendaTemplate, agendaTemplateBg, decisionsTemplate,
 agendaCouncilTemplateIni = PodTemplateDescriptor('oj-initial', 'Ordre du jour Initial')
 agendaCouncilTemplateIni.odt_file = 'council-oj.odt'
 agendaCouncilTemplateIni.pod_formats = ['odt', 'pdf', ]
-agendaCouncilTemplateIni.pod_portal_types = ['MeetingCouncil']
-agendaCouncilTemplateIni.tal_condition = 'python:tool.isManager(here)'
+agendaCouncilTemplateIni.pod_portal_types = ['Meeting']
+agendaCouncilTemplateIni.tal_condition = u'python:tool.isManager(here)'
 agendaCouncilTemplateIni.context_variables = [{'name': u'oj_type', 'value': u'initial'}]
 
 agendaCouncilTemplateComp = PodTemplateDescriptor('oj-comp', 'Ordre du jour Complémentaire')
 agendaCouncilTemplateComp.odt_file = 'council-oj.odt'
 agendaCouncilTemplateComp.pod_formats = ['odt', 'pdf', ]
-agendaCouncilTemplateComp.pod_portal_types = ['MeetingCouncil']
-agendaCouncilTemplateComp.tal_condition = 'python:tool.isManager(here)'
+agendaCouncilTemplateComp.pod_portal_types = ['Meeting']
+agendaCouncilTemplateComp.tal_condition = u'python:tool.isManager(here)'
 agendaCouncilTemplateComp.context_variables = [{'name': u'oj_type', 'value': u'full'}]
 
 agendaCouncilTemplateBg = PodTemplateDescriptor('oj-bg', 'Ordre du jour Bourgmestre')
 agendaCouncilTemplateBg.odt_file = 'council-oj.odt'
 agendaCouncilTemplateBg.pod_formats = ['odt', 'pdf', ]
-agendaCouncilTemplateBg.pod_portal_types = ['MeetingCouncil']
-agendaCouncilTemplateBg.tal_condition = 'python:tool.isManager(here)'
+agendaCouncilTemplateBg.pod_portal_types = ['Meeting']
+agendaCouncilTemplateBg.tal_condition = u'python:tool.isManager(here)'
 agendaCouncilTemplateBg.context_variables = [{'name': u'oj_type', 'value': u'bg'}]
 
 decisionsCouncilTemplate = PodTemplateDescriptor('pv', 'Procès-verbal')
 decisionsCouncilTemplate.odt_file = 'council-pv.odt'
 decisionsCouncilTemplate.pod_formats = ['odt', 'pdf', ]
-decisionsCouncilTemplate.pod_portal_types = ['MeetingCouncil']
-decisionsCouncilTemplate.tal_condition = 'python:tool.isManager(here)'
+decisionsCouncilTemplate.pod_portal_types = ['Meeting']
+decisionsCouncilTemplate.tal_condition = u'python:tool.isManager(here)'
 
 itemCouncilRapportTemplate = PodTemplateDescriptor('rapport', 'Rapport')
 itemCouncilRapportTemplate.odt_file = 'council-rapport.odt'
 itemCouncilRapportTemplate.pod_formats = ['odt', 'pdf', ]
-itemCouncilRapportTemplate.pod_portal_types = ['MeetingItemCouncil']
-itemCouncilRapportTemplate.tal_condition = ''
+itemCouncilRapportTemplate.pod_portal_types = ['MeetingItem']
+itemCouncilRapportTemplate.tal_condition = u''
 
 itemCouncilProjectTemplate = PodTemplateDescriptor('projet-deliberation', 'Projet délibération')
 itemCouncilProjectTemplate.odt_file = 'projet-deliberation.odt'
 itemCouncilProjectTemplate.pod_formats = ['odt', 'pdf', ]
-itemCouncilProjectTemplate.pod_portal_types = ['MeetingItemCouncil']
-itemCouncilProjectTemplate.tal_condition = 'python:not here.hasMeeting()'
+itemCouncilProjectTemplate.pod_portal_types = ['MeetingItem']
+itemCouncilProjectTemplate.tal_condition = u'python:not here.hasMeeting()'
 
 itemCouncilTemplate = PodTemplateDescriptor('deliberation', 'Délibération')
 itemCouncilTemplate.odt_file = 'deliberation.odt'
 itemCouncilTemplate.pod_formats = ['odt', 'pdf', ]
-itemCouncilTemplate.pod_portal_types = ['MeetingItemCouncil']
-itemCouncilTemplate.tal_condition = 'python:here.hasMeeting()'
+itemCouncilTemplate.pod_portal_types = ['MeetingItem']
+itemCouncilTemplate.tal_condition = u'python:here.hasMeeting()'
 
 councilTemplates = [agendaCouncilTemplateIni, agendaCouncilTemplateComp,
                     agendaCouncilTemplateBg, decisionsCouncilTemplate,
@@ -236,48 +239,81 @@ councilTemplates = [agendaCouncilTemplateIni, agendaCouncilTemplateComp,
                     itemCouncilProjectTemplate, dashboardTemplate]
 
 # Users and groups -------------------------------------------------------------
-dgen = UserDescriptor('dgen', [], email="test@test.be", fullname="Henry Directeur")
-bourgmestre = UserDescriptor('bourgmestre', [], email="test@test.be", fullname="Pierre Bourgmestre")
-dfin = UserDescriptor('dfin', [], email="test@test.be", fullname="Directeur Financier")
-agentInfo = UserDescriptor('agentInfo', [], email="test@test.be", fullname="Agent Service Informatique")
-agentCompta = UserDescriptor('agentCompta', [], email="test@test.be", fullname="Agent Service Comptabilité")
-agentPers = UserDescriptor('agentPers', [], email="test@test.be", fullname="Agent Service du Personnel")
-agentTrav = UserDescriptor('agentTrav', [], email="test@test.be", fullname="Agent Travaux")
-chefPers = UserDescriptor('chefPers', [], email="test@test.be", fullname="Chef Personnel")
-chefCompta = UserDescriptor('chefCompta', [], email="test@test.be", fullname="Chef Comptabilité")
-refPers = UserDescriptor('refPers', [], email="test@test.be", fullname="Référent Administratif du Personnel")
-refCompta = UserDescriptor('refCompta', [], email="test@test.be", fullname="Référent Administratif Comptabilité")
-dirPers = UserDescriptor('dirPers', [], email="test@test.be", fullname="Directeur du Personnel")
-dirCompta = UserDescriptor('dirCompta', [], email="test@test.be", fullname="Directeur Comptabilité")
-echevinPers = UserDescriptor('echevinPers', [], email="test@test.be", fullname="Echevin du Personnel")
-echevinTrav = UserDescriptor('echevinTrav', [], email="test@test.be", fullname="Echevin des Travaux")
-conseiller = UserDescriptor('conseiller', [], email="test@test.be", fullname="Conseiller")
+dgen = UserDescriptor('dgen',
+                      fullname="Henry Directeur")
+bourgmestre = UserDescriptor('bourgmestre',
+                             fullname="Pierre Bourgmestre")
+dfin = UserDescriptor('dfin',
+                      fullname="Directeur Financier")
+agentInfo = UserDescriptor('agentInfo',
+                           fullname="Agent Service Informatique")
+agentCompta = UserDescriptor('agentCompta',
+                             fullname="Agent Service Comptabilité")
+agentPers = UserDescriptor('agentPers',
+                           fullname="Agent Service du Personnel")
+agentTrav = UserDescriptor('agentTrav',
+                           fullname="Agent Travaux")
+chefPers = UserDescriptor('chefPers',
+                          fullname="Chef Personnel")
+chefCompta = UserDescriptor('chefCompta',
+                            fullname="Chef Comptabilité")
+refPers = UserDescriptor('refPers',
+                         fullname="Référent Administratif du Personnel")
+refCompta = UserDescriptor('refCompta',
+                           fullname="Référent Administratif Comptabilité")
+dirPers = UserDescriptor('dirPers',
+                         fullname="Directeur du Personnel")
+dirCompta = UserDescriptor('dirCompta',
+                           fullname="Directeur Comptabilité")
+echevinPers = UserDescriptor('echevinPers',
+                             fullname="Echevin du Personnel")
+echevinTrav = UserDescriptor('echevinTrav',
+                             fullname="Echevin des Travaux")
+conseiller = UserDescriptor('conseiller',
+                            fullname="Conseiller")
+emetteuravisPers = UserDescriptor('emetteuravisPers',
+                                  fullname="Emetteur avis Personnel")
 
-emetteuravisPers = UserDescriptor('emetteuravisPers', [], email="test@test.be", fullname="Emetteur avis Personnel")
-
-police_grp = GroupDescriptor(POLICE_GROUP_PREFIX, 'Zone de Police', 'ZPL',
-                             groupsInCharge=('bourgmestre',))
-police_compta_grp = GroupDescriptor(
-    POLICE_GROUP_PREFIX + '-compta', 'Zone de Police comptable spécial', 'ZPLCS',
-    groupsInCharge=('bourgmestre',))
-dirgen_grp = GroupDescriptor('dirgen', 'Directeur Général', 'DG',
-                             groupsInCharge=('bourgmestre',))
-secr_grp = GroupDescriptor('secretariat', 'Secrétariat communal', 'Secr',
-                           groupsInCharge=('bourgmestre',))
-info_grp = GroupDescriptor('informatique', 'Service informatique', 'Info',
-                           groupsInCharge=('echevin2',))
-pers_grp = GroupDescriptor('personnel', 'Service du personnel', 'Pers',
-                           groupsInCharge=('echevin1',))
-dirfin_grp = GroupDescriptor('dirfin', 'Directeur Financier', 'DF',
-                             groupsInCharge=('echevin2',))
-compta_grp = GroupDescriptor('comptabilite', 'Service comptabilité', 'Compt',
-                             groupsInCharge=('echevin2',))
-trav_grp = GroupDescriptor('travaux', 'Service travaux', 'Trav',
-                           groupsInCharge=('echevin3',))
-bourg_grp = GroupDescriptor('bourgmestre', 'Bourgmestre', 'BG', '1')
-ech1_grp = GroupDescriptor('echevin1', 'Echevin 1', 'Ech1', '2')
-ech2_grp = GroupDescriptor('echevin2', 'Echevin 2', 'Ech2', '3')
-ech3_grp = GroupDescriptor('echevin3', 'Echevin 3', 'Ech3', '4')
+police_grp = OrgDescriptor(POLICE_GROUP_PREFIX,
+                           'Zone de Police',
+                           u'ZPL',
+                           groups_in_charge=('bourgmestre',))
+police_compta_grp = OrgDescriptor(POLICE_GROUP_PREFIX + '-compta',
+                                  'Zone de Police comptable spécial',
+                                  u'ZPLCS',
+                                  groups_in_charge=('bourgmestre',))
+dirgen_grp = OrgDescriptor('dirgen',
+                           'Directeur Général',
+                           u'DG',
+                           groups_in_charge=('bourgmestre',))
+secr_grp = OrgDescriptor('secretariat',
+                         'Secrétariat communal',
+                         u'Secr',
+                         groups_in_charge=('bourgmestre',))
+info_grp = OrgDescriptor('informatique',
+                         'Service informatique',
+                         u'Info',
+                         groups_in_charge=('echevin2',))
+pers_grp = OrgDescriptor('personnel',
+                         'Service du personnel',
+                         u'Pers',
+                         groups_in_charge=('echevin1',))
+dirfin_grp = OrgDescriptor(FINANCE_GROUP_ID,
+                           'Directeur Financier',
+                           u'DF',
+                           groups_in_charge=('echevin2',))
+compta_grp = OrgDescriptor('comptabilite',
+                           'Service comptabilité',
+                           u'Compt',
+                           groups_in_charge=('echevin2',))
+trav_grp = OrgDescriptor('travaux',
+                         'Service travaux',
+                         u'Trav',
+                         groups_in_charge=('echevin3',))
+bourg_grp = OrgDescriptor('bourgmestre', 'Bourgmestre', u'BG', '1')
+ech1_grp = OrgDescriptor('echevin1', 'Echevin 1', u'Ech1', '2')
+ech2_grp = OrgDescriptor('echevin2', 'Echevin 2', u'Ech2', '3')
+ech3_grp = OrgDescriptor('echevin3', 'Echevin 3', u'Ech3', '4')
 
 dirgen_grp.creators.append(dgen)
 dirgen_grp.serviceheads.append(dgen)
@@ -323,8 +359,8 @@ pers_grp.advisers.append(dirPers)
 pers_grp.observers.append(echevinPers)
 pers_grp.advisers.append(emetteuravisPers)
 
-dirfin_grp.itemAdviceStates = ('meeting-config-college__state__prevalidated_waiting_advices',)
-dirfin_grp.itemAdviceEditStates = ('meeting-config-college__state__prevalidated_waiting_advices',)
+dirfin_grp.item_advice_states = ('meeting-config-college__state__prevalidated_waiting_advices',)
+dirfin_grp.item_advice_edit_states = ('meeting-config-college__state__prevalidated_waiting_advices',)
 dirfin_grp.keepAccessToItemWhenAdviceIsGiven = True
 dirfin_grp.creators.append(dfin)
 dirfin_grp.serviceheads.append(dfin)
@@ -383,7 +419,8 @@ collegeMeeting.assembly = 'Pierre Dupont - Bourgmestre,\n' \
                           'Echevin Un, Echevin Deux, Echevin Trois - Echevins,\n' \
                           'Jacqueline Exemple, Responsable du CPAS'
 collegeMeeting.signatures = \
-    'Le Secrétaire communal\nPierre Dupont\nDirecteur général f.f.\nLe Président\nCharles Exemple\nÉchevin délégué'
+    'Le Secrétaire communal\nPierre Dupont\nDirecteur général f.f.\n' \
+    'Le Président\nCharles Exemple\nÉchevin délégué'
 
 collegeMeeting.certifiedSignatures = [
     {'signatureNumber': '1',
@@ -411,7 +448,6 @@ collegeMeeting.usedItemAttributes = ['completeness',
                                      'observations',
                                      'toDiscuss',
                                      'otherMeetingConfigsClonableToPrivacy',
-                                     'itemAssembly',
                                      'itemIsSigned',
                                      'bourgmestreObservations',
                                      'proposingGroupWithGroupInCharge']
@@ -429,9 +465,15 @@ collegeMeeting.usedMeetingAttributes = ['startDate',
                                         'observations',
                                         'assemblyPolice']
 collegeMeeting.recordMeetingHistoryStates = []
-collegeMeeting.itemsListVisibleColumns = ('Creator', 'item_reference', 'review_state', 'getCategory',
-                                          'proposing_group_acronym', 'group_in_charge_acronym',
-                                          'advices', 'toDiscuss', 'actions')
+collegeMeeting.itemsListVisibleColumns = ('Creator',
+                                          'static_item_reference',
+                                          'review_state',
+                                          'getCategory',
+                                          'proposing_group_acronym',
+                                          'group_in_charge_acronym',
+                                          'advices',
+                                          'toDiscuss',
+                                          'actions')
 collegeMeeting.itemColumns = ('Creator', 'CreationDate', 'ModificationDate', 'review_state',
                               'getCategory', 'proposing_group_acronym', 'advices', 'toDiscuss',
                               'getItemIsSigned', 'linkedMeetingDate', 'actions')
@@ -446,10 +488,14 @@ collegeMeeting.dashboardMeetingLinkedItemsFilters = ('c4', 'c5', 'c6', 'c7', 'c1
 collegeMeeting.xhtmlTransformTypes = ('removeBlanks',)
 collegeMeeting.itemWorkflow = 'meetingitemcommunes_workflow'
 collegeMeeting.meetingWorkflow = 'meetingcommunes_workflow'
-collegeMeeting.itemConditionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCollegeWorkflowConditions'
-collegeMeeting.itemActionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCollegeWorkflowActions'
-collegeMeeting.meetingConditionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCollegeWorkflowConditions'
-collegeMeeting.meetingActionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCollegeWorkflowActions'
+collegeMeeting.itemConditionsInterface = \
+    'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCollegeWorkflowConditions'
+collegeMeeting.itemActionsInterface = \
+    'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCollegeWorkflowActions'
+collegeMeeting.meetingConditionsInterface = \
+    'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCollegeWorkflowConditions'
+collegeMeeting.meetingActionsInterface = \
+    'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCollegeWorkflowActions'
 collegeMeeting.transitionsToConfirm = ['MeetingItem.delay', ]
 collegeMeeting.meetingTopicStates = ('created', 'frozen')
 collegeMeeting.decisionTopicStates = ('decided', 'closed')
@@ -498,12 +544,12 @@ collegeMeeting.itemAdviceInvalidateStates = []
 collegeMeeting.keepAccessToItemWhenAdviceIsGiven = False
 collegeMeeting.customAdvisers = [
     {'row_id': 'unique_id_001',
-     'group': 'comptabilite',
+     'org': 'comptabilite',
      'gives_auto_advice_on': 'item/getBudgetRelated',
      'for_item_created_from': today,
      'is_linked_to_previous_row': '0'},
     {'row_id': 'unique_id_002',
-     'group': 'dirfin',
+     'org': FINANCE_GROUP_ID,
      'for_item_created_from': today,
      'delay': '5',
      'delay_left_alert': '2',
@@ -511,7 +557,7 @@ collegeMeeting.customAdvisers = [
      'available_on': 'python: item.adapted().mayChangeDelayTo(5)',
      'is_linked_to_previous_row': '0'},
     {'row_id': 'unique_id_003',
-     'group': 'dirfin',
+     'org': FINANCE_GROUP_ID,
      'for_item_created_from': today,
      'delay': '10',
      'delay_left_alert': '4',
@@ -519,7 +565,7 @@ collegeMeeting.customAdvisers = [
      'available_on': 'python: item.adapted().mayChangeDelayTo(10)',
      'is_linked_to_previous_row': '1'},
     {'row_id': 'unique_id_004',
-     'group': 'dirfin',
+     'org': FINANCE_GROUP_ID,
      'for_item_created_from': today,
      'delay': '20',
      'delay_left_alert': '4',
@@ -538,7 +584,7 @@ collegeMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed', 'accepted_
 collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
                                       'only_creator_may_delete', 'return_to_proposing_group',
                                       'pre_validation', 'charleroi_add_refadmin', 'waiting_advices',
-                                      'postpone_next_meeting', 'mark_not_applicable', 'removed']
+                                      'postpone_next_meeting', 'mark_not_applicable', 'removed', 'refused']
 collegeMeeting.transitionsForPresentingAnItem = ('propose', 'proposeToRefAdmin', 'prevalidate', 'validate', 'present', )
 collegeMeeting.onTransitionFieldTransforms = (
     ({'transition': 'delay',
@@ -574,9 +620,9 @@ collegeMeeting.meetingConfigsToCloneTo = [{'meeting_config': 'meeting-config-cou
 collegeMeeting.itemAutoSentToOtherMCStates = ('accepted', 'accepted_but_modified', )
 collegeMeeting.itemManualSentToOtherMCStates = ('itemfrozen', 'pre_accepted', )
 collegeMeeting.keepAdvicesOnSentToOtherMC = True
-collegeMeeting.advicesKeptOnSentToOtherMC = ('delay_real_group_id__unique_id_002',
-                                             'delay_real_group_id__unique_id_003',
-                                             'delay_real_group_id__unique_id_004')
+collegeMeeting.advicesKeptOnSentToOtherMC = (DELAYAWARE_ROW_ID_PATTERN.format('unique_id_002'),
+                                             DELAYAWARE_ROW_ID_PATTERN.format('unique_id_003'),
+                                             DELAYAWARE_ROW_ID_PATTERN.format('unique_id_004'))
 collegeMeeting.recurringItems = [
     RecurringItemDescriptor(
         id='recurringagenda1',
@@ -611,16 +657,20 @@ collegeMeeting.itemTemplates = [
         proposingGroup='',
         proposingGroupWithGroupInCharge='',
         templateUsingGroups=[],
-        decision="""<p>Vu la loi du 8 juillet 1976 organique des centres publics d'action sociale et plus particulièrement son article 111;</p>
-<p>Vu l'Arrêté du Gouvernement Wallon du 22 avril 2004 portant codification de la législation relative aux pouvoirs locaux tel que confirmé par le décret du 27 mai 2004 du Conseil régional wallon;</p>
-<p>Attendu que les décisions suivantes du Bureau permanent/du Conseil de l'Action sociale du XXX ont été reçues le XXX dans le cadre de la tutelle générale sur les centres publics d'action sociale :</p>
+        decision="""<p>Vu la loi du 8 juillet 1976 organique des centres publics d'action
+sociale et plus particulièrement son article 111;</p>
+<p>Vu l'Arrêté du Gouvernement Wallon du 22 avril 2004 portant codification de la législation
+relative aux pouvoirs locaux tel que confirmé par le décret du 27 mai 2004 du Conseil régional wallon;</p>
+<p>Attendu que les décisions suivantes du Bureau permanent/du Conseil de l'Action sociale
+du XXX ont été reçues le XXX dans le cadre de la tutelle générale sur les centres publics d'action sociale :</p>
 <p>- ...;</p>
 <p>- ...;</p>
 <p>- ...</p>
 <p>Attendu que ces décisions sont conformes à la loi et à l'intérêt général;</p>
 <p>Déclare à l'unanimité que :</p>
 <p><strong>Article 1er :</strong></p>
-<p>Les décisions du Bureau permanent/Conseil de l'Action sociale visées ci-dessus sont conformes à la loi et à l'intérêt général et qu'il n'y a, dès lors, pas lieu de les annuler.</p>
+<p>Les décisions du Bureau permanent/Conseil de l'Action sociale visées ci-dessus sont conformes à
+la loi et à l'intérêt général et qu'il n'y a, dès lors, pas lieu de les annuler.</p>
 <p><strong>Article 2 :</strong></p>
 <p>Copie de la présente délibération sera transmise au Bureau permanent/Conseil de l'Action sociale.</p>"""),
     ItemTemplateDescriptor(
@@ -633,16 +683,26 @@ collegeMeeting.itemTemplates = [
         templateUsingGroups=['personnel', ],
         decision="""
             <p>Vu la loi du 26 mai 2002 instituant le droit à l’intégration sociale;</p>
-<p>Vu la délibération du Conseil communal du 29 juin 2009 concernant le cahier spécial des charges relatif au marché de services portant sur le contrôle des agents communaux absents pour raisons médicales;</p>
-<p>Vu sa délibération du 17 décembre 2009 désignant le docteur XXX en qualité d’adjudicataire pour la mission de contrôle médical des agents de l’Administration communale;</p>
-<p>Vu également sa décision du 17 décembre 2009 d’opérer les contrôles médicaux de manière systématique et pour une période d’essai d’un trimestre;</p>
-<p>Attendu qu’un certificat médical a été  reçu le XXX concernant XXX la couvrant du XXX au XXX, avec la mention « XXX »;</p>
-<p>Attendu que le Docteur XXX a transmis au service du Personnel, par fax, le même jour à XXX le rapport de contrôle mentionnant l’absence de XXX ce XXX à XXX;</p>
-<p>Considérant que XXX avait été informée par le Service du Personnel de la mise en route du système de contrôle systématique que le médecin-contrôleur;</p>
-<p>Considérant qu’ayant été absent(e) pour maladie la semaine précédente elle avait reçu la visite du médecin-contrôleur;</p>
+<p>Vu la délibération du Conseil communal du 29 juin 2009 concernant le cahier spécial des charges
+relatif au marché de services portant sur le contrôle des agents communaux absents pour raisons médicales;</p>
+<p>Vu sa délibération du 17 décembre 2009 désignant le docteur XXX en qualité d’adjudicataire pour
+la mission de contrôle médical des agents de l’Administration communale;</p>
+<p>Vu également sa décision du 17 décembre 2009 d’opérer les contrôles médicaux de manière systématique
+et pour une période d’essai d’un trimestre;</p>
+<p>Attendu qu’un certificat médical a été  reçu le XXX concernant XXX la couvrant du XXX au XXX, avec
+la mention « XXX »;</p>
+<p>Attendu que le Docteur XXX a transmis au service du Personnel, par fax, le même jour à XXX le rapport
+de contrôle mentionnant l’absence de XXX ce XXX à XXX;</p>
+<p>Considérant que XXX avait été informée par le Service du Personnel de la mise en route du système de
+contrôle systématique que le médecin-contrôleur;</p>
+<p>Considérant qu’ayant été absent(e) pour maladie la semaine précédente elle avait reçu la visite du
+médecin-contrôleur;</p>
 <p>DECIDE :</p>
-<p><strong>Article 1</strong> : De convoquer XXX devant  Monsieur le Secrétaire communal f.f. afin de lui rappeler ses obligations en la matière.</p>
-<p><strong>Article 2</strong> :  De prévenir XXX, qu’en cas de récidive, il sera proposé par le Secrétaire communal au Collège de transformer les jours de congés de maladie en absence injustifiée (retenue sur traitement avec application de la loi du 26 mai 2002 citée ci-dessus).</p>
+<p><strong>Article 1</strong> : De convoquer XXX devant  Monsieur le Secrétaire communal f.f. afin de
+lui rappeler ses obligations en la matière.</p>
+<p><strong>Article 2</strong> :  De prévenir XXX, qu’en cas de récidive, il sera proposé par le
+Secrétaire communal au Collège de transformer les jours de congés de maladie en absence injustifiée
+(retenue sur traitement avec application de la loi du 26 mai 2002 citée ci-dessus).</p>
 <p><strong>Article 3</strong> : De charger le service du personnel du suivi de ce dossier.</p>"""),
     ItemTemplateDescriptor(
         id='template3',
@@ -652,20 +712,29 @@ collegeMeeting.itemTemplates = [
         proposingGroup='personnel',
         proposingGroupWithGroupInCharge='personnel__groupincharge__echevin1',
         templateUsingGroups=['personnel', ],
-        decision="""<p>Considérant qu’il y a lieu de pourvoir au remplacement de Madame XXX, XXX bénéficiant d’une interruption de carrière pour convenances personnelles pour l’année scolaire 2009/2010. &nbsp;</p>
+        decision="""<p>Considérant qu’il y a lieu de pourvoir au remplacement de Madame XXX, XXX bénéficiant
+        d’une interruption de carrière pour convenances personnelles pour l’année scolaire 2009/2010. &nbsp;</p>
 <p>Attendu qu’un appel public a été lancé au mois de mai dernier;</p>
-<p>Vu la circulaire N° 2772 de la Communauté Française&nbsp;du 29 juin 2009 concernant &nbsp;la gestion des carrières administrative et pécuniaire dans l’enseignement fondamental ordinaire et principalement le chapitre 3 relatif aux engagements temporaires pendant l’année scolaire 2009/2010;</p>
-<p>Vu la proposition du directeur concerné d’attribuer cet emploi à Monsieur XXX, titulaire des titres requis;</p>
-<p>Vu le décret de la Communauté Française du 13 juillet 1998 portant restructuration de l’enseignement&nbsp;maternel et primaire ordinaires avec effet au 1er octobre 1998;</p>
-<p>Vu la loi du 29 mai 1959 (Pacte scolaire) et les articles L1122-19 et L1213-1 du Code de la démocratie locale et de la décentralisation;</p>
+<p>Vu la circulaire N° 2772 de la Communauté Française&nbsp;du 29 juin 2009 concernant &nbsp;la gestion
+des carrières administrative et pécuniaire dans l’enseignement fondamental ordinaire et principalement
+le chapitre 3 relatif aux engagements temporaires pendant l’année scolaire 2009/2010;</p>
+<p>Vu la proposition du directeur concerné d’attribuer cet emploi à Monsieur XXX, titulaire des titres
+requis;</p>
+<p>Vu le décret de la Communauté Française du 13 juillet 1998 portant restructuration de l’enseignement&nbsp;
+maternel et primaire ordinaires avec effet au 1er octobre 1998;</p>
+<p>Vu la loi du 29 mai 1959 (Pacte scolaire) et les articles L1122-19 et L1213-1 du Code de la démocratie
+locale et de la décentralisation;</p>
 <p>Vu l’avis favorable de l’Echevin de l’Enseignement;</p>
 <p><b>DECIDE&nbsp;:</b><br>
 <b><br> Article 1<sup>er</sup></b> :</p>
-<p>Au scrutin secret et à l’unanimité, de désigner Monsieur XXX, né le XXX à XXX et domicilié à XXX, en qualité d’instituteur maternel temporaire mi-temps en remplacement de Madame XXX aux écoles communales fondamentales de Sambreville (section de XXX) du XXX au XXX.</p>
+<p>Au scrutin secret et à l’unanimité, de désigner Monsieur XXX, né le XXX à XXX et domicilié à XXX,
+en qualité d’instituteur maternel temporaire mi-temps en remplacement de Madame XXX aux écoles communales
+fondamentales de Sambreville (section de XXX) du XXX au XXX.</p>
 <p><b>Article 2</b> :</p>
 <p>L’horaire hebdomadaire de l’intéressé est fixé à 13 périodes.</p>
 <p><b>Article 3&nbsp;:</b></p>
-<p>La présente délibération sera soumise à la ratification du Conseil Communal. Elle sera transmise au Bureau Régional de l’Enseignement primaire et maternel, à l’Inspectrice Cantonale et à la direction concernée.</p>"""),
+<p>La présente délibération sera soumise à la ratification du Conseil Communal. Elle sera transmise au
+Bureau Régional de l’Enseignement primaire et maternel, à l’Inspectrice Cantonale et à la direction concernée.</p>"""),
     ItemTemplateDescriptor(
         id='template4',
         title='Prestation réduite',
@@ -674,18 +743,29 @@ collegeMeeting.itemTemplates = [
         proposingGroup='personnel',
         proposingGroupWithGroupInCharge='personnel__groupincharge__echevin1',
         templateUsingGroups=['personnel', ],
-        decision="""<p>Vu la loi de redressement du 22 janvier 1985 (article 99 et suivants) et de l’Arrêté Royal du 12 août 1991 (tel que modifié) relatifs à l’interruption de carrière professionnelle dans l’enseignement;</p>
-<p>Vu la lettre du XXX par laquelle Madame XXX, institutrice maternelle, sollicite le renouvellement pendant l’année scolaire 2009/2010 de son congé pour prestations réduites mi-temps pour convenances personnelles dont elle bénéficie depuis le 01 septembre 2006;</p>
+        decision="""<p>Vu la loi de redressement du 22 janvier 1985 (article 99 et suivants) et de
+        l’Arrêté Royal du 12 août 1991 (tel que modifié) relatifs à l’interruption de carrière
+        professionnelle dans l’enseignement;</p>
+<p>Vu la lettre du XXX par laquelle Madame XXX, institutrice maternelle, sollicite le renouvellement
+pendant l’année scolaire 2009/2010 de son congé pour prestations réduites mi-temps pour convenances
+personnelles dont elle bénéficie depuis le 01 septembre 2006;</p>
 <p>Attendu que le remplacement de l’intéressée&nbsp;est assuré pour la prochaine rentrée scolaire;</p>
-<p>Vu le décret de la Communauté Française du 13 juillet 1988 portant restructuration de l’enseignement maternel et primaire ordinaires avec effet au 1er octobre 1998;</p>
-<p>Vu la loi du 29 mai 1959 (Pacte Scolaire) et les articles L1122-19 et L1213-1 du code de la démocratie locale et de la décentralisation;</p>
+<p>Vu le décret de la Communauté Française du 13 juillet 1988 portant restructuration de l’enseignement
+maternel et primaire ordinaires avec effet au 1er octobre 1998;</p>
+<p>Vu la loi du 29 mai 1959 (Pacte Scolaire) et les articles L1122-19 et L1213-1 du code de la
+démocratie locale et de la décentralisation;</p>
 <p>Vu l’avis favorable de l’Echevin de l’Enseignement;</p>
 <p><b>DECIDE&nbsp;:</b><br><b><br> Article 1<sup>er</sup></b>&nbsp;:</p>
-<p>Au scrutin secret et à l’unanimité, d’accorder à Madame XXX le congé pour prestations réduites mi-temps sollicité pour convenances personnelles en qualité d’institutrice maternelle aux écoles communales fondamentales&nbsp;&nbsp;de Sambreville (section de XXX).</p>
+<p>Au scrutin secret et à l’unanimité, d’accorder à Madame XXX le congé pour prestations réduites
+mi-temps sollicité pour convenances personnelles en qualité d’institutrice maternelle aux écoles
+communales fondamentales&nbsp;&nbsp;de Sambreville (section de XXX).</p>
 <p><b>Article 2</b> :</p>
-<p>Une activité lucrative est autorisée durant ce congé qui est assimilé à une période d’activité de service, dans le respect de la réglementation relative au cumul.</p>
+<p>Une activité lucrative est autorisée durant ce congé qui est assimilé à une période d’activité
+de service, dans le respect de la réglementation relative au cumul.</p>
 <p><b>Article 3&nbsp;:</b></p>
-<p>La présente délibération sera soumise pour accord au prochain Conseil, transmise au Bureau Régional de l’Enseignement primaire et maternel, à&nbsp;l’Inspectrice Cantonale, à la direction concernée et à l’intéressée.</p>"""),
+<p>La présente délibération sera soumise pour accord au prochain Conseil, transmise au Bureau
+Régional de l’Enseignement primaire et maternel, à&nbsp;l’Inspectrice Cantonale, à la direction
+concernée et à l’intéressée.</p>"""),
     ItemTemplateDescriptor(
         id='template5',
         title='Exemple modèle disponible pour tous',
@@ -751,7 +831,6 @@ councilMeeting.annexTypes = [annexe, annexeBudget, annexeCahier,
 councilMeeting.usedItemAttributes = ['motivation',
                                      'observations',
                                      'privacy',
-                                     'itemAssembly',
                                      'budgetInfos',
                                      'manuallyLinkedItems',
                                      'pollType',
@@ -773,7 +852,7 @@ councilMeeting.usedMeetingAttributes = ['startDate',
                                         'observations', ]
 councilMeeting.recordMeetingHistoryStates = []
 councilMeeting.itemsListVisibleColumns = ('Creator',
-                                          'item_reference',
+                                          'static_item_reference',
                                           'review_state',
                                           'getCategory',
                                           'proposing_group_acronym',
@@ -781,8 +860,15 @@ councilMeeting.itemsListVisibleColumns = ('Creator',
                                           'advices',
                                           'pollType',
                                           'actions')
-councilMeeting.itemColumns = ('Creator', 'CreationDate', 'ModificationDate', 'review_state',
-                              'getCategory', 'proposing_group_acronym', 'advices', 'linkedMeetingDate', 'actions')
+councilMeeting.itemColumns = ('Creator',
+                              'CreationDate',
+                              'ModificationDate',
+                              'review_state',
+                              'getCategory',
+                              'proposing_group_acronym',
+                              'advices',
+                              'linkedMeetingDate',
+                              'actions')
 councilMeeting.xhtmlTransformFields = ('MeetingItem.description',
                                        'MeetingItem.decision',
                                        'MeetingItem.observations',
@@ -790,14 +876,17 @@ councilMeeting.xhtmlTransformFields = ('MeetingItem.description',
 councilMeeting.xhtmlTransformTypes = ('removeBlanks',)
 councilMeeting.itemWorkflow = 'meetingitemcommunes_workflow'
 councilMeeting.meetingWorkflow = 'meetingcommunes_workflow'
-councilMeeting.itemConditionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCouncilWorkflowConditions'
-councilMeeting.itemActionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCouncilWorkflowActions'
-councilMeeting.meetingConditionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCouncilWorkflowConditions'
-councilMeeting.meetingActionsInterface = 'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCouncilWorkflowActions'
+councilMeeting.itemConditionsInterface = \
+    'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCouncilWorkflowConditions'
+councilMeeting.itemActionsInterface = \
+    'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCouncilWorkflowActions'
+councilMeeting.meetingConditionsInterface = \
+    'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCouncilWorkflowConditions'
+councilMeeting.meetingActionsInterface = \
+    'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCouncilWorkflowActions'
 councilMeeting.transitionsToConfirm = []
 councilMeeting.meetingTopicStates = ('created', 'frozen')
 councilMeeting.decisionTopicStates = ('decided', 'closed')
-councilMeeting.itemAdviceStates = ('validated',)
 councilMeeting.enforceAdviceMandatoriness = False
 councilMeeting.itemReferenceFormat = "python: here.adapted().getItemRefForActeCouncil()"
 councilMeeting.insertingMethodsOnAddItem = (
@@ -823,7 +912,7 @@ councilMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed',
                                     'marked_not_applicable']
 councilMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
                                       'return_to_proposing_group', 'items_come_validated',
-                                      'mark_not_applicable']
+                                      'mark_not_applicable', 'refused']
 councilMeeting.transitionsForPresentingAnItem = ('present', )
 councilMeeting.onMeetingTransitionItemTransitionToTrigger = ({'meeting_transition': 'freeze',
                                                               'item_transition': 'itemfreeze'},
@@ -858,93 +947,107 @@ councilMeeting.usedPollTypes = ('secret', 'no_vote', 'secret_separated', 'freeha
 
 councilMeeting.podTemplates = councilTemplates
 
-conseiller1_mu = MeetingUserDescriptor('BAKKDJ018', gender='f', duty='Conseillère', usages=['asker', ])
-conseiller1 = UserDescriptor('BAKKDJ018', [], email="test@test.be", fullname="BAKKOUCHE Djamila")
-conseiller2_mu = MeetingUserDescriptor('BANGSE231', duty='Conseiller', usages=['asker', ])
-conseiller2 = UserDescriptor('BANGSE231', [], email="test@test.be", fullname="BANGISA Serge")
-conseiller3_mu = MeetingUserDescriptor('CASALE201', duty='Conseiller', usages=['asker', ])
-conseiller3 = UserDescriptor('CASALE201', [], email="test@test.be", fullname="CASAERT Léon")
-conseiller4_mu = MeetingUserDescriptor('CHASOL115', duty='Conseiller', usages=['asker', ])
-conseiller4 = UserDescriptor('CHASOL115', [], email="test@test.be", fullname="CHASTEL Olivier")
-conseiller5_mu = MeetingUserDescriptor('DEMALU140', gender='f', duty='Conseillère', usages=['asker', ])
-conseiller5 = UserDescriptor('DEMALU140', [], email="test@test.be", fullname="DEMARET Lucie")
-conseiller6_mu = MeetingUserDescriptor('DEPRJE105', duty='Conseiller', usages=['asker', ])
-conseiller6 = UserDescriptor('DEPRJE105', [], email="test@test.be", fullname="DEPREZ Jean-Pierre")
-conseiller7_mu = MeetingUserDescriptor('DESGXA103', duty='Conseiller', usages=['asker', ])
-conseiller7 = UserDescriptor('DESGXA103', [], email="test@test.be", fullname="DESGAIN Xavier")
-conseiller8_mu = MeetingUserDescriptor('DEVIFA128', gender='f', duty='Conseillère', usages=['asker', ])
-conseiller8 = UserDescriptor('DEVIFA128', [], email="test@test.be", fullname="DEVILERS Fabienne")
-conseiller9_mu = MeetingUserDescriptor('DOGRMA293', duty='Conseiller', usages=['asker', ])
-conseiller9 = UserDescriptor('DOGRMA293', [], email="test@test.be", fullname="DOGRU Mahmut")
-conseiller10_mu = MeetingUserDescriptor('DUFRAN251', duty='Conseiller', usages=['asker', ])
-conseiller10 = UserDescriptor('DUFRAN251', [], email="test@test.be", fullname="DUFRANE Anthony")
-conseiller11_mu = MeetingUserDescriptor('ELBOMA166', gender='f', duty='Conseillère', usages=['asker', ])
-conseiller11 = UserDescriptor('ELBOMA166', [], email="test@test.be", fullname="EL BOUREZGUI Malika")
-conseiller12_mu = MeetingUserDescriptor('FELOMA103', duty='Conseiller', usages=['asker', ])
-conseiller12 = UserDescriptor('FELOMA103', [], email="test@test.be", fullname="FELON Maxime")
-conseiller13_mu = MeetingUserDescriptor('FOTIDO146', gender='f', duty='Conseillère', usages=['asker', ])
-conseiller13 = UserDescriptor('FOTIDO146', [], email="test@test.be", fullname="FOTIA Dominique")
-conseiller14_mu = MeetingUserDescriptor('FRERAL093', duty='Conseiller', usages=['asker', ])
-conseiller14 = UserDescriptor('FRERAL093', [], email="test@test.be", fullname="FRERE Albert")
-conseiller15_mu = MeetingUserDescriptor('GAHOLA116', gender='f', duty='Conseillère', usages=['asker', ])
-conseiller15 = UserDescriptor('GAHOLA116', [], email="test@test.be", fullname="GAHOUCHI Latifa")
-conseiller16_mu = MeetingUserDescriptor('HERMMA071', duty='Conseiller', usages=['asker', ])
-conseiller16 = UserDescriptor('HERMMA071', [], email="test@test.be", fullname="HERMAN Maurice")
-conseiller17_mu = MeetingUserDescriptor('HEMBPH039', duty='Conseiller', usages=['asker', ])
-conseiller17 = UserDescriptor('HEMBPH039', [], email="test@test.be", fullname="HEMBISE Philippe")
-conseiller18_mu = MeetingUserDescriptor('HOEBMA186', gender='f', duty='Conseillère', usages=['asker', ])
-conseiller18 = UserDescriptor('HOEBMA186', [], email="test@test.be", fullname="HOEBEKE Maryse")
-conseiller19_mu = MeetingUserDescriptor('IMANHI167', duty='Conseiller', usages=['asker', ])
-conseiller19 = UserDescriptor('IMANHI167', [], email="test@test.be", fullname="IMANE Hicham")
-conseiller20_mu = MeetingUserDescriptor('ITALGA169', duty='Conseiller', usages=['asker', ])
-conseiller20 = UserDescriptor('ITALGA169', [], email="test@test.be", fullname="ITALIANO Gaetano")
-conseiller21_mu = MeetingUserDescriptor('JADODA369', duty='Conseiller', usages=['asker', ])
-conseiller21 = UserDescriptor('JADODA369', [], email="test@test.be", fullname="JADOUL David")
-conseiller22_mu = MeetingUserDescriptor('KADIMO133', duty='Conseiller', usages=['asker', ])
-conseiller22 = UserDescriptor('KADIMO133', [], email="test@test.be", fullname="KADIM Mohamed")
-conseiller23_mu = MeetingUserDescriptor('KILISE305', duty='Conseiller', usages=['asker', ])
-conseiller23 = UserDescriptor('KILISE305', [], email="test@test.be", fullname="KILIC Serdar")
-conseiller24_mu = MeetingUserDescriptor('MAGNPA235', duty='Conseiller', usages=['asker', ])
-conseiller24 = UserDescriptor('MAGNPA235', [], email="test@test.be", fullname="MAGNETTE Paul")
-conseiller25_mu = MeetingUserDescriptor('MANOLI138', gender='f', duty='Conseillère', usages=['asker', ])
-conseiller25 = UserDescriptor('MANOLI138', [], email="test@test.be", fullname="MANOUVRIER Line")
+hp1 = HeldPositionDescriptor('held_pos', u'Conseillère', usages=['asker'])
+person1 = PersonDescriptor('BAKKDJ018',
+                           lastname=u'BAKKOUCHE',
+                           firstname=u'Djamila',
+                           gender=u'F',
+                           held_positions=[hp1])
+conseiller1 = UserDescriptor(id=person1.id,
+                             fullname=u'{0} {1}'.format(person1.lastname, person1.firstname))
 
-council_restrictedpowerobservers = PloneGroupDescriptor('meeting-config-council_restrictedpowerobservers',
-                                                        'meeting-config-council_restrictedpowerobservers',
-                                                        [])
-conseiller1.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller2.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller3.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller4.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller5.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller6.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller7.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller8.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller9.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller10.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller11.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller12.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller13.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller14.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller15.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller16.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller17.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller18.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller19.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller20.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller21.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller22.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller23.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller24.ploneGroups = [council_restrictedpowerobservers, ]
-conseiller25.ploneGroups = [council_restrictedpowerobservers, ]
+hp2 = HeldPositionDescriptor('held_pos', u'Conseiller', usages=['asker'])
+person2 = PersonDescriptor('BANGSE231',
+                           lastname=u'BANGISA',
+                           firstname=u'Serge',
+                           held_positions=[hp2])
+conseiller2 = UserDescriptor(id=person2.id,
+                             fullname=u'{0} {1}'.format(person2.lastname, person2.firstname))
 
-councilMeeting.meetingUsers = [conseiller1_mu, conseiller2_mu, conseiller3_mu, conseiller4_mu,
-                               conseiller5_mu, conseiller6_mu, conseiller7_mu, conseiller8_mu,
-                               conseiller9_mu, conseiller10_mu, conseiller11_mu, conseiller12_mu,
-                               conseiller13_mu, conseiller14_mu, conseiller15_mu, conseiller16_mu,
-                               conseiller17_mu, conseiller18_mu, conseiller19_mu, conseiller20_mu,
-                               conseiller21_mu, conseiller22_mu, conseiller23_mu, conseiller24_mu,
-                               conseiller25_mu]
+hp3 = HeldPositionDescriptor('held_pos', u'Conseiller', usages=['asker'])
+person3 = PersonDescriptor('CASALE201',
+                           lastname=u'CASAERT',
+                           firstname=u'Léon',
+                           held_positions=[hp3])
+conseiller3 = UserDescriptor(id=person3.id,
+                             fullname=u'{0} {1}'.format(person3.lastname, person3.firstname))
+
+hp4 = HeldPositionDescriptor('held_pos', u'Conseiller', usages=['asker'])
+person4 = PersonDescriptor('CHASOL115',
+                           lastname=u'CHASTEL',
+                           firstname=u'Olivier',
+                           held_positions=[hp4])
+conseiller4 = UserDescriptor(id=person4.id,
+                             fullname=u'{0} {1}'.format(person4.lastname, person4.firstname))
+
+
+hp5 = HeldPositionDescriptor('held_pos', u'Conseillère', usages=['asker'])
+person5 = PersonDescriptor('DEMALU140',
+                           lastname=u'DEMARET',
+                           firstname=u'Lucie',
+                           gender=u'F',
+                           held_positions=[hp5])
+conseiller5 = UserDescriptor(id=person5.id,
+                             fullname=u'{0} {1}'.format(person5.lastname, person5.firstname))
+
+hp6 = HeldPositionDescriptor('held_pos', u'Conseiller', usages=['asker'])
+person6 = PersonDescriptor('DEPRJE105',
+                           lastname=u'DEPREZ',
+                           firstname=u'Jean-Pierre',
+                           held_positions=[hp6])
+conseiller6 = UserDescriptor(id=person6.id,
+                             fullname=u'{0} {1}'.format(person6.lastname, person6.firstname))
+
+hp7 = HeldPositionDescriptor('held_pos', u'Conseiller', usages=['asker'])
+person7 = PersonDescriptor('DESGXA103',
+                           lastname=u'DESGAIN',
+                           firstname=u'Xavier',
+                           held_positions=[hp7])
+conseiller7 = UserDescriptor(id=person7.id,
+                             fullname=u'{0} {1}'.format(person7.lastname, person7.firstname))
+
+hp8 = HeldPositionDescriptor('held_pos', u'Conseillère', usages=['asker'])
+person8 = PersonDescriptor('DEVIFA128',
+                           lastname=u'DEVILERS',
+                           firstname=u'Fabienne',
+                           gender=u'F',
+                           held_positions=[hp8])
+conseiller8 = UserDescriptor(id=person8.id,
+                             fullname=u'{0} {1}'.format(person8.lastname, person8.firstname))
+
+hp9 = HeldPositionDescriptor('held_pos', u'Conseiller', usages=['asker'])
+person9 = PersonDescriptor('DOGRMA293',
+                           lastname=u'DOGRU',
+                           firstname=u'Mahmut',
+                           held_positions=[hp9])
+conseiller9 = UserDescriptor(id=person9.id,
+                             fullname=u'{0} {1}'.format(person9.lastname, person9.firstname))
+
+hp10 = HeldPositionDescriptor('held_pos', u'Conseiller', usages=['asker'])
+person10 = PersonDescriptor('DUFRAN251',
+                            lastname=u'DUFRANE',
+                            firstname=u'Anthony',
+                            held_positions=[hp10])
+conseiller10 = UserDescriptor(id=person10.id,
+                              fullname=u'{0} {1}'.format(person10.lastname, person10.firstname))
+
+council_restrictedpowerobservers = PloneGroupDescriptor(
+    'meeting-config-council_restrictedpowerobservers',
+    'meeting-config-council_restrictedpowerobservers',
+    [])
+conseiller1.ploneGroups = [council_restrictedpowerobservers]
+conseiller2.ploneGroups = [council_restrictedpowerobservers]
+conseiller3.ploneGroups = [council_restrictedpowerobservers]
+conseiller4.ploneGroups = [council_restrictedpowerobservers]
+conseiller5.ploneGroups = [council_restrictedpowerobservers]
+conseiller6.ploneGroups = [council_restrictedpowerobservers]
+conseiller7.ploneGroups = [council_restrictedpowerobservers]
+conseiller8.ploneGroups = [council_restrictedpowerobservers]
+conseiller9.ploneGroups = [council_restrictedpowerobservers]
+conseiller10.ploneGroups = [council_restrictedpowerobservers]
+
+councilMeeting.persons = [person1, person2, person3, person4, person5,
+                          person6, person7, person8, person9, person10]
 
 councilMeeting.itemTemplates = [
     ItemTemplateDescriptor(
@@ -954,8 +1057,7 @@ councilMeeting.itemTemplates = [
         category='divers',
         proposingGroup='dirgen',
         templateUsingGroups=['dirgen', ],
-        decision="""<p>&nbsp;</p>""")
-    ]
+        decision="""<p>&nbsp;</p>""")]
 
 councilMeeting.recurringItems = [
     RecurringItemDescriptor(
@@ -969,15 +1071,10 @@ councilMeeting.recurringItems = [
 
 data = PloneMeetingConfiguration(meetingFolderTitle='Mes séances',
                                  meetingConfigs=(collegeMeeting, councilMeeting),
-                                 groups=[police_grp, police_compta_grp, dirgen_grp,
-                                         secr_grp, info_grp, pers_grp,
-                                         dirfin_grp, compta_grp, trav_grp,
-                                         bourg_grp, ech1_grp, ech2_grp, ech3_grp])
-data.enableUserPreferences = False
+                                 orgs=[police_grp, police_compta_grp, dirgen_grp,
+                                       secr_grp, info_grp, pers_grp,
+                                       dirfin_grp, compta_grp, trav_grp,
+                                       bourg_grp, ech1_grp, ech2_grp, ech3_grp])
 data.usersOutsideGroups = [bourgmestre, conseiller,
                            conseiller1, conseiller2, conseiller3, conseiller4, conseiller5,
-                           conseiller6, conseiller7, conseiller8, conseiller9, conseiller10,
-                           conseiller11, conseiller12, conseiller13, conseiller14, conseiller15,
-                           conseiller16, conseiller17, conseiller18, conseiller19, conseiller20,
-                           conseiller21, conseiller22, conseiller23, conseiller24, conseiller25]
-# ------------------------------------------------------------------------------
+                           conseiller6, conseiller7, conseiller8, conseiller9, conseiller10]

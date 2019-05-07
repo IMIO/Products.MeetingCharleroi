@@ -5,36 +5,19 @@
 
   <include package="Products.GenericSetup" file="meta.zcml" />
 
-  <!-- ##code-section profiles.zcml-top #fill in your manual code here -->
-  <!-- ##/code-section profiles.zcml-top -->
-
   <genericsetup:registerProfile
       name="default"
       title="MeetingCharleroi"
       directory="profiles/default"
       description="Extension profile for MeetingCharleroi."
-      provides="Products.GenericSetup.interfaces.EXTENSION"
-      />
+      provides="Products.GenericSetup.interfaces.EXTENSION" />
   
-  <!-- ##code-section profiles.zcml-bottom #fill in your manual code here -->
-
   <genericsetup:registerProfile
    name="zcharleroi"
    title="PloneMeeting / Demo profile for Charleroi with french examples"
    directory="profiles/zcharleroi"
    description="PloneMeeting for City of Charleroi (Belgium)"
    provides="Products.GenericSetup.interfaces.EXTENSION"
-   for="Products.CMFPlone.interfaces.IPloneSiteRoot"/>
-
-
-  <genericsetup:upgradeStep
-      title="Go to MeetingCharleroi 4.0"
-      description=""
-      source="3.3"
-      destination="4.0"
-      handler="Products.MeetingCharleroi.migrations.migrate_to_4_0.migrate"
-      profile="Products.MeetingCharleroi:default" />
-
-  <!-- ##/code-section profiles.zcml-bottom -->
+   for="Products.CMFPlone.interfaces.IPloneSiteRoot" />
 
 </configure>

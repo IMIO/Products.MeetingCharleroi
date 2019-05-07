@@ -20,19 +20,13 @@
 # 02110-1301, USA.
 #
 
-__author__ = """Gauthier Bastien <gbastien@commune.sambreville.be>"""
-__docformat__ = 'plaintext'
-
-# ------------------------------------------------------------------------------
-from Products.MeetingCommunes.interfaces import \
-    IMeetingItemCollegeWorkflowActions, IMeetingItemCollegeWorkflowConditions, \
-    IMeetingCollegeWorkflowActions, IMeetingCollegeWorkflowConditions, \
-    IMeetingItemCouncilWorkflowActions, IMeetingItemCouncilWorkflowConditions, \
-    IMeetingCouncilWorkflowActions, IMeetingCouncilWorkflowConditions
+from Products.MeetingCommunes.interfaces import IMeetingCommunesWorkflowActions
+from Products.MeetingCommunes.interfaces import IMeetingCommunesWorkflowConditions
+from Products.MeetingCommunes.interfaces import IMeetingItemCommunesWorkflowActions
+from Products.MeetingCommunes.interfaces import IMeetingItemCommunesWorkflowConditions
 
 
-# ------------------------------------------------------------------------------
-class IMeetingItemCharleroiCollegeWorkflowActions(IMeetingItemCollegeWorkflowActions):
+class IMeetingItemCharleroiCollegeWorkflowActions(IMeetingItemCommunesWorkflowActions):
     '''This interface represents a meeting item as viewed by the specific
        item workflow that is defined in this MeetingCommunes product.'''
     def doPresent():
@@ -49,7 +43,7 @@ class IMeetingItemCharleroiCollegeWorkflowActions(IMeetingItemCollegeWorkflowAct
         """
 
 
-class IMeetingItemCharleroiCollegeWorkflowConditions(IMeetingItemCollegeWorkflowConditions):
+class IMeetingItemCharleroiCollegeWorkflowConditions(IMeetingItemCommunesWorkflowConditions):
     '''This interface represents a meeting item as viewed by the specific
        item workflow that is defined in this MeetingCommunes product.'''
     def mayDecide():
@@ -70,7 +64,7 @@ class IMeetingItemCharleroiCollegeWorkflowConditions(IMeetingItemCollegeWorkflow
         """
 
 
-class IMeetingCharleroiCollegeWorkflowActions(IMeetingCollegeWorkflowActions):
+class IMeetingCharleroiCollegeWorkflowActions(IMeetingCommunesWorkflowActions):
     '''This interface represents a meeting as viewed by the specific meeting
        workflow that is defined in this MeetingCommunes product.'''
     def doClose():
@@ -91,7 +85,7 @@ class IMeetingCharleroiCollegeWorkflowActions(IMeetingCollegeWorkflowActions):
         """
 
 
-class IMeetingCharleroiCollegeWorkflowConditions(IMeetingCollegeWorkflowConditions):
+class IMeetingCharleroiCollegeWorkflowConditions(IMeetingCommunesWorkflowConditions):
     '''This interface represents a meeting as viewed by the specific meeting
        workflow that is defined in this MeetingCommunes product.'''
     def mayFreeze():
@@ -116,7 +110,7 @@ class IMeetingCharleroiCollegeWorkflowConditions(IMeetingCollegeWorkflowConditio
         """
 
 
-class IMeetingItemCharleroiCouncilWorkflowActions(IMeetingItemCouncilWorkflowActions):
+class IMeetingItemCharleroiCouncilWorkflowActions(IMeetingItemCommunesWorkflowActions):
     '''This interface represents a meeting item as viewed by the specific
        item workflow that is defined in this MeetingCommunes product.'''
     def doPresent():
@@ -133,7 +127,7 @@ class IMeetingItemCharleroiCouncilWorkflowActions(IMeetingItemCouncilWorkflowAct
         """
 
 
-class IMeetingItemCharleroiCouncilWorkflowConditions(IMeetingItemCouncilWorkflowConditions):
+class IMeetingItemCharleroiCouncilWorkflowConditions(IMeetingItemCommunesWorkflowConditions):
     '''This interface represents a meeting item as viewed by the specific
        meeting item workflow that is defined in this MeetingCommunes product.'''
     def mayDecide():
@@ -154,7 +148,7 @@ class IMeetingItemCharleroiCouncilWorkflowConditions(IMeetingItemCouncilWorkflow
         """
 
 
-class IMeetingCharleroiCouncilWorkflowActions(IMeetingCouncilWorkflowActions):
+class IMeetingCharleroiCouncilWorkflowActions(IMeetingCommunesWorkflowActions):
     '''This interface represents a meeting as viewed by the specific meeting
        workflow that is defined in this MeetingCommunes product.'''
     def doClose():
@@ -175,7 +169,7 @@ class IMeetingCharleroiCouncilWorkflowActions(IMeetingCouncilWorkflowActions):
         """
 
 
-class IMeetingCharleroiCouncilWorkflowConditions(IMeetingCouncilWorkflowConditions):
+class IMeetingCharleroiCouncilWorkflowConditions(IMeetingCommunesWorkflowConditions):
     '''This interface represents a meeting as viewed by the specific meeting
        workflow that is defined in this MeetingCommunes product.'''
     def mayFreeze():
