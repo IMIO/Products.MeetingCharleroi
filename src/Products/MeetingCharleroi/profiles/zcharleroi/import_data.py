@@ -277,39 +277,39 @@ emetteuravisPers = UserDescriptor('emetteuravisPers',
 police_grp = OrgDescriptor(POLICE_GROUP_PREFIX,
                            'Zone de Police',
                            u'ZPL',
-                           groups_in_charge=('bourgmestre',))
+                           groups_in_charge=['bourgmestre'])
 police_compta_grp = OrgDescriptor(POLICE_GROUP_PREFIX + '-compta',
                                   'Zone de Police comptable spécial',
                                   u'ZPLCS',
-                                  groups_in_charge=('bourgmestre',))
+                                  groups_in_charge=['bourgmestre'])
 dirgen_grp = OrgDescriptor('dirgen',
                            'Directeur Général',
                            u'DG',
-                           groups_in_charge=('bourgmestre',))
+                           groups_in_charge=['bourgmestre'])
 secr_grp = OrgDescriptor('secretariat',
                          'Secrétariat communal',
                          u'Secr',
-                         groups_in_charge=('bourgmestre',))
+                         groups_in_charge=['bourgmestre'])
 info_grp = OrgDescriptor('informatique',
                          'Service informatique',
                          u'Info',
-                         groups_in_charge=('echevin2',))
+                         groups_in_charge=['echevin2'])
 pers_grp = OrgDescriptor('personnel',
                          'Service du personnel',
                          u'Pers',
-                         groups_in_charge=('echevin1',))
+                         groups_in_charge=['echevin1'])
 dirfin_grp = OrgDescriptor(FINANCE_GROUP_ID,
                            'Directeur Financier',
                            u'DF',
-                           groups_in_charge=('echevin2',))
+                           groups_in_charge=['echevin2'])
 compta_grp = OrgDescriptor('comptabilite',
                            'Service comptabilité',
                            u'Compt',
-                           groups_in_charge=('echevin2',))
+                           groups_in_charge=['echevin2'])
 trav_grp = OrgDescriptor('travaux',
                          'Service travaux',
                          u'Trav',
-                         groups_in_charge=('echevin3',))
+                         groups_in_charge=['echevin3'])
 bourg_grp = OrgDescriptor('bourgmestre', 'Bourgmestre', u'BG', '1')
 ech1_grp = OrgDescriptor('echevin1', 'Echevin 1', u'Ech1', '2')
 ech2_grp = OrgDescriptor('echevin2', 'Echevin 2', u'Ech2', '3')
@@ -359,8 +359,8 @@ pers_grp.advisers.append(dirPers)
 pers_grp.observers.append(echevinPers)
 pers_grp.advisers.append(emetteuravisPers)
 
-dirfin_grp.item_advice_states = ('meeting-config-college__state__prevalidated_waiting_advices',)
-dirfin_grp.item_advice_edit_states = ('meeting-config-college__state__prevalidated_waiting_advices',)
+dirfin_grp.item_advice_states = ['meeting-config-college__state__prevalidated_waiting_advices']
+dirfin_grp.item_advice_edit_states = ['meeting-config-college__state__prevalidated_waiting_advices']
 dirfin_grp.keepAccessToItemWhenAdviceIsGiven = True
 dirfin_grp.creators.append(dfin)
 dirfin_grp.serviceheads.append(dfin)

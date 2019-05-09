@@ -18,9 +18,9 @@ from Products.CMFPlone.utils import _createObjectByType
 from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
-from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.config import PROJECTNAME
+from Products.MeetingCharleroi.utils import finance_group_uid
 from Products.PloneMeeting.exportimport.content import ToolInitializer
 from Products.PloneMeeting.utils import org_id_to_uid
 
@@ -236,7 +236,7 @@ def _configureCollegeCustomAdvisers(site):
     college.setCustomAdvisers((
         {'delay_label': 'Incidence financi\xc3\xa8re',
          'for_item_created_until': '',
-         'org': org_id_to_uid(FINANCE_GROUP_ID),
+         'org': finance_group_uid(),
          'available_on': '',
          'delay': '10',
          'gives_auto_advice_on_help_message': '',
@@ -248,7 +248,7 @@ def _configureCollegeCustomAdvisers(site):
          'row_id': '2016-05-01.0'},
         {'delay_label': 'Incidence financi\xc3\xa8re (urgence)',
          'for_item_created_until': '',
-         'org': org_id_to_uid(FINANCE_GROUP_ID),
+         'org': finance_group_uid(),
          'available_on': '',
          'delay': '5',
          'gives_auto_advice_on_help_message': '',
@@ -260,7 +260,7 @@ def _configureCollegeCustomAdvisers(site):
          'row_id': '2016-05-01.1'},
         {'delay_label': 'Incidence financi\xc3\xa8re (prolongation)',
          'for_item_created_until': '',
-         'org': org_id_to_uid(FINANCE_GROUP_ID),
+         'org': finance_group_uid(),
          'available_on': '',
          'delay': '20',
          'gives_auto_advice_on_help_message': '',
@@ -316,8 +316,8 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
         if item['toDiscuss'] and cfg.id == 'meeting-config-college' and \
            item['category'] in ['affaires-juridiques', 'remboursement'] and \
            last_transition == 'prevalidate':
-            newItem.setOptionalAdvisers(('dirfin__rowid__unique_id_003', ))
-            import ipdb; ipdb.set_trace()
+            newItem.setOptionalAdvisers(
+                ('{0}__rowid__unique_id_003'.format(finance_group_uid(), )))
             newItem.updateLocalRoles()
             wfTool.doActionFor(newItem, 'wait_advices_from_prevalidated')
             newItem.setCompleteness('completeness_complete')
@@ -326,7 +326,7 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
                 advice = createContentInContainer(
                     newItem,
                     'meetingadvicefinances',
-                    **{'advice_group': org_id_to_uid(FINANCE_GROUP_ID),
+                    **{'advice_group': finance_group_uid(),
                        'advice_type': u'positive_finance',
                        'advice_comment': RichTextValue(u'Mon commentaire')})
                 wfTool.doActionFor(advice, 'proposeToFinancialEditor')

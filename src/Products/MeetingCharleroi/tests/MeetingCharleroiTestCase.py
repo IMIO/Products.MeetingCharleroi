@@ -20,21 +20,12 @@
 # 02110-1301, USA.
 #
 
-from Products.PloneMeeting.tests.PloneMeetingTestCase import PloneMeetingTestCase
-
 from Products.MeetingCharleroi.testing import MCH_TESTING_PROFILE_FUNCTIONAL
 from Products.MeetingCharleroi.tests.helpers import MeetingCharleroiTestingHelpers
+from Products.MeetingCommunes.tests.MeetingCommunesTestCase import MeetingCommunesTestCase
 
 
-class MeetingCharleroiTestCase(PloneMeetingTestCase, MeetingCharleroiTestingHelpers):
+class MeetingCharleroiTestCase(MeetingCommunesTestCase, MeetingCharleroiTestingHelpers):
     """Base class for defining MeetingCharleroi test cases."""
 
     layer = MCH_TESTING_PROFILE_FUNCTIONAL
-
-    def setUp(self):
-        PloneMeetingTestCase.setUp(self)
-        self.subproductIgnoredTestFiles = [
-            'testConversionWithDocumentViewer.py',
-            'test_robot.py']
-        self.meetingConfig = getattr(self.tool, 'meeting-config-college')
-        self.meetingConfig2 = getattr(self.tool, 'meeting-config-council')

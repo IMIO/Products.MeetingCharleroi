@@ -23,11 +23,10 @@
 #
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
+from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
+from Products.MeetingCharleroi.utils import finance_group_uid
 from zope.event import notify
 from zope.lifecycleevent import ObjectModifiedEvent
-
-from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
-from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 
 
 class testCustomAdvices(MeetingCharleroiTestCase, ):
@@ -44,7 +43,7 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')
         # ask finances advice
-        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
+        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
         self.proposeItem(item)
         self.changeUser('pmReviewer1')
         self.do(item, 'wait_advices_from_prevalidated')
@@ -60,7 +59,7 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         advice = createContentInContainer(
             item,
             'meetingadvicefinances',
-            **{'advice_group': FINANCE_GROUP_ID,
+            **{'advice_group': finance_group_uid(),
                'advice_type': u'positive_finance',
                'advice_comment': RichTextValue(u'My comment finances'),
                'advice_category': u'acquisitions'})
@@ -98,14 +97,14 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         # by default, only the 10 days delay is selectable
         self.assertEqual(item.listOptionalAdvisers().keys(),
                          ['not_selectable_value_delay_aware_optional_advisers',
-                          '%s__rowid__2016-05-01.0' % FINANCE_GROUP_ID,
+                          '%s__rowid__2016-05-01.0' % finance_group_uid(),
                           'not_selectable_value_non_delay_aware_optional_advisers',
                           'developers',
                           'vendors'])
         # select the 10 days delay
-        item.setOptionalAdvisers(('%s__rowid__2016-05-01.0' % FINANCE_GROUP_ID, ))
+        item.setOptionalAdvisers(('%s__rowid__2016-05-01.0' % finance_group_uid(), ))
         item.at_post_edit_script()
-        self.assertEquals(item.adviceIndex[FINANCE_GROUP_ID]['delay'], '10')
+        self.assertEquals(item.adviceIndex[finance_group_uid()]['delay'], '10')
         # Managers, are also required to use change delay widget for 5/20 delays
         self.changeUser('pmManager')
         self.assertFalse(item.adapted().mayChangeDelayTo(5))
@@ -124,9 +123,9 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         self.assertTrue(item.adapted().mayChangeDelayTo(10))
         self.assertFalse(item.adapted().mayChangeDelayTo(20))
         # change to 5 days
-        item.setOptionalAdvisers(('%s__rowid__2016-05-01.1' % FINANCE_GROUP_ID, ))
+        item.setOptionalAdvisers(('%s__rowid__2016-05-01.1' % finance_group_uid(), ))
         item.at_post_edit_script()
-        self.assertEquals(item.adviceIndex[FINANCE_GROUP_ID]['delay'], '5')
+        self.assertEquals(item.adviceIndex[finance_group_uid()]['delay'], '5')
         # could back to 10 days
         self.assertTrue(item.adapted().mayChangeDelayTo(5))
         self.assertTrue(item.adapted().mayChangeDelayTo(10))
@@ -148,9 +147,9 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         self.assertFalse(item.adapted().mayChangeDelayTo(10))
         self.assertTrue(item.adapted().mayChangeDelayTo(20))
         # change to 20 days
-        item.setOptionalAdvisers(('%s__rowid__2016-05-01.2' % FINANCE_GROUP_ID, ))
+        item.setOptionalAdvisers(('%s__rowid__2016-05-01.2' % finance_group_uid(), ))
         item.at_post_edit_script()
-        self.assertEquals(item.adviceIndex[FINANCE_GROUP_ID]['delay'], '20')
+        self.assertEquals(item.adviceIndex[finance_group_uid()]['delay'], '20')
         # once to 20, may back to 10
         self.assertFalse(item.adapted().mayChangeDelayTo(5))
         self.assertTrue(item.adapted().mayChangeDelayTo(10))

@@ -1,13 +1,12 @@
 from setuptools import setup, find_packages
-import os
 
-version = '4.0'
+version = '4.1b1.dev0'
 
 setup(name='Products.MeetingCharleroi',
       version=version,
       description="Official meetings management for college and council "
       "of Charleroi city (PloneMeeting extension profile)",
-      long_description=open("README.txt").read() + "\n" + open(os.path.join("docs", "HISTORY.txt")).read(),
+      long_description=open("README.rst").read() + "\n" + open("CHANGES.rst").read(),
       classifiers=["Programming Language :: Python"],
       keywords='',
       author='',
@@ -20,20 +19,12 @@ setup(name='Products.MeetingCharleroi',
       include_package_data=True,
       zip_safe=False,
       extras_require=dict(
-          test=['unittest2',
-                'zope.testing',
-                'plone.testing',
-                'plone.app.testing',
-                'plone.app.robotframework',
-                'Products.CMFPlacefulWorkflow',
-                'zope.testing',
-                'Products.PloneTestCase'],
+          test=['Products.PloneMeeting[test]'],
           templates=['Genshi', ]),
       install_requires=[
           'setuptools',
           'Products.CMFPlone',
           'Pillow',
-          'Products.PloneMeeting',
           'Products.MeetingCommunes'],
       entry_points={},
       )

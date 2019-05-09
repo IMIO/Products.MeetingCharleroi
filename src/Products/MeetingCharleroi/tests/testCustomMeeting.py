@@ -23,15 +23,14 @@
 #
 
 from DateTime import DateTime
-from Products.MeetingCommunes.tests.testCustomMeeting import testCustomMeeting as mctcm
+from imio.history.utils import getLastWFAction
+from plone import api
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
-from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
+from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
-from Products.PloneMeeting.utils import getLastEvent
-
-from plone import api
+from Products.MeetingCommunes.tests.testCustomMeeting import testCustomMeeting as mctcm
 
 
 class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
@@ -214,8 +213,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         # switch to council
         self.setMeetingConfig(self.meetingConfig2.getId())
 
-        meetingCouncil = self._createMeetingWithItems(withItems=False, meetingDate=DateTime()+1)
-        meetingCouncil2 = self._createMeetingWithItems(withItems=False, meetingDate=DateTime()+30)
+        meetingCouncil = self._createMeetingWithItems(withItems=False, meetingDate=DateTime() + 1)
+        meetingCouncil2 = self._createMeetingWithItems(withItems=False, meetingDate=DateTime() + 30)
         meetingCouncilUID = meetingCouncil.UID()
         meetingCouncilUID2 = meetingCouncil2.UID()
 
@@ -223,24 +222,24 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
 
         # item late
         itemLate = self.create('MeetingItem')
-        itemLate.setProposingGroup('vendors')
-        itemLate.setAssociatedGroups(('developers',))
+        itemLate.setProposingGroup(self.vendors_uid)
+        itemLate.setAssociatedGroups((self.developers_uid,))
         itemLate.setCategory('research')
         itemLate.setListType('late')
         self.presentItem(itemLate)
 
         # item depose
         itemDepo = self.create('MeetingItem')
-        itemDepo.setProposingGroup('vendors')
-        itemDepo.setAssociatedGroups(('developers',))
+        itemDepo.setProposingGroup(self.vendors_uid)
+        itemDepo.setAssociatedGroups((self.developers_uid,))
         itemDepo.setCategory('research')
         self.presentItem(itemDepo)
         itemDepo.setListType('depose')
 
         # item council "emergency" to next meeting
         itemNextCouncil = self.create('MeetingItem')
-        itemNextCouncil.setProposingGroup('vendors')
-        itemNextCouncil.setAssociatedGroups(('developers',))
+        itemNextCouncil.setProposingGroup(self.vendors_uid)
+        itemNextCouncil.setAssociatedGroups((self.developers_uid,))
         itemNextCouncil.setCategory('research')
         itemNextCouncil.setOtherMeetingConfigsClonableTo(u'meeting-config-council')
         itemNextCouncil.setPreferredMeeting(meetingCouncilUID)
@@ -248,8 +247,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
 
         # item council "emergency" to next meeting late
         itemNCLate = self.create('MeetingItem')
-        itemNCLate.setProposingGroup('vendors')
-        itemNCLate.setAssociatedGroups(('developers',))
+        itemNCLate.setProposingGroup(self.vendors_uid)
+        itemNCLate.setAssociatedGroups((self.developers_uid,))
         itemNCLate.setCategory('research')
         itemNCLate.setOtherMeetingConfigsClonableTo(u'meeting-config-council')
         itemNCLate.setPreferredMeeting(meetingCouncilUID)
@@ -258,8 +257,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
 
         # item council "emergency" to next meeting depose
         itemNCDepose = self.create('MeetingItem')
-        itemNCDepose.setProposingGroup('vendors')
-        itemNCDepose.setAssociatedGroups(('developers',))
+        itemNCDepose.setProposingGroup(self.vendors_uid)
+        itemNCDepose.setAssociatedGroups((self.developers_uid,))
         itemNCDepose.setCategory('research')
         itemNCDepose.setOtherMeetingConfigsClonableTo(u'meeting-config-council')
         itemNCDepose.setPreferredMeeting(meetingCouncilUID)
@@ -268,8 +267,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
 
         # item council to next month meeting
         itemNextMonthCouncil = self.create('MeetingItem')
-        itemNextMonthCouncil.setProposingGroup('vendors')
-        itemNextMonthCouncil.setAssociatedGroups(('developers',))
+        itemNextMonthCouncil.setProposingGroup(self.vendors_uid)
+        itemNextMonthCouncil.setAssociatedGroups((self.developers_uid,))
         itemNextMonthCouncil.setCategory('research')
         itemNextMonthCouncil.setOtherMeetingConfigsClonableTo(u'meeting-config-council')
         itemNextMonthCouncil.setPreferredMeeting(meetingCouncilUID2)
@@ -277,8 +276,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
 
         # item council to next month meeting late
         itemNMCLate = self.create('MeetingItem')
-        itemNMCLate.setProposingGroup('vendors')
-        itemNMCLate.setAssociatedGroups(('developers',))
+        itemNMCLate.setProposingGroup(self.vendors_uid)
+        itemNMCLate.setAssociatedGroups((self.developers_uid,))
         itemNMCLate.setCategory('research')
         itemNMCLate.setOtherMeetingConfigsClonableTo(u'meeting-config-council')
         itemNMCLate.setPreferredMeeting(meetingCouncilUID2)
@@ -287,8 +286,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
 
         # item council to next month meeting depose
         itemNMCDepose = self.create('MeetingItem')
-        itemNMCDepose.setProposingGroup('vendors')
-        itemNMCDepose.setAssociatedGroups(('developers',))
+        itemNMCDepose.setProposingGroup(self.vendors_uid)
+        itemNMCDepose.setAssociatedGroups((self.developers_uid,))
         itemNMCDepose.setCategory('research')
         itemNMCDepose.setOtherMeetingConfigsClonableTo(u'meeting-config-council')
         itemNMCDepose.setPreferredMeeting(meetingCouncilUID2)
@@ -356,11 +355,11 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         self.assertEqual(len(standardDeposeItems[gic1][researchCat]), 1)
         self.assertEqual(standardDeposeItems[gic1][researchCat][0], itemDepo)
 
-        #self.assertEqual(len(standardEmergencyItems[gic1][researchCat]), 1)
-        #self.assertEqual(standardEmergencyItems[gic1][researchCat][0], itemEmer)
+        # self.assertEqual(len(standardEmergencyItems[gic1][researchCat]), 1)
+        # self.assertEqual(standardEmergencyItems[gic1][researchCat][0], itemEmer)
 
-        #self.assertEqual(len(standardComplItems[gic1][researchCat]), 1)
-        #self.assertEqual(standardComplItems[gic1][researchCat][0], itemCompl)
+        # self.assertEqual(len(standardComplItems[gic1][researchCat]), 1)
+        # self.assertEqual(standardComplItems[gic1][researchCat][0], itemCompl)
 
         # Every item in the meeting is now from the police group
         for item in meeting.getItems(listTypes=['normal', 'late', 'depose']):
@@ -433,8 +432,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         itemDev1 = self.create('MeetingItem')
         itemDev2 = self.create('MeetingItem')
         itemDev3 = self.create('MeetingItem')
-        itemVen1 = self.create('MeetingItem', proposingGroup='vendors')
-        itemVen2 = self.create('MeetingItem', proposingGroup='vendors')
+        itemVen1 = self.create('MeetingItem', proposingGroup=self.vendors_uid)
+        itemVen2 = self.create('MeetingItem', proposingGroup=self.vendors_uid)
         itemPol1 = self.create('MeetingItem', proposingGroup=POLICE_GROUP_PREFIX)
         itemPol2 = self.create('MeetingItem', proposingGroup=POLICE_GROUP_PREFIX)
         meeting = self.create('Meeting', date=DateTime())
@@ -465,9 +464,9 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         itemDev1 = self.create('MeetingItem', category='affaires-juridiques')
         itemDev2 = self.create('MeetingItem', category='affaires-juridiques')
         itemDev3 = self.create('MeetingItem', category=COMMUNICATION_CAT_ID)
-        itemVen1 = self.create('MeetingItem', proposingGroup='vendors', category='remboursement')
-        itemVen2 = self.create('MeetingItem', proposingGroup='vendors', category='affaires-juridiques')
-        itemVen3 = self.create('MeetingItem', proposingGroup='vendors', category=COMMUNICATION_CAT_ID)
+        itemVen1 = self.create('MeetingItem', proposingGroup=self.vendors_uid, category='remboursement')
+        itemVen2 = self.create('MeetingItem', proposingGroup=self.vendors_uid, category='affaires-juridiques')
+        itemVen3 = self.create('MeetingItem', proposingGroup=self.vendors_uid, category=COMMUNICATION_CAT_ID)
         meeting = self.create('Meeting', date=DateTime())
         for item in [itemDev1, itemDev2, itemDev3,
                      itemVen1, itemVen2, itemVen3]:
@@ -553,7 +552,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         commItem = self.create('MeetingItem')
         commItem.setCategory('communication')
         commItem.setPreferredMeeting(collegeMeeting.UID())
-        commItem.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        commItem.setProposingGroupWithGroupInCharge(
+            '{0}__groupincharge__groupincharge2'.format(self.developers_uid))
         self.presentItem(commItem)
         self.assertEqual(commItem.getMeeting(), collegeMeeting)
         self.assertEqual(commItem.getListType(), 'normal')
@@ -571,7 +571,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
                              additional_catalog_query={'getCategory': COUNCIL_SPECIAL_CATEGORIES})]
         # items were presented after meeting freeze
         for item in special_items:
-            self.assertTrue(item.modified() > getLastEvent(meeting, 'freeze')['time'])
+            self.assertTrue(item.modified() > getLastWFAction(meeting, 'freeze')['time'])
         self.assertEqual(
             [(item.getListType(), item.getCategory(), item.getPrivacy()) for item in special_items],
             [('normal', 'proposition-de-motion', 'public'),
@@ -581,8 +581,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
              ('normal', 'interventions', 'public'),
              ('normal', 'questions-actualite', 'public'),
              ('normal', 'questions-actualite', 'public'),
-             ('normal', 'questions-actualite', 'public')]
-            )
+             ('normal', 'questions-actualite', 'public')])
 
     def test_CouncilPublicItemsAreInsertedUsingIndetemineeCategoryWhereSecretItemsAreLeftValidated(self):
         """Items with confidentiality 'public' coming from College are inserted in a Council meeting
@@ -598,11 +597,13 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         publicItem = self.create('MeetingItem')
         publicItem.setOtherMeetingConfigsClonableTo((u'meeting-config-council', ))
         publicItem.setOtherMeetingConfigsClonableToPrivacy(())
-        publicItem.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        publicItem.setProposingGroupWithGroupInCharge(
+            '{0}__groupincharge__groupincharge2'.format(self.developers_uid))
         secretItem = self.create('MeetingItem')
         secretItem.setOtherMeetingConfigsClonableTo((u'meeting-config-council', ))
         secretItem.setOtherMeetingConfigsClonableToPrivacy((u'meeting-config-council', ))
-        secretItem.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        secretItem.setProposingGroupWithGroupInCharge(
+            '{0}__groupincharge__groupincharge2'.format(self.developers_uid))
         college_meeting = self.create('Meeting', date=DateTime('2017/02/12'))
         self.presentItem(publicItem)
         self.presentItem(secretItem)
@@ -611,14 +612,12 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         # groupInCharge was kept
         self.assertEqual(
             (council_publicItem.getProposingGroup(), council_publicItem.getGroupInCharge()),
-            (publicItem.getProposingGroup(), publicItem.getGroupInCharge())
-            )
+            (publicItem.getProposingGroup(), publicItem.getGroupInCharge()))
         council_secretItem = secretItem.getItemClonedToOtherMC('meeting-config-council')
         # groupInCharge was kept
         self.assertEqual(
             (council_secretItem.getProposingGroup(), council_secretItem.getGroupInCharge()),
-            (secretItem.getProposingGroup(), secretItem.getGroupInCharge())
-            )
+            (secretItem.getProposingGroup(), secretItem.getGroupInCharge()))
         # publicItem was presented into the council_meeting, no matter the 'PUBLISHED' object is the college_meeting
         self.assertEqual(self.request['PUBLISHED'], college_meeting)
         self.assertEqual(council_publicItem.getMeeting(), council_meeting)

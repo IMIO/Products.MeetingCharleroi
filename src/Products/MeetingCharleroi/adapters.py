@@ -22,6 +22,7 @@
 # ------------------------------------------------------------------------------
 from AccessControl import ClassSecurityInfo
 from collections import OrderedDict
+from collective.contact.plonegroup.utils import get_organizations
 from DateTime import DateTime
 from Globals import InitializeClass
 from imio.helpers.cache import cleanRamCacheFor
@@ -37,7 +38,6 @@ from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
 from Products.MeetingCharleroi.config import DECISION_ITEM_SENT_TO_COUNCIL
 from Products.MeetingCharleroi.config import FINANCE_GIVEABLE_ADVICE_STATES
-from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.config import NEVER_LATE_CATEGORIES
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCollegeWorkflowActions
@@ -48,6 +48,7 @@ from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCollegeWor
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCollegeWorkflowConditions
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowActions
 from Products.MeetingCharleroi.interfaces import IMeetingItemCharleroiCouncilWorkflowConditions
+from Products.MeetingCharleroi.utils import finance_group_uid
 from Products.MeetingCommunes.adapters import CustomMeeting
 from Products.MeetingCommunes.adapters import CustomMeetingConfig
 from Products.MeetingCommunes.adapters import CustomMeetingItem
@@ -139,6 +140,163 @@ class CustomCharleroiMeeting(CustomMeeting):
             return tool.getMeetingConfig(self).getAssemblyPolice()
         return ''
     Meeting.getDefaultAssemblyPolice = getDefaultAssemblyPolice
+
+    security.declarePublic('getPrintableItemsByCategory')
+
+    def getPrintableItemsByCategory(self, itemUids=[], listTypes=['normal'],
+                                    ignore_review_states=[], by_proposing_group=False, group_prefixes={},
+                                    privacy='*', oralQuestion='both', toDiscuss='both', categories=[],
+                                    excludedCategories=[], groupIds=[], excludedGroupIds=[],
+                                    firstNumber=1, renumber=False,
+                                    includeEmptyCategories=False, includeEmptyGroups=False,
+                                    forceCategOrderFromConfig=False):
+        '''Returns a list of (late or normal or both) items (depending on p_listTypes)
+           ordered by category. Items being in a state whose name is in
+           p_ignore_review_state will not be included in the result.
+           If p_by_proposing_group is True, items are grouped by proposing group
+           within every category. In this case, specifying p_group_prefixes will
+           allow to consider all groups whose acronym starts with a prefix from
+           this param prefix as a unique group. p_group_prefixes is a dict whose
+           keys are prefixes and whose values are names of the logical big
+           groups. A privacy,A toDiscuss and oralQuestion can also be given, the item is a
+           toDiscuss (oralQuestion) or not (or both) item.
+           If p_forceCategOrderFromConfig is True, the categories order will be
+           the one in the config and not the one from the meeting.
+           If p_groupIds are given, we will only consider these proposingGroups.
+           If p_includeEmptyCategories is True, categories for which no
+           item is defined are included nevertheless. If p_includeEmptyGroups
+           is True, proposing groups for which no item is defined are included
+           nevertheless.Some specific categories can be given or some categories to exclude.
+           These 2 parameters are exclusive.  If renumber is True, a list of tuple
+           will be return with first element the number and second element, the item.
+           In this case, the firstNumber value can be used.'''
+        # The result is a list of lists, where every inner list contains:
+        # - at position 0: the category object (MeetingCategory or organization)
+        # - at position 1 to n: the items in this category
+        # If by_proposing_group is True, the structure is more complex.
+        # listTypes is a list that can be filled with 'normal' and/or 'late'
+        # oralQuestion can be 'both' or False or True
+        # toDiscuss can be 'both' or 'False' or 'True'
+        # privacy can be '*' or 'public' or 'secret'
+        # Every inner list contains:
+        # - at position 0: the category object
+        # - at positions 1 to n: inner lists that contain:
+        #   * at position 0: the proposing group object
+        #   * at positions 1 to n: the items belonging to this group.
+        def _comp(v1, v2):
+            if v1[0].getOrder(onlySelectable=False) < v2[0].getOrder(onlySelectable=False):
+                return -1
+            elif v1[0].getOrder(onlySelectable=False) > v2[0].getOrder(onlySelectable=False):
+                return 1
+            else:
+                return 0
+        res = []
+        items = []
+        tool = api.portal.get_tool('portal_plonemeeting')
+        # Retrieve the list of items
+        for elt in itemUids:
+            if elt == '':
+                itemUids.remove(elt)
+
+        items = self.context.getItems(uids=itemUids, listTypes=listTypes, ordered=True)
+
+        if by_proposing_group:
+            groups = get_organizations()
+        else:
+            groups = None
+        if items:
+            for item in items:
+                # Check if the review_state has to be taken into account
+                if item.queryState() in ignore_review_states:
+                    continue
+                elif not (privacy == '*' or item.getPrivacy() == privacy):
+                    continue
+                elif not (oralQuestion == 'both' or item.getOralQuestion() == oralQuestion):
+                    continue
+                elif not (toDiscuss == 'both' or item.getToDiscuss() == toDiscuss):
+                    continue
+                elif groupIds and not item.getProposingGroup() in groupIds:
+                    continue
+                elif categories and not item.getCategory() in categories:
+                    continue
+                elif excludedCategories and item.getCategory() in excludedCategories:
+                    continue
+                elif excludedGroupIds and item.getProposingGroup() in excludedGroupIds:
+                    continue
+                currentCat = item.getCategory(theObject=True)
+                # Add the item to a new category, excepted if the
+                # category already exists.
+                catExists = False
+                for catList in res:
+                    if catList[0] == currentCat:
+                        catExists = True
+                        break
+                if catExists:
+                    self._insertItemInCategory(catList, item,
+                                               by_proposing_group, group_prefixes, groups)
+                else:
+                    res.append([currentCat])
+                    self._insertItemInCategory(res[-1], item,
+                                               by_proposing_group, group_prefixes, groups)
+        if forceCategOrderFromConfig or cmp(listTypes.sort(), ['late', 'normal']) == 0:
+            res.sort(cmp=_comp)
+        if includeEmptyCategories:
+            meetingConfig = tool.getMeetingConfig(
+                self.context)
+            # onlySelectable = False will also return disabled categories...
+            allCategories = [cat for cat in meetingConfig.getCategories(onlySelectable=False)
+                             if api.content.get_state(cat) == 'active']
+            usedCategories = [elem[0] for elem in res]
+            for cat in allCategories:
+                if cat not in usedCategories:
+                    # Insert the category among used categories at the right
+                    # place.
+                    categoryInserted = False
+                    for i in range(len(usedCategories)):
+                        if allCategories.index(cat) < \
+                           allCategories.index(usedCategories[i]):
+                            usedCategories.insert(i, cat)
+                            res.insert(i, [cat])
+                            categoryInserted = True
+                            break
+                    if not categoryInserted:
+                        usedCategories.append(cat)
+                        res.append([cat])
+        if by_proposing_group and includeEmptyGroups:
+            # Include, in every category list, not already used groups.
+            # But first, compute "macro-groups": we will put one group for
+            # every existing macro-group.
+            macroGroups = []  # Contains only 1 group of every "macro-group"
+            consumedPrefixes = []
+            for group in groups:
+                prefix = self._getAcronymPrefix(group, group_prefixes)
+                if not prefix:
+                    group._v_printableName = group.Title()
+                    macroGroups.append(group)
+                else:
+                    if prefix not in consumedPrefixes:
+                        consumedPrefixes.append(prefix)
+                        group._v_printableName = group_prefixes[prefix]
+                        macroGroups.append(group)
+            # Every category must have one group from every macro-group
+            for catInfo in res:
+                for group in macroGroups:
+                    self._insertGroupInCategory(catInfo, group, group_prefixes,
+                                                groups)
+                    # The method does nothing if the group (or another from the
+                    # same macro-group) is already there.
+        if renumber:
+            # items are replaced by tuples with first element the number and second element the item itself
+            i = firstNumber
+            tmp_res = []
+            for cat in res:
+                tmp_cat = [cat[0]]
+                for item in cat[1:]:
+                    tmp_cat.append((i, item))
+                    i = i + 1
+                tmp_res.append(tmp_cat)
+            res = tmp_res
+        return res
 
     def _getPoliceItems(self, itemUids, categories=[], excludedCategories=[], listTypes=['normal']):
         """Get all items from the group 'Police'."""
@@ -485,7 +643,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         '''If we are on a finance advice that is still not giveable because
            the item is not 'complete', we display a clear message.'''
         item = self.getSelf()
-        if advice['id'] == FINANCE_GROUP_ID and \
+        if advice['id'] == finance_group_uid() and \
            advice['delay'] and \
            not advice['delay_started_on']:
             # item in state giveable but item not complete
@@ -516,7 +674,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         '''Depending on advice WF state, it is only editable by relevant level.
            This is used by MeetingItem.getAdvicesGroupsInfosForUser.'''
         item = self.getSelf()
-        if groupId == FINANCE_GROUP_ID:
+        if groupId == finance_group_uid():
             member = api.user.get_current()
             adviceObj = getattr(item, item.adviceIndex[groupId]['advice_id'])
             if not member.has_role('MeetingFinanceEditor', adviceObj):
@@ -527,7 +685,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         """Return the meetingadvice portal_type that will be added for given p_groupId.
            By default we always use meetingadvice but this makes it possible to have several
            portal_types for meetingadvice."""
-        if groupId == FINANCE_GROUP_ID:
+        if groupId == finance_group_uid():
             return "meetingadvicefinances"
         else:
             return "meetingadvice"
@@ -561,8 +719,8 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
 
         # a finance controller may evaluate if advice is actually asked
         # and may not change completeness if advice is currently given or has been given
-        if FINANCE_GROUP_ID not in item.adviceIndex or \
-           not '%s_financialcontrollers' % FINANCE_GROUP_ID in member.getGroups():
+        if finance_group_uid() not in item.adviceIndex or \
+           not '%s_financialcontrollers' % finance_group_uid() in member.getGroups():
             return False
 
         # item must be still in a state where the advice can be given
@@ -608,7 +766,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
            we check that 'managing_available_delays' is in the REQUEST."""
         # in case nothing was already selected
         # the only available value is 10
-        if FINANCE_GROUP_ID not in self.context.adviceIndex:
+        if finance_group_uid() not in self.context.adviceIndex:
             if days == 10:
                 return True
             else:
@@ -616,7 +774,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
 
         res = False
         tool = api.portal.get_tool('portal_plonemeeting')
-        is20DaysDelay = self.context.adviceIndex[FINANCE_GROUP_ID]['delay'] == '20'
+        is20DaysDelay = self.context.adviceIndex[finance_group_uid()]['delay'] == '20'
         # bypass for Managers
         isManager = tool.isManager(self.context)
         if days == 10 and _checkPermission(ModifyPortalContent, self.context) and not is20DaysDelay:
@@ -923,8 +1081,8 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
         if res and not self.context.REQUEST.get('postponing_item', False):
             # if finances advice is asked, item may only be validated
             # if the advice have actually be given
-            if FINANCE_GROUP_ID in self.context.adviceIndex and \
-               not self.context.adviceIndex[FINANCE_GROUP_ID]['type'].endswith('_finance'):
+            if finance_group_uid() in self.context.adviceIndex and \
+               not self.context.adviceIndex[finance_group_uid()]['type'].endswith('_finance'):
                 res = False
         return res
 
@@ -1024,23 +1182,21 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
     def __init__(self, item):
         self.context = item
 
-    def zplGroups(self, ids=True):
-        """Return groups having id starting with POLICE_GROUP_PREFIX."""
-        tool = self.getSelf()
-        groups = tool.getMeetingGroups()
-        if ids:
-            groups = [group.getId() for group in groups
-                      if group.getId().startswith(POLICE_GROUP_PREFIX)]
+    def zplGroups(self, the_objects=False):
+        """Return organizations having id starting with POLICE_GROUP_PREFIX."""
+        orgs = get_organizations(the_objects=the_objects)
+        if the_objects:
+            orgs = [org.getId() for org in orgs
+                    if org.getId().startswith(POLICE_GROUP_PREFIX)]
         else:
-            groups = [group for group in groups
-                      if group.getId().startswith(POLICE_GROUP_PREFIX)]
-        return groups
+            orgs = [org for org in orgs if org.startswith(POLICE_GROUP_PREFIX)]
+        return orgs
 
     def enableNonFinancesStyles(self, context):
         """Condition for enabling the meetingcharleroi_non_finances.css
            made especially to hide/show the 'Finances category' faceted widget."""
         member = api.user.get_current()
-        if '{0}_advisers'.format(FINANCE_GROUP_ID) in member.getGroups() or \
+        if '{0}_advisers'.format(finance_group_uid()) in member.getGroups() or \
            self.context.isManager(context):
             return False
         return True

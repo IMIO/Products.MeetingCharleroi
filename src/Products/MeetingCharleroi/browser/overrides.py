@@ -7,11 +7,13 @@
 # GNU General Public License (GPL)
 #
 
+from collective.contact.plonegroup.utils import get_organization
+from collective.contact.plonegroup.utils import get_organizations
 from imio.history.utils import getLastWFAction
 from plone import api
 from Products.CMFPlone.utils import safe_unicode
-from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
+from Products.MeetingCharleroi.utils import finance_group_uid
 from Products.MeetingCommunes.browser.overrides import MCItemDocumentGenerationHelperView
 from Products.MeetingCommunes.browser.overrides import MCMeetingDocumentGenerationHelperView
 from Products.PloneMeeting.browser.views import MeetingBeforeFacetedInfosView
@@ -36,12 +38,11 @@ class MCHMeetingBeforeFacetedInfosView(MeetingBeforeFacetedInfosView):
 
 class MCBaseDocumentGenerationHelperView(object):
     def getPoliceGroups(self):
-        tool = api.portal.get_tool('portal_plonemeeting')
-        groups = tool.getMeetingGroups()
+        orgs = get_organizations()
         res = []
-        for group in groups:
-            if group.getId().startswith(POLICE_GROUP_PREFIX):
-                res.append(group.getId())
+        for org in orgs:
+            if org.getId().startswith(POLICE_GROUP_PREFIX):
+                res.append(org.getId())
 
         return res
 
@@ -57,12 +58,11 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
            - if item is 'validated' to everybody;
            - if it is 'prevalidated_waiting_advices', to finances advisers."""
         adviceHolder = self._advice_holder()
-        adviceObj = adviceHolder.getAdviceObj(FINANCE_GROUP_ID)
+        adviceObj = adviceHolder.getAdviceObj(finance_group_uid())
         if not adviceObj or adviceObj.advice_type == 'not_required_finance':
             return False
         item_state = self.context.queryState()
-        tool = api.portal.get_tool('portal_plonemeeting')
-        financeAdviceGroup = getattr(tool, FINANCE_GROUP_ID)
+        financeAdviceGroup = get_organization(finance_group_uid())
         if item_state == 'validated' or \
                 adviceHolder.hasMeeting() or \
                 (item_state == 'prevalidated_waiting_advices' and financeAdviceGroup.userPloneGroups(
@@ -70,13 +70,13 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
             return True
 
     def _advice_holder(self):
-        adviceInfo = self.real_context.getAdviceDataFor(self.real_context, FINANCE_GROUP_ID)
+        adviceInfo = self.real_context.getAdviceDataFor(self.real_context, finance_group_uid())
         return adviceInfo.get('adviceHolder', self.real_context)
 
     def _financeAdviceData(self):
         """ """
         # if item is in Council, get the adviceData from it's predecessor
-        adviceData = self.real_context.getAdviceDataFor(self.real_context, FINANCE_GROUP_ID)
+        adviceData = self.real_context.getAdviceDataFor(self.real_context, finance_group_uid())
         adviceTypeTranslated = adviceData['type_translated'].replace('Avis finances ', '')
         adviceData['advice_type_translated'] = adviceTypeTranslated
 

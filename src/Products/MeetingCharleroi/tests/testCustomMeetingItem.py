@@ -28,8 +28,6 @@ from Products.CMFCore.permissions import View
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import DECISION_ITEM_SENT_TO_COUNCIL
-from Products.MeetingCharleroi.setuphandlers import _configureCollegeCustomAdvisers
-from Products.MeetingCharleroi.setuphandlers import _createFinancesGroup
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 from Products.MeetingCommunes.tests.testCustomMeetingItem import testCustomMeetingItem as mctcmi
 from zope.i18n import translate
@@ -42,12 +40,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
     def test_FinancesAdviserOnlyMayEvaluateCompleteness(self):
         '''Only finances adviser may evaluate completeness when item is 'waiting_advices'.'''
         self.changeUser('admin')
-        # configure customAdvisers for 'meeting-config-college'
-        _configureCollegeCustomAdvisers(self.portal)
-        # add finances group
-        _createFinancesGroup(self.portal)
-        # put users in finances group
-        self._setupFinancesGroup()
+        self._configureFinancesAdvice()
         # completeness widget is disabled for items of the config
         cfg = self.meetingConfig
         self.changeUser('siteadmin')
@@ -156,7 +149,9 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
     def test_ListTypeCommunication(self):
         self.setupCollegeConfig()
 
-        self.create('MeetingCategory', id='%ss'%COMMUNICATION_CAT_ID, title='Communications')
+        self.create('MeetingCategory',
+                    id='%ss' % COMMUNICATION_CAT_ID,
+                    title='Communications')
 
         self.changeUser('pmManager')
         collegeMeeting = self.create('Meeting', date=DateTime('2016/12/15'))
@@ -167,7 +162,9 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         item2.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
         self.presentItem(item2)
         self.freezeMeeting(collegeMeeting)
-        item3 = self.create('MeetingItem', category='%ss'%COMMUNICATION_CAT_ID, preferredMeeting=collegeMeeting.UID())
+        item3 = self.create('MeetingItem',
+                            category='%ss' % COMMUNICATION_CAT_ID,
+                            preferredMeeting=collegeMeeting.UID())
         item3.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
         self.presentItem(item3)
         item4 = self.create('MeetingItem')
@@ -193,7 +190,9 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         self.presentItem(item2)
         self.assertEqual(item2.getListType(), 'communication')
         self.freezeMeeting(councilMeeting)
-        item3 = self.create('MeetingItem', category='%ss'%COMMUNICATION_CAT_ID, preferredMeeting=councilMeeting.UID())
+        item3 = self.create('MeetingItem',
+                            category='%ss' % COMMUNICATION_CAT_ID,
+                            preferredMeeting=councilMeeting.UID())
         item3.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
         self.presentItem(item3)
         self.assertEqual(item3.getListType(), 'communication')
@@ -203,7 +202,6 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         self.assertEqual([item.getListType() for item in councilMeeting.getItems(ordered=True)],
                          ['normal', 'late', 'communication', 'communication'])
-
 
     def test_ItemRefForActeCollege(self):
         """Test the method rendering the item reference of items in a College meeting."""
@@ -227,8 +225,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
              '{0}/2/C/4'.format(year), '{0}/2/C/5'.format(year),  # items to Council
              '{0}/2/C/6'.format(year), '{0}/2/C/7'.format(year), '{0}/2/C/8'.format(year),
              '{0}/2/C/9'.format(year), '{0}/2/C/10'.format(year), '{0}/2/8'.format(year),  # OJ Council
-             '-', '-', '-']  # communications
-            )
+             '-', '-', '-'])  # communications
 
         # now check with 'pmCreator1' that may only see items of 'developers'
         # compare with what is returned for a user that may see everything

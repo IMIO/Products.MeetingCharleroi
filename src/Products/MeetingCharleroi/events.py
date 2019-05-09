@@ -13,7 +13,7 @@ from plone import api
 from Products.PloneMeeting.utils import sendMailIfRelevant
 from Products.MeetingCommunes.config import FINANCE_STATE_TO_GROUPS_MAPPINGS
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
-from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
+from Products.MeetingCharleroi.utils import finance_group_uid
 
 __author__ = """Gauthier BASTIEN <gauthier.bastien@imio.be>"""
 __docformat__ = 'plaintext'
@@ -27,7 +27,7 @@ def onAdviceTransition(advice, event):
 
     # manage finance workflow, just consider relevant transitions
     # if it is not a finance wf transition, return
-    if not advice.advice_group == FINANCE_GROUP_ID:
+    if advice.advice_group != finance_group_uid():
         return
 
     item = advice.getParentNode()
@@ -117,7 +117,7 @@ def onAdvicesUpdated(item, event):
     '''
     for groupId, adviceInfo in item.adviceIndex.items():
         # special behaviour for finances advice
-        if not groupId == FINANCE_GROUP_ID:
+        if groupId != finance_group_uid():
             continue
 
         # double check if it is really editable...
