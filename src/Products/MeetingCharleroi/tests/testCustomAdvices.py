@@ -97,10 +97,10 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         # by default, only the 10 days delay is selectable
         self.assertEqual(item.listOptionalAdvisers().keys(),
                          ['not_selectable_value_delay_aware_optional_advisers',
-                          '%s__rowid__2016-05-01.0' % finance_group_uid(),
+                          '{0}__rowid__2016-05-01.0'.format(finance_group_uid()),
                           'not_selectable_value_non_delay_aware_optional_advisers',
-                          'developers',
-                          'vendors'])
+                          self.developers_uid,
+                          self.vendors_uid])
         # select the 10 days delay
         item.setOptionalAdvisers(('%s__rowid__2016-05-01.0' % finance_group_uid(), ))
         item.at_post_edit_script()
@@ -123,7 +123,7 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         self.assertTrue(item.adapted().mayChangeDelayTo(10))
         self.assertFalse(item.adapted().mayChangeDelayTo(20))
         # change to 5 days
-        item.setOptionalAdvisers(('%s__rowid__2016-05-01.1' % finance_group_uid(), ))
+        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.1'.format(finance_group_uid()), ))
         item.at_post_edit_script()
         self.assertEquals(item.adviceIndex[finance_group_uid()]['delay'], '5')
         # could back to 10 days
@@ -147,7 +147,7 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         self.assertFalse(item.adapted().mayChangeDelayTo(10))
         self.assertTrue(item.adapted().mayChangeDelayTo(20))
         # change to 20 days
-        item.setOptionalAdvisers(('%s__rowid__2016-05-01.2' % finance_group_uid(), ))
+        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.2'.format(finance_group_uid()), ))
         item.at_post_edit_script()
         self.assertEquals(item.adviceIndex[finance_group_uid()]['delay'], '20')
         # once to 20, may back to 10

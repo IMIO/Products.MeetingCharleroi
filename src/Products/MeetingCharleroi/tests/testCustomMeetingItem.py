@@ -29,7 +29,9 @@ from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import DECISION_ITEM_SENT_TO_COUNCIL
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
+from Products.MeetingCharleroi.utils import finance_group_uid
 from Products.MeetingCommunes.tests.testCustomMeetingItem import testCustomMeetingItem as mctcmi
+from Products.PloneMeeting.utils import org_id_to_uid
 from zope.i18n import translate
 
 
@@ -40,7 +42,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
     def test_FinancesAdviserOnlyMayEvaluateCompleteness(self):
         '''Only finances adviser may evaluate completeness when item is 'waiting_advices'.'''
         self.changeUser('admin')
-        self._configureFinancesAdvice()
+        self._configureFinancesAdvice(self.meetingConfig)
         # completeness widget is disabled for items of the config
         cfg = self.meetingConfig
         self.changeUser('siteadmin')
@@ -66,7 +68,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         # not sendable to 'waiting_advices' if finances advice not asked
         self.assertFalse('wait_advices' in self.transitions(item))
-        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
+        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
         item.at_post_edit_script()
         self.do(item, 'wait_advices_from_prevalidated')
         self.assertFalse(item.adapted().mayEvaluateCompleteness())
@@ -105,7 +107,9 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         item1 = self.create('MeetingItem')
         item1.setDecision(self.decisionText)
         item1.setOtherMeetingConfigsClonableTo((cfg2Id,))
-        item1.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        gic2_uid = org_id_to_uid('groupincharge2')
+        dev_group_in_charge = '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid)
+        item1.setProposingGroupWithGroupInCharge(dev_group_in_charge)
         self.presentItem(item1)
         self.freezeMeeting(collegeMeeting1)
         collegeMeeting2 = self.create('Meeting', date=DateTime('2016/12/20'))
@@ -113,7 +117,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         item2 = self.create('MeetingItem')
         item2.setDecision(self.decisionText)
         item2.setOtherMeetingConfigsClonableTo((cfg2Id,))
-        item2.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        item2.setProposingGroupWithGroupInCharge(dev_group_in_charge)
 
         self.presentItem(item2)
         self.freezeMeeting(collegeMeeting2)
@@ -156,19 +160,21 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         self.changeUser('pmManager')
         collegeMeeting = self.create('Meeting', date=DateTime('2016/12/15'))
         item1 = self.create('MeetingItem')
-        item1.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        gic2_uid = org_id_to_uid('groupincharge2')
+        dev_group_in_charge = '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid)
+        item1.setProposingGroupWithGroupInCharge(dev_group_in_charge)
         self.presentItem(item1)
         item2 = self.create('MeetingItem', category=COMMUNICATION_CAT_ID)
-        item2.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        item2.setProposingGroupWithGroupInCharge(dev_group_in_charge)
         self.presentItem(item2)
         self.freezeMeeting(collegeMeeting)
         item3 = self.create('MeetingItem',
                             category='%ss' % COMMUNICATION_CAT_ID,
                             preferredMeeting=collegeMeeting.UID())
-        item3.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        item3.setProposingGroupWithGroupInCharge(dev_group_in_charge)
         self.presentItem(item3)
         item4 = self.create('MeetingItem')
-        item4.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        item4.setProposingGroupWithGroupInCharge(dev_group_in_charge)
         self.presentItem(item4)
 
         listTypes = set([item.getListType() for item in collegeMeeting.getItems(ordered=True)])
@@ -183,21 +189,21 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         self.changeUser('pmManager')
         item1 = self.create('MeetingItem')
-        item1.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        item1.setProposingGroupWithGroupInCharge(dev_group_in_charge)
         self.presentItem(item1)
         item2 = self.create('MeetingItem', category=COMMUNICATION_CAT_ID)
-        item2.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        item2.setProposingGroupWithGroupInCharge(dev_group_in_charge)
         self.presentItem(item2)
         self.assertEqual(item2.getListType(), 'communication')
         self.freezeMeeting(councilMeeting)
         item3 = self.create('MeetingItem',
                             category='%ss' % COMMUNICATION_CAT_ID,
                             preferredMeeting=councilMeeting.UID())
-        item3.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        item3.setProposingGroupWithGroupInCharge(dev_group_in_charge)
         self.presentItem(item3)
         self.assertEqual(item3.getListType(), 'communication')
         item4 = self.create('MeetingItem', preferredMeeting=councilMeeting.UID())
-        item4.setProposingGroupWithGroupInCharge('developers__groupincharge__groupincharge2')
+        item4.setProposingGroupWithGroupInCharge(dev_group_in_charge)
         self.presentItem(item4)
 
         self.assertEqual([item.getListType() for item in councilMeeting.getItems(ordered=True)],
@@ -231,7 +237,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         # compare with what is returned for a user that may see everything
         orderedDevelopersBrains = collegeMeeting.getItems(
             ordered=True, useCatalog=True,
-            additional_catalog_query={'getProposingGroup': 'developers'})
+            additional_catalog_query={'getProposingGroup': self.developers_uid})
         devRefs = [brain.getObject().getItemReference() for brain in orderedDevelopersBrains]
         self.assertEqual(
             devRefs,
@@ -243,7 +249,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         self.changeUser('pmCreator1')
         orderedDevelopersBrains = collegeMeeting.getItems(
             ordered=True, useCatalog=True,
-            additional_catalog_query={'getProposingGroup': 'developers'})
+            additional_catalog_query={'getProposingGroup': self.developers_uid})
         creator1DevRefs = [brain.getObject().getItemReference() for brain in orderedDevelopersBrains]
         self.assertEqual(devRefs, creator1DevRefs)
 
@@ -290,8 +296,10 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         # now check with 'pmCreator1' that may only see items of 'developers'
         # compare with what is returned for a user that may see everything
-        orderedDevelopersBrains = meeting.getItems(ordered=True, useCatalog=True,
-                                                   additional_catalog_query={'getProposingGroup': 'developers'})
+        orderedDevelopersBrains = meeting.getItems(
+            ordered=True,
+            useCatalog=True,
+            additional_catalog_query={'getProposingGroup': self.developers_uid})
         devRefs = [brain.getObject().getItemReference() for brain in orderedDevelopersBrains]
         self.assertEqual(
             devRefs,
@@ -316,8 +324,10 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
              '{0}/1/17'.format(year),
              '{0}/1/U/5'.format(year)])
         self.changeUser('pmCreator1')
-        orderedDevelopersBrains = meeting.getItems(ordered=True, useCatalog=True,
-                                                   additional_catalog_query={'getProposingGroup': 'developers'})
+        orderedDevelopersBrains = meeting.getItems(
+            ordered=True,
+            useCatalog=True,
+            additional_catalog_query={'getProposingGroup': self.developers_uid})
         creator1DevRefs = [brain.getObject().getItemReference() for brain in orderedDevelopersBrains]
         self.assertEqual(devRefs, creator1DevRefs)
 

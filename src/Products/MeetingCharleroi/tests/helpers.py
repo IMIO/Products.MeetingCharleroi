@@ -1,23 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2013 by Imio.be
+# Copyright (c) 2019 by Imio.be
 #
 # GNU General Public License (GPL)
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-# 02110-1301, USA.
 #
 
 from collective.contact.plonegroup.utils import get_all_suffixes
@@ -30,7 +15,6 @@ from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.config import PROJECTNAME
 from Products.MeetingCharleroi.profiles.zcharleroi import import_data as charleroi_import_data
 from Products.MeetingCharleroi.setuphandlers import _addCouncilDemoData
-from Products.MeetingCharleroi.setuphandlers import _configureCollegeCustomAdvisers
 from Products.MeetingCharleroi.setuphandlers import _demoData
 from Products.MeetingCharleroi.utils import finance_group_uid
 from Products.PloneMeeting.exportimport.content import ToolInitializer
@@ -129,7 +113,12 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         # put users in finances group
         self._setupFinancesGroup()
         # configure customAdvisers for 'meeting-config-college'
-        _configureCollegeCustomAdvisers(self.portal)
+        # turn FINANCE_GROUP_ID into relevant org UID
+        customAdvisers = deepcopy(charleroi_import_data.collegeMeeting.customAdvisers)
+        for customAdviser in customAdvisers:
+            customAdviser['org'] = finance_group_uid()
+        cfg.setCustomAdvisers(customAdvisers)
+
         cfg.setTransitionsReinitializingDelays(
             charleroi_import_data.collegeMeeting.transitionsReinitializingDelays)
         # configure usedAdviceTypes
@@ -164,6 +153,8 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         orgs, active_orgs, savedOrgsData = initializer.addOrgs([dirfin_grp])
         for org in orgs:
             org_uid = org.UID()
+            org.item_advice_states = list(dirfin_grp.item_advice_states)
+            org.item_advice_edit_states = list(dirfin_grp.item_advice_edit_states)
             self._select_organization(org_uid)
             select_org_for_function(org_uid, 'financialcontrollers')
             select_org_for_function(org_uid, 'financialeditors')
@@ -201,7 +192,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
            - add some default categories.'''
         # due to complex setup to manage college and council,
         # sometimes this method is called twice...
-        if POLICE_GROUP_PREFIX in get_organizations(the_objects=False):
+        if org_id_to_uid(POLICE_GROUP_PREFIX) in get_organizations(the_objects=False):
             return
 
         self.changeUser('siteadmin')
@@ -230,8 +221,10 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         police = orgs[0]
         police_compta = orgs[1]
         gic1 = self.create('organization', id='groupincharge1', title="Group in charge 1", acronym='GIC1')
+        gic1_uid = gic1.UID()
         self._select_organization(gic1.UID())
         gic2 = self.create('organization', id='groupincharge2', title="Group in charge 2", acronym='GIC2')
+        gic2_uid = gic2.UID()
         self._select_organization(gic2.UID())
         # police is added at the end of existing groups
         self.assertEquals(get_organizations(the_objects=False),
@@ -240,10 +233,10 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                            police.UID(), police_compta.UID(),
                            gic1.UID(), gic2.UID()])
         # set groupsInCharge for police groups
-        police.groups_in_charge = ('groupincharge1',)
-        police_compta.groups_in_charge = ('groupincharge1',)
-        self.vendors.groups_in_charge = ('groupincharge1',)
-        self.developers.groups_in_charge = ('groupincharge2',)
+        police.groups_in_charge = (gic1_uid,)
+        police_compta.groups_in_charge = (gic1_uid,)
+        self.vendors.groups_in_charge = (gic1_uid,)
+        self.developers.groups_in_charge = (gic2_uid,)
         # make 'pmManager' able to manage everything for 'vendors' and 'police'
         groupsTool = self.portal.portal_groups
         for org in (self.vendors, police, police_compta):
@@ -295,8 +288,9 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
         else:
             items = charleroi_import_data.councilMeeting.recurringItems
         for item in items:
-            group_in_charge_value = 'developers__groupincharge__{0}'.format(
-                self.tool.developers.getGroupsInCharge()[0])
+            gic2_uid = org_id_to_uid('groupincharge2')
+            group_in_charge_value = '{0}__groupincharge__{0}'.format(
+                self.developers_uid, gic2_uid)
             data = {'id': item.id,
                     'title': item.title,
                     'description': item.description,

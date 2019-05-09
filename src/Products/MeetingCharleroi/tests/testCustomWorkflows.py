@@ -2,24 +2,7 @@
 #
 # File: testWorkflows.py
 #
-# Copyright (c) 2007-2012 by CommunesPlone.org
-#
-# GNU General Public License (GPL)
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-# 02110-1301, USA.
+# Copyright (c) 2019 by Imio.be
 #
 
 import datetime
@@ -29,9 +12,9 @@ from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from Products.CMFCore.permissions import DeleteObjects
 from Products.CMFCore.permissions import ModifyPortalContent
-from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.profiles.zcharleroi import import_data as charleroi_import_data
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
+from Products.MeetingCharleroi.utils import finance_group_uid
 from Products.PloneMeeting.config import ADVICE_STATES_ENDED
 from zope.i18n import translate
 
@@ -81,20 +64,20 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         meetingDate = DateTime().strftime('%y/%m/%d %H:%M:00')
         meeting = self.create('Meeting', date=meetingDate)
         item1 = self.create('MeetingItem')  # id=o2
-        item1.setProposingGroup('vendors')
-        item1.setAssociatedGroups(('developers',))
+        item1.setProposingGroup(self.vendors_uid)
+        item1.setAssociatedGroups((self.developers_uid,))
         item2 = self.create('MeetingItem')  # id=o3
-        item2.setProposingGroup('developers')
+        item2.setProposingGroup(self.developers_uid)
         item3 = self.create('MeetingItem')  # id=o4
-        item3.setProposingGroup('vendors')
+        item3.setProposingGroup(self.vendors_uid)
         item4 = self.create('MeetingItem')  # id=o5
-        item4.setProposingGroup('developers')
+        item4.setProposingGroup(self.developers_uid)
         item5 = self.create('MeetingItem')  # id=o7
-        item5.setProposingGroup('vendors')
+        item5.setProposingGroup(self.vendors_uid)
         item6 = self.create('MeetingItem', title='The sixth item')
-        item6.setProposingGroup('vendors')
+        item6.setProposingGroup(self.vendors_uid)
         item7 = self.create('MeetingItem')  # id=o8
-        item7.setProposingGroup('vendors')
+        item7.setProposingGroup(self.vendors_uid)
         for item in (item1, item2, item3, item4, item5, item6, item7):
             self.presentItem(item)
         # we freeze the meeting
@@ -159,7 +142,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
                 context=self.request),
             advice_required_to_ask_advices)
         # now ask 'vendors' advice
-        item.setOptionalAdvisers(('vendors', ))
+        item.setOptionalAdvisers((self.vendors_uid, ))
         item.at_post_edit_script()
         self.assertEqual(self.transitions(item),
                          ['propose', 'wait_advices_from_itemcreated'])
@@ -172,7 +155,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmReviewer2')
         createContentInContainer(item,
                                  'meetingadvice',
-                                 **{'advice_group': 'vendors',
+                                 **{'advice_group': self.vendors_uid,
                                     'advice_type': u'positive',
                                     'advice_comment': RichTextValue(u'My comment vendors')})
         # no more advice to give
@@ -194,7 +177,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
                 item.wfConditions().mayWait_advices_from_proposed().msg,
                 context=self.request),
             advice_required_to_ask_advices)
-        item.setOptionalAdvisers(('developers', 'vendors', ))
+        item.setOptionalAdvisers((self.developers_uid, self.vendors_uid, ))
         item.at_post_edit_script()
         self.assertEqual(self.transitions(item),
                          ['backToItemCreated', 'proposeToRefAdmin', 'wait_advices_from_proposed'])
@@ -202,7 +185,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmAdviser1')
         createContentInContainer(item,
                                  'meetingadvice',
-                                 **{'advice_group': 'developers',
+                                 **{'advice_group': self.developers_uid,
                                     'advice_type': u'positive',
                                     'advice_comment': RichTextValue(u'My comment developers')})
         # no more advice to give
@@ -221,7 +204,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')
         # ask finances advice
-        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
+        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
         item.at_post_edit_script()
         # not askable for now
         self.assertEqual(self.transitions(item), ['propose', ])
@@ -248,7 +231,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertEqual(self.transitions(item),
                          ['backToProposedToRefAdmin',
                           'wait_advices_from_prevalidated'])
-        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
+        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
 
         # ask finances advice
         self.do(item, 'wait_advices_from_prevalidated')
@@ -274,7 +257,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         advice = createContentInContainer(
             item,
             'meetingadvicefinances',
-            **{'advice_group': FINANCE_GROUP_ID,
+            **{'advice_group': finance_group_uid(),
                'advice_type': u'negative_finance',
                'advice_comment': RichTextValue(u'My comment finances'),
                'advice_category': u'acquisitions'})
@@ -315,7 +298,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')
         # ask finances advice
-        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
+        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
         self.proposeItem(item)
         self.changeUser('pmReviewer1')
         self.do(item, 'wait_advices_from_prevalidated')
@@ -352,21 +335,21 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(item, 'wait_advices_from_prevalidated')
         self.changeUser('pmFinController')
         # delay is not started
-        self.assertIsNone(item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'])
+        self.assertIsNone(item.adviceIndex[finance_group_uid()]['delay_started_on'])
         self.assertEqual(item.getCompleteness(), 'completeness_evaluation_asked_again')
         self.request.set('new_completeness_value', 'completeness_complete')
         changeCompleteness()
         self.assertEqual(item.getCompleteness(), 'completeness_complete')
-        self.assertTrue(item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'])
+        self.assertTrue(item.adviceIndex[finance_group_uid()]['delay_started_on'])
         # advice may be added
         toAdd, toEdit = item.getAdvicesGroupsInfosForUser()
-        self.assertEqual(toAdd, [(FINANCE_GROUP_ID, 'Directeur financier')])
+        self.assertEqual(toAdd, [(finance_group_uid(), u'Directeur Financier')])
         self.assertFalse(toEdit)
         # add advice
         advice = createContentInContainer(
             item,
             'meetingadvicefinances',
-            **{'advice_group': FINANCE_GROUP_ID,
+            **{'advice_group': finance_group_uid(),
                'advice_type': u'negative_finance',
                'advice_comment': RichTextValue(u'My comment finances'),
                'advice_category': u'acquisitions'})
@@ -418,11 +401,11 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # advice was automatically hidden
         self.assertTrue(advice.advice_hide_during_redaction)
         # delay is not started
-        self.assertIsNone(item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'])
+        self.assertIsNone(item.adviceIndex[finance_group_uid()]['delay_started_on'])
         self.assertEqual(item.getCompleteness(), 'completeness_evaluation_asked_again')
         self.request.set('new_completeness_value', 'completeness_complete')
         changeCompleteness()
-        self.assertTrue(item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'])
+        self.assertTrue(item.adviceIndex[finance_group_uid()]['delay_started_on'])
         self.do(advice, 'proposeToFinancialEditor')
         self.changeUser('pmFinEditor')
         self.do(advice, 'proposeToFinancialReviewer')
@@ -455,7 +438,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')
         # ask finances advice
-        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
+        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
         self.proposeItem(item)
         self.changeUser('pmReviewer1')
         self.do(item, 'wait_advices_from_prevalidated')
@@ -469,7 +452,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         advice = createContentInContainer(
             item,
             'meetingadvicefinances',
-            **{'advice_group': FINANCE_GROUP_ID,
+            **{'advice_group': finance_group_uid(),
                'advice_type': u'negative_finance',
                'advice_comment': RichTextValue(u'My comment finances'),
                'advice_category': u'acquisitions'})
@@ -508,7 +491,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')
         # ask finances advice
-        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
+        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
         item.at_post_edit_script()
         self.proposeItem(item)
 
@@ -522,7 +505,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         advice = createContentInContainer(
             item,
             'meetingadvicefinances',
-            **{'advice_group': FINANCE_GROUP_ID,
+            **{'advice_group': finance_group_uid(),
                'advice_type': u'positive_finance',
                'advice_comment': RichTextValue(u'My comment finances'),
                'advice_category': u'acquisitions'})
@@ -562,7 +545,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')
         # ask finances advice
-        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
+        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
         item.at_post_edit_script()
         self.proposeItem(item)
         # finances advice
@@ -573,14 +556,15 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         item.updateLocalRoles()
 
         # now does advice timed out
-        item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'] = datetime.datetime(2014, 1, 1)
+        item.adviceIndex[finance_group_uid()]['delay_started_on'] = datetime.datetime(2014, 1, 1)
         item.updateLocalRoles()
         # advice is timed out
-        self.assertTrue(item.adviceIndex[FINANCE_GROUP_ID]['delay_infos']['delay_status'] == 'no_more_giveable')
+        self.assertEqual(item.adviceIndex[finance_group_uid()]['delay_infos']['delay_status'],
+                         'no_more_giveable')
         # item has been automatically sent back to refadmin
-        self.assertTrue(item.queryState() == 'proposed_to_refadmin')
+        self.assertEqual(item.queryState(), 'proposed_to_refadmin')
         # advice delay is kept
-        self.assertEqual(item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'],
+        self.assertEqual(item.adviceIndex[finance_group_uid()]['delay_started_on'],
                          datetime.datetime(2014, 1, 1))
 
         # second case, delay exceeded and advice exists but not signed
@@ -589,7 +573,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The second item')
         # ask finances advice
-        item.setOptionalAdvisers(('dirfin__rowid__2016-05-01.0', ))
+        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
         item.at_post_edit_script()
         self.proposeItem(item)
         # finances advice
@@ -601,18 +585,19 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         advice = createContentInContainer(
             item,
             'meetingadvicefinances',
-            **{'advice_group': FINANCE_GROUP_ID,
+            **{'advice_group': finance_group_uid(),
                'advice_type': u'positive_finance',
                'advice_comment': RichTextValue(u'My comment finances'),
                'advice_category': u'acquisitions'})
         self.do(advice, 'proposeToFinancialEditor')
-        self.assertTrue(item.adviceIndex[FINANCE_GROUP_ID]['hidden_during_redaction'])
+        self.assertTrue(item.adviceIndex[finance_group_uid()]['hidden_during_redaction'])
         # now does advice timed out
-        item.adviceIndex[FINANCE_GROUP_ID]['delay_started_on'] = datetime.datetime(2014, 1, 1)
+        item.adviceIndex[finance_group_uid()]['delay_started_on'] = datetime.datetime(2014, 1, 1)
         item.updateLocalRoles()
         # advice is timed out
-        self.assertTrue(item.adviceIndex[FINANCE_GROUP_ID]['delay_infos']['delay_status'] == 'no_more_giveable')
+        self.assertEqual(item.adviceIndex[finance_group_uid()]['delay_infos']['delay_status'],
+                         'no_more_giveable')
         # item has been automatically sent back to refadmin
         self.assertTrue(item.queryState() == 'proposed_to_refadmin')
         # advice is still 'hidden_during_redaction'
-        self.assertTrue(item.adviceIndex[FINANCE_GROUP_ID]['hidden_during_redaction'])
+        self.assertTrue(item.adviceIndex[finance_group_uid()]['hidden_during_redaction'])

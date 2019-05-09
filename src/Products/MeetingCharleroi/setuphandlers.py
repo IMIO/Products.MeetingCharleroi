@@ -229,49 +229,6 @@ def finalizeExampleInstance(context):
     _addCouncilDemoData(collegeMeeting, collegeExtraMeeting)
 
 
-def _configureCollegeCustomAdvisers(site):
-    '''
-    '''
-    college = getattr(site.portal_plonemeeting, 'meeting-config-college')
-    college.setCustomAdvisers((
-        {'delay_label': 'Incidence financi\xc3\xa8re',
-         'for_item_created_until': '',
-         'org': finance_group_uid(),
-         'available_on': '',
-         'delay': '10',
-         'gives_auto_advice_on_help_message': '',
-         'gives_auto_advice_on': '',
-         'delay_left_alert': '3',
-         'is_linked_to_previous_row': '0',
-         'for_item_created_from': '2016/05/01',
-         'available_on': 'python: item.adapted().mayChangeDelayTo(10)',
-         'row_id': '2016-05-01.0'},
-        {'delay_label': 'Incidence financi\xc3\xa8re (urgence)',
-         'for_item_created_until': '',
-         'org': finance_group_uid(),
-         'available_on': '',
-         'delay': '5',
-         'gives_auto_advice_on_help_message': '',
-         'gives_auto_advice_on': '',
-         'delay_left_alert': '3',
-         'is_linked_to_previous_row': '1',
-         'for_item_created_from': '2016/05/01',
-         'available_on': 'python: item.adapted().mayChangeDelayTo(5)',
-         'row_id': '2016-05-01.1'},
-        {'delay_label': 'Incidence financi\xc3\xa8re (prolongation)',
-         'for_item_created_until': '',
-         'org': finance_group_uid(),
-         'available_on': '',
-         'delay': '20',
-         'gives_auto_advice_on_help_message': '',
-         'gives_auto_advice_on': '',
-         'delay_left_alert': '3',
-         'is_linked_to_previous_row': '1',
-         'for_item_created_from': '2016/05/01',
-         'available_on': 'python: item.adapted().mayChangeDelayTo(20)',
-         'row_id': '2016-05-01.2'},))
-
-
 def reorderCss(context):
     """
        Make sure CSS are correctly reordered in portal_css so things
@@ -317,7 +274,7 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
            item['category'] in ['affaires-juridiques', 'remboursement'] and \
            last_transition == 'prevalidate':
             newItem.setOptionalAdvisers(
-                ('{0}__rowid__unique_id_003'.format(finance_group_uid(), )))
+                ('{0}__rowid__2016-05-01.0'.format(finance_group_uid(), )))
             newItem.updateLocalRoles()
             wfTool.doActionFor(newItem, 'wait_advices_from_prevalidated')
             newItem.setCompleteness('completeness_complete')

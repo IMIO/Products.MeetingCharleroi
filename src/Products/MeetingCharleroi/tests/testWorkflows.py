@@ -27,6 +27,7 @@ from zope.annotation import IAnnotations
 from Products.CMFCore.permissions import View
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 from Products.PloneMeeting.tests.testWorkflows import testWorkflows as pmtw
+from Products.PloneMeeting.utils import org_id_to_uid
 
 
 class testWorkflows(MeetingCharleroiTestCase, pmtw):
@@ -66,8 +67,10 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         self._createRecurringItems()
         # pmCreator1 creates an item with 1 annex and proposes it
         self.changeUser('pmCreator1')
+        gic2_uid = org_id_to_uid('groupincharge2')
+        dev_group_in_charge = '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid)
         item1 = self.create('MeetingItem', title='The first item',
-                            proposingGroupWithGroupInCharge='developers__groupincharge__groupincharge2')
+                            proposingGroupWithGroupInCharge=dev_group_in_charge)
         self.addAnnex(item1)
         self.addAnnex(item1, relatedTo='item_decision')
         self.do(item1, 'propose')
@@ -80,9 +83,11 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         self.addAnnex(item1, relatedTo='item_decision')
         # pmCreator2 creates and proposes an item
         self.changeUser('pmCreator2')
+        gic1_uid = org_id_to_uid('groupincharge1')
+        vendors_group_in_charge = '{0}__groupincharge__{1}'.format(self.vendors_uid, gic1_uid)
         item2 = self.create('MeetingItem', title='The second item',
                             preferredMeeting=meeting.UID(),
-                            proposingGroupWithGroupInCharge='vendors__groupincharge__groupincharge1')
+                            proposingGroupWithGroupInCharge=vendors_group_in_charge)
         self.do(item2, 'propose')
         # pmReviewer1 validates item1 and adds an annex to it
         self.changeUser('pmServiceHead1')
@@ -159,15 +164,17 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         self.assertEqual(itemWF.initial_state, 'validated')
 
         self.changeUser('pmManager')
+        gic2_uid = org_id_to_uid('groupincharge2')
+        dev_group_in_charge = '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid)
         item1 = self.create('MeetingItem', title='The first item',
-                            proposingGroupWithGroupInCharge='developers__groupincharge__groupincharge2')
+                            proposingGroupWithGroupInCharge=dev_group_in_charge)
         self.addAnnex(item1)
         self.addAnnex(item1, relatedTo='item_decision')
         self.assertEqual(item1.queryState(), 'validated')
         meeting = self.create('Meeting', date='2016/12/11 09:00:00')
         item2 = self.create('MeetingItem', title='The second item',
                             preferredMeeting=meeting.UID(),
-                            proposingGroupWithGroupInCharge='developers__groupincharge__groupincharge2')
+                            proposingGroupWithGroupInCharge=dev_group_in_charge)
         self.presentItem(item1)
         item1.setDecision(self.decisionText)
         self.decideMeeting(meeting)
