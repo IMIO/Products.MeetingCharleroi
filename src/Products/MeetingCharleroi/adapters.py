@@ -146,7 +146,7 @@ class CustomCharleroiMeeting(CustomMeeting):
     def getPrintableItemsByCategory(self, itemUids=[], listTypes=['normal'],
                                     ignore_review_states=[], by_proposing_group=False, group_prefixes={},
                                     privacy='*', oralQuestion='both', toDiscuss='both', categories=[],
-                                    excludedCategories=[], groupIds=[], excludedGroupIds=[],
+                                    excludedCategories=[], groupUids=[], excludedGroupUids=[],
                                     firstNumber=1, renumber=False,
                                     includeEmptyCategories=False, includeEmptyGroups=False,
                                     forceCategOrderFromConfig=False):
@@ -162,7 +162,7 @@ class CustomCharleroiMeeting(CustomMeeting):
            toDiscuss (oralQuestion) or not (or both) item.
            If p_forceCategOrderFromConfig is True, the categories order will be
            the one in the config and not the one from the meeting.
-           If p_groupIds are given, we will only consider these proposingGroups.
+           If p_groupUids are given, we will only consider these proposingGroups.
            If p_includeEmptyCategories is True, categories for which no
            item is defined are included nevertheless. If p_includeEmptyGroups
            is True, proposing groups for which no item is defined are included
@@ -215,13 +215,13 @@ class CustomCharleroiMeeting(CustomMeeting):
                     continue
                 elif not (toDiscuss == 'both' or item.getToDiscuss() == toDiscuss):
                     continue
-                elif groupIds and not item.getProposingGroup() in groupIds:
+                elif groupUids and not item.getProposingGroup() in groupUids:
                     continue
                 elif categories and not item.getCategory() in categories:
                     continue
                 elif excludedCategories and item.getCategory() in excludedCategories:
                     continue
-                elif excludedGroupIds and item.getProposingGroup() in excludedGroupIds:
+                elif excludedGroupUids and item.getProposingGroup() in excludedGroupUids:
                     continue
                 currentCat = item.getCategory(theObject=True)
                 # Add the item to a new category, excepted if the
@@ -306,7 +306,7 @@ class CustomCharleroiMeeting(CustomMeeting):
                                                        categories=categories,
                                                        excludedCategories=excludedCategories,
                                                        listTypes=listTypes,
-                                                       groupIds=tool.adapted().zplGroups())
+                                                       groupUids=tool.adapted().zplGroups())
         if policeItems:
             return policeItems
         else:
