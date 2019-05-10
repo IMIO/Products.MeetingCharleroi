@@ -17,12 +17,12 @@ from Products.MeetingCharleroi.profiles.zcharleroi import import_data as charler
 from Products.MeetingCharleroi.setuphandlers import _addCouncilDemoData
 from Products.MeetingCharleroi.setuphandlers import _demoData
 from Products.MeetingCharleroi.utils import finance_group_uid
+from Products.MeetingCommunes.tests.helpers import MeetingCommunesTestingHelpers
 from Products.PloneMeeting.exportimport.content import ToolInitializer
-from Products.PloneMeeting.tests.helpers import PloneMeetingTestingHelpers
 from Products.PloneMeeting.utils import org_id_to_uid
 
 
-class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
+class MeetingCharleroiTestingHelpers(MeetingCommunesTestingHelpers):
     '''Stub class that provides some helper methods about testing.'''
 
     TRANSITIONS_FOR_PROPOSING_ITEM_FIRST_LEVEL_1 = TRANSITIONS_FOR_PROPOSING_ITEM_FIRST_LEVEL_2 = ('propose',

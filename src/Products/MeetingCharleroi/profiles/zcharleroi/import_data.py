@@ -554,7 +554,7 @@ collegeMeeting.customAdvisers = [
      'is_linked_to_previous_row': '0',
      'for_item_created_from': '2016/05/01',
      'available_on': 'python: item.adapted().mayChangeDelayTo(10)',
-     'row_id': '2016-05-01.0'},
+     'row_id': 'unique_id_002'},
     {'delay_label': 'Incidence financi\xc3\xa8re (urgence)',
      'for_item_created_until': '',
      'org': FINANCE_GROUP_ID,
@@ -566,7 +566,7 @@ collegeMeeting.customAdvisers = [
      'is_linked_to_previous_row': '1',
      'for_item_created_from': '2016/05/01',
      'available_on': 'python: item.adapted().mayChangeDelayTo(5)',
-     'row_id': '2016-05-01.1'},
+     'row_id': 'unique_id_003'},
     {'delay_label': 'Incidence financi\xc3\xa8re (prolongation)',
      'for_item_created_until': '',
      'org': FINANCE_GROUP_ID,
@@ -578,7 +578,7 @@ collegeMeeting.customAdvisers = [
      'is_linked_to_previous_row': '1',
      'for_item_created_from': '2016/05/01',
      'available_on': 'python: item.adapted().mayChangeDelayTo(20)',
-     'row_id': '2016-05-01.2'}]
+     'row_id': 'unique_id_004'}]
 collegeMeeting.itemPowerObserversStates = ('itemfrozen',
                                            'accepted',
                                            'delayed',
@@ -626,9 +626,9 @@ collegeMeeting.meetingConfigsToCloneTo = [{'meeting_config': 'meeting-config-cou
 collegeMeeting.itemAutoSentToOtherMCStates = ('accepted', 'accepted_but_modified', )
 collegeMeeting.itemManualSentToOtherMCStates = ('itemfrozen', 'pre_accepted', )
 collegeMeeting.keepAdvicesOnSentToOtherMC = True
-collegeMeeting.advicesKeptOnSentToOtherMC = (DELAYAWARE_ROW_ID_PATTERN.format('2016-05-01.0'),
-                                             DELAYAWARE_ROW_ID_PATTERN.format('2016-05-01.1'),
-                                             DELAYAWARE_ROW_ID_PATTERN.format('2016-05-01.2'))
+collegeMeeting.advicesKeptOnSentToOtherMC = (DELAYAWARE_ROW_ID_PATTERN.format('unique_id_002'),
+                                             DELAYAWARE_ROW_ID_PATTERN.format('unique_id_003'),
+                                             DELAYAWARE_ROW_ID_PATTERN.format('unique_id_004'))
 collegeMeeting.recurringItems = [
     RecurringItemDescriptor(
         id='recurringagenda1',

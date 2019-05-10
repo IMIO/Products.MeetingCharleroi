@@ -68,7 +68,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         # not sendable to 'waiting_advices' if finances advice not asked
         self.assertFalse('wait_advices' in self.transitions(item))
-        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
+        item.setOptionalAdvisers(('{0}__rowid__unique_id_002'.format(finance_group_uid()), ))
         item.at_post_edit_script()
         self.do(item, 'wait_advices_from_prevalidated')
         self.assertFalse(item.adapted().mayEvaluateCompleteness())

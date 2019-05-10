@@ -43,7 +43,7 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')
         # ask finances advice
-        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
+        item.setOptionalAdvisers(('{0}__rowid__unique_id_002'.format(finance_group_uid()), ))
         self.proposeItem(item)
         self.changeUser('pmReviewer1')
         self.do(item, 'wait_advices_from_prevalidated')
@@ -97,12 +97,12 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         # by default, only the 10 days delay is selectable
         self.assertEqual(item.listOptionalAdvisers().keys(),
                          ['not_selectable_value_delay_aware_optional_advisers',
-                          '{0}__rowid__2016-05-01.0'.format(finance_group_uid()),
+                          '{0}__rowid__unique_id_002'.format(finance_group_uid()),
                           'not_selectable_value_non_delay_aware_optional_advisers',
                           self.developers_uid,
                           self.vendors_uid])
         # select the 10 days delay
-        item.setOptionalAdvisers(('%s__rowid__2016-05-01.0' % finance_group_uid(), ))
+        item.setOptionalAdvisers(('%s__rowid__unique_id_002' % finance_group_uid(), ))
         item.at_post_edit_script()
         self.assertEquals(item.adviceIndex[finance_group_uid()]['delay'], '10')
         # Managers, are also required to use change delay widget for 5/20 delays
@@ -123,7 +123,7 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         self.assertTrue(item.adapted().mayChangeDelayTo(10))
         self.assertFalse(item.adapted().mayChangeDelayTo(20))
         # change to 5 days
-        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.1'.format(finance_group_uid()), ))
+        item.setOptionalAdvisers(('{0}__rowid__unique_id_003'.format(finance_group_uid()), ))
         item.at_post_edit_script()
         self.assertEquals(item.adviceIndex[finance_group_uid()]['delay'], '5')
         # could back to 10 days
@@ -147,7 +147,7 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         self.assertFalse(item.adapted().mayChangeDelayTo(10))
         self.assertTrue(item.adapted().mayChangeDelayTo(20))
         # change to 20 days
-        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.2'.format(finance_group_uid()), ))
+        item.setOptionalAdvisers(('{0}__rowid__unique_id_004'.format(finance_group_uid()), ))
         item.at_post_edit_script()
         self.assertEquals(item.adviceIndex[finance_group_uid()]['delay'], '20')
         # once to 20, may back to 10

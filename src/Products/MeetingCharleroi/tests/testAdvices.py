@@ -27,8 +27,7 @@ from Products.MeetingCommunes.tests.testAdvices import testAdvices as mcta
 
 
 class testAdvices(MeetingCharleroiTestCase, mcta):
-    '''Tests various aspects of advices management.
-       Advices are enabled for PloneGov Assembly, not for PloneMeeting Assembly.'''
+    ''' '''
 
 
 def test_suite():

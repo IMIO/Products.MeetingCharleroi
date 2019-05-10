@@ -274,7 +274,7 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
            item['category'] in ['affaires-juridiques', 'remboursement'] and \
            last_transition == 'prevalidate':
             newItem.setOptionalAdvisers(
-                ('{0}__rowid__2016-05-01.0'.format(finance_group_uid(), )))
+                ('{0}__rowid__unique_id_002'.format(finance_group_uid(), )))
             newItem.updateLocalRoles()
             wfTool.doActionFor(newItem, 'wait_advices_from_prevalidated')
             newItem.setCompleteness('completeness_complete')

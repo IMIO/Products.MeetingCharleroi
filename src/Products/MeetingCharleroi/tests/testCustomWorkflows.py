@@ -204,7 +204,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')
         # ask finances advice
-        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
+        item.setOptionalAdvisers(('{0}__rowid__unique_id_002'.format(finance_group_uid()), ))
         item.at_post_edit_script()
         # not askable for now
         self.assertEqual(self.transitions(item), ['propose', ])
@@ -231,7 +231,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertEqual(self.transitions(item),
                          ['backToProposedToRefAdmin',
                           'wait_advices_from_prevalidated'])
-        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
+        item.setOptionalAdvisers(('{0}__rowid__unique_id_002'.format(finance_group_uid()), ))
 
         # ask finances advice
         self.do(item, 'wait_advices_from_prevalidated')
@@ -298,7 +298,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')
         # ask finances advice
-        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
+        item.setOptionalAdvisers(('{0}__rowid__unique_id_002'.format(finance_group_uid()), ))
         self.proposeItem(item)
         self.changeUser('pmReviewer1')
         self.do(item, 'wait_advices_from_prevalidated')
@@ -438,7 +438,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')
         # ask finances advice
-        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
+        item.setOptionalAdvisers(('{0}__rowid__unique_id_002'.format(finance_group_uid()), ))
         self.proposeItem(item)
         self.changeUser('pmReviewer1')
         self.do(item, 'wait_advices_from_prevalidated')
@@ -489,7 +489,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')
         # ask finances advice
-        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
+        item.setOptionalAdvisers(('{0}__rowid__unique_id_002'.format(finance_group_uid()), ))
         item.at_post_edit_script()
         self.proposeItem(item)
 
@@ -543,7 +543,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')
         # ask finances advice
-        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
+        item.setOptionalAdvisers(('{0}__rowid__unique_id_002'.format(finance_group_uid()), ))
         item.at_post_edit_script()
         self.proposeItem(item)
         # finances advice
@@ -571,7 +571,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The second item')
         # ask finances advice
-        item.setOptionalAdvisers(('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
+        item.setOptionalAdvisers(('{0}__rowid__unique_id_002'.format(finance_group_uid()), ))
         item.at_post_edit_script()
         self.proposeItem(item)
         # finances advice

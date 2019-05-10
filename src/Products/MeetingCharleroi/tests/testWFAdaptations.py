@@ -102,7 +102,7 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
         self._configureFinancesAdvice(self.meetingConfig)
         self.changeUser(originalMember)
         item.setOptionalAdvisers(item.getOptionalAdvisers() +
-                                 ('{0}__rowid__2016-05-01.0'.format(finance_group_uid()), ))
+                                 ('{0}__rowid__unique_id_002'.format(finance_group_uid()), ))
         item.at_post_edit_script()
         if transition:
             self.do(item, transition)
