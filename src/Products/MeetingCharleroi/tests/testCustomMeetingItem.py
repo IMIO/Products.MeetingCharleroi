@@ -213,10 +213,10 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         """Test the method rendering the item reference of items in a College meeting."""
         collegeMeeting, collegeExtraMeeting = self.setupCollegeDemoData()
         self.changeUser('pmManager')
-        orderedBrains = collegeMeeting.getItems(ordered=True, useCatalog=True)
+        items = collegeMeeting.getItems(ordered=True)
         year = collegeMeeting.getDate().year()
         self.assertEqual(
-            [brain.getObject().getItemReference() for brain in orderedBrains],
+            [item.getItemReference() for item in items],
             ['{0}/2/ZP/1'.format(year), '{0}/2/ZP/2'.format(year), '{0}/2/ZP/3'.format(year),
              '{0}/2/ZP/4'.format(year), '{0}/2/ZP/5'.format(year),  # ZP items
              '{0}/2/ZP/C/1'.format(year), '{0}/2/ZP/C/2'.format(year),
@@ -235,32 +235,30 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         # now check with 'pmCreator1' that may only see items of 'developers'
         # compare with what is returned for a user that may see everything
-        orderedDevelopersBrains = collegeMeeting.getItems(
-            ordered=True, useCatalog=True,
-            additional_catalog_query={'getProposingGroup': self.developers_uid})
-        devRefs = [brain.getObject().getItemReference() for brain in orderedDevelopersBrains]
+        dev_items = collegeMeeting.getItems(
+            ordered=True, additional_catalog_query={'getProposingGroup': self.developers_uid})
+        dev_refs = [item.getItemReference() for item in dev_items]
         self.assertEqual(
-            devRefs,
+            dev_refs,
             ['{0}/2/3'.format(year), '{0}/2/4'.format(year),
              '{0}/2/C/4'.format(year), '{0}/2/C/5'.format(year), '{0}/2/C/6'.format(year),
              '{0}/2/C/7'.format(year), '{0}/2/C/8'.format(year), '{0}/2/C/9'.format(year),
              '{0}/2/C/10'.format(year), '{0}/2/8'.format(year),  # OJ Council
              '-', '-', '-'])
         self.changeUser('pmCreator1')
-        orderedDevelopersBrains = collegeMeeting.getItems(
-            ordered=True, useCatalog=True,
-            additional_catalog_query={'getProposingGroup': self.developers_uid})
-        creator1DevRefs = [brain.getObject().getItemReference() for brain in orderedDevelopersBrains]
-        self.assertEqual(devRefs, creator1DevRefs)
+        dev_items_for_creator = collegeMeeting.getItems(
+            ordered=True, additional_catalog_query={'getProposingGroup': self.developers_uid})
+        dev_refs_for_creator = [item.getItemReference() for item in dev_items_for_creator]
+        self.assertEqual(dev_refs, dev_refs_for_creator)
 
     def test_ItemRefForActeCouncil(self):
         """Test the method rendering the item reference of items in a College meeting."""
         meeting = self.setupCouncilDemoData()
         self.changeUser('pmManager')
-        orderedBrains = meeting.getItems(ordered=True, useCatalog=True)
+        items = meeting.getItems(ordered=True)
         year = meeting.getDate().year()
         self.assertEqual(
-            [brain.getObject().getItemReference() for brain in orderedBrains],
+            [item.getItemReference() for item in items],
             ['{0}/1/1'.format(year),
              '{0}/1/2'.format(year),
              '{0}/1/U/1'.format(year),
@@ -296,13 +294,11 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         # now check with 'pmCreator1' that may only see items of 'developers'
         # compare with what is returned for a user that may see everything
-        orderedDevelopersBrains = meeting.getItems(
-            ordered=True,
-            useCatalog=True,
-            additional_catalog_query={'getProposingGroup': self.developers_uid})
-        devRefs = [brain.getObject().getItemReference() for brain in orderedDevelopersBrains]
+        dev_items = meeting.getItems(
+            ordered=True, additional_catalog_query={'getProposingGroup': self.developers_uid})
+        dev_refs = [item.getItemReference() for item in dev_items]
         self.assertEqual(
-            devRefs,
+            dev_refs,
             ['{0}/1/1'.format(year),
              '{0}/1/2'.format(year),
              '{0}/1/U/1'.format(year),
@@ -324,12 +320,11 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
              '{0}/1/17'.format(year),
              '{0}/1/U/5'.format(year)])
         self.changeUser('pmCreator1')
-        orderedDevelopersBrains = meeting.getItems(
+        dev_items_for_creator = meeting.getItems(
             ordered=True,
-            useCatalog=True,
             additional_catalog_query={'getProposingGroup': self.developers_uid})
-        creator1DevRefs = [brain.getObject().getItemReference() for brain in orderedDevelopersBrains]
-        self.assertEqual(devRefs, creator1DevRefs)
+        dev_refs_for_creator = [item.getItemReference() for item in dev_items_for_creator]
+        self.assertEqual(dev_refs, dev_refs_for_creator)
 
     def test_ItemDecisionWhenSentToCouncil(self):
         """When a College item is sent to Council, the decision field displays a special sentence."""

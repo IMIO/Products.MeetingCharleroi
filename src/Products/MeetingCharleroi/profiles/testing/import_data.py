@@ -35,6 +35,7 @@ vendors.prereviewers.append(pmReviewer2)
 
 # College
 collegeMeeting = deepcopy(mc_import_data.collegeMeeting)
+collegeMeeting.itemReferenceFormat = "python: here.adapted().getItemRefForActe()"
 collegeMeeting.itemConditionsInterface = \
     'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCollegeWorkflowConditions'
 collegeMeeting.itemActionsInterface = \
@@ -49,10 +50,13 @@ collegeMeeting.transitionsForPresentingAnItem = ['propose', 'proposeToRefAdmin',
 collegeMeeting.itemAdviceStates = ['prevalidated', ]
 collegeMeeting.itemAdviceEditStates = ['prevalidated', 'validated']
 collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
-                                      'pre_validation', 'charleroi_add_refadmin',
-                                      'waiting_advices']
+                                      'only_creator_may_delete', 'return_to_proposing_group',
+                                      'pre_validation', 'charleroi_add_refadmin', 'waiting_advices',
+                                      'postpone_next_meeting', 'mark_not_applicable',
+                                      'removed', 'refused']
 # Council
 councilMeeting = deepcopy(mc_import_data.councilMeeting)
+councilMeeting.itemReferenceFormat = "python: here.adapted().getItemRefForActeCouncil()"
 councilMeeting.itemConditionsInterface = \
     'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCouncilWorkflowConditions'
 councilMeeting.itemActionsInterface = \

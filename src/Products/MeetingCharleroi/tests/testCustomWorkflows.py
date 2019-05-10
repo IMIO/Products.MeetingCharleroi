@@ -485,8 +485,6 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         cfg = self.meetingConfig
         self.changeUser('siteadmin')
         self._configureFinancesAdvice(cfg)
-        cfg.setWorkflowAdaptations(charleroi_import_data.collegeMeeting.workflowAdaptations)
-        cfg.at_post_edit_script()
 
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')

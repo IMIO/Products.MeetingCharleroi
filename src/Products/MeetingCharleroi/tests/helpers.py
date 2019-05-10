@@ -192,7 +192,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
            - add some default categories.'''
         # due to complex setup to manage college and council,
         # sometimes this method is called twice...
-        if org_id_to_uid(POLICE_GROUP_PREFIX) in get_organizations(the_objects=False):
+        if org_id_to_uid(POLICE_GROUP_PREFIX, raise_on_error=False):
             return
 
         self.changeUser('siteadmin')
@@ -276,7 +276,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                     'description': template.description,
                     'category': template.category,
                     'proposingGroup': template.proposingGroup.startswith(POLICE_GROUP_PREFIX) and
-                    template.proposingGroup or 'developers',
+                    template.proposingGroup or self.developers_uid,
                     # 'templateUsingGroups': template.templateUsingGroups,
                     'decision': template.decision}
             self.create('MeetingItemTemplate', **data)
@@ -295,7 +295,7 @@ class MeetingCharleroiTestingHelpers(PloneMeetingTestingHelpers):
                     'title': item.title,
                     'description': item.description,
                     'category': item.category,
-                    'proposingGroup': 'developers',
+                    'proposingGroup': self.developers_uid,
                     'proposingGroupWithGroupInCharge': group_in_charge_value,
                     'decision': item.decision,
                     'meetingTransitionInsertingMe': item.meetingTransitionInsertingMe}

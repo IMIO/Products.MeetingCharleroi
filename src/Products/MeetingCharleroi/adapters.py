@@ -742,7 +742,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
            and 'on_police_then_other_groups'.'''
         item = self.getSelf()
         if insertMethod == 'on_police_then_other_groups':
-            if item.getProposingGroup().startswith(POLICE_GROUP_PREFIX):
+            if item.getProposingGroup(True).getId().startswith(POLICE_GROUP_PREFIX):
                 return 0
             else:
                 return 1
@@ -800,7 +800,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         '''Compute the College item reference.'''
         item = self.getSelf()
         tool = api.portal.get_tool('portal_plonemeeting')
-        isPoliceItem = bool(item.getProposingGroup().startswith(POLICE_GROUP_PREFIX))
+        isPoliceItem = bool(item.getProposingGroup(theObject=True).getId().startswith(POLICE_GROUP_PREFIX))
         isCommuItem = bool(item.getCategory() == COMMUNICATION_CAT_ID)
         toSendToCouncil = bool('meeting-config-council' in item.getOtherMeetingConfigsClonableTo())
         isPrivacySecret = bool(item.getPrivacy() == 'secret')
@@ -894,8 +894,8 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         """ """
         # do the query unrestricted so we have same result for users
         # that do not have access to every items of the meeting
-        brains = meeting.getItems(useCatalog=True,
-                                  ordered=True,
+        brains = meeting.getItems(ordered=True,
+                                  theObjects=False,
                                   additional_catalog_query=additionalQuery,
                                   unrestricted=True)
         return [brain.UID for brain in brains]
@@ -1078,7 +1078,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
 
     def mayValidate(self):
         res = MeetingItemCommunesWorkflowConditions.mayValidate(self)
-        if res and not self.context.REQUEST.get('postponing_item', False):
+        if res and not self.context.REQUEST.get('duplicating_and_validating_item', False):
             # if finances advice is asked, item may only be validated
             # if the advice have actually be given
             if finance_group_uid() in self.context.adviceIndex and \
@@ -1184,12 +1184,10 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
 
     def zplGroups(self, the_objects=False):
         """Return organizations having id starting with POLICE_GROUP_PREFIX."""
-        orgs = get_organizations(the_objects=the_objects)
-        if the_objects:
-            orgs = [org.getId() for org in orgs
-                    if org.getId().startswith(POLICE_GROUP_PREFIX)]
-        else:
-            orgs = [org for org in orgs if org.startswith(POLICE_GROUP_PREFIX)]
+        orgs = [org for org in get_organizations(the_objects=True)
+                if org.getId().startswith(POLICE_GROUP_PREFIX)]
+        if not the_objects:
+            orgs = [org.UID() for org in orgs]
         return orgs
 
     def enableNonFinancesStyles(self, context):

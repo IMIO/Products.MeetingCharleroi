@@ -744,7 +744,8 @@ def _addCouncilDemoData(collegeMeeting,
         # get every items to send to council without emergency
         itemsToCouncilNoEmergency = [
             item for item in collegeMeeting.getItems(ordered=True)
-            if item.getOtherMeetingConfigsClonableTo() and not item.getOtherMeetingConfigsClonableToEmergency()]
+            if item.getOtherMeetingConfigsClonableTo() and
+            not item.getOtherMeetingConfigsClonableToEmergency()]
         # send to council every items
         i = 0
         for item in itemsToCouncilNoEmergency:

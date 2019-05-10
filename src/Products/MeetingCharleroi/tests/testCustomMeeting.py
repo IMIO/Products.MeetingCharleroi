@@ -364,7 +364,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
 
         # Every item in the meeting is now from the police group
         for item in meeting.getItems(listTypes=['normal', 'late', 'depose']):
-            item.setProposingGroup('zone-de-police')
+            item.setProposingGroup(org_id_to_uid(POLICE_GROUP_PREFIX))
 
         # Police prescriptive items (normal, late and depose)
         policePrescriItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
@@ -443,13 +443,14 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
                      itemPol1, itemPol2, ]:
             self.presentItem(item)
 
+        police_uid = org_id_to_uid(POLICE_GROUP_PREFIX)
         orderedItems = meeting.getItems(ordered=True)
         self.assertEquals([item.getId() for item in orderedItems],
                           ['o6', 'o7', 'o1', 'o2', 'o3', 'o4', 'o5'])
-        self.assertEquals([item.getProposingGroup(theObject=True).getId() for item in orderedItems],
-                          ['zone-de-police', 'zone-de-police',
-                           'developers', 'developers', 'developers',
-                           'vendors', 'vendors'])
+        self.assertEquals([item.getProposingGroup() for item in orderedItems],
+                          [police_uid, police_uid,
+                           self.developers_uid, self.developers_uid, self.developers_uid,
+                           self.vendors_uid, self.vendors_uid])
 
     def test_pm_InsertItemOnCommunication(self):
         '''Test inserting an item using the "on_communication" sorting method.'''
@@ -483,6 +484,11 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         '''Test inserting an item using the relevant inserting methods.'''
         collegeMeeting, collegeExtraMeeting = self.setupCollegeDemoData()
 
+        police_uid = org_id_to_uid(POLICE_GROUP_PREFIX)
+        police_compta_uid = org_id_to_uid(POLICE_GROUP_PREFIX + u'-compta')
+        gic1_uid = org_id_to_uid('groupincharge1')
+        gic2_uid = org_id_to_uid('groupincharge2')
+
         orderedItems = collegeMeeting.getItems(ordered=True)
         self.assertEquals([
             (item.getListType(),
@@ -492,57 +498,57 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
              item.getOtherMeetingConfigsClonableToPrivacy(),
              item.getOtherMeetingConfigsClonableToEmergency(),
              item.getCategory()) for item in orderedItems],
-            [('normal', 'zone-de-police', 'groupincharge1', (), (), (), 'remboursement'),
-             ('normal', 'zone-de-police', 'groupincharge1', (), (), (), 'remboursement'),
-             ('late', 'zone-de-police-compta', 'groupincharge1', (), (), (), 'remboursement'),
-             ('late', 'zone-de-police', 'groupincharge1', (), (), (), 'remboursement'),
-             ('depose', 'zone-de-police', 'groupincharge1', (), (), (), 'remboursement'),
-             ('normal', 'zone-de-police', 'groupincharge1',
+            [('normal', police_uid, gic1_uid, (), (), (), 'remboursement'),
+             ('normal', police_uid, gic1_uid, (), (), (), 'remboursement'),
+             ('late', police_compta_uid, gic1_uid, (), (), (), 'remboursement'),
+             ('late', police_uid, gic1_uid, (), (), (), 'remboursement'),
+             ('depose', police_uid, gic1_uid, (), (), (), 'remboursement'),
+             ('normal', police_uid, gic1_uid,
               ('meeting-config-council',), (), (), 'affaires-juridiques'),
-             ('normal', 'zone-de-police-compta', 'groupincharge1',
+             ('normal', police_compta_uid, gic1_uid,
               ('meeting-config-council',), ('meeting-config-council',), (), 'affaires-juridiques'),
-             ('normal', 'zone-de-police', 'groupincharge1',
+             ('normal', police_uid, gic1_uid,
               ('meeting-config-council',), (), ('meeting-config-council',), 'affaires-juridiques'),
-             ('normal', 'zone-de-police-compta', 'groupincharge1',
+             ('normal', police_compta_uid, gic1_uid,
               ('meeting-config-council',), ('meeting-config-council',), (), 'remboursement'),
-             ('late', 'zone-de-police', 'groupincharge1',
+             ('late', police_uid, gic1_uid,
               ('meeting-config-council',), (), (), 'affaires-juridiques'),
-             ('late', 'zone-de-police', 'groupincharge1',
+             ('late', police_uid, gic1_uid,
               ('meeting-config-council',), (), (), 'affaires-juridiques'),
-             ('late', 'zone-de-police', 'groupincharge1',
+             ('late', police_uid, gic1_uid,
               ('meeting-config-council',), (), ('meeting-config-council',), 'affaires-juridiques'),
-             ('late', 'zone-de-police-compta', 'groupincharge1',
+             ('late', police_compta_uid, gic1_uid,
               ('meeting-config-council',), ('meeting-config-council',), (), 'remboursement'),
-             ('normal', 'zone-de-police', 'groupincharge1', (), (), (), 'communication'),
-             ('normal', 'zone-de-police-compta', 'groupincharge1', (), (), (), 'communication'),
-             ('normal', 'zone-de-police', 'groupincharge1', (), (), (), 'communication'),
-             ('normal', 'vendors', 'groupincharge1', (), (), (), 'remboursement'),
-             ('normal', 'vendors', 'groupincharge1', (), (), (), 'remboursement'),
-             ('normal', 'developers', 'groupincharge2', (), (), (), 'remboursement'),
-             ('normal', 'developers', 'groupincharge2', (), (), (), 'remboursement'),
-             ('late', 'vendors', 'groupincharge1', (), (), (), 'remboursement'),
-             ('late', 'vendors', 'groupincharge1', (), (), (), 'remboursement'),
-             ('depose', 'vendors', 'groupincharge1', (), (), (), 'remboursement'),
-             ('normal', 'vendors', 'groupincharge1', ('meeting-config-council',), (), (), 'affaires-juridiques'),
-             ('normal', 'vendors', 'groupincharge1',
+             ('normal', police_uid, gic1_uid, (), (), (), 'communication'),
+             ('normal', police_compta_uid, gic1_uid, (), (), (), 'communication'),
+             ('normal', police_uid, gic1_uid, (), (), (), 'communication'),
+             ('normal', self.vendors_uid, gic1_uid, (), (), (), 'remboursement'),
+             ('normal', self.vendors_uid, gic1_uid, (), (), (), 'remboursement'),
+             ('normal', self.developers_uid, gic2_uid, (), (), (), 'remboursement'),
+             ('normal', self.developers_uid, gic2_uid, (), (), (), 'remboursement'),
+             ('late', self.vendors_uid, gic1_uid, (), (), (), 'remboursement'),
+             ('late', self.vendors_uid, gic1_uid, (), (), (), 'remboursement'),
+             ('depose', self.vendors_uid, gic1_uid, (), (), (), 'remboursement'),
+             ('normal', self.vendors_uid, gic1_uid, ('meeting-config-council',), (), (), 'affaires-juridiques'),
+             ('normal', self.vendors_uid, gic1_uid,
               ('meeting-config-council',), ('meeting-config-council',), (), 'affaires-juridiques'),
-             ('normal', 'vendors', 'groupincharge1', ('meeting-config-council',), (), (), 'remboursement'),
-             ('normal', 'developers', 'groupincharge2',
+             ('normal', self.vendors_uid, gic1_uid, ('meeting-config-council',), (), (), 'remboursement'),
+             ('normal', self.developers_uid, gic2_uid,
               ('meeting-config-council',), ('meeting-config-council',), (), 'affaires-juridiques'),
-             ('normal', 'developers', 'groupincharge2',
+             ('normal', self.developers_uid, gic2_uid,
               ('meeting-config-council',), ('meeting-config-council',), (), 'affaires-juridiques'),
-             ('normal', 'developers', 'groupincharge2', ('meeting-config-council',), (), (), 'remboursement'),
-             ('normal', 'developers', 'groupincharge2',
+             ('normal', self.developers_uid, gic2_uid, ('meeting-config-council',), (), (), 'remboursement'),
+             ('normal', self.developers_uid, gic2_uid,
               ('meeting-config-council',), (), ('meeting-config-council',), 'remboursement'),
-             ('late', 'developers', 'groupincharge2', ('meeting-config-council',), (), (), 'affaires-juridiques'),
-             ('late', 'developers', 'groupincharge2',
+             ('late', self.developers_uid, gic2_uid, ('meeting-config-council',), (), (), 'affaires-juridiques'),
+             ('late', self.developers_uid, gic2_uid,
               ('meeting-config-council',), ('meeting-config-council',), (), 'remboursement'),
-             ('late', 'developers', 'groupincharge2',
+             ('late', self.developers_uid, gic2_uid,
               ('meeting-config-council',), ('meeting-config-council',), ('meeting-config-council',), 'remboursement'),
-             ('normal', 'developers', 'groupincharge2', (), (), (), 'conseil-communal-arret-de-lordre-du-jour'),
-             ('normal', 'developers', 'groupincharge2', (), (), (), 'communication'),
-             ('normal', 'developers', 'groupincharge2', (), (), (), 'communication'),
-             ('normal', 'developers', 'groupincharge2', (), (), (), 'communication')])
+             ('normal', self.developers_uid, gic2_uid, (), (), (), 'conseil-communal-arret-de-lordre-du-jour'),
+             ('normal', self.developers_uid, gic2_uid, (), (), (), 'communication'),
+             ('normal', self.developers_uid, gic2_uid, (), (), (), 'communication'),
+             ('normal', self.developers_uid, gic2_uid, (), (), (), 'communication')])
 
     def test_CollegeCommunicationItemIsInsertedAsNormalItem(self):
         """ """
@@ -566,11 +572,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         meeting = self.setupCouncilDemoData()
         self.changeUser('pmManager')
         self.assertEqual(meeting.queryState(), 'frozen')
-        special_items = [
-            brain.getObject() for brain in
-            meeting.getItems(ordered=True,
-                             useCatalog=True,
-                             additional_catalog_query={'getCategory': COUNCIL_SPECIAL_CATEGORIES})]
+        special_items = meeting.getItems(
+            ordered=True, additional_catalog_query={'getCategory': COUNCIL_SPECIAL_CATEGORIES})
         # items were presented after meeting freeze
         for item in special_items:
             self.assertTrue(item.modified() > getLastWFAction(meeting, 'freeze')['time'])
