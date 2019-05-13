@@ -43,6 +43,7 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
                            'only_creator_may_delete',
                            'postpone_next_meeting',
                            'pre_validation',
+                           'refused',
                            'removed',
                            'removed_and_duplicated',
                            'return_to_proposing_group',

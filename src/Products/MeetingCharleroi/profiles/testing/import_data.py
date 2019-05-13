@@ -3,6 +3,7 @@
 from copy import deepcopy
 from Products.PloneMeeting.profiles.testing import import_data as pm_import_data
 from Products.MeetingCommunes.profiles.testing import import_data as mc_import_data
+from Products.PloneMeeting.config import MEETINGREVIEWERS
 from Products.PloneMeeting.profiles import UserDescriptor
 
 data = deepcopy(mc_import_data.data)
@@ -18,6 +19,8 @@ pmRefAdmin1 = UserDescriptor('pmRefAdmin1', [])
 # Inherited users
 pmReviewer1 = deepcopy(pm_import_data.pmReviewer1)
 pmReviewer2 = deepcopy(pm_import_data.pmReviewer2)
+pmReviewerLevel1 = deepcopy(pm_import_data.pmReviewerLevel1)
+pmReviewerLevel2 = deepcopy(pm_import_data.pmReviewerLevel2)
 pmManager = deepcopy(pm_import_data.pmManager)
 
 # Groups
@@ -29,6 +32,11 @@ developers.serviceheads.append(pmManager)
 developers.prereviewers.append(pmRefAdmin1)
 developers.prereviewers.append(pmReviewer1)
 developers.prereviewers.append(pmManager)
+# move pmReviewerLevel1 from prereviewers (that is second reviewer level)
+# to serviceheads that is first reviewer level
+developers.prereviewers = [descr for descr in developers.prereviewers if descr.id != 'pmReviewerLevel1']
+getattr(developers, MEETINGREVIEWERS['*'].keys()[-1]).append(pmReviewerLevel1)
+
 vendors = data.orgs[1]
 vendors.serviceheads.append(pmReviewer2)
 vendors.prereviewers.append(pmReviewer2)
@@ -49,10 +57,8 @@ collegeMeeting.transitionsForPresentingAnItem = ['propose', 'proposeToRefAdmin',
 collegeMeeting.itemAdviceStates = ['prevalidated', ]
 collegeMeeting.itemAdviceEditStates = ['prevalidated', 'validated']
 collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
-                                      'only_creator_may_delete', 'return_to_proposing_group',
-                                      'pre_validation', 'charleroi_add_refadmin', 'waiting_advices',
-                                      'postpone_next_meeting', 'mark_not_applicable',
-                                      'removed', 'refused']
+                                      'pre_validation', 'charleroi_add_refadmin',
+                                      'waiting_advices']
 # Council
 councilMeeting = deepcopy(mc_import_data.councilMeeting)
 councilMeeting.itemConditionsInterface = \

@@ -9,6 +9,7 @@
 # GNU General Public License (GPL)
 #
 
+from collective.eeafaceted.dashboard.utils import enableFacetedDashboardFor
 from DateTime import DateTime
 from imio.helpers.catalog import addOrUpdateIndexes
 from plone import api
@@ -57,8 +58,6 @@ def postInstall(context):
     reorderSkinsLayers(context, site)
     # add the groupsOfMatter index
     addOrUpdateIndexes(site, {'financesAdviceCategory': ('FieldIndex', {})})
-    # add our own faceted criteria
-    addFacetedCriteria(context, site)
 
 
 def logStep(method, context):
@@ -157,9 +156,9 @@ def addFacetedCriteria(context, site):
     logStep("addFacetedCriteria", context)
     tool = api.portal.get_tool('portal_plonemeeting')
     for cfg in tool.objectValues('MeetingConfig'):
-        tool._enableFacetedDashboardFor(cfg.searches.searches_items,
-                                        os.path.dirname(__file__) +
-                                        '/faceted_conf/meetingcharleroi_dashboard_items_widgets.xml')
+        enableFacetedDashboardFor(cfg.searches.searches_items,
+                                  os.path.dirname(__file__) +
+                                  '/faceted_conf/meetingcharleroi_dashboard_items_widgets.xml')
 
 
 def finalizeExampleInstance(context):
@@ -183,6 +182,10 @@ def finalizeExampleInstance(context):
     site = context.getSite()
 
     logStep("finalizeExampleInstance", context)
+
+    # add our own faceted criteria
+    addFacetedCriteria(context, site)
+
     # add the test users 'dfin' and 'bourgmestre' to every '_powerobservers' groups
     mTool = api.portal.get_tool('portal_membership')
     groupsTool = api.portal.get_tool('portal_groups')

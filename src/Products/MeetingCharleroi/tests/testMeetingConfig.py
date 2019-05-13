@@ -29,6 +29,10 @@ from Products.MeetingCommunes.tests.testMeetingConfig import testMeetingConfig a
 class testMeetingConfig(MeetingCharleroiTestCase, mctmc):
     '''Tests the MeetingConfig class methods.'''
 
+    def _usersToRemoveFromGroupsForUpdatePersonalLabels(self):
+        """ """
+        return ['pmRefAdmin1', 'pmReviewerLevel1', 'pmServiceHead1']
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite

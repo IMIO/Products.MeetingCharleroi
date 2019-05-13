@@ -22,6 +22,13 @@ from zope.i18n import translate
 class testCustomWorkflows(MeetingCharleroiTestCase):
     """Tests the default workflows implemented in MeetingCharleroi."""
 
+    def setUp(self):
+        """ """
+        super(testCustomWorkflows, self).setUp()
+        cfg = self.meetingConfig
+        cfg.setWorkflowAdaptations(charleroi_import_data.collegeMeeting.workflowAdaptations)
+        cfg.at_post_edit_script()
+
     def test_FreezeMeeting(self):
         """
            When we freeze a meeting, every presented items will be frozen
@@ -106,9 +113,9 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertEquals('accepted', wftool.getInfoFor(item3, 'review_state'))
         # accepted_but_modified rest accepted_but_modified (it's already a 'decide' state)
         self.assertEquals('accepted_but_modified', wftool.getInfoFor(item4, 'review_state'))
-        # refused rest refused (it's already a 'decide' state)
+        # refused stays refused (it's already a 'decided' state)
         self.assertEquals('refused', wftool.getInfoFor(item5, 'review_state'))
-        # accepted rest accepted (it's already a 'decide' state)
+        # accepted stays accepted (it's already a 'decided' state)
         self.assertEquals('accepted', wftool.getInfoFor(item6, 'review_state'))
         # presented change into accepted
         self.assertEquals('accepted', wftool.getInfoFor(item7, 'review_state'))
@@ -536,8 +543,6 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         cfg = self.meetingConfig
         self.changeUser('siteadmin')
         self._configureFinancesAdvice(cfg)
-        cfg.setWorkflowAdaptations(charleroi_import_data.collegeMeeting.workflowAdaptations)
-        cfg.at_post_edit_script()
 
         # first case, delay exceeded and advice was never given, the item is sent back to refadmin
         self.changeUser('pmCreator1')

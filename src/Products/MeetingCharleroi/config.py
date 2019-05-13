@@ -34,9 +34,9 @@ CHARLEROIROLES = {}
 CHARLEROIROLES['serviceheads'] = 'MeetingServiceHead'
 PMconfig.MEETINGROLES.update(CHARLEROIROLES)
 
-CHARLEROIMEETINGREVIEWERS = {'*': OrderedDict([('reviewers', 'prevalidated'),
-                                               ('prereviewers', 'proposed_to_refadmin'),
-                                               ('serviceheads', 'proposed'), ]), }
+CHARLEROIMEETINGREVIEWERS = {'*': OrderedDict([('reviewers', ['prevalidated']),
+                                               ('prereviewers', ['proposed_to_refadmin']),
+                                               ('serviceheads', ['proposed']), ]), }
 PMconfig.MEETINGREVIEWERS = CHARLEROIMEETINGREVIEWERS
 
 # text about FD advice used in templates

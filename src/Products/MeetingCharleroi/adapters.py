@@ -1080,7 +1080,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
         res = MeetingItemCommunesWorkflowConditions.mayValidate(self)
         if res and not self.context.REQUEST.get('duplicating_and_validating_item', False):
             # if finances advice is asked, item may only be validated
-            # if the advice have actually be given
+            # if the advice has actually be given
             if finance_group_uid() in self.context.adviceIndex and \
                not self.context.adviceIndex[finance_group_uid()]['type'].endswith('_finance'):
                 res = False
