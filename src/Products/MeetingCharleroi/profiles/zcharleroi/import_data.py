@@ -441,7 +441,8 @@ collegeMeeting.categories = college_categories
 collegeMeeting.shortName = 'College'
 collegeMeeting.annexTypes = [annexe, annexeBudget, annexeCahier,
                              annexeDecision, annexeAvis, annexeAvisLegal]
-collegeMeeting.usedItemAttributes = ['completeness',
+collegeMeeting.usedItemAttributes = ['description',
+                                     'completeness',
                                      'budgetInfos',
                                      'manuallyLinkedItems',
                                      'motivation',
@@ -834,7 +835,8 @@ councilMeeting.selectablePrivacies = ('secret_heading', 'public', 'secret')
 councilMeeting.useGroupsAsCategories = False
 councilMeeting.annexTypes = [annexe, annexeBudget, annexeCahier,
                              annexeDecision, annexeAvis, annexeAvisLegal]
-councilMeeting.usedItemAttributes = ['motivation',
+councilMeeting.usedItemAttributes = ['description',
+                                     'motivation',
                                      'observations',
                                      'privacy',
                                      'budgetInfos',
