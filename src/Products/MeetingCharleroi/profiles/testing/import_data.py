@@ -35,7 +35,7 @@ developers.prereviewers.append(pmManager)
 # move pmReviewerLevel1 from prereviewers (that is second reviewer level)
 # to serviceheads that is first reviewer level
 developers.prereviewers = [descr for descr in developers.prereviewers if descr.id != 'pmReviewerLevel1']
-getattr(developers, MEETINGREVIEWERS['*'].keys()[-1]).append(pmReviewerLevel1)
+getattr(developers, MEETINGREVIEWERS['meetingitemcommunes_workflow'].keys()[-1]).append(pmReviewerLevel1)
 
 vendors = data.orgs[1]
 vendors.serviceheads.append(pmReviewer2)
