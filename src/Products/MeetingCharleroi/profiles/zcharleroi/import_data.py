@@ -595,7 +595,7 @@ collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
                                       'only_creator_may_delete', 'return_to_proposing_group',
                                       'pre_validation', 'charleroi_add_refadmin', 'waiting_advices',
                                       'postpone_next_meeting', 'mark_not_applicable',
-                                      'removed', 'refused']
+                                      'removed', 'refused', 'charleroi_return_to_any_state_when_prevalidated']
 collegeMeeting.transitionsForPresentingAnItem = ('propose', 'proposeToRefAdmin', 'prevalidate', 'validate', 'present', )
 collegeMeeting.onTransitionFieldTransforms = (
     ({'transition': 'delay',

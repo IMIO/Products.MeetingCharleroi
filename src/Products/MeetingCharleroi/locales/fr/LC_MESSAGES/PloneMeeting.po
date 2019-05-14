@@ -108,11 +108,11 @@ msgstr "L'avis des finances n'a pas été demandé sur ce point."
 
 #. Default: "On 'Communication/Agenda Council' (items using 'Communication/Agenda Council' category then items of other categories)"
 msgid "on_communication"
-msgstr "Par 'Communication/Conseil communal - Arrêt de l\'ordre du jour' (points utilisant les catégories 'Communication/Conseil communal - Arrêt de l\'ordre du jour' puis les points utilisant les autres catégories)"
+msgstr "Par \"Communication/Conseil communal - Arrêt de l'ordre du jour\" (points utilisant les catégories \"Communication/Conseil communal - Arrêt de l'ordre du jour\" puis les points utilisant les autres catégories)"
 
 #. Default: "First items of 'Police' then other groups items"
 msgid "on_police_then_other_groups"
-msgstr "Points 'Zone de Police' puis points des Services communaux"
+msgstr "Points \"Zone de Police\" puis points des Services communaux"
 
 #. Default: "Pre-validator"
 msgid "prereviewer"
@@ -155,4 +155,3 @@ msgstr "Ajout du référent administratif"
 #. Default: "Wait advices"
 msgid "wa_waiting_advices"
 msgstr "Etats supplémentaires pour demander les avis ('en création', 'proposé au chef de service, 'aux finances')"
-

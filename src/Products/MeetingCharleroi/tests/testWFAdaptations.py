@@ -35,6 +35,7 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
         # we removed the 'archiving' and 'creator_initiated_decisions' wfAdaptations
         self.assertEquals(sorted(self.meetingConfig.listWorkflowAdaptations().keys()),
                           ['charleroi_add_refadmin',
+                           'charleroi_return_to_any_state_when_prevalidated',
                            'hide_decisions_when_under_writing',
                            'items_come_validated',
                            'mark_not_applicable',
@@ -85,6 +86,58 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
         cfg.at_post_edit_script()
         itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
         self.assertTrue('proposed_to_refadmin' in itemWF.states)
+
+    def test_pm_WFA_charleroi_return_to_any_state_when_prevalidated(self):
+        '''Test that permissions are correct when the WFA is enabled.'''
+        cfg = self.meetingConfig
+        self.changeUser('siteadmin')
+        cfg.setWorkflowAdaptations(())
+        cfg.at_post_edit_script()
+        itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
+        self.assertFalse('backToProposedFromPrevalidated' in itemWF.transitions)
+        self.assertFalse('backToItemCreatedFromPrevalidated' in itemWF.transitions)
+        # activate, needs the 'pre_validation' WFA
+        cfg.setWorkflowAdaptations(('charleroi_return_to_any_state_when_prevalidated', ))
+        cfg.at_post_edit_script()
+        itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
+        self.assertFalse('proposed_to_refadmin' in itemWF.states)
+        # together with 'pre_validation', it is ok
+        cfg.setWorkflowAdaptations(('pre_validation',
+                                    'charleroi_return_to_any_state_when_prevalidated'))
+        cfg.at_post_edit_script()
+        itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
+        self.assertFalse('backToProposedFromPrevalidated' in itemWF.transitions)
+        self.assertTrue('backToItemCreatedFromPrevalidated' in itemWF.transitions)
+
+        # together with 'pre_validation' and 'charleroi_add_refadmin', it is ok
+        cfg.setWorkflowAdaptations(('pre_validation',
+                                    'charleroi_add_refadmin',
+                                    'charleroi_return_to_any_state_when_prevalidated'))
+        cfg.at_post_edit_script()
+        itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
+        self.assertTrue('backToProposedFromPrevalidated' in itemWF.transitions)
+        self.assertTrue('backToItemCreatedFromPrevalidated' in itemWF.transitions)
+
+        # test that transitions do the work
+        self.changeUser('pmManager')
+        item = self.create('MeetingItem')
+
+        # back to proposed to servicehead
+        self.do(item, 'propose')
+        self.do(item, 'proposeToRefAdmin')
+        self.do(item, 'prevalidate')
+        # MeetingMember can not trigger the transitions
+        self.changeUser('pmCreator1')
+        self.assertEqual(self.transitions(item), [])
+        self.changeUser('pmManager')
+        self.do(item, 'backToProposedFromPrevalidated')
+        self.assertEqual(item.queryState(), 'proposed')
+
+        # back to itemcreated
+        self.do(item, 'proposeToRefAdmin')
+        self.do(item, 'prevalidate')
+        self.do(item, 'backToItemCreatedFromPrevalidated')
+        self.assertEqual(item.queryState(), 'itemcreated')
 
     def _waiting_advices_with_prevalidation_active(self):
         '''Enable WFAdaptation 'charleroi_add_refadmin' before executing test.'''

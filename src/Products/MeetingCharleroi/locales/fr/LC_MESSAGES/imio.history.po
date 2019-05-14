@@ -21,4 +21,3 @@ msgstr "Le point a été automatiquement renvoyé au référent administratif ca
 #. Default: "The item has been automatically validated because the relevant finance advice was positive."
 msgid "item_wf_changed_finance_advice_positive"
 msgstr "Le point a été automatiquement validé car le Directeur financier a rendu un avis favorable."
-

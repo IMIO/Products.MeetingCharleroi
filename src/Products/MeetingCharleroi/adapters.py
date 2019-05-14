@@ -81,6 +81,7 @@ customWfAdaptations = ('no_publication', 'no_global_observation',
                        'only_creator_may_delete',
                        'pre_validation', 'items_come_validated',
                        'return_to_proposing_group', 'charleroi_add_refadmin',
+                       'charleroi_return_to_any_state_when_prevalidated',
                        'waiting_advices', 'postpone_next_meeting',
                        'mark_not_applicable', 'removed', 'removed_and_duplicated',
                        'hide_decisions_when_under_writing', 'refused')
@@ -1121,6 +1122,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
             # only MeetingManagers may send back to director from finances
             elif destinationState == 'prevalidated' and tool.isManager(self.context):
                 res = True
+
         return res
 
     security.declarePublic('isLateFor')
@@ -1339,6 +1341,42 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
                     meetingConfig.setTransitionsToConfirm(toConfirm)
             logger.info(WF_APPLIED % ("charleroi_add_refadmin", meetingConfig.getId()))
             return True
+        if wfAdaptation == 'charleroi_return_to_any_state_when_prevalidated':
+            # Allow reviewers and managers to send items back to any previous state in one click
+            if 'prevalidated' in itemWorkflow.states:
+                transitions = itemWorkflow.transitions
+
+                if 'proposed_to_refadmin' in itemWorkflow.states:
+                    if 'backToProposedFromPrevalidated' not in transitions:
+                        transitions.addTransition('backToProposedFromPrevalidated')
+
+                    transition = itemWorkflow.transitions['backToProposedFromPrevalidated']
+                    transition.setProperties(
+                        title='backToProposedFromPrevalidated',
+                        new_state_id='proposed', trigger_type=1, script_name='',
+                        actbox_name='backToProposed', actbox_url='',
+                        actbox_icon='%(portal_url)s/backToProposed.png', actbox_category='workflow',
+                        props={'guard_expr': 'python:here.wfConditions().mayCorrect("prevalidated")'})
+
+                if 'backToItemCreatedFromPrevalidated' not in transitions:
+                    transitions.addTransition('backToItemCreatedFromPrevalidated')
+
+                transition = itemWorkflow.transitions['backToItemCreatedFromPrevalidated']
+                transition.setProperties(
+                    title='backToItemCreatedFromPrevalidated',
+                    new_state_id='itemcreated', trigger_type=1, script_name='',
+                    actbox_name='backToItemCreated', actbox_url='',
+                    actbox_icon='%(portal_url)s/backToItemCreated.png', actbox_category='workflow',
+                    props={'guard_expr': 'python:here.wfConditions().mayCorrect("prevalidated")'})
+
+                # Update connections between states and transitions
+                itemWorkflow.states['prevalidated'].setProperties(
+                    title='prevalidated', description='',
+                    transitions=['backToProposedFromPrevalidated',
+                                 'backToItemCreatedFromPrevalidated',
+                                 'backToProposedToRefAdmin',
+                                 'validate'])
+                return True
         return False
 
 # ------------------------------------------------------------------------------

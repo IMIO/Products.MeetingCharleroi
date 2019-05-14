@@ -34,6 +34,10 @@ msgstr "Point récurrent Bourgmestre"
 msgid "MeetingItemTemplateBourgmestre"
 msgstr "Modèle de point Bourgmestre"
 
+#. Default: "Send item back to itemcreated."
+msgid "backToItemCreatedFromPrevalidated"
+msgstr "Renvoyer au chef de service"
+
 #. Default: "Back to 'Proposed to director'"
 msgid "backToPrevalidated"
 msgstr "Renvoyer au directeur"
@@ -41,6 +45,10 @@ msgstr "Renvoyer au directeur"
 #. Default: "Back to 'Proposed to service head'"
 msgid "backToProposed"
 msgstr "Renvoyer au chef de service"
+
+#. Default: "Send item back to proposed."
+msgid "backToProposedFromPrevalidated"
+msgstr "Remettre \"En création\""
 
 #. Default: "Back to admin referent"
 msgid "backToProposedToRefAdmin"
@@ -52,7 +60,7 @@ msgstr "Renvoyer au directeur"
 
 #. Default: "Back to 'proposed'"
 msgid "backTo_proposed_from_waiting_advices"
-msgstr "Remettre en 'Proposé au chef de service'"
+msgstr "Renvoyer au chef de service"
 
 #. Default: "Back to 'proposed to refadmin'"
 msgid "backTo_proposed_to_refadmin_from_waiting_advices"
@@ -97,4 +105,3 @@ msgstr "En attente des avis (Proposé au chef de service)"
 #. Default: "Ask finances advices"
 msgid "wait_advices_from_prevalidated"
 msgstr "Demander l'avis des finances"
-

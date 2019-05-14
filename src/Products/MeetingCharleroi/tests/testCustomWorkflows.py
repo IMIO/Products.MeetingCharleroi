@@ -231,12 +231,16 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmReviewer1')
         # may only validate if no finances advice or finances advice is given
         self.assertEqual(self.transitions(item),
-                         ['backToProposedToRefAdmin',
+                         ['backToItemCreatedFromPrevalidated',
+                          'backToProposedFromPrevalidated',
+                          'backToProposedToRefAdmin',
                           'wait_advices_from_prevalidated'])
         # remove fact that finances advice was asked
         item.setOptionalAdvisers(())
         self.assertEqual(self.transitions(item),
-                         ['backToProposedToRefAdmin',
+                         ['backToItemCreatedFromPrevalidated',
+                          'backToProposedFromPrevalidated',
+                          'backToProposedToRefAdmin',
                           'wait_advices_from_prevalidated'])
         item.setOptionalAdvisers(('{0}__rowid__unique_id_002'.format(finance_group_uid()), ))
 
@@ -285,14 +289,18 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # now item may be validated but finances advice may not be asked
         # anymore as it was already given
         self.assertEqual(self.transitions(item),
-                         ['backToProposedToRefAdmin',
+                         ['backToItemCreatedFromPrevalidated',
+                          'backToProposedFromPrevalidated',
+                          'backToProposedToRefAdmin',
                           'validate'])
         # if finances advice is 'asked_again', it is giveable again
         changeView = advice.restrictedTraverse('@@change-advice-asked-again')
         changeView()
         self.assertEquals(advice.advice_type, 'asked_again')
         self.assertEqual(self.transitions(item),
-                         ['backToProposedToRefAdmin',
+                         ['backToItemCreatedFromPrevalidated',
+                          'backToProposedFromPrevalidated',
+                          'backToProposedToRefAdmin',
                           'wait_advices_from_prevalidated'])
 
     def test_CollegeFinancesAdviceWF(self):
