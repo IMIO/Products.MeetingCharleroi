@@ -148,3 +148,7 @@ msgstr ""
 #. Default: "You must select the category undefined for item to send to Council"
 msgid "category_must_be_indeterminee"
 msgstr ""
+
+#. Default: "Back transitions from \"Proposed to director\" (prevalidated)"
+msgid "wa_charleroi_return_to_any_state_when_prevalidated"
+msgstr ""

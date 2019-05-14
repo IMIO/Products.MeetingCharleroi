@@ -152,6 +152,10 @@ msgstr "Chefs de service"
 msgid "wa_charleroi_add_refadmin"
 msgstr "Ajout du référent administratif"
 
+#. Default: "Back transitions from \"Proposed to director\" (prevalidated)"
+msgid "wa_charleroi_return_to_any_state_when_prevalidated"
+msgstr "Ajouter les transitions \"retour\" depuis l'état \"Proposé au directeur\" (prevalidated)"
+
 #. Default: "Wait advices"
 msgid "wa_waiting_advices"
-msgstr "Etats supplémentaires pour demander les avis ('en création', 'proposé au chef de service, 'aux finances')"
+msgstr "Etats supplémentaires pour demander les avis (\"en création\", \"proposé au chef de service\", \"aux finances\")"

@@ -149,6 +149,10 @@ msgstr ""
 msgid "wa_charleroi_add_refadmin"
 msgstr ""
 
+#. Default: "Back transitions from \"Proposed to director\" (prevalidated)"
+msgid "wa_charleroi_return_to_any_state_when_prevalidated"
+msgstr ""
+
 #. Default: "Wait advices"
 msgid "wa_waiting_advices"
 msgstr ""
