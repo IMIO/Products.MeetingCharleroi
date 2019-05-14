@@ -3,6 +3,7 @@
 from DateTime import DateTime
 from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
+from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.PloneMeeting.config import DEFAULT_LIST_TYPES
@@ -81,6 +82,8 @@ college_categories = [
     CategoryDescriptor(COMMUNICATION_CAT_ID,
                        'Communication',
                        description=''),
+    CategoryDescriptor(COUNCIL_DEFAULT_CATEGORY,
+                       'Indéterminée'),
 ]
 council_categories = [
     CategoryDescriptor('entetes',
@@ -93,7 +96,7 @@ council_categories = [
                        'Interventions'),
     CategoryDescriptor('questions-actualite',
                        "Questions d'actualité"),
-    CategoryDescriptor('indeterminee',
+    CategoryDescriptor(COUNCIL_DEFAULT_CATEGORY,
                        'Indéterminée'),
     CategoryDescriptor('designations',
                        'Désignations'),
