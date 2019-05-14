@@ -36,7 +36,7 @@ msgstr "Modèle de point Bourgmestre"
 
 #. Default: "Send item back to itemcreated."
 msgid "backToItemCreatedFromPrevalidated"
-msgstr "Renvoyer au chef de service"
+msgstr "Remettre \"En création\""
 
 #. Default: "Back to 'Proposed to director'"
 msgid "backToPrevalidated"
@@ -48,7 +48,7 @@ msgstr "Renvoyer au chef de service"
 
 #. Default: "Send item back to proposed."
 msgid "backToProposedFromPrevalidated"
-msgstr "Remettre \"En création\""
+msgstr "Renvoyer au chef de service"
 
 #. Default: "Back to admin referent"
 msgid "backToProposedToRefAdmin"

@@ -68,7 +68,6 @@ from Products.PloneMeeting.MeetingItem import MeetingItem
 # states taken into account by the 'no_global_observation' wfAdaptation
 from Products.PloneMeeting.model import adaptations
 from Products.PloneMeeting.model.adaptations import grantPermission
-from Products.PloneMeeting.model.adaptations import WF_APPLIED
 from zope.annotation import IAnnotations
 from zope.i18n import translate
 from zope.interface import implements
@@ -1253,7 +1252,6 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
             # Delete state 'published'
             if 'itempublished' in wf.states:
                 wf.states.deleteStates(['itempublished'])
-            logger.info(WF_APPLIED % ("no_publication", meetingConfig.getId()))
             return True
         if wfAdaptation == 'charleroi_add_refadmin':
             # add the 'proposed_to_refadmin' state after proposed state and before prevalidated state
@@ -1339,7 +1337,6 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
                     toConfirm = list(toConfirm)
                     toConfirm.append('MeetingItem.backToProposedToRefAdmin')
                     meetingConfig.setTransitionsToConfirm(toConfirm)
-            logger.info(WF_APPLIED % ("charleroi_add_refadmin", meetingConfig.getId()))
             return True
         if wfAdaptation == 'charleroi_return_to_any_state_when_prevalidated':
             # Allow reviewers and managers to send items back to any previous state in one click
