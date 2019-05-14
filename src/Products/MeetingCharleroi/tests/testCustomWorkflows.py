@@ -272,21 +272,34 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
                'advice_type': u'negative_finance',
                'advice_comment': RichTextValue(u'My comment finances'),
                'advice_category': u'acquisitions'})
+        # MeetingManager may not change item state when sent to finance, but Manager may
         self.do(advice, 'proposeToFinancialEditor')
         self.changeUser('pmManager')
         self.assertFalse(self.transitions(item))
+        self.changeUser('siteadmin')
+        self.assertEqual(self.transitions(item), ['backTo_prevalidated_from_waiting_advices'])
+
         self.changeUser('pmFinEditor')
         self.do(advice, 'proposeToFinancialReviewer')
         self.changeUser('pmManager')
         self.assertFalse(self.transitions(item))
+        self.changeUser('siteadmin')
+        self.assertEqual(self.transitions(item), ['backTo_prevalidated_from_waiting_advices'])
+
         self.changeUser('pmFinReviewer')
         self.do(advice, 'proposeToFinancialManager')
         self.changeUser('pmManager')
         self.assertFalse(self.transitions(item))
+        self.changeUser('siteadmin')
+        self.assertEqual(self.transitions(item), ['backTo_prevalidated_from_waiting_advices'])
+
         self.changeUser('pmFinManager')
         self.do(advice, 'signFinancialAdvice')
         self.changeUser('pmManager')
-        self.assertTrue(self.transitions(item))
+        self.assertEqual(self.transitions(item), ['backTo_prevalidated_from_waiting_advices'])
+        self.changeUser('siteadmin')
+        self.assertEqual(self.transitions(item), ['backTo_prevalidated_from_waiting_advices'])
+
         # item was sent back to administrative referent
         self.assertEquals(item.queryState(), 'proposed_to_refadmin')
         # now if it goes to director, director is able to validate the item
