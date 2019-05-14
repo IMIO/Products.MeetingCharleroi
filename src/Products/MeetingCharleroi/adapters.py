@@ -19,7 +19,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 # 02110-1301, USA.
 #
-# ------------------------------------------------------------------------------
+
 from AccessControl import ClassSecurityInfo
 from collections import OrderedDict
 from collective.contact.plonegroup.utils import get_organizations
@@ -73,7 +73,6 @@ from zope.i18n import translate
 from zope.interface import implements
 
 import re
-
 
 # disable most of wfAdaptations
 customWfAdaptations = ('no_publication', 'no_global_observation',
@@ -968,7 +967,6 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         communication = self._getCommunicationListType()
         if communication:
             return communication
-
         return self.context.getListTypeNormalValue(meeting)
 
 
@@ -1118,8 +1116,8 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
                                                        'completeness_not_yet_evaluated',
                                                        'completeness_evaluation_asked_again'):
                     res = True
-            # only MeetingManagers may send back to director from finances
-            elif destinationState == 'prevalidated' and tool.isManager(self.context):
+            # only administrators may send back to director from finances
+            elif destinationState == 'prevalidated' and tool.isManager(self.context, realManagers=True):
                 res = True
 
         return res
