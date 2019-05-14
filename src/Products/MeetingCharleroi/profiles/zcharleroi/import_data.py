@@ -22,6 +22,7 @@ from Products.PloneMeeting.profiles import PodTemplateDescriptor
 from Products.PloneMeeting.profiles import RecurringItemDescriptor
 from Products.PloneMeeting.profiles import UserDescriptor
 
+
 today = DateTime().strftime('%Y/%m/%d')
 
 # File types -------------------------------------------------------------------

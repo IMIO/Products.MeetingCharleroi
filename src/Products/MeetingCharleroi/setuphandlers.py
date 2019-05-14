@@ -30,9 +30,6 @@ import logging
 import os
 
 
-__author__ = """Gauthier Bastien <g.bastien@imio.be>, Andre NUYENS <a.nuyens@imio.be>"""
-__docformat__ = 'plaintext'
-
 logger = logging.getLogger('MeetingCharleroi: setuphandlers')
 
 

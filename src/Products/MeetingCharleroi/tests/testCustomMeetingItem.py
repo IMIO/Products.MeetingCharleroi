@@ -395,15 +395,13 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         item = self.create('MeetingItem')
         item.setOtherMeetingConfigsClonableTo(('meeting-config-council',))
 
-        msg_not_allowed = translate(
-            msgid='category_indeterminee_not_allowed',
-            domain='PloneMeeting',
-            context=self.request)
+        msg_not_allowed = translate(msgid='category_indeterminee_not_allowed',
+                        domain='PloneMeeting',
+                        context=self.request)
 
-        msg_mandatory = translate(
-            msgid='category_must_be_indeterminee',
-            domain='PloneMeeting',
-            context=self.request)
+        msg_mandatory = translate(msgid='category_must_be_indeterminee',
+                        domain='PloneMeeting',
+                        context=self.request)
 
         # as item is to send to Council, category 'indeterminee' must be used
         self.failIf(item.validate_category(COUNCIL_DEFAULT_CATEGORY))

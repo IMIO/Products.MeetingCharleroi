@@ -15,15 +15,6 @@ from Products.MeetingCommunes.config import FINANCE_STATE_TO_GROUPS_MAPPINGS
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.utils import finance_group_uid
 
-__author__ = """Gauthier BASTIEN <gauthier.bastien@imio.be>"""
-__docformat__ = 'plaintext'
-
-__author__ = """Gauthier BASTIEN <gauthier.bastien@imio.be>"""
-__docformat__ = 'plaintext'
-
-__author__ = """Gauthier BASTIEN <gauthier.bastien@imio.be>"""
-__docformat__ = 'plaintext'
-
 
 def onAdviceTransition(advice, event):
     '''Called whenever a transition has been fired on an advice.'''

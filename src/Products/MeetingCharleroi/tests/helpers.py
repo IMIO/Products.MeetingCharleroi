@@ -313,16 +313,7 @@ class MeetingCharleroiTestingHelpers(MeetingCommunesTestingHelpers):
         cfg2.setListTypes(charleroi_import_data.councilMeeting.listTypes)
         cfg2.setSelectablePrivacies(charleroi_import_data.councilMeeting.selectablePrivacies)
         cfg2.setWorkflowAdaptations(charleroi_import_data.councilMeeting.workflowAdaptations)
-<<<<<<< HEAD
-<<<<<<< 8ab7175ce4247ed9c11d4042146f0c9d49f9bb66
 
-=======
-        for category in charleroi_import_data.councilMeeting.categories:
-            cfg2.addCategory(category)
->>>>>>> merge new_list_type_council
-=======
-
->>>>>>> 06f3f7b27752cd618b077421da894462cc413c5d
         # items come validated
         cfg2.setTransitionsForPresentingAnItem(('present', ))
         cfg2.setItemReferenceFormat(charleroi_import_data.councilMeeting.itemReferenceFormat)
