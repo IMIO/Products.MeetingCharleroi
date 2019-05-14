@@ -5,6 +5,7 @@ Products.MeetingCharleroi Changelog
 ----------------
 
 - Be defensive when using getProperty on a member object, do not fail if member is None
+- Category 'indeterminee' can not be used on MeetingItemCollege if not to send to 'meting-config-council'
 
 4.0 (2017-08-22)
 ----------------
@@ -16,5 +17,3 @@ Products.MeetingCharleroi Changelog
 - Rely on inserting order 'on_groups_in_charge'
 - Added listType 'depose'
 - Use WFAdaptation 'mark_not_applicable'
-- Category 'indeterminee' can not be used on MeetingItemCollege if not to send
-  to 'meting-config-council'

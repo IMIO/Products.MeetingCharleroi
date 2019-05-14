@@ -630,13 +630,18 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
             return res
 
         if self.portal_type == 'MeetingItemCollege':
-            configToCloneTo = self.REQUEST.get('otherMeetingConfigsClonableTo', self.getOtherMeetingConfigsClonableTo())
+            configToCloneTo = self.REQUEST.get('otherMeetingConfigsClonableTo',
+                                               self.getOtherMeetingConfigsClonableTo())
             if 'meeting-config-council' in configToCloneTo and value != COUNCIL_DEFAULT_CATEGORY:
-                msg = translate('category_must_be_indeterminee', domain='PloneMeeting', context=self.REQUEST)
+                msg = translate('category_must_be_indeterminee',
+                                domain='PloneMeeting',
+                                context=self.REQUEST)
                 return msg
 
             elif 'meeting-config-council' not in configToCloneTo and value == COUNCIL_DEFAULT_CATEGORY:
-                msg = translate('category_indeterminee_not_allowed', domain='PloneMeeting', context=self.REQUEST)
+                msg = translate('category_indeterminee_not_allowed',
+                                domain='PloneMeeting',
+                                context=self.REQUEST)
                 return msg
 
     MeetingItem.validate_category = validate_category
