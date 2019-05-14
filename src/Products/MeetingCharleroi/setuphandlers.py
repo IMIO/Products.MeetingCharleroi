@@ -15,6 +15,7 @@ from imio.helpers.catalog import addOrUpdateIndexes
 from plone import api
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
+from plone.memoize.forever import _memos
 from Products.CMFPlone.utils import _createObjectByType
 from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
@@ -281,8 +282,11 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
            last_transition == 'prevalidate':
             finance_group = finance_group_uid()
             if finance_group:
-                newItem.setOptionalAdvisers(
-                    ('{0}__rowid__unique_id_002'.format(finance_group, )))
+                finance_advice_id = '{0}__rowid__unique_id_002'.format(finance_group)
+                if finance_advice_id not in newItem.listOptionalAdvisers():
+                    _memos.clear()
+                    finance_advice_id = '{0}__rowid__unique_id_002'.format(finance_group_uid())
+                newItem.setOptionalAdvisers((finance_advice_id, ))
                 newItem.updateLocalRoles()
                 wfTool.doActionFor(newItem, 'wait_advices_from_prevalidated')
                 newItem.setCompleteness('completeness_complete')
