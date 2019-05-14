@@ -152,4 +152,3 @@ msgstr ""
 #. Default: "Wait advices"
 msgid "wa_waiting_advices"
 msgstr ""
-

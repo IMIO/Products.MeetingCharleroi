@@ -80,7 +80,8 @@ import re
 customWfAdaptations = ('no_publication', 'no_global_observation',
                        'only_creator_may_delete',
                        'pre_validation', 'items_come_validated',
-                       'return_to_proposing_group', 'charleroi_add_refadmin', 'charleroi_return_to_any_state_when_prevalidated',
+                       'return_to_proposing_group', 'charleroi_add_refadmin',
+                       'charleroi_return_to_any_state_when_prevalidated',
                        'waiting_advices', 'postpone_next_meeting',
                        'mark_not_applicable', 'removed', 'removed_and_duplicated',
                        'hide_decisions_when_under_writing', 'refused')
@@ -1122,9 +1123,6 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
             elif destinationState == 'prevalidated' and tool.isManager(self.context):
                 res = True
 
-        if destinationState in ('itemCreated', 'prevalidated', 'proposed_to_refadmin', 'proposed') and self.context.REQUEST.get('mayValidate', False):
-            res = True
-
         return res
 
     security.declarePublic('isLateFor')
@@ -1366,7 +1364,7 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
                 transition = itemWorkflow.transitions['backToItemCreatedFromPrevalidated']
                 transition.setProperties(
                     title='backToItemCreatedFromPrevalidated',
-                    new_state_id='proposed', trigger_type=1, script_name='',
+                    new_state_id='itemcreated', trigger_type=1, script_name='',
                     actbox_name='backToItemCreated', actbox_url='',
                     actbox_icon='%(portal_url)s/backToItemCreated.png', actbox_category='workflow',
                     props={'guard_expr': 'python:here.wfConditions().mayCorrect("prevalidated")'})
@@ -1374,7 +1372,10 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
                 # Update connections between states and transitions
                 itemWorkflow.states['prevalidated'].setProperties(
                     title='prevalidated', description='',
-                    transitions=['backToProposedFromPrevalidated', 'backToItemCreatedFromPrevalidated', 'backToProposedToRefAdmin', 'validate'])
+                    transitions=['backToProposedFromPrevalidated',
+                                 'backToItemCreatedFromPrevalidated',
+                                 'backToProposedToRefAdmin',
+                                 'validate'])
                 return True
         return False
 

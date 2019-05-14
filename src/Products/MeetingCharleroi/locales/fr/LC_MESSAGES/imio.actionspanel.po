@@ -29,4 +29,3 @@ msgstr "Le point a été renvoyé au référent administratif."
 #. Default: "This item was validated."
 msgid "backTo_validated_from_waiting_advices_done_descr"
 msgstr "Le point a été validé."
-

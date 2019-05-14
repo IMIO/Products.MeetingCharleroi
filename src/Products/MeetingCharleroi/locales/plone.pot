@@ -94,3 +94,11 @@ msgstr ""
 #. Default: "Back to 'proposed'"
 msgid "backTo_proposed_from_waiting_advices"
 msgstr ""
+
+#. Default: "Send item back to proposed."
+msgid "backToProposedFromPrevalidated"
+msgstr ""
+
+#. Default: "Send item back to itemcreated."
+msgid "backToItemCreatedFromPrevalidated"
+msgstr ""
