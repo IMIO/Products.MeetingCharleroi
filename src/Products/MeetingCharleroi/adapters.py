@@ -1122,7 +1122,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
         '''Some categories are never considered 'late'.'''
         tool = api.portal.get_tool('portal_plonemeeting')
         cfg = tool.getMeetingConfig(meeting)
-        if self.context.getCategory() in NEVER_LATE_CATEGORIES[cfg.getId()]:
+        if self.context.getCategory() in NEVER_LATE_CATEGORIES.get(cfg.getId(), []):
             return False
 
         # return original behavior

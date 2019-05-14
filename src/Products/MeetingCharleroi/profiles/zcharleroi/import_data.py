@@ -623,7 +623,7 @@ collegeMeeting.selectableCopyGroups = [police_grp.getIdSuffixed('reviewers'),
                                        dirfin_grp.getIdSuffixed('reviewers'),
                                        pers_grp.getIdSuffixed('reviewers')]
 collegeMeeting.podTemplates = collegeTemplates
-collegeMeeting.meetingConfigsToCloneTo = [{'meeting_config': 'meeting-config-council',
+collegeMeeting.meetingConfigsToCloneTo = [{'meeting_config': 'cfg2',
                                            'trigger_workflow_transitions_until': '__nothing__'}, ]
 collegeMeeting.itemAutoSentToOtherMCStates = ('accepted', 'accepted_but_modified', )
 collegeMeeting.itemManualSentToOtherMCStates = ('itemfrozen', 'pre_accepted', )

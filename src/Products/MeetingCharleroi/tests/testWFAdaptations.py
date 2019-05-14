@@ -110,7 +110,7 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
 
     def test_pm_WFA_waiting_advices_with_prevalidation(self):
         """Override to add 'pmReviewerLevel1' to the 'prereviewers' group."""
-        self.portal.portal_groups.addPrincipalToGroup('pmReviewerLevel1', 'developers_prereviewers')
+        self.portal.portal_groups.addPrincipalToGroup('pmReviewerLevel1', self.developers_prereviewers)
         super(testWFAdaptations, self).test_pm_WFA_waiting_advices_with_prevalidation()
 
     def _afterItemCreatedWaitingAdviceWithPrevalidation(self, item):

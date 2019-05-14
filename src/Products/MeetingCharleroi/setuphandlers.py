@@ -169,17 +169,14 @@ def finalizeExampleInstance(context):
     if not isMeetingCharleroiConfigureProfile(context):
         return
 
+    site = context.getSite()
+    tool = site.portal_plonemeeting
+
     # finalizeExampleInstance will behave differently if on
     # a Commune instance or CPAS instance
     specialUserId = 'bourgmestre'
-    meetingConfig1Id = 'meeting-config-college'
-    meetingConfig2Id = 'meeting-config-council'
-    if context.readDataFile("MeetingCharleroi_cpas_marker.txt"):
-        specialUserId = 'president'
-        meetingConfig1Id = 'meeting-config-bp'
-        meetingConfig2Id = 'meeting-config-cas'
-
-    site = context.getSite()
+    meetingConfig1Id = tool.objectValues('MeetingConfig')[0].getId()
+    meetingConfig2Id = tool.objectValues('MeetingConfig')[1].getId()
 
     logStep("finalizeExampleInstance", context)
 
@@ -208,19 +205,19 @@ def finalizeExampleInstance(context):
             groupsTool.addPrincipalToGroup(memberId, '%s_budgetimpacteditors' % meetingConfig2Id)
 
     # add some topics to the portlet_todo
-    mc_college_or_bp = getattr(site.portal_plonemeeting, meetingConfig1Id)
-    mc_college_or_bp.setToDoListSearches(
-        [getattr(mc_college_or_bp.searches.searches_items, 'searchdecideditems').UID(),
-         getattr(mc_college_or_bp.searches.searches_items, 'searchallitemsincopy').UID(),
-         getattr(mc_college_or_bp.searches.searches_items, 'searchitemstoadvicewithdelay').UID(),
-         getattr(mc_college_or_bp.searches.searches_items, 'searchallitemstoadvice').UID(),
+    mc1 = getattr(site.portal_plonemeeting, meetingConfig1Id)
+    mc1.setToDoListSearches(
+        [getattr(mc1.searches.searches_items, 'searchdecideditems').UID(),
+         getattr(mc1.searches.searches_items, 'searchallitemsincopy').UID(),
+         getattr(mc1.searches.searches_items, 'searchitemstoadvicewithdelay').UID(),
+         getattr(mc1.searches.searches_items, 'searchallitemstoadvice').UID(),
          ])
 
     # add some topics to the portlet_todo
-    mc_council_or_cas = getattr(site.portal_plonemeeting, meetingConfig2Id)
-    mc_council_or_cas.setToDoListSearches(
-        [getattr(mc_council_or_cas.searches.searches_items, 'searchdecideditems').UID(),
-         getattr(mc_council_or_cas.searches.searches_items, 'searchallitemsincopy').UID(),
+    mc2 = getattr(site.portal_plonemeeting, meetingConfig2Id)
+    mc2.setToDoListSearches(
+        [getattr(mc2.searches.searches_items, 'searchdecideditems').UID(),
+         getattr(mc2.searches.searches_items, 'searchallitemsincopy').UID(),
          ])
 
     # finally, re-launch plonemeetingskin and MeetingCharleroi skins step
@@ -271,33 +268,39 @@ def addCollegeDemoData(context):
 def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateId='template5'):
     """ """
     wfTool = api.portal.get_tool('portal_workflow')
+    tool = api.portal.get_tool('portal_plonemeeting')
+    cfg1 = tool.objectValues('MeetingConfig')[0]
+    cfg1_id = cfg1.getId()
+    cfg2 = tool.objectValues('MeetingConfig')[1]
+    cfg2_id = cfg2.getId()
 
     def _add_finance_advice(item, newItem, last_transition):
-        if item['toDiscuss'] and cfg.id == 'meeting-config-college' and \
+        if item['toDiscuss'] and \
            item['category'] in ['affaires-juridiques', 'remboursement'] and \
            last_transition == 'prevalidate':
-            newItem.setOptionalAdvisers(
-                ('{0}__rowid__unique_id_002'.format(finance_group_uid(), )))
-            newItem.updateLocalRoles()
-            wfTool.doActionFor(newItem, 'wait_advices_from_prevalidated')
-            newItem.setCompleteness('completeness_complete')
-            newItem.updateLocalRoles()
-            with api.env.adopt_user('dfin'):
-                advice = createContentInContainer(
-                    newItem,
-                    'meetingadvicefinances',
-                    **{'advice_group': finance_group_uid(),
-                       'advice_type': u'positive_finance',
-                       'advice_comment': RichTextValue(u'Mon commentaire')})
-                wfTool.doActionFor(advice, 'proposeToFinancialEditor')
-                wfTool.doActionFor(advice, 'proposeToFinancialReviewer')
-                wfTool.doActionFor(advice, 'proposeToFinancialManager')
-                wfTool.doActionFor(advice, 'signFinancialAdvice')
-            return True
+            finance_group = finance_group_uid()
+            if finance_group:
+                newItem.setOptionalAdvisers(
+                    ('{0}__rowid__unique_id_002'.format(finance_group, )))
+                newItem.updateLocalRoles()
+                wfTool.doActionFor(newItem, 'wait_advices_from_prevalidated')
+                newItem.setCompleteness('completeness_complete')
+                newItem.updateLocalRoles()
+                with api.env.adopt_user('dfin'):
+                    advice = createContentInContainer(
+                        newItem,
+                        'meetingadvicefinances',
+                        **{'advice_group': finance_group,
+                           'advice_type': u'positive_finance',
+                           'advice_comment': RichTextValue(u'Mon commentaire')})
+                    wfTool.doActionFor(advice, 'proposeToFinancialEditor')
+                    wfTool.doActionFor(advice, 'proposeToFinancialReviewer')
+                    wfTool.doActionFor(advice, 'proposeToFinancialManager')
+                    wfTool.doActionFor(advice, 'signFinancialAdvice')
+                return True
         return False
 
     tool = api.portal.get_tool('portal_plonemeeting')
-    cfg = getattr(tool, 'meeting-config-college')
     pTool = api.portal.get_tool('plone_utils')
     mTool = api.portal.get_tool('portal_membership')
     # first we need to be sure that our IPoneMeetingLayer is set correctly
@@ -316,7 +319,7 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
         baseDate = DateTime()
         dates = [baseDate - 13, baseDate - 6, baseDate + 1, baseDate + 8, baseDate + 15]
     mTool.createMemberArea(userId)
-    secrFolder = tool.getPloneMeetingFolder(cfg.getId(), userId)
+    secrFolder = tool.getPloneMeetingFolder(cfg1_id, userId)
     for date in dates:
         meetingId = secrFolder.invokeFactory('MeetingCollege', id=date.strftime('%Y%m%d'))
         meeting = getattr(secrFolder, meetingId)
@@ -346,8 +349,8 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'category': 'affaires-juridiques',
          'toDiscuss': True,
          'otherMeetingConfigsClonableToEmergency': (),
-         'otherMeetingConfigsClonableToPrivacy': ('meeting-config-council', ),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+         'otherMeetingConfigsClonableToPrivacy': (cfg2_id, ),
+         'otherMeetingConfigsClonableTo': (cfg2_id, )},
         {'templateId': templateId,
          'title': u'Exemple point 2',
          'proposingGroup': org_id_to_uid(firstTwoGroupIds[0]),
@@ -355,7 +358,7 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'toDiscuss': True,
          'otherMeetingConfigsClonableToEmergency': (),
          'otherMeetingConfigsClonableToPrivacy': (),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+         'otherMeetingConfigsClonableTo': (cfg2_id, )},
         {'templateId': templateId,
          'title': u'Exemple point 3',
          'proposingGroup': org_id_to_uid(firstTwoGroupIds[0]),
@@ -370,8 +373,8 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'category': 'affaires-juridiques',
          'toDiscuss': False,
          'otherMeetingConfigsClonableToEmergency': (),
-         'otherMeetingConfigsClonableToPrivacy': ('meeting-config-council', ),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+         'otherMeetingConfigsClonableToPrivacy': (cfg2_id, ),
+         'otherMeetingConfigsClonableTo': (cfg2_id, )},
         {'templateId': templateId,
          'title': u'Exemple point 5',
          'proposingGroup': org_id_to_uid(firstTwoGroupIds[0]),
@@ -422,7 +425,7 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'toDiscuss': True,
          'otherMeetingConfigsClonableToEmergency': (),
          'otherMeetingConfigsClonableToPrivacy': (),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+         'otherMeetingConfigsClonableTo': (cfg2_id, )},
         {'templateId': templateId,
          'title': u'Exemple point 7',
          'proposingGroup': org_id_to_uid(firstTwoGroupIds[1]),
@@ -430,7 +433,7 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'toDiscuss': True,
          'otherMeetingConfigsClonableToEmergency': (),
          'otherMeetingConfigsClonableToPrivacy': (),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+         'otherMeetingConfigsClonableTo': (cfg2_id, )},
         {'templateId': templateId,
          'title': u'Exemple point 8',
          'proposingGroup': org_id_to_uid(firstTwoGroupIds[1]),
@@ -445,8 +448,8 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'category': 'affaires-juridiques',
          'toDiscuss': False,
          'otherMeetingConfigsClonableToEmergency': (),
-         'otherMeetingConfigsClonableToPrivacy': ('meeting-config-council', ),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+         'otherMeetingConfigsClonableToPrivacy': (cfg2_id, ),
+         'otherMeetingConfigsClonableTo': (cfg2_id, )},
         {'templateId': templateId,
          'title': u'Exemple point 10',
          'proposingGroup': org_id_to_uid(firstTwoGroupIds[1]),
@@ -487,15 +490,15 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'toDiscuss': True,
          'otherMeetingConfigsClonableToEmergency': (),
          'otherMeetingConfigsClonableToPrivacy': (),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+         'otherMeetingConfigsClonableTo': (cfg2_id, )},
         {'templateId': templateId,
          'title': u'Exemple point 12',
          'proposingGroup': org_id_to_uid(POLICE_GROUP_PREFIX + '-compta'),
          'category': 'remboursement',
          'toDiscuss': True,
          'otherMeetingConfigsClonableToEmergency': (),
-         'otherMeetingConfigsClonableToPrivacy': ('meeting-config-council', ),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+         'otherMeetingConfigsClonableToPrivacy': (cfg2_id, ),
+         'otherMeetingConfigsClonableTo': (cfg2_id, )},
         {'templateId': templateId,
          'title': u'Exemple point 13',
          'proposingGroup': org_id_to_uid(POLICE_GROUP_PREFIX),
@@ -510,8 +513,8 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'category': 'affaires-juridiques',
          'toDiscuss': False,
          'otherMeetingConfigsClonableToEmergency': (),
-         'otherMeetingConfigsClonableToPrivacy': ('meeting-config-council', ),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+         'otherMeetingConfigsClonableToPrivacy': (cfg2_id, ),
+         'otherMeetingConfigsClonableTo': (cfg2_id, )},
         {'templateId': templateId,
          'title': u'Exemple point 15',
          'proposingGroup': org_id_to_uid(POLICE_GROUP_PREFIX),
@@ -525,17 +528,17 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'proposingGroup': org_id_to_uid(POLICE_GROUP_PREFIX),
          'category': 'affaires-juridiques',
          'toDiscuss': False,
-         'otherMeetingConfigsClonableToEmergency': ('meeting-config-council',),
+         'otherMeetingConfigsClonableToEmergency': (cfg2_id,),
          'otherMeetingConfigsClonableToPrivacy': (),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+         'otherMeetingConfigsClonableTo': (cfg2_id, )},
         {'templateId': templateId,
          'title': u'Point Emergency Conseil Normal',
          'proposingGroup': org_id_to_uid(firstTwoGroupIds[0]),
          'category': 'remboursement',
          'toDiscuss': True,
-         'otherMeetingConfigsClonableToEmergency': ('meeting-config-council',),
+         'otherMeetingConfigsClonableToEmergency': (cfg2_id,),
          'otherMeetingConfigsClonableToPrivacy': (),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+         'otherMeetingConfigsClonableTo': (cfg2_id, )},
     )
 
     lateItems = (
@@ -547,7 +550,7 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'toDiscuss': True,
          'otherMeetingConfigsClonableToEmergency': (),
          'otherMeetingConfigsClonableToPrivacy': (),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', ),
+         'otherMeetingConfigsClonableTo': (cfg2_id, ),
          'bourgmestreObservations': u'Observation Bourgmestre Point urgent 1'},
         {'templateId': templateId,
          'title': u'Point urgent 2',
@@ -555,8 +558,8 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'category': 'remboursement',
          'toDiscuss': True,
          'otherMeetingConfigsClonableToEmergency': (),
-         'otherMeetingConfigsClonableToPrivacy': ('meeting-config-council', ),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+         'otherMeetingConfigsClonableToPrivacy': (cfg2_id, ),
+         'otherMeetingConfigsClonableTo': (cfg2_id, )},
         # police
         {'templateId': templateId,
          'title': u'Point urgent Police 1',
@@ -565,15 +568,15 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'toDiscuss': True,
          'otherMeetingConfigsClonableToEmergency': (),
          'otherMeetingConfigsClonableToPrivacy': (),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+         'otherMeetingConfigsClonableTo': (cfg2_id, )},
         {'templateId': templateId,
          'title': u'Point urgent Police 2',
          'proposingGroup': org_id_to_uid(POLICE_GROUP_PREFIX + '-compta'),
          'category': 'remboursement',
          'toDiscuss': True,
          'otherMeetingConfigsClonableToEmergency': (),
-         'otherMeetingConfigsClonableToPrivacy': ('meeting-config-council', ),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+         'otherMeetingConfigsClonableToPrivacy': (cfg2_id, ),
+         'otherMeetingConfigsClonableTo': (cfg2_id, )},
         {'templateId': templateId,
          'title': u'Point urgent Police 3',
          'proposingGroup': org_id_to_uid(POLICE_GROUP_PREFIX + '-compta'),
@@ -589,7 +592,7 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'toDiscuss': False,
          'otherMeetingConfigsClonableToEmergency': (),
          'otherMeetingConfigsClonableToPrivacy': (),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+         'otherMeetingConfigsClonableTo': (cfg2_id, )},
         {'templateId': templateId,
          'title': u'Point urgent Police 5',
          'proposingGroup': org_id_to_uid(POLICE_GROUP_PREFIX),
@@ -619,17 +622,17 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'proposingGroup': org_id_to_uid(POLICE_GROUP_PREFIX),
          'category': 'affaires-juridiques',
          'toDiscuss': False,
-         'otherMeetingConfigsClonableToEmergency': ('meeting-config-council',),
+         'otherMeetingConfigsClonableToEmergency': (cfg2_id,),
          'otherMeetingConfigsClonableToPrivacy': (),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )},
+         'otherMeetingConfigsClonableTo': (cfg2_id, )},
         {'templateId': templateId,
          'title': u'Point Complementaire Conseil Normal',
          'proposingGroup': org_id_to_uid(firstTwoGroupIds[0]),
          'category': 'remboursement',
          'toDiscuss': True,
-         'otherMeetingConfigsClonableToEmergency': ('meeting-config-council',),
-         'otherMeetingConfigsClonableToPrivacy': ('meeting-config-council',),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council', )}, )
+         'otherMeetingConfigsClonableToEmergency': (cfg2_id,),
+         'otherMeetingConfigsClonableToPrivacy': (cfg2_id,),
+         'otherMeetingConfigsClonableTo': (cfg2_id, )}, )
 
     deposeItems = (
         {'templateId': templateId,
@@ -655,20 +658,20 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
          'proposingGroup': org_id_to_uid(firstTwoGroupIds[1]),
          'category': 'remboursement',
          'toDiscuss': False,
-         'otherMeetingConfigsClonableToEmergency': ('meeting-config-council',),
-         'otherMeetingConfigsClonableToPrivacy': ('meeting-config-council', ),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council',),
+         'otherMeetingConfigsClonableToEmergency': (cfg2_id,),
+         'otherMeetingConfigsClonableToPrivacy': (cfg2_id, ),
+         'otherMeetingConfigsClonableTo': (cfg2_id,),
          'bourgmestreObservations': u'Observation Bourgmestre Point urgent séance extraordinaire 1'},
         {'templateId': templateId,
          'title': u'Point urgent Police séance extraordinaire 1',
          'proposingGroup': org_id_to_uid(POLICE_GROUP_PREFIX),
          'category': 'remboursement',
          'toDiscuss': True,
-         'otherMeetingConfigsClonableToEmergency': ('meeting-config-council',),
+         'otherMeetingConfigsClonableToEmergency': (cfg2_id,),
          'otherMeetingConfigsClonableToPrivacy': (),
-         'otherMeetingConfigsClonableTo': ('meeting-config-council',)}, )
+         'otherMeetingConfigsClonableTo': (cfg2_id,)}, )
 
-    userFolder = tool.getPloneMeetingFolder(cfg.getId(), userId)
+    userFolder = tool.getPloneMeetingFolder(cfg1_id, userId)
 
     for step in ('normal', 'late', 'depose', 'extra_late'):
         if step == 'late':
@@ -685,7 +688,7 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
             template = getattr(tool.getMeetingConfig(userFolder).itemtemplates, item['templateId'])
             newItem = template.clone(newOwnerId=userId,
                                      destFolder=userFolder,
-                                     newPortalType=cfg.getItemTypeName())
+                                     newPortalType=cfg1.getItemTypeName())
             newItem.setOtherMeetingConfigsClonableToEmergency(item['otherMeetingConfigsClonableToEmergency'])
             newItem.setOtherMeetingConfigsClonableToPrivacy(item['otherMeetingConfigsClonableToPrivacy'])
             newItem.setTitle(item['title'])
@@ -708,7 +711,7 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
             else:
                 site.REQUEST['PUBLISHED'] = meetingForItems
             item_received_finances_advice = False
-            for transition in cfg.getTransitionsForPresentingAnItem():
+            for transition in cfg1.getTransitionsForPresentingAnItem():
                 if item_received_finances_advice and transition == 'validate':
                     continue
                 wfTool.doActionFor(newItem, transition)
@@ -732,7 +735,10 @@ def _addCouncilDemoData(collegeMeeting,
     portal = api.portal.get()
     tool = api.portal.get_tool('portal_plonemeeting')
     wfTool = api.portal.get_tool('portal_workflow')
-    cfg2 = getattr(tool, 'meeting-config-council')
+
+    wfTool = api.portal.get_tool('portal_workflow')
+    tool = api.portal.get_tool('portal_plonemeeting')
+    cfg2 = tool.objectValues('MeetingConfig')[1]
     cfg2Id = cfg2.getId()
     dgenFolder = tool.getPloneMeetingFolder(cfg2Id, userId)
     date = DateTime() + 1

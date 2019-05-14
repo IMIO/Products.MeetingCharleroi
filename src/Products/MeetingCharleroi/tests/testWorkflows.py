@@ -211,19 +211,19 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         self.changeUser('admin')
         # 2 recurring items already exist in the college config, add one supplementary for _init_
         self.create('MeetingItemRecurring', title='Rec item 1',
-                    proposingGroup='developers',
+                    proposingGroup=self.developers_uid,
                     meetingTransitionInsertingMe='_init_')
         # add 3 other recurring items that will be inserted at other moments in the WF
         # backToCreated is not in MeetingItem.meetingTransitionsAcceptingRecurringItems
         # so it will not be added...
         self.create('MeetingItemRecurring', title='Rec item 2',
-                    proposingGroup='developers',
+                    proposingGroup=self.developers_uid,
                     meetingTransitionInsertingMe='backToCreated')
         self.create('MeetingItemRecurring', title='Rec item 3',
-                    proposingGroup='developers',
+                    proposingGroup=self.developers_uid,
                     meetingTransitionInsertingMe='freeze')
         self.create('MeetingItemRecurring', title='Rec item 4',
-                    proposingGroup='developers',
+                    proposingGroup=self.developers_uid,
                     meetingTransitionInsertingMe='decide')
         self.changeUser('pmManager')
         # create a meeting without supplementary items, only the recurring items
