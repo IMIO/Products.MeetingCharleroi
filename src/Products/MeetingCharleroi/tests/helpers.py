@@ -334,7 +334,6 @@ class MeetingCharleroiTestingHelpers(MeetingCommunesTestingHelpers):
         cfg.setItemReferenceFormat(charleroi_import_data.collegeMeeting.itemReferenceFormat)
         # let creators select the 'toDiscuss' value
         cfg.setToDiscussSetOnItemInsert(False)
-        cfg.setMeetingConfigsToCloneTo(charleroi_import_data.collegeMeeting.meetingConfigsToCloneTo)
 
     def setupCollegeDemoData(self):
         """ """
