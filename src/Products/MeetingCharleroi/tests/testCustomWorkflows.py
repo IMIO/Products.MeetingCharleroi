@@ -295,10 +295,6 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
 
         self.changeUser('pmFinManager')
         self.do(advice, 'signFinancialAdvice')
-        self.changeUser('pmManager')
-        self.assertEqual(self.transitions(item), ['backTo_prevalidated_from_waiting_advices'])
-        self.changeUser('siteadmin')
-        self.assertEqual(self.transitions(item), ['backTo_prevalidated_from_waiting_advices'])
 
         # item was sent back to administrative referent
         self.assertEquals(item.queryState(), 'proposed_to_refadmin')
