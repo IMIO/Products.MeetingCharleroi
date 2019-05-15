@@ -362,8 +362,8 @@ pers_grp.advisers.append(dirPers)
 pers_grp.observers.append(echevinPers)
 pers_grp.advisers.append(emetteuravisPers)
 
-dirfin_grp.item_advice_states = ['meeting-config-college__state__prevalidated_waiting_advices']
-dirfin_grp.item_advice_edit_states = ['meeting-config-college__state__prevalidated_waiting_advices']
+dirfin_grp.item_advice_states = ['cfg1__state__prevalidated_waiting_advices']
+dirfin_grp.item_advice_edit_states = ['cfg1__state__prevalidated_waiting_advices']
 dirfin_grp.keepAccessToItemWhenAdviceIsGiven = True
 dirfin_grp.creators.append(dfin)
 dirfin_grp.serviceheads.append(dfin)

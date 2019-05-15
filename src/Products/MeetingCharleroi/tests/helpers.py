@@ -151,10 +151,11 @@ class MeetingCharleroiTestingHelpers(MeetingCommunesTestingHelpers):
                                        for group_in_charge_id in dirfin_grp.groups_in_charge]
 
         orgs, active_orgs, savedOrgsData = initializer.addOrgs([dirfin_grp])
+        initializer.data = initializer.getProfileData()
         for org in orgs:
             org_uid = org.UID()
-            org.item_advice_states = list(dirfin_grp.item_advice_states)
-            org.item_advice_edit_states = list(dirfin_grp.item_advice_edit_states)
+            org.item_advice_states = initializer._correct_advice_states(dirfin_grp.item_advice_states)
+            org.item_advice_edit_states = initializer._correct_advice_states(dirfin_grp.item_advice_edit_states)
             self._select_organization(org_uid)
             select_org_for_function(org_uid, 'financialcontrollers')
             select_org_for_function(org_uid, 'financialeditors')

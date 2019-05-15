@@ -285,7 +285,8 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
                 finance_advice_id = '{0}__rowid__unique_id_002'.format(finance_group)
                 if finance_advice_id not in newItem.listOptionalAdvisers():
                     _memos.clear()
-                    finance_advice_id = '{0}__rowid__unique_id_002'.format(finance_group_uid())
+                    finance_group = finance_group_uid()
+                    finance_advice_id = '{0}__rowid__unique_id_002'.format(finance_group)
                 newItem.setOptionalAdvisers((finance_advice_id, ))
                 newItem.updateLocalRoles()
                 wfTool.doActionFor(newItem, 'wait_advices_from_prevalidated')
