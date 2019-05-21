@@ -10,19 +10,17 @@
    <property name="title">Catégorie finances</property>
    <property name="position">top</property>
    <property name="section">advanced</property>
-   <property name="hidden">0</property>
-   <property name="count">0</property>
-   <property name="sortcountable">0</property>
-   <property name="hidezerocount">0</property>
+   <property name="hidden">False</property>
+   <property name="count">False</property>
+   <property name="sortcountable">False</property>
+   <property name="hidezerocount">False</property>
    <property name="index">financesAdviceCategory</property>
    <property name="operator">or</property>
-   <property name="operator_visible">0</property>
+   <property name="operator_visible">False</property>
    <property
       name="vocabulary">Products.MeetingCharleroi.vocabularies.advicecategoriesvocabulary</property>
-   <property name="catalog"></property>
-   <property name="maxitems"></property>
-   <property name="sortreversed">0</property>
-   <property name="default"/>
+   <property name="maxitems">0</property>
+   <property name="sortreversed">False</property>
   </criterion>
 
  </criteria>
