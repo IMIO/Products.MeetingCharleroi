@@ -12,6 +12,8 @@ logger = logging.getLogger('MeetingCharleroi')
 class Migrate_To_4_1(MCMigrate_To_4_1):
 
     def run(self):
+        # reapply the actions.xml of collective.iconifiedcategory
+        self.ps.runImportStepFromProfile('profile-collective.iconifiedcategory:default', 'actions')
         MCMigrate_To_4_1.run(self, profile_name=u'profile-Products.MeetingCharleroi:default')
 
 
