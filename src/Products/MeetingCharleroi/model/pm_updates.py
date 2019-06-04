@@ -56,7 +56,7 @@ def update_meeting_schema(baseSchema):
             allowable_content_types="text/plain",
             optional=True,
             widget=TextAreaWidget(
-                condition="python: here.attributeIsUsed('assemblyPolice')",
+                condition="python: 'assemblyPolice' in here.shownAssemblyFields()",
                 label='Assemblypolice',
                 label_msgid='meeting_assemblyPolice',
                 i18n_domain='PloneMeeting',
@@ -70,7 +70,7 @@ def update_meeting_schema(baseSchema):
             allowable_content_types="text/plain",
             optional=True,
             widget=TextAreaWidget(
-                condition="python: here.attributeIsUsed('assemblyPrivacySecretAbsents')",
+                condition="python: 'assemblyPrivacySecretAbsents' in here.shownAssemblyFields()",
                 label='Assemblyprivacysecretabsents',
                 label_msgid='PloneMeeting_label_assemblyPrivacySecretAbsents',
                 i18n_domain='PloneMeeting',
