@@ -678,11 +678,15 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
 
     def _adviceDelayMayBeStarted(self, org_uid):
         """Really started when item completeness is 'complete' or 'evaluation_not_required'."""
-        return self._is_complete()
+        if org_uid == finance_group_uid():
+            return self._is_complete()
+        return super(CustomCharleroiMeetingItem, self)._adviceDelayMayBeStarted(org_uid)
 
     def _adviceIsAddableByCurrentUser(self, org_uid):
         """Only when item completeness is 'complete' or 'evaluation_not_required'."""
-        return self._is_complete()
+        if org_uid == finance_group_uid():
+            return self._is_complete()
+        return super(CustomCharleroiMeetingItem, self)._adviceIsAddableByCurrentUser(org_uid)
 
     def _advicePortalTypeForAdviser(self, groupId):
         """Return the meetingadvice portal_type that will be added for given p_groupId.
