@@ -542,7 +542,6 @@ collegeMeeting.itemAdviceViewStates = ('itemcreated_waiting_advices',
 collegeMeeting.usedAdviceTypes = ('asked_again', 'positive', 'positive_with_remarks',
                                   'negative', 'nil', 'positive_finance', 'positive_with_remarks_finance',
                                   'cautious_finance', 'negative_finance', 'not_given_finance', 'not_required_finance')
-collegeMeeting.transitionsReinitializingDelays = ()
 collegeMeeting.enableAdviceInvalidation = False
 collegeMeeting.itemAdviceInvalidateStates = []
 collegeMeeting.keepAccessToItemWhenAdviceIsGiven = False

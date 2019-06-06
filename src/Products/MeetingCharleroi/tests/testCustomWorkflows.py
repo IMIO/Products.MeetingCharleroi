@@ -388,18 +388,24 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # a meetingadvicefinances will be automatically hidden during redaction
         self.assertFalse(cfg.getDefaultAdviceHiddenDuringRedaction())
         self.assertTrue(advice.advice_hide_during_redaction)
+        # editable
+        self.assertTrue(item.adapted()._adviceIsEditableByCurrentUser(finance_group_uid()))
 
         # send advice to finances editor
         self.assertEqual(self.transitions(advice), ['proposeToFinancialEditor'])
         self.do(advice, 'proposeToFinancialEditor')
         # send advice to finances reviewer
         self.changeUser('pmFinEditor')
+        # editable
+        self.assertTrue(item.adapted()._adviceIsEditableByCurrentUser(finance_group_uid()))
         self.assertEqual(self.transitions(advice),
                          ['backToProposedToFinancialController',
                           'proposeToFinancialReviewer'])
         self.do(advice, 'proposeToFinancialReviewer')
         # send advice to finances Manager
         self.changeUser('pmFinReviewer')
+        # editable
+        self.assertTrue(item.adapted()._adviceIsEditableByCurrentUser(finance_group_uid()))
         self.assertEqual(self.transitions(advice),
                          ['backToProposedToFinancialController',
                           'backToProposedToFinancialEditor',
@@ -407,6 +413,8 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(advice, 'proposeToFinancialManager')
         # sign the advice
         self.changeUser('pmFinManager')
+        # editable
+        self.assertTrue(item.adapted()._adviceIsEditableByCurrentUser(finance_group_uid()))
         self.assertEqual(self.transitions(advice),
                          ['backToProposedToFinancialController',
                           'backToProposedToFinancialReviewer',

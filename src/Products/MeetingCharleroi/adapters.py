@@ -676,16 +676,13 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         return {'displayDefaultComplementaryMessage': True,
                 'customAdviceMessage': None}
 
-    def _adviceIsEditableByCurrentUser(self, groupId):
-        '''Depending on advice WF state, it is only editable by relevant level.
-           This is used by MeetingItem.getAdvicesGroupsInfosForUser.'''
-        item = self.getSelf()
-        if groupId == finance_group_uid():
-            member = api.user.get_current()
-            adviceObj = getattr(item, item.adviceIndex[groupId]['advice_id'])
-            if not member.has_role('MeetingFinanceEditor', adviceObj):
-                return False
-        return True
+    def _adviceDelayMayBeStarted(self, org_uid):
+        """Really started when item completeness is 'complete' or 'evaluation_not_required'."""
+        return self._is_complete()
+
+    def _adviceIsAddableByCurrentUser(self, org_uid):
+        """Only when item completeness is 'complete' or 'evaluation_not_required'."""
+        return self._is_complete()
 
     def _advicePortalTypeForAdviser(self, groupId):
         """Return the meetingadvice portal_type that will be added for given p_groupId.

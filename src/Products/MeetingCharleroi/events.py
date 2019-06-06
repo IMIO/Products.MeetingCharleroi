@@ -29,14 +29,6 @@ def onAdviceTransition(advice, event):
 
     item = advice.getParentNode()
     itemState = item.queryState()
-    adviserGroupId = '%s_advisers' % advice.advice_group
-
-    # onAdviceTransition is called before onAdviceAdded...
-    # so the advice_row_id is still not set wich is very bad because
-    # when we updateAdvices, it does not find the advice_row_id and adviceIndex is wrong
-    # so we call it here...
-    if not advice.advice_row_id:
-        advice._updateAdviceRowId()
 
     wfTool = api.portal.get_tool('portal_workflow')
     oldStateId = event.old_state.id
@@ -87,52 +79,15 @@ def onAdviceTransition(advice, event):
             item.updateLocalRoles()
         return
 
-    # give 'Reader' role to every members of the _advisers and
-    # give 'MeetingFinanceEditor' role to the relevant finance sub-group depending on new advice state
-    # we use a specific 'MeetingFinanceEditor' role because the 'Editor' role is given to entire
-    # _advisers group by default in PloneMeeting and it is used for non finance advices
-    advice.manage_delLocalRoles((adviserGroupId, ))
-    advice.manage_addLocalRoles(adviserGroupId, ('Reader', ))
-    advice.manage_addLocalRoles('%s_%s' % (advice.advice_group, FINANCE_STATE_TO_GROUPS_MAPPINGS[newStateId]),
-                                ('MeetingFinanceEditor', ))
-    # finally remove 'MeetingFinanceEditor' given in previous state except if it is initial_state
-    if oldStateId in FINANCE_STATE_TO_GROUPS_MAPPINGS and event.transition:
-        localRoledGroupId = '%s_%s' % (advice.advice_group,
-                                       FINANCE_STATE_TO_GROUPS_MAPPINGS[oldStateId])
-        advice.manage_delLocalRoles((localRoledGroupId, ))
-
-    # need to updateLocalRoles, and especially _updateAdvices to finish work :
-    # timed_out advice is no more giveable
-    item.updateLocalRoles()
-
 
 def onAdvicesUpdated(item, event):
     '''
-      When advices have been updated, we need to check that finance advice marked as 'advice_editable' = True
-      are really editable, this could not be the case if the advice is signed.
-      In a second step, if item is 'backToProposedToInternalReviewer', we need to reinitialize finance advice delay.
+      If item is 'backToProposedToInternalReviewer', we need to reinitialize finances advice delay.
     '''
     for groupId, adviceInfo in item.adviceIndex.items():
         # special behaviour for finances advice
         if groupId != finance_group_uid():
             continue
-
-        # double check if it is really editable...
-        # to be editable, the advice has to be in an editable wf state
-        if adviceInfo['advice_editable']:
-            advice = getattr(item, adviceInfo['advice_id'])
-            if not advice.queryState() in FINANCE_STATE_TO_GROUPS_MAPPINGS:
-                # advice is no more editable, adapt adviceIndex
-                item.adviceIndex[groupId]['advice_editable'] = False
-
-        # the advice delay is really started when item completeness is 'complete' or
-        # 'evaluation_not_required', until then, we do not let the delay start
-        if not item.getCompleteness() in ('completeness_complete',
-                                          'completeness_evaluation_not_required'):
-            adviceInfo['delay_started_on'] = None
-            adviceInfo['advice_addable'] = False
-            adviceInfo['advice_editable'] = False
-            adviceInfo['delay_infos'] = item.getDelayInfosForAdvice(groupId)
 
         # when a finance advice is just timed out, we will send the item back to the refadmin
         if adviceInfo['delay_infos']['delay_status'] == 'timed_out' and \
