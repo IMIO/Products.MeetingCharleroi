@@ -17,8 +17,12 @@ from Products.MeetingCharleroi.utils import finance_group_uid
 
 def onAdviceTransition(advice, event):
     '''Called whenever a transition has been fired on an advice.'''
+
+    if not event.transition or (advice != event.object):
+        return
+
     # pass if we are pasting items as advices are not kept
-    if advice != event.object or advice.REQUEST.get('currentlyPastingItems', False):
+    if advice.REQUEST.get('currentlyPastingItems', False):
         return
 
     # manage finance workflow, just consider relevant transitions
@@ -29,7 +33,6 @@ def onAdviceTransition(advice, event):
     item = advice.getParentNode()
     itemState = item.queryState()
 
-    wfTool = api.portal.get_tool('portal_workflow')
     oldStateId = event.old_state.id
     newStateId = event.new_state.id
 
@@ -47,6 +50,7 @@ def onAdviceTransition(advice, event):
         # it is automatically validated if advice is 'positive_finance'
         # otherwise it is sent back to the refadmin
         if itemState == 'prevalidated_waiting_advices':
+            wfTool = api.portal.get_tool('portal_workflow')
             if advice.advice_type == 'positive_finance':
                 item.REQUEST.set('mayValidate', True)
                 wfTool.doActionFor(item,
