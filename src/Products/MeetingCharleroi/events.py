@@ -11,7 +11,6 @@ from datetime import datetime
 from imio.actionspanel import ActionsPanelMessageFactory as _AP
 from plone import api
 from Products.PloneMeeting.utils import sendMailIfRelevant
-from Products.MeetingCommunes.config import FINANCE_STATE_TO_GROUPS_MAPPINGS
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.utils import finance_group_uid
 
@@ -65,19 +64,14 @@ def onAdviceTransition(advice, event):
                                    'MeetingReviewer', isRole=True)
                 msg = _AP('backTo_proposed_to_refadmin_from_waiting_advices_done_descr')
             plone_utils.addPortalMessage(msg)
-        else:
-            # we need to _updateAdvices so change to
-            # 'advice_hide_during_redaction' is taken into account
-            item.updateLocalRoles()
 
     # in some corner case, we could be here and we are actually already updating advices,
     # this is the case if we validate an item and it triggers the fact that advice delay is exceeded
     # this should never be the case as advice delay should have been updated during nightly cron...
     # but if we are in a '_updateAdvices', do not _updateAdvices again...
-    if newStateId not in FINANCE_STATE_TO_GROUPS_MAPPINGS:
-        if not item.REQUEST.get('currentlyUpdatingAdvice', False):
-            item.updateLocalRoles()
-        return
+    if not item.REQUEST.get('currentlyUpdatingAdvice', False):
+        item.updateLocalRoles()
+    return
 
 
 def onAdvicesUpdated(item, event):
