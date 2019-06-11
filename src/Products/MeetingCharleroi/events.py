@@ -15,7 +15,7 @@ from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.utils import finance_group_uid
 
 
-def onAdviceTransition(advice, event):
+def onAdviceAfterTransition(advice, event):
     '''Called whenever a transition has been fired on an advice.'''
 
     if advice != event.object:
