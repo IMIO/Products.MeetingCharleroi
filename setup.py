@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '4.1b1.dev0'
+version = '4.1rc1.dev0'
 
 setup(name='Products.MeetingCharleroi',
       version=version,
@@ -8,9 +8,9 @@ setup(name='Products.MeetingCharleroi',
       "of Charleroi city (PloneMeeting extension profile)",
       long_description=open("README.rst").read() + "\n" + open("CHANGES.rst").read(),
       classifiers=["Programming Language :: Python"],
-      keywords='',
-      author='',
-      author_email='',
+      keywords='plone official meetings management egov communesplone imio plonegov charleroi',
+      author='Gauthier Bastien',
+      author_email='gauthier@imio.be',
       url='http://www.imio.be/produits/gestion-des-deliberations',
       license='GPL',
       packages=find_packages('src'),

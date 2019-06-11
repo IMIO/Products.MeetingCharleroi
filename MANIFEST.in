@@ -10,6 +10,8 @@ include buildout.cfg
 include dev.cfg
 include versions-base.cfg
 include versions-dev.cfg
+include *.rst
+recursive-include src *.gitkeep
 recursive-include docs *.GPL
 recursive-include docs *.txt
 recursive-include src *.css

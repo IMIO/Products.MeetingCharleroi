@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 <metadata>
-  <version>41</version>
-  <!-- ##code-section METADATA -->
+  <version>4.1</version>
   <dependencies>
     <dependency>profile-Products.MeetingCommunes:financesadvice</dependency>
   </dependencies>
-  <!-- ##/code-section METADATA -->
 </metadata>

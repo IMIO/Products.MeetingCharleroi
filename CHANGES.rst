@@ -1,8 +1,8 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
-4.1 (unreleased)
-----------------
+4.1rc1 (unreleased)
+-------------------
 
 - Be defensive when using getProperty on a member object, do not fail if member is None
 - Category 'indeterminee' can not be used on MeetingItemCollege if not to send to 'meting-config-council'
