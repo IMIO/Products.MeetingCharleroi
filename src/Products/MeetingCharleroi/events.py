@@ -18,7 +18,7 @@ from Products.MeetingCharleroi.utils import finance_group_uid
 def onAdviceTransition(advice, event):
     '''Called whenever a transition has been fired on an advice.'''
 
-    if not event.transition or (advice != event.object):
+    if advice != event.object:
         return
 
     # pass if we are pasting items as advices are not kept
@@ -73,7 +73,8 @@ def onAdviceTransition(advice, event):
     # this is the case if we validate an item and it triggers the fact that advice delay is exceeded
     # this should never be the case as advice delay should have been updated during nightly cron...
     # but if we are in a '_updateAdvices', do not _updateAdvices again...
-    if not item.REQUEST.get('currentlyUpdatingAdvice', False):
+    # also bypass if we are creating the advice as onAdviceAdded is called after onAdviceTransition
+    if event.transition and not item.REQUEST.get('currentlyUpdatingAdvice', False):
         item.updateLocalRoles()
     return
 
