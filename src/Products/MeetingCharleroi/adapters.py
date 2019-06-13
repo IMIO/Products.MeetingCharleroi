@@ -183,12 +183,20 @@ class CustomCharleroiMeeting(CustomMeeting):
         #   * at position 0: the proposing group object
         #   * at positions 1 to n: the items belonging to this group.
         def _comp(v1, v2):
-            if v1[0].getOrder(onlySelectable=False) < v2[0].getOrder(onlySelectable=False):
-                return -1
-            elif v1[0].getOrder(onlySelectable=False) > v2[0].getOrder(onlySelectable=False):
-                return 1
+            if v1[0].portal_type == "organization":
+                if v1[0].get_order() < v2[0].get_order():
+                    return -1
+                elif v1[0].get_order() > v2[0].get_order():
+                    return 1
+                else:
+                    return 0
             else:
-                return 0
+                if v1[0].getOrder(onlySelectable=False) < v2[0].getOrder(onlySelectable=False):
+                    return -1
+                elif v1[0].getOrder(onlySelectable=False) > v2[0].getOrder(onlySelectable=False):
+                    return 1
+                else:
+                    return 0
         res = []
         items = []
         tool = api.portal.get_tool('portal_plonemeeting')
@@ -364,7 +372,7 @@ class CustomCharleroiMeeting(CustomMeeting):
                     categDict[categorizedItems[0]] = [item]
                     groupsInChargeItems[groupInCharge] = categDict
         return OrderedDict(sorted(groupsInChargeItems.items(),
-                                  key=lambda t: t[0] and t[0].getOrder()))
+                                  key=lambda t: t[0] and t[0].get_order()))
 
         return groupsInChargeItems
 
@@ -423,7 +431,7 @@ class CustomCharleroiMeeting(CustomMeeting):
         res = OrderedDict()
         # sort by groupInCharge
         for date in byDateItems.items():
-            res[date[0]] = OrderedDict(sorted(date[1].items(), key=lambda t: t[0].getOrder()))
+            res[date[0]] = OrderedDict(sorted(date[1].items(), key=lambda t: t[0].get_order()))
         # sort by meeting date
         res = OrderedDict(
             sorted(
@@ -535,8 +543,7 @@ class CustomCharleroiMeeting(CustomMeeting):
             categories=[CC_ARRET_OJ_CAT_ID],
             listTypes=listTypes)
 
-    def getPrintableItemsForAgenda(self, itemUids, standard=True, itemType='prescriptive',
-                                   listTypes=['normal']):
+    def getPrintableItemsForAgenda(self, itemUids, standard=True, itemType='prescriptive', listTypes=['normal']):
         """
         Return an ordered dict with the items' group in charge as key and another
         ordered dict as value. The second ordered dict has the items' categories as
