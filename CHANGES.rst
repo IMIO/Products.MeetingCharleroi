@@ -4,7 +4,8 @@ Products.MeetingCharleroi Changelog
 4.1rc2 (unreleased)
 -------------------
 
-- Updated meetingitem_view to call mayQuickEdit('completeness') with bypassWritePermissionCheck=True.
+- Updated meetingitem_view to call mayQuickEdit('completeness') with bypassWritePermissionCheck=True
+- Avoid migration to 4.1 launched 2 times because of upgradeAll, added 'Products.MeetingCharleroi:default' to extra_omitted
 
 4.1rc1 (2019-06-11)
 -------------------

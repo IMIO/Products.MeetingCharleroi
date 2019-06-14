@@ -14,9 +14,9 @@ class Migrate_To_4_1(MCMigrate_To_4_1):
     def run(self):
         # reapply the actions.xml of collective.iconifiedcategory
         self.ps.runImportStepFromProfile('profile-collective.iconifiedcategory:default', 'actions')
-        super(Migrate_To_4_1, self).run()
+        super(Migrate_To_4_1, self).run(extra_omitted=['Products.MeetingCharleroi:default'])
         self.reinstall(profiles=[u'profile-Products.MeetingCharleroi:default'],
-                       ignore_dependencies=False,
+                       ignore_dependencies=True,
                        dependency_strategy=DEPENDENCY_STRATEGY_NEW)
 
 
