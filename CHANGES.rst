@@ -1,7 +1,7 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
-4.1rc2 (unreleased)
+4.1rc2 (2019-06-14)
 -------------------
 
 - Updated meetingitem_view to call mayQuickEdit('completeness') with bypassWritePermissionCheck=True
