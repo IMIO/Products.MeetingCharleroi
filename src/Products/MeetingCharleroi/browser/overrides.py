@@ -7,17 +7,15 @@
 # GNU General Public License (GPL)
 #
 
-from collective.contact.plonegroup.utils import get_organization
-from collective.contact.plonegroup.utils import get_organizations
-from imio.history.utils import getLastWFAction
-from plone import api
 from Products.CMFPlone.utils import safe_unicode
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.utils import finance_group_uid
-from Products.MeetingCommunes.browser.overrides import MCItemDocumentGenerationHelperView
-from Products.MeetingCommunes.browser.overrides import MCMeetingDocumentGenerationHelperView
+from Products.MeetingCommunes.browser.overrides import MCItemDocumentGenerationHelperView, \
+    MCMeetingDocumentGenerationHelperView
 from Products.PloneMeeting.browser.views import MeetingBeforeFacetedInfosView
-
+from collective.contact.plonegroup.utils import get_organization, get_organizations
+from imio.history.utils import getLastWFAction
+from plone import api
 
 FIN_ADVICE_LINE1 = u"<p>Considérant la communication du dossier au Directeur financier faite en date du {0}, " \
                    u"conformément à l'article L1124-40 §1er, 3° et 4° du " \
@@ -50,14 +48,14 @@ class MCBaseDocumentGenerationHelperView(object):
 class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MCItemDocumentGenerationHelperView):
     """Specific printing methods used for item."""
 
-    def showFinancesAdvice(self):
+    def showFinancesAdvice(self, advice_data=None):
         """Finances advice is only shown :
            - if given (at worst it will be 'not_given_finance');
            - if advice_type is not not_required_finance;
            - in any case if item is in Council;
            - if item is 'validated' to everybody;
            - if it is 'prevalidated_waiting_advices', to finances advisers."""
-        adviceHolder = self._advice_holder()
+        adviceHolder = self._advice_holder(advice_data)
         adviceObj = adviceHolder.getAdviceObj(finance_group_uid())
         if not adviceObj or adviceObj.advice_type == 'not_required_finance':
             return False
@@ -69,32 +67,28 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
                     suffixes=['advisers'])):
             return True
 
-    def _advice_holder(self):
-        adviceInfo = self.real_context.getAdviceDataFor(self.real_context, finance_group_uid())
-        return adviceInfo.get('adviceHolder', self.real_context)
+    def _advice_holder(self, advice_data=None):
+        if not advice_data:
+            advice_data = self.real_context.getAdviceDataFor(self.real_context, finance_group_uid())
+        return advice_data.get('adviceHolder', self.real_context)
 
-    def _financeAdviceData(self):
+    def _financeAdviceData(self, advice_data=None):
         """ """
         # if item is in Council, get the adviceData from it's predecessor
-        adviceData = self.real_context.getAdviceDataFor(self.real_context, finance_group_uid())
-        adviceTypeTranslated = adviceData['type_translated'].replace('Avis finances ', '')
-        adviceData['advice_type_translated'] = adviceTypeTranslated
+        if not advice_data:
+            advice_data = self.real_context.getAdviceDataFor(self.real_context, finance_group_uid())
 
-        for dealayChange in adviceData['delay_changes_history']:
-            """Get the new value of the latest delay change into history. """
-            newDelay = int(dealayChange['action'][1])
-            oldDelay = int(dealayChange['action'][0])
-            dealayChange['delayDiff'] = str(newDelay - oldDelay)
+        adviceTypeTranslated = advice_data['type_translated'].replace('Avis finances ', '')
+        advice_data['advice_type_translated'] = adviceTypeTranslated
 
-        adviceData['printableHistory'] = self.printHistoryForFinancesAdvice(adviceData['given_advice'])
-
-        return adviceData
+        return advice_data
 
     def printFinancesAdvice(self):
         """Print the legal text regarding Finances advice."""
-        if not self.showFinancesAdvice():
+        advice_data = self.real_context.getAdviceDataFor(self.real_context, finance_group_uid())
+        if not self.showFinancesAdvice(advice_data=advice_data):
             return ''
-        adviceData = self._financeAdviceData()
+        adviceData = self._financeAdviceData(advice_data=advice_data)
         delayStartedOnLocalized = adviceData['delay_infos']['delay_started_on_localized']
         adviceGivenOnLocalized = adviceData['advice_given_on_localized']
         adviceTypeTranslated = safe_unicode(adviceData['advice_type_translated'])
@@ -174,27 +168,6 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
             return {'author': author and author.getProperty('fullname') or author_id,
                     'date': lastEvent['time'].strftime('%d/%m/%Y %H:%M')}
         return ''
-
-    def printHistoryForFinancesAdvice(self, advice):
-        printable_history = []
-        if advice and advice.getHistory():
-            m_tool = api.portal.get_tool('portal_membership')
-            for changeHistory in advice.getHistory():
-                author_id = changeHistory['actor']
-                author = m_tool.getMemberById(author_id)
-                printable_history_item = {
-                    'author': author and author.getProperty('fullname') or author_id,
-                    'date': changeHistory['time'].strftime('%d/%m/%Y %H:%M'),
-                    'review_state_translated': self.translate(changeHistory['review_state'])}
-
-                if changeHistory['comments'] == 'wf_transition_triggered_by_application':
-                    printable_history_item['comments'] = self.translate(changeHistory['comments'])
-                else:
-                    printable_history_item['comments'] = changeHistory['comments']
-
-                printable_history.append(printable_history_item)
-
-        return printable_history
 
 
 class MCHMeetingDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MCMeetingDocumentGenerationHelperView):
