@@ -4,7 +4,7 @@ Products.MeetingCharleroi Changelog
 4.1rc3 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Fix document generation specific methods
 
 
 4.1rc2 (2019-06-14)
