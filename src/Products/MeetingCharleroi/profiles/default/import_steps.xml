@@ -2,15 +2,6 @@
 <import-steps>
 
  <import-step 
-    id="MeetingCharleroi-Update-RoleMappings" 
-    handler="Products.MeetingCharleroi.setuphandlers.updateRoleMappings"
-    title="Update Workflow role mappings for MeetingCharleroi"
-    version="2016-02-01T09:23:16.516092">
-   <dependency step="MeetingCharleroi-QI-dependencies"/>
-   updates the workflow role mappings for MeetingCharleroi
- </import-step>
-
- <import-step 
     id="MeetingCharleroi-postInstall" 
     handler="Products.MeetingCharleroi.setuphandlers.postInstall"
     title="manual coded post-install for MeetingCharleroi"

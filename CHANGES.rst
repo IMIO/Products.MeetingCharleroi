@@ -4,14 +4,13 @@ Products.MeetingCharleroi Changelog
 4.1rc4 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Adapted regarding MeetingItem.groupInCharge moved to MeetingItem.groupsInCharge
+- Removed import_step calling setuphandlers.updateRoleMappings
 
 4.1rc3 (2019-06-18)
 -------------------
 
 - Fix document generation specific methods
-
 
 4.1rc2 (2019-06-14)
 -------------------

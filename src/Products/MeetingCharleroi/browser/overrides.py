@@ -215,6 +215,6 @@ class MCHMeetingDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView,
         return None
 
     def format_commission(self, item):
-        group_in_charge = item.getGroupInCharge(theObject=True)
+        group_in_charge = item.getGroupsInCharge(theObjects=True, first=True)
         group_descr = group_in_charge and group_in_charge.Description() or ''
         return COMMISSION_TYPE_ITEM.format(group_descr)

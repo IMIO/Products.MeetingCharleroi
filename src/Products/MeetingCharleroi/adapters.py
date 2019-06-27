@@ -354,7 +354,7 @@ class CustomCharleroiMeeting(CustomMeeting):
         groupsInChargeItems = {}
         for categorizedItems in itemsList:
             for item in categorizedItems[1:]:
-                groupInCharge = item.getGroupInCharge(theObject=True)
+                groupInCharge = item.getGroupsInCharge(theObjects=True, first=True)
                 # if we already have the group in charge in the dict.
                 if groupInCharge in groupsInChargeItems:
                     # if we already have the category for that group in charge.
@@ -402,7 +402,7 @@ class CustomCharleroiMeeting(CustomMeeting):
                 else:
                     nextMeetingDate = item._otherMCMeetingToBePresentedIn(councilMC)
 
-                groupInCharge = item.getGroupInCharge(theObject=True)
+                groupInCharge = item.getGroupsInCharge(theObjects=True, first=True)
                 # if we already have the next meeting date in the dict.
                 if nextMeetingDate in byDateItems:
                     # if we already have the group in charge in the dict.

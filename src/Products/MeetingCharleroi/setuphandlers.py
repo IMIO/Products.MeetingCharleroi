@@ -38,15 +38,6 @@ def isNotMeetingCharleroiProfile(context):
     return context.readDataFile("MeetingCharleroi_marker.txt") is None
 
 
-def updateRoleMappings(context):
-    """after workflow changed update the roles mapping. this is like pressing
-    the button 'Update Security Setting' and portal_workflow"""
-    if isNotMeetingCharleroiProfile(context):
-        return
-    wft = api.portal.get_tool('portal_workflow')
-    wft.updateRoleMappings()
-
-
 def postInstall(context):
     """Called as at the end of the setup process. """
     # the right place for your custom code
