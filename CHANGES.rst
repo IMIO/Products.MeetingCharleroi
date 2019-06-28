@@ -1,7 +1,7 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
-4.1rc4 (unreleased)
+4.1rc4 (2019-06-28)
 -------------------
 
 - Adapted regarding MeetingItem.groupInCharge moved to MeetingItem.groupsInCharge
