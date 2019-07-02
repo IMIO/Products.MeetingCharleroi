@@ -5,6 +5,8 @@ Products.MeetingCharleroi Changelog
 -------------------
 
 - Use Products.MeetingCommunes.config.FINANCE_WAITING_ADVICES_STATES constant instead new FINANCE_GIVEABLE_ADVICE_STATES
+  Redefine MeetingCommunes.config constants after PloneMeeting.config constants as PloneMeeting.config is imported in MeetingCommunes.config,
+  all this should be done in registry stored values to avoid monkeypatches problems...
 
 4.1rc4 (2019-06-28)
 -------------------
