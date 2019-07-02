@@ -11,6 +11,7 @@
 
 from collections import OrderedDict
 from Products.CMFCore.permissions import setDefaultRoles
+from Products.MeetingCommunes import config as MCconfig
 from Products.PloneMeeting import config as PMconfig
 
 
@@ -71,7 +72,7 @@ PMconfig.ADVICE_STATES_ALIVE = CHARLEROI_ADVICE_STATES_ALIVE
 DECISION_ITEM_SENT_TO_COUNCIL = "<p>Ce point est à inscrire à l'ordre du jour du Conseil.</p>"
 
 # in those states, finance advice can still be given
-FINANCE_GIVEABLE_ADVICE_STATES = ('prevalidated_waiting_advices', )
+MCconfig.FINANCE_WAITING_ADVICES_STATES = ('prevalidated_waiting_advices', )
 
 # comment used when a finance advice has been signed and so historized
 FINANCE_ADVICE_HISTORIZE_COMMENTS = 'financial_advice_signed_historized_comments'

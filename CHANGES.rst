@@ -4,8 +4,7 @@ Products.MeetingCharleroi Changelog
 4.1rc5 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Use Products.MeetingCommunes.config.FINANCE_WAITING_ADVICES_STATES constant instead new FINANCE_GIVEABLE_ADVICE_STATES
 
 4.1rc4 (2019-06-28)
 -------------------

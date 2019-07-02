@@ -37,7 +37,6 @@ from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
 from Products.MeetingCharleroi.config import DECISION_ITEM_SENT_TO_COUNCIL
-from Products.MeetingCharleroi.config import FINANCE_GIVEABLE_ADVICE_STATES
 from Products.MeetingCharleroi.config import NEVER_LATE_CATEGORIES
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.interfaces import IMeetingCharleroiCollegeWorkflowActions
@@ -659,8 +658,10 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         if advice['id'] == finance_group_uid() and \
            advice['delay'] and \
            not advice['delay_started_on']:
+            # import FINANCE_WAITING_ADVICES_STATES as it is monkeypatched
+            from Products.MeetingCommunes.config import FINANCE_WAITING_ADVICES_STATES
             # item in state giveable but item not complete
-            if item.queryState() in FINANCE_GIVEABLE_ADVICE_STATES:
+            if item.queryState() in FINANCE_WAITING_ADVICES_STATES:
                 return {'displayDefaultComplementaryMessage': False,
                         'customAdviceMessage':
                         translate('finance_advice_not_giveable_because_item_not_complete',
