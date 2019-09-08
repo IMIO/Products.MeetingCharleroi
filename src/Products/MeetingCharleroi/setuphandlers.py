@@ -15,6 +15,7 @@ from imio.helpers.catalog import addOrUpdateIndexes
 from plone import api
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
+from imio.helpers.content import get_vocab
 from plone.memoize.forever import _memos
 from Products.CMFPlone.utils import _createObjectByType
 from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
@@ -275,7 +276,9 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
             finance_group = finance_group_uid()
             if finance_group:
                 finance_advice_id = '{0}__rowid__unique_id_002'.format(finance_group)
-                if finance_advice_id not in newItem.listOptionalAdvisers():
+                optional_advisers = get_vocab(
+                    newItem, 'Products.PloneMeeting.vocabularies.itemoptionaladvicesvocabulary')
+                if finance_advice_id not in optional_advisers:
                     _memos.clear()
                     finance_group = finance_group_uid()
                     finance_advice_id = '{0}__rowid__unique_id_002'.format(finance_group)

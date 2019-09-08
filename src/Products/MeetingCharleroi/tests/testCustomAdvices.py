@@ -21,6 +21,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 # 02110-1301, USA.
 #
+
+from imio.helpers.content import get_vocab
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
@@ -95,7 +97,9 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem')
         # by default, only the 10 days delay is selectable
-        self.assertEqual(item.listOptionalAdvisers().keys(),
+        optional_advisers = get_vocab(
+            item, 'Products.PloneMeeting.vocabularies.itemoptionaladvicesvocabulary')
+        self.assertEqual([term.token for term in optional_advisers],
                          ['not_selectable_value_delay_aware_optional_advisers',
                           '{0}__rowid__unique_id_002'.format(finance_group_uid()),
                           'not_selectable_value_non_delay_aware_optional_advisers',
