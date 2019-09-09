@@ -696,6 +696,10 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
             return self._is_complete()
         return super(CustomCharleroiMeetingItem, self)._adviceIsAddableByCurrentUser(org_uid)
 
+    def _adviceIsAddable(self, org_uid):
+        ''' '''
+        return self.adapted()._adviceIsAddableByCurrentUser(org_uid)
+
     def _advicePortalTypeForAdviser(self, groupId):
         """Return the meetingadvice portal_type that will be added for given p_groupId.
            By default we always use meetingadvice but this makes it possible to have several
