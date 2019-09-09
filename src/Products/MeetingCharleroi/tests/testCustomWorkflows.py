@@ -537,6 +537,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(item, 'wait_advices_from_prevalidated')
         self.changeUser('pmFinController')
         item.setCompleteness('completeness_complete')
+        item._update_after_edit()
         # give advice positive with remarks
         # finances advice WF is tested in test_CollegeFinancesAdviceWF
         advice = createContentInContainer(
@@ -616,6 +617,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(item, 'wait_advices_from_prevalidated')
         self.changeUser('pmFinController')
         item.setCompleteness('completeness_complete')
+        item._update_after_edit()
         # give advice positive with remarks
         advice = createContentInContainer(
             item,
