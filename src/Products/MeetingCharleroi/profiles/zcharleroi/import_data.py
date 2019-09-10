@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from copy import deepcopy
 from DateTime import DateTime
 from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
@@ -600,21 +601,28 @@ collegeMeeting.onTransitionFieldTransforms = (
     ({'transition': 'delay',
       'field_name': 'MeetingItem.decision',
       'tal_expression': "string:<p>Le Collège décide de reporter le point.</p>${here/getDecision}"},))
-collegeMeeting.onMeetingTransitionItemTransitionToTrigger = ({'meeting_transition': 'freeze',
-                                                              'item_transition': 'itemfreeze'},
+collegeMeeting.onMeetingTransitionItemActionToExecute = (
+    {'meeting_transition': 'freeze',
+     'item_action': 'itemfreeze',
+     'tal_expression': ''},
 
-                                                             {'meeting_transition': 'decide',
-                                                              'item_transition': 'itemfreeze'},
+    {'meeting_transition': 'decide',
+     'item_action': 'itemfreeze',
+     'tal_expression': ''},
 
-                                                             {'meeting_transition': 'publish_decisions',
-                                                              'item_transition': 'itemfreeze'},
-                                                             {'meeting_transition': 'publish_decisions',
-                                                              'item_transition': 'accept'},
+    {'meeting_transition': 'publish_decisions',
+     'item_action': 'itemfreeze',
+     'tal_expression': ''},
+    {'meeting_transition': 'publish_decisions',
+     'item_action': 'accept',
+     'tal_expression': ''},
 
-                                                             {'meeting_transition': 'close',
-                                                              'item_transition': 'itemfreeze'},
-                                                             {'meeting_transition': 'close',
-                                                              'item_transition': 'accept'},)
+    {'meeting_transition': 'close',
+     'item_action': 'itemfreeze',
+     'tal_expression': ''},
+    {'meeting_transition': 'close',
+     'item_action': 'accept',
+     'tal_expression': ''},)
 collegeMeeting.meetingPowerObserversStates = ('frozen', 'decided', 'closed')
 collegeMeeting.powerAdvisersGroups = ('dirgen', 'dirfin', )
 collegeMeeting.itemBudgetInfosStates = ('proposed', 'validated', 'presented')
@@ -925,21 +933,8 @@ councilMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
                                       'return_to_proposing_group', 'items_come_validated',
                                       'mark_not_applicable', 'refused']
 councilMeeting.transitionsForPresentingAnItem = ('present', )
-councilMeeting.onMeetingTransitionItemTransitionToTrigger = ({'meeting_transition': 'freeze',
-                                                              'item_transition': 'itemfreeze'},
-
-                                                             {'meeting_transition': 'decide',
-                                                              'item_transition': 'itemfreeze'},
-
-                                                             {'meeting_transition': 'publish_decisions',
-                                                              'item_transition': 'itemfreeze'},
-                                                             {'meeting_transition': 'publish_decisions',
-                                                              'item_transition': 'accept'},
-
-                                                             {'meeting_transition': 'close',
-                                                              'item_transition': 'itemfreeze'},
-                                                             {'meeting_transition': 'close',
-                                                              'item_transition': 'accept'},)
+councilMeeting.onMeetingTransitionItemActionToExecute = deepcopy(
+    collegeMeeting.onMeetingTransitionItemActionToExecute)
 councilMeeting.itemPowerObserversStates = ('itemfrozen',
                                            'accepted', 'delayed',
                                            'refused',
