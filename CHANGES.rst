@@ -7,6 +7,7 @@ Products.MeetingCharleroi Changelog
 - MeetingItem.listOptionalAdvisers was removed and replaced by a vocabulary factory, adapted code accordingly
 - Implement MeetingItem._adviceIsAddable so it is not addable while item is not complete, this way the 'search items to control completeness of' works as expected
 - MeetingConfig.onMeetingTransitionItemTransitionToTrigger was moved to MeetingConfig.onMeetingTransitionItemActionToExecute, adapted code accordingly
+- Updated meetingitem_view.pt regarding changes in Products.PloneMeeting ase meetingitem_view.pt
 
 4.1rc5 (2019-07-02)
 -------------------
