@@ -1,7 +1,7 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
-4.1rc6 (unreleased)
+4.1rc6 (2019-09-23)
 -------------------
 
 - MeetingItem.listOptionalAdvisers was removed and replaced by a vocabulary factory, adapted code accordingly
