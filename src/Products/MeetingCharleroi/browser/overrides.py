@@ -13,7 +13,7 @@ from Products.MeetingCharleroi.utils import finance_group_uid
 from Products.MeetingCommunes.browser.overrides import MCItemDocumentGenerationHelperView, \
     MCMeetingDocumentGenerationHelperView
 from Products.PloneMeeting.browser.views import MeetingBeforeFacetedInfosView
-from collective.contact.plonegroup.utils import get_organization, get_organizations
+from collective.contact.plonegroup.utils import get_organizations
 from imio.history.utils import getLastWFAction
 from plone import api
 
@@ -57,15 +57,22 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
            - if it is 'prevalidated_waiting_advices', to finances advisers."""
         adviceHolder = self._advice_holder(advice_data)
         adviceObj = adviceHolder.getAdviceObj(finance_group_uid())
+        # check advice state
         if not adviceObj or adviceObj.advice_type == 'not_required_finance':
             return False
-        item_state = self.context.queryState()
-        financeAdviceGroup = get_organization(finance_group_uid())
-        if item_state == 'validated' or \
-                adviceHolder.hasMeeting() or \
-                (item_state == 'prevalidated_waiting_advices' and financeAdviceGroup.userPloneGroups(
-                    suffixes=['advisers'])):
+        # check item state
+        item_state = self.real_context.queryState()
+        if item_state == 'validated' or adviceHolder.hasMeeting():
             return True
+        # check user access (administrators and advisers from finance director service)
+        tool = api.portal.get_tool('portal_plonemeeting')
+        if tool.isManager(self.real_context, realManagers=True) \
+                or (item_state == 'prevalidated_waiting_advices' and
+                    tool.get_orgs_for_user(suffixes=['advisers'],
+                                           using_groups=[finance_group_uid()],
+                                           the_objects=False)):
+            return True
+        return False
 
     def _advice_holder(self, advice_data=None):
         if not advice_data:
