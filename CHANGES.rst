@@ -1,7 +1,7 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
-4.1 (unreleased)
+4.1 (2019-10-04)
 ----------------
 
 - Fix showFinancesAdvice when the item is in state prevalidated_waiting_advices and the user has the right to print it in deliberation.
