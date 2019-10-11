@@ -166,30 +166,30 @@ field before and the 'attendees' now, if the field is not empty, we display it</
 
       <tal:comment replace="nothing">Free text fields available when using 'assembly' or 'attenddes'</tal:comment>
       <tal:comment replace="nothing">XXX changed by MeetingCharleroi, added 'assemblyPrivacySecretAbsents'</tal:comment>
-      <fieldset tal:condition="python: 'assemblyPrivacySecretAbsents' in shownAssemblyFields">
+      <fieldset class="meeting_assemblyPrivacySecretAbsents" tal:condition="python: 'assemblyPrivacySecretAbsents' in shownAssemblyFields">
           <legend i18n:translate="PloneMeeting_label_assemblyPrivacySecretAbsents">Privacy secret absents</legend>
           <span tal:replace="structure python: context.getAssemblyPrivacySecretAbsents() or '<p>-</p>'"/>
       </fieldset>
-      <fieldset tal:condition="python: 'assemblyGuests' in shownAssemblyFields">
+      <fieldset class="meeting_assemblyGuests" tal:condition="python: 'assemblyGuests' in shownAssemblyFields">
           <legend i18n:translate="meeting_assemblyGuests">Guests</legend>
           <span tal:replace="structure python: context.getAssemblyGuests() or '<p>-</p>'"/>
       </fieldset>
-      <fieldset tal:condition="python: 'assemblyProxies' in shownAssemblyFields">
+      <fieldset class="meeting_assemblyProxies" tal:condition="python: 'assemblyProxies' in shownAssemblyFields">
           <legend i18n:translate="meeting_assemblyProxies">Proxies</legend>
           <span tal:replace="structure python: context.getAssemblyProxies() or '<p>-</p>'"/>
       </fieldset>
-      <fieldset tal:condition="python: 'assemblyStaves' in shownAssemblyFields">
+      <fieldset class="meeting_assemblyStaves" tal:condition="python: 'assemblyStaves' in shownAssemblyFields">
           <legend i18n:translate="meeting_assemblyStaves">Staves</legend>
           <span tal:replace="structure python: context.getAssemblyStaves() or '<p>-</p>'"/>
       </fieldset>
       <tal:comment replace="nothing">XXX changed by MeetingCharleroi, added 'assemblyPolice'</tal:comment>
-      <fieldset tal:condition="python: 'assemblyPolice' in shownAssemblyFields">
+      <fieldset class="meeting_assemblyPolice" tal:condition="python: 'assemblyPolice' in shownAssemblyFields">
           <legend i18n:translate="PloneMeeting_label_assemblyPolice">Police</legend>
           <span tal:replace="structure python: context.getAssemblyPolice() or '<p>-</p>'"/>
       </fieldset>
-      <fieldset tal:condition="context/showSignatures">
+      <fieldset class="meeting_signatures" tal:condition="context/showSignatures">
           <legend i18n:translate="meeting_signatures">Signatures</legend>
-          <span tal:replace="structure python: context.getSignatures(mimetype='text/x-html-safe') or '<p>-</p>'"/>
+          <span tal:replace="structure context/displaySignatures|string:<p>-</p>"/>
       </fieldset>
      </tal:assembly_fields>
     </div>
