@@ -1,7 +1,7 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
-4.1.1 (unreleased)
+4.1.1 (2019-10-14)
 ------------------
 
 - Updated templates regarding changes in Products.PloneMeeting.
