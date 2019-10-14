@@ -1,6 +1,12 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
+4.1.2 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
 4.1.1 (2019-10-14)
 ------------------
 
