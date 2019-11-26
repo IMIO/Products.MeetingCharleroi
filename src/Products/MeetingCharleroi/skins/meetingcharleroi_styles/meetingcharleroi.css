@@ -1,8 +1,7 @@
 /* Colors on states */
 /* Items */
 
-.state-proposed_to_refadmin,
-.label-state-proposed_to_refadmin {
+.state-proposed_to_refadmin {
     color: DarkOrange !important;
 }
 
