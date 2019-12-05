@@ -9,7 +9,7 @@
 table.listing tr[class][class] td.meeting_item_listType_depose {
     background-color: DarkOrchid;
 }
-#content span.item_listType_depose,
+span.item_listType_depose,
 div.tooltipster-content a.item_listType_depose:link,
 div.tooltipster-content a.item_listType_depose:visited {
     color: DarkOrchid;
@@ -25,7 +25,7 @@ table.listing tr[class][class] td.meeting_item_listType_lateextracollege {
     lightgrey 20px);
 }
 
-#content span.item_listType_lateextracollege,
+span.item_listType_lateextracollege,
 div.tooltipster-content a.item_listType_lateextracollege:link,
 div.tooltipster-content a.item_listType_lateextracollege:visited {
     color: red;
@@ -40,7 +40,7 @@ table.listing tr[class][class] td.meeting_item_listType_communication {
     lightgrey 10px,
     lightgrey 20px);
 }
-#content span.item_listType_communication,
+span.item_listType_communication,
 div.tooltipster-content a.item_listType_communication:link,
 div.tooltipster-content a.item_listType_communication:visited {
     color: blue;
