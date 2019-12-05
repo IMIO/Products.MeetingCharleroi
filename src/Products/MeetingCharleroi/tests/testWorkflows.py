@@ -239,18 +239,17 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         self.freezeMeeting(meeting)
         self.failUnless(len(meeting.getItems()) == 4)
         self.failUnless(len(meeting.getItems(listTypes=['late'])) == 1)
-        # Back to created: rec item 2 is not inserted because
-        # only some transitions can add a recurring item (see MeetingItem).
+        # Back to created: rec item 2 is inserted again
         self.backToState(meeting, 'created')
-        self.failUnless(len(meeting.getItems()) == 4)
+        self.failUnless(len(meeting.getItems()) == 5)
         self.failUnless(len(meeting.getItems(listTypes=['late'])) == 1)
         # Recurring items can be added twice...
         self.freezeMeeting(meeting)
-        self.failUnless(len(meeting.getItems()) == 5)
+        self.failUnless(len(meeting.getItems()) == 6)
         self.failUnless(len(meeting.getItems(listTypes=['late'])) == 2)
         # Decide the meeting, a third late item is added
         self.decideMeeting(meeting)
-        self.failUnless(len(meeting.getItems()) == 6)
+        self.failUnless(len(meeting.getItems()) == 7)
         self.failUnless(len(meeting.getItems(listTypes=['late'])) == 3)
 
     def test_pm_RemoveContainer(self):
