@@ -6,6 +6,7 @@ Products.MeetingCharleroi Changelog
 
 - Removed useless CSS definition for state-proposed_to_refadmin label.
 - Adapted templates regarding changes in PloneMeeting, removed ToolPloneMeeting.modelAdaptations functionnality.
+- Fixed item template regarding field 'proposingGroupWithGroupInCharge' that may be empty on an item template.
 
 4.1.1 (2019-10-14)
 ------------------
