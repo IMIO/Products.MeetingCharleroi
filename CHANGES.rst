@@ -8,6 +8,7 @@ Products.MeetingCharleroi Changelog
 - Adapted templates regarding changes in PloneMeeting, removed ToolPloneMeeting.modelAdaptations functionnality.
 - Fixed item template regarding field 'proposingGroupWithGroupInCharge' that may be empty on an item template.
 - Adapted Page templates regarding changes in PloneMeeting.
+- Removed accepted_and_returned prettylink icon as corresponding item WF state was removed.
 
 4.1.1 (2019-10-14)
 ------------------

@@ -1420,12 +1420,7 @@ class MCHItemPrettyLinkAdapter(ItemPrettyLinkAdapter):
 
         itemState = self.context.queryState()
         # Add our icons for some review states
-        if itemState == 'accepted_and_returned':
-            icons.append(('accepted_and_returned.png',
-                          translate('icon_help_accepted_and_returned',
-                                    domain="PloneMeeting",
-                                    context=self.request)))
-        elif itemState == 'proposed_to_refadmin':
+        if itemState == 'proposed_to_refadmin':
             icons.append(('proposeToRefAdmin.png',
                           translate('icon_help_proposed_to_refadmin',
                                     domain="PloneMeeting",
