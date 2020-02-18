@@ -134,7 +134,7 @@
                 define="redefinedItemAssemblies python: context.redefinedItemAssemblies();
                         redefinedItemSignatures python: context.getItemSignatures(real=True) or context.getItemSignatories(real=True);
                         mayQuickEditItemAssembly context/mayQuickEditItemAssembly;
-                        mayQuickEditItemSignatures python: 'signatures' in usedMeetingAttrs and context.mayQuickEdit('itemSignatures', bypassWritePermissionCheck=True);">
+                        mayQuickEditItemSignatures context/mayQuickEditItemSignatures;">
               <div id="assembly-and-signatures"
                   onclick="togglePersonsCookie();;toggleDoc('collapsible-assembly-and-signatures');"
                   class="collapsible discreet">
@@ -528,7 +528,7 @@
        <metal:f use-macro="context/@@pm-macros/viewContentField"/>
     </tal:field>
 
-    <tal:comment replace="nothing">Bourgmestre observations</tal:comment>
+    <tal:comment replace="nothing">XXX Added by MeetingCharleroi, Bourgmestre observations</tal:comment>
     <tal:field define="fieldName python: 'bourgmestreObservations'; ajaxEdit python:True">
        <metal:f use-macro="context/@@pm-macros/viewContentField"/>
     </tal:field>

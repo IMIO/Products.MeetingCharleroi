@@ -145,6 +145,7 @@
         <metal:field use-macro="python:here.widget('midDate', mode='edit')"/>
         <metal:field use-macro="python:here.widget('endDate', mode='edit')"/>
         <metal:field use-macro="python:here.widget('approvalDate', mode='edit')"/>
+        <metal:field use-macro="python:here.widget('convocationDate', mode='edit')"/>
         <metal:field use-macro="python:here.widget('deadlinePublish', mode='edit')"/>
         <metal:field use-macro="python:here.widget('deadlineFreeze', mode='edit')"/>
 
@@ -154,11 +155,12 @@
         <metal:field use-macro="python:here.widget('assemblyExcused', mode='edit')"/>
         <metal:field use-macro="python:here.widget('assemblyAbsents', mode='edit')"/>
 
-        <tal:comment replace="nothing">Added by MeetingCharleroi</tal:comment>
+        <tal:comment replace="nothing">XXX Added by MeetingCharleroi</tal:comment>
         <metal:field use-macro="python:here.widget('assemblyPolice', mode='edit')"/>
 
         <tal:comment replace="nothing">User table: attendees, absents, signatories, replacements</tal:comment>
         <tal:users condition="context/showAttendeesFields">
+
         <table id="meeting_users" name="meeting_users" class="listing" i18n:domain="PloneMeeting"
                tal:define="allUsers python: context.getAllUsedHeldPositions(include_new=True);
                            attendees python: context.getAttendees() or (not context.getAllUsedHeldPositions(include_new=False) and context.getDefaultAttendees()) or [];
@@ -282,6 +284,7 @@
         </script>
         </tal:users>
 
+        <tal:comment replace="nothing">XXX Added by MeetingCharleroi</tal:comment>
         <metal:field use-macro="python:here.widget('assemblyPrivacySecretAbsents', mode='edit')"/>
         <metal:field use-macro="python:here.widget('assemblyGuests', mode='edit')"/>
         <metal:field use-macro="python:here.widget('assemblyProxies', mode='edit')"/>
