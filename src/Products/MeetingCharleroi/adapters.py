@@ -982,6 +982,10 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
             return communication
         return self.context.getListTypeNormalValue(meeting)
 
+    def getAdviceRelatedIndexes(self):
+        '''Update index 'financesAdviceCategory' in addition to default 'indexAdvisers'.'''
+        return ['indexAdvisers', 'financesAdviceCategory']
+
 
 class CustomCharleroiMeetingConfig(CustomMeetingConfig):
     '''Adapter that adapts a custom meetingConfig implementing IMeetingConfig to the
