@@ -1,7 +1,7 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
-4.1.2 (unreleased)
+4.1.2 (2020-03-12)
 ------------------
 
 - Removed useless CSS definition for state-proposed_to_refadmin label.
