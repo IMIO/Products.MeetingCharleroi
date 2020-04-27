@@ -1003,7 +1003,10 @@ class CustomCharleroiMeetingConfig(CustomMeetingConfig):
 
     def extraInsertingMethods(self):
         '''See doc in interfaces.py.'''
-        return ['on_communication', 'on_police_then_other_groups']
+        return OrderedDict((
+            ('on_communication', []),
+            ('on_police_then_other_groups', []),
+        ))
 
 
 class MeetingCharleroiCollegeWorkflowActions(MeetingCommunesWorkflowActions):
