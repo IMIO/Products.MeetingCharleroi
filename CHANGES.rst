@@ -1,7 +1,7 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
-4.1.3 (unreleased)
+4.1.3 (2020-04-29)
 ------------------
 
 - Fixed `CustomCharleroiMeetingConfig.extraInsertingMethods` returned format that was breaking the `@@display-inserting-methods-helper-msg` view.
