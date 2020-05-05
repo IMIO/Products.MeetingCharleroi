@@ -4,8 +4,7 @@ Products.MeetingCharleroi Changelog
 4.1.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Removed field `MeetingItem.itemIsSigned` from `meetingitem_edit`, it is managed thru the `meetingitem_view`
 
 4.1.3 (2020-04-29)
 ------------------
