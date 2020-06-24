@@ -1,7 +1,7 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
-4.1.5 (unreleased)
+4.1.5 (2020-06-24)
 ------------------
 
 - Adapted `meetingitem_view.pt` regarding changes in `Products.PloneMeeting` (`groupsInCharge`).
