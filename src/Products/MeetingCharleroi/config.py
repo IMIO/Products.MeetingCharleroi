@@ -78,11 +78,11 @@ FINANCE_ADVICE_HISTORIZE_COMMENTS = 'financial_advice_signed_historized_comments
 
 # group suffixes
 PMconfig.EXTRA_GROUP_SUFFIXES = [
-    {'fct_title': u'serviceheads', 'fct_id': u'serviceheads', 'fct_orgs': []},
-    {'fct_title': u'financialcontrollers', 'fct_id': u'financialcontrollers', 'fct_orgs': [FINANCE_GROUP_ID]},
-    {'fct_title': u'financialeditors', 'fct_id': u'financialeditors', 'fct_orgs': [FINANCE_GROUP_ID]},
-    {'fct_title': u'financialreviewers', 'fct_id': u'financialreviewers', 'fct_orgs': [FINANCE_GROUP_ID]},
-    {'fct_title': u'financialmanagers', 'fct_id': u'financialmanagers', 'fct_orgs': [FINANCE_GROUP_ID]},
+    {'fct_title': u'serviceheads', 'fct_id': u'serviceheads', 'fct_orgs': [], 'enabled': True},
+    {'fct_title': u'financialcontrollers', 'fct_id': u'financialcontrollers', 'fct_orgs': [FINANCE_GROUP_ID], 'enabled': True},
+    {'fct_title': u'financialeditors', 'fct_id': u'financialeditors', 'fct_orgs': [FINANCE_GROUP_ID], 'enabled': True},
+    {'fct_title': u'financialreviewers', 'fct_id': u'financialreviewers', 'fct_orgs': [FINANCE_GROUP_ID], 'enabled': True},
+    {'fct_title': u'financialmanagers', 'fct_id': u'financialmanagers', 'fct_orgs': [FINANCE_GROUP_ID], 'enabled': True},
 ]
 
 # Council special categories, items added manually to Council and never considered 'late'
