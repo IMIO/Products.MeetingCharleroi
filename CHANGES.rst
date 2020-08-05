@@ -4,8 +4,10 @@ Products.MeetingCharleroi Changelog
 4.1.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Adapted code and tests regarding DX meetingcategory.
+  [gbastien]
+- Adapted templates regarding last changes in Products.PloneMeeting.
+  [gbastien]
 
 4.1.5 (2020-06-24)
 ------------------

@@ -263,7 +263,7 @@ class MeetingCharleroiTestingHelpers(MeetingCommunesTestingHelpers):
                 data = {'id': cat.id,
                         'title': cat.title,
                         'description': cat.description}
-                self.create('MeetingCategory', **data)
+                self.create('meetingcategory', **data)
 
     def _createItemTemplates(self):
         """ """
