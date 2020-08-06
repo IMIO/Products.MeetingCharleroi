@@ -47,18 +47,18 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.presentItem(item2)
         wftool = self.portal.portal_workflow
         # every presented items are in the 'presented' state
-        self.assertEquals('presented', wftool.getInfoFor(item1, 'review_state'))
-        self.assertEquals('presented', wftool.getInfoFor(item2, 'review_state'))
+        self.assertEqual('presented', wftool.getInfoFor(item1, 'review_state'))
+        self.assertEqual('presented', wftool.getInfoFor(item2, 'review_state'))
         # every items must be in the 'itemfrozen' state if we freeze the meeting
         self.freezeMeeting(meeting)
-        self.assertEquals('itemfrozen', wftool.getInfoFor(item1, 'review_state'))
-        self.assertEquals('itemfrozen', wftool.getInfoFor(item2, 'review_state'))
+        self.assertEqual('itemfrozen', wftool.getInfoFor(item1, 'review_state'))
+        self.assertEqual('itemfrozen', wftool.getInfoFor(item2, 'review_state'))
         # when an item is 'itemfrozen' it will stay itemfrozen if nothing
         # is defined in the meetingConfig.onMeetingTransitionItemActionToExecute
         self.meetingConfig.setOnMeetingTransitionItemActionToExecute([])
         self.backToState(meeting, 'created')
-        self.assertEquals('itemfrozen', wftool.getInfoFor(item1, 'review_state'))
-        self.assertEquals('itemfrozen', wftool.getInfoFor(item2, 'review_state'))
+        self.assertEqual('itemfrozen', wftool.getInfoFor(item1, 'review_state'))
+        self.assertEqual('itemfrozen', wftool.getInfoFor(item2, 'review_state'))
 
     def test_CloseMeeting(self):
         """
@@ -106,19 +106,19 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # every items must be in the 'decided' state if we close the meeting
         wftool = self.portal.portal_workflow
         # itemfrozen change into accepted
-        self.assertEquals('accepted', wftool.getInfoFor(item1, 'review_state'))
+        self.assertEqual('accepted', wftool.getInfoFor(item1, 'review_state'))
         # delayed rest delayed (it's already a 'decide' state)
-        self.assertEquals('delayed', wftool.getInfoFor(item2, 'review_state'))
+        self.assertEqual('delayed', wftool.getInfoFor(item2, 'review_state'))
         # pre_accepted change into accepted
-        self.assertEquals('accepted', wftool.getInfoFor(item3, 'review_state'))
+        self.assertEqual('accepted', wftool.getInfoFor(item3, 'review_state'))
         # accepted_but_modified rest accepted_but_modified (it's already a 'decide' state)
-        self.assertEquals('accepted_but_modified', wftool.getInfoFor(item4, 'review_state'))
+        self.assertEqual('accepted_but_modified', wftool.getInfoFor(item4, 'review_state'))
         # refused stays refused (it's already a 'decided' state)
-        self.assertEquals('refused', wftool.getInfoFor(item5, 'review_state'))
+        self.assertEqual('refused', wftool.getInfoFor(item5, 'review_state'))
         # accepted stays accepted (it's already a 'decided' state)
-        self.assertEquals('accepted', wftool.getInfoFor(item6, 'review_state'))
+        self.assertEqual('accepted', wftool.getInfoFor(item6, 'review_state'))
         # presented change into accepted
-        self.assertEquals('accepted', wftool.getInfoFor(item7, 'review_state'))
+        self.assertEqual('accepted', wftool.getInfoFor(item7, 'review_state'))
 
     def test_CollegeProcessWithNormalAdvices(self):
         '''How does the process behave when some 'normal' advices,
@@ -297,7 +297,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(advice, 'signFinancialAdvice')
 
         # item was sent back to administrative referent
-        self.assertEquals(item.queryState(), 'proposed_to_refadmin')
+        self.assertEqual(item.queryState(), 'proposed_to_refadmin')
         # now if it goes to director, director is able to validate the item
         self.changeUser('pmRefAdmin1')
         self.do(item, 'prevalidate')
@@ -312,7 +312,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # if finances advice is 'asked_again', it is giveable again
         changeView = advice.restrictedTraverse('@@change-advice-asked-again')
         changeView()
-        self.assertEquals(advice.advice_type, 'asked_again')
+        self.assertEqual(advice.advice_type, 'asked_again')
         self.assertEqual(self.transitions(item),
                          ['backToItemCreatedFromPrevalidated',
                           'backToProposedFromPrevalidated',
@@ -423,7 +423,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # sign the advice, as it is 'negative_finance', aka not 'positive_finances'
         # it will be automatically sent back to the refadmin
         self.do(advice, 'signFinancialAdvice')
-        self.assertEquals(item.queryState(), 'proposed_to_refadmin')
+        self.assertEqual(item.queryState(), 'proposed_to_refadmin')
         # advice was automatically shown
         self.assertFalse(advice.advice_hide_during_redaction)
 
@@ -434,7 +434,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertFalse('wait_advices_from_prevalidated' in self.transitions(item))
         changeView = advice.restrictedTraverse('@@change-advice-asked-again')
         changeView()
-        self.assertEquals(advice.advice_type, 'asked_again')
+        self.assertEqual(advice.advice_type, 'asked_again')
         self.do(item, 'wait_advices_from_prevalidated')
         self.changeUser('pmFinController')
         # advice was automatically hidden
@@ -457,7 +457,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(advice, 'proposeToFinancialManager')
         self.changeUser('pmFinManager')
         self.do(advice, 'signFinancialAdvice')
-        self.assertEquals(item.queryState(), 'validated')
+        self.assertEqual(item.queryState(), 'validated')
         # advice was automatically shown
         self.assertFalse(advice.advice_hide_during_redaction)
         # advice is no more editable/deletable by finances

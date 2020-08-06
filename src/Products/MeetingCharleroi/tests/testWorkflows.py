@@ -1,26 +1,4 @@
 # -*- coding: utf-8 -*-
-#
-# File: testWorkflows.py
-#
-# Copyright (c) 2007-2012 by CommunesPlone.org
-#
-# GNU General Public License (GPL)
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-# 02110-1301, USA.
-#
 
 from AccessControl import Unauthorized
 from DateTime import DateTime
@@ -142,7 +120,7 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
 
         # meeting may be closed or set back to frozen
         self.changeUser('pmManager')
-        self.assertEquals(self.transitions(meeting), ['backToFrozen', 'close'])
+        self.assertEqual(self.transitions(meeting), ['backToFrozen', 'close'])
         self.changeUser('pmManager')
         self.do(meeting, 'close')
 
@@ -183,8 +161,8 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         item2.setDecision(self.decisionText)
         self.presentItem(item2)
         self.do(meeting, 'close')
-        self.assertEquals(item1.queryState(), 'accepted')
-        self.assertEquals(item2.queryState(), 'accepted')
+        self.assertEqual(item1.queryState(), 'accepted')
+        self.assertEqual(item2.queryState(), 'accepted')
 
     def test_pm_WorkflowPermissions(self):
         """
@@ -204,7 +182,7 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         # no recurring items defined...
         self.meetingConfig = getattr(self.tool, 'meeting-config-council')
         meeting = self.create('Meeting', date='2007/12/11 09:00:00')
-        self.assertEquals(len(meeting.getItems()), 0)
+        self.assertEqual(len(meeting.getItems()), 0)
 
     def _checkRecurringItemsCollege(self):
         '''Tests the recurring items system.'''
@@ -231,7 +209,7 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         meeting = self.create('Meeting', date=DateTime('2019/06/28'))
         # The recurring items must have as owner the meeting creator
         for item in meeting.getItems():
-            self.assertEquals(item.getOwner().getId(), 'pmManager')
+            self.assertEqual(item.getOwner().getId(), 'pmManager')
         # The meeting must contain recurring items : 2 defined and one added here above
         self.failUnless(len(meeting.getItems()) == 3)
         self.failIf(meeting.getItems(listTypes=['late']))

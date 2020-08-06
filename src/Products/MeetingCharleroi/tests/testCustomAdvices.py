@@ -1,26 +1,4 @@
 # -*- coding: utf-8 -*-
-#
-# File: testAdvices.py
-#
-# Copyright (c) 2007-2012 by CommunesPlone.org
-#
-# GNU General Public License (GPL)
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-# 02110-1301, USA.
-#
 
 from imio.helpers.content import get_vocab
 from plone.app.textfield.value import RichTextValue
@@ -67,21 +45,21 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
                'advice_category': u'acquisitions'})
         # reindexed when advice added
         itemUID = item.UID()
-        self.assertEquals(catalog(meta_type='MeetingItem',
-                                  financesAdviceCategory=advice.advice_category)[0].UID,
-                          itemUID)
+        self.assertEqual(catalog(meta_type='MeetingItem',
+                                 financesAdviceCategory=advice.advice_category)[0].UID,
+                         itemUID)
         # reindexed when advice edited
         advice.advice_category = u'attributions'
         # notify modified
         notify(ObjectModifiedEvent(advice))
-        self.assertEquals(catalog(meta_type='MeetingItem',
-                                  financesAdviceCategory=advice.advice_category)[0].UID,
-                          itemUID)
+        self.assertEqual(catalog(meta_type='MeetingItem',
+                                 financesAdviceCategory=advice.advice_category)[0].UID,
+                         itemUID)
         # reindexed when advice deleted
         self.portal.restrictedTraverse('@@delete_givenuid')(advice.UID())
-        self.assertEquals(len(catalog(meta_type='MeetingItem',
-                              financesAdviceCategory=advice.advice_category)),
-                          0)
+        self.assertEqual(len(catalog(meta_type='MeetingItem',
+                             financesAdviceCategory=advice.advice_category)),
+                         0)
 
     def test_MayChangeDelayTo(self):
         """Method MeetingItem.mayChangeDelayTo is made to control the 'available_on'
@@ -108,7 +86,7 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         # select the 10 days delay
         item.setOptionalAdvisers(('%s__rowid__unique_id_002' % finance_group_uid(), ))
         item.at_post_edit_script()
-        self.assertEquals(item.adviceIndex[finance_group_uid()]['delay'], '10')
+        self.assertEqual(item.adviceIndex[finance_group_uid()]['delay'], '10')
         # Managers, are also required to use change delay widget for 5/20 delays
         self.changeUser('pmManager')
         self.assertFalse(item.adapted().mayChangeDelayTo(5))
@@ -129,7 +107,7 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         # change to 5 days
         item.setOptionalAdvisers(('{0}__rowid__unique_id_003'.format(finance_group_uid()), ))
         item.at_post_edit_script()
-        self.assertEquals(item.adviceIndex[finance_group_uid()]['delay'], '5')
+        self.assertEqual(item.adviceIndex[finance_group_uid()]['delay'], '5')
         # could back to 10 days
         self.assertTrue(item.adapted().mayChangeDelayTo(5))
         self.assertTrue(item.adapted().mayChangeDelayTo(10))
@@ -153,7 +131,7 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         # change to 20 days
         item.setOptionalAdvisers(('{0}__rowid__unique_id_004'.format(finance_group_uid()), ))
         item.at_post_edit_script()
-        self.assertEquals(item.adviceIndex[finance_group_uid()]['delay'], '20')
+        self.assertEqual(item.adviceIndex[finance_group_uid()]['delay'], '20')
         # once to 20, may back to 10
         self.assertFalse(item.adapted().mayChangeDelayTo(5))
         self.assertTrue(item.adapted().mayChangeDelayTo(10))

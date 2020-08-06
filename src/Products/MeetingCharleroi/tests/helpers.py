@@ -228,11 +228,11 @@ class MeetingCharleroiTestingHelpers(MeetingCommunesTestingHelpers):
         gic2_uid = gic2.UID()
         self._select_organization(gic2.UID())
         # police is added at the end of existing groups
-        self.assertEquals(get_organizations(the_objects=False),
-                          [self.developers_uid, self.vendors_uid,
-                           bourg_grp.UID(),
-                           police.UID(), police_compta.UID(),
-                           gic1.UID(), gic2.UID()])
+        self.assertEqual(get_organizations(the_objects=False),
+                         [self.developers_uid, self.vendors_uid,
+                          bourg_grp.UID(),
+                          police.UID(), police_compta.UID(),
+                          gic1.UID(), gic2.UID()])
         # set groupsInCharge for police groups
         police.groups_in_charge = (gic1_uid,)
         police_compta.groups_in_charge = (gic1_uid,)
