@@ -153,7 +153,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
     def test_ListTypeCommunication(self):
         self.setupCollegeConfig()
 
-        self.create('MeetingCategory',
+        self.create('meetingcategory',
                     id='%ss' % COMMUNICATION_CAT_ID,
                     title='Communications')
 
@@ -182,7 +182,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         self.setMeetingConfig(self.meetingConfig2.getId())
         self.setupCouncilConfig()
-        self.create('MeetingCategory', id='%ss' % COMMUNICATION_CAT_ID, title='Communications')
+        self.create('meetingcategory', id='%ss' % COMMUNICATION_CAT_ID, title='Communications')
 
         councilMeeting = self.create('Meeting', date=DateTime('2017/01/01'))
         self.setCurrentMeeting(councilMeeting)
