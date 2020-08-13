@@ -632,7 +632,7 @@ collegeMeeting.selectableCopyGroups = [police_grp.getIdSuffixed('reviewers'),
                                        dirgen_grp.getIdSuffixed('reviewers'),
                                        dirfin_grp.getIdSuffixed('reviewers'),
                                        pers_grp.getIdSuffixed('reviewers')]
-collegeMeeting.podTemplates = collegeTemplates
+collegeMeeting.podTemplates = []
 collegeMeeting.meetingConfigsToCloneTo = [{'meeting_config': 'cfg2',
                                            'trigger_workflow_transitions_until': '__nothing__'}, ]
 collegeMeeting.itemAutoSentToOtherMCStates = ('accepted', 'accepted_but_modified', )
@@ -951,7 +951,7 @@ councilMeeting.selectableCopyGroups = [police_grp.getIdSuffixed('reviewers'),
                                        pers_grp.getIdSuffixed('reviewers')]
 councilMeeting.usedPollTypes = ('secret', 'no_vote', 'secret_separated', 'freehand')
 
-councilMeeting.podTemplates = councilTemplates
+councilMeeting.podTemplates = []
 
 hp1 = HeldPositionDescriptor('held_pos', u'Conseillère', usages=['asker'])
 person1 = PersonDescriptor('BAKKDJ018',

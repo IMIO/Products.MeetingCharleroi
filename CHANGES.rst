@@ -8,6 +8,8 @@ Products.MeetingCharleroi Changelog
   [gbastien]
 - Adapted templates regarding last changes in Products.PloneMeeting.
   [gbastien]
+- Disabled POD template in zcharleroi profile for now as is it broken.
+  [gbastien]
 
 4.1.5 (2020-06-24)
 ------------------
