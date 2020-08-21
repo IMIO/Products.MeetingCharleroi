@@ -1,7 +1,7 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
-4.1.6 (unreleased)
+4.1.6 (2020-08-21)
 ------------------
 
 - Adapted code and tests regarding DX meetingcategory.
