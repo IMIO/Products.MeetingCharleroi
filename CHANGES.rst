@@ -1,7 +1,7 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
-4.1.7 (unreleased)
+4.1.7 (2020-10-30)
 ------------------
 
 - Removed `CustomCharleroiMeeting.getPrintableItemsByCategory`,
