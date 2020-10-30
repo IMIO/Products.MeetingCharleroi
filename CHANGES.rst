@@ -4,8 +4,9 @@ Products.MeetingCharleroi Changelog
 4.1.7 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Removed `CustomCharleroiMeeting.getPrintableItemsByCategory`,
+  use same method from parent `CustomMeeting` (`MeetingCommunes`).
+  [gbastien]
 
 4.1.6 (2020-08-21)
 ------------------
