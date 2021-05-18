@@ -181,12 +181,13 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         self.setMeetingConfig(self.meetingConfig2.getId())
         self.setupCouncilConfig()
+        self.changeUser('siteadmin')
         self.create('meetingcategory', id='%ss' % COMMUNICATION_CAT_ID, title='Communications')
 
+        self.changeUser('pmManager')
         councilMeeting = self.create('Meeting', date=DateTime('2017/01/01'))
         self.setCurrentMeeting(councilMeeting)
 
-        self.changeUser('pmManager')
         item1 = self.create('MeetingItem')
         item1.setProposingGroupWithGroupInCharge(dev_group_in_charge)
         self.presentItem(item1)
