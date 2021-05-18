@@ -95,10 +95,10 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         cfg.setItemAutoSentToOtherMCStates(('itemfrozen', ))
         # create 2 College meetings, one extraordinarySession and one normal session
         # then send an item from each to a Council meeting
-        self.changeUser('pmManager')
         # create the Council meeting
         self.setMeetingConfig(cfg2Id)
         self.setupCouncilConfig()
+        self.changeUser('pmManager')
         councilMeeting = self.create('Meeting', date=DateTime('2017/01/01'))
         self.freezeMeeting(councilMeeting)
         # create elements in College
@@ -134,7 +134,6 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         self.presentItem(itemFromExtraSession)
         self.assertEqual(itemFromExtraSession.getListType(), 'lateextracollege')
-
         self.presentItem(communicationitem)
         self.assertNotEqual(communicationitem.getListType(), 'lateextracollege')
 
