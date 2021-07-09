@@ -3,7 +3,7 @@
 from DateTime import DateTime
 from imio.history.utils import getLastWFAction
 from plone import api
-from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
+from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID, COUNCIL_DEFAULT_CLASSIFIER
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
@@ -516,6 +516,35 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         self.assertEqual(council_publicItem.getCategory(), COUNCIL_DEFAULT_CATEGORY)
         # secretItem is not presented and is still validated
         self.assertFalse(council_secretItem.hasMeeting())
+
+    def test_ClassifierIsSetWhenMeetingItemIsClonedToCouncil(self):
+        """
+        When a MeetingItem is sent from College to Council, a default classifier
+        must be set in order to present it.
+        """
+        self.setMeetingConfig('meeting-config-council')
+        self.setupCouncilConfig()
+        self.changeUser('pmManager')
+        # Council
+        council_meeting = self.create('Meeting', date=DateTime() + 1)
+        # College
+        self.setMeetingConfig('meeting-config-college')
+        item = self.create('MeetingItem')
+        item.setOtherMeetingConfigsClonableTo((u'meeting-config-council', ))
+        item = self.create('MeetingItem')
+        item.setOtherMeetingConfigsClonableTo((u'meeting-config-council',))
+        item.setOtherMeetingConfigsClonableToPrivacy(())
+        gic2_uid = org_id_to_uid('groupincharge2')
+        item.setProposingGroupWithGroupInCharge(
+            '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid))
+
+        college_meeting = self.create('Meeting', date=DateTime('2017/02/12'))
+        self.presentItem(item)
+        self.closeMeeting(college_meeting)
+
+        council_item = item.getItemClonedToOtherMC('meeting-config-council')
+
+        self.assertEqual(council_item.getClassifier(), COUNCIL_DEFAULT_CLASSIFIER)
 
 
 def test_suite():
