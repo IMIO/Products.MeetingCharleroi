@@ -11,7 +11,7 @@ from datetime import datetime
 from imio.actionspanel import ActionsPanelMessageFactory as _AP
 from plone import api
 from Products.PloneMeeting.utils import sendMailIfRelevant
-from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
+from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY, COUNCIL_DEFAULT_CLASSIFIER
 from Products.MeetingCharleroi.utils import finance_group_uid
 
 
@@ -120,6 +120,11 @@ def onItemDuplicatedToOtherMC(originalItem, event):
         # one, it is mandatory to insert the item in the meeting
         if not newItem.getCategory():
             newItem.setCategory(COUNCIL_DEFAULT_CATEGORY)
+
+        # set a default classifier as it is mandatory to insert the item in the meeting
+        if not newItem.getClassifier():
+            newItem.setClassifier(COUNCIL_DEFAULT_CLASSIFIER)
+
         meeting = originalItem._otherMCMeetingToBePresentedIn(destMeetingConfig)
         if meeting:
             # make sure we present in the right Council meeting
