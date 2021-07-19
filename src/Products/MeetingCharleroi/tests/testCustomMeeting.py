@@ -3,8 +3,9 @@
 from DateTime import DateTime
 from imio.history.utils import getLastWFAction
 from plone import api
-from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID, COUNCIL_DEFAULT_CLASSIFIER
+from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
+from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CLASSIFIER
 from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
@@ -530,6 +531,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         # College
         self.setMeetingConfig('meeting-config-college')
         item = self.create('MeetingItem')
+
+
         item.setOtherMeetingConfigsClonableTo((u'meeting-config-council', ))
         item = self.create('MeetingItem')
         item.setOtherMeetingConfigsClonableTo((u'meeting-config-council',))
@@ -538,13 +541,25 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         item.setProposingGroupWithGroupInCharge(
             '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid))
 
-        college_meeting = self.create('Meeting', date=DateTime('2017/02/12'))
+        private_item = self.create('MeetingItem')
+        private_item.setOtherMeetingConfigsClonableTo((u'meeting-config-council',))
+        private_item.setOtherMeetingConfigsClonableToPrivacy((u'meeting-config-council', ))
+        private_item.setProposingGroupWithGroupInCharge(
+            '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid))
+
+        college_meeting = self.create('Meeting', date=DateTime('2021/07/19'))
+
         self.presentItem(item)
+        self.presentItem(private_item)
         self.closeMeeting(college_meeting)
 
         council_item = item.getItemClonedToOtherMC('meeting-config-council')
-
         self.assertEqual(council_item.getClassifier(), COUNCIL_DEFAULT_CLASSIFIER)
+        self.assertEqual(council_item.queryState(), 'presented')
+
+        council_private_item = private_item.getItemClonedToOtherMC('meeting-config-council')
+        self.assertEqual(council_private_item.getClassifier(), COUNCIL_DEFAULT_CLASSIFIER)
+        self.assertEqual(council_private_item.queryState(), 'presented')
 
 
 def test_suite():
