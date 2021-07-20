@@ -534,7 +534,10 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         council_meeting = self.create('Meeting', date=DateTime() + 1)
         # College
         self.setMeetingConfig('meeting-config-college')
-        self.meetingConfig.setMeetingConfigsToCloneTo(({'meeting_config': 'meeting-config-council', 'trigger_workflow_transitions_until': 'meeting-config-council.present'},))
+        self.meetingConfig.setMeetingConfigsToCloneTo(({
+            'meeting_config': 'meeting-config-council',
+            'trigger_workflow_transitions_until': 'meeting-config-council.present'
+        },))
 
         self.changeUser('pmManager')
         item = self.create('MeetingItem')

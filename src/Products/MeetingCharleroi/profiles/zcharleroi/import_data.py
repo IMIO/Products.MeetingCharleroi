@@ -864,8 +864,7 @@ councilMeeting.usedItemAttributes = ['description',
                                      'pollTypeObservations',
                                      'itemInitiator',
                                      'bourgmestreObservations',
-                                     'proposingGroupWithGroupInCharge',
-                                     ]
+                                     'proposingGroupWithGroupInCharge']
 councilMeeting.usedMeetingAttributes = ['startDate',
                                         'endDate',
                                         'signatures',
