@@ -92,6 +92,7 @@ COUNCIL_SPECIAL_CATEGORIES = ['proposition-de-motion',
                               'questions-actualite']
 
 COUNCIL_DEFAULT_CATEGORY = 'indeterminee'
+COUNCIL_DEFAULT_CLASSIFIER = 'non-publiable'
 
 # items using these categories will always be inserted as normal items in the meeting
 NEVER_LATE_CATEGORIES = {

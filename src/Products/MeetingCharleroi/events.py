@@ -12,6 +12,7 @@ from imio.actionspanel import ActionsPanelMessageFactory as _AP
 from plone import api
 from Products.PloneMeeting.utils import sendMailIfRelevant
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
+from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CLASSIFIER
 from Products.MeetingCharleroi.utils import finance_group_uid
 
 
@@ -108,6 +109,10 @@ def onItemDuplicatedToOtherMC(originalItem, event):
        - 'public' items will use category COUNCIL_DEFAULT_CATEGORY and will be presented to next meeting;
        - 'secret' items will stay in it's initial state.'''
     newItem = event.newItem
+
+    # set a default classifier as it is mandatory to insert the item in the meeting
+    if not newItem.getClassifier():
+        newItem.setClassifier(COUNCIL_DEFAULT_CLASSIFIER)
 
     # check if current state is 'validated' to avoid breaking tests
     if originalItem.portal_type == 'MeetingItemCollege' and \
