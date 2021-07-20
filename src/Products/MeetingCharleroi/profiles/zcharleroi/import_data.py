@@ -2,8 +2,9 @@
 
 from copy import deepcopy
 from DateTime import DateTime
-from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID, COUNCIL_DEFAULT_CLASSIFIER
+from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
+from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CLASSIFIER
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
@@ -864,7 +865,6 @@ councilMeeting.usedItemAttributes = ['description',
                                      'itemInitiator',
                                      'bourgmestreObservations',
                                      'proposingGroupWithGroupInCharge',
-                                     'classifier',
                                      ]
 councilMeeting.usedMeetingAttributes = ['startDate',
                                         'endDate',

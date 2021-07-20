@@ -523,32 +523,35 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         When a MeetingItem is sent from College to Council, a default classifier
         must be set in order to present it.
         """
+        self.changeUser('siteadmin')
         self.setMeetingConfig('meeting-config-council')
+        self.meetingConfig.setUseGroupsAsCategories(False)
         self.setupCouncilConfig()
-        self.changeUser('pmManager')
+        self.meetingConfig.setUsedItemAttributes(
+            list(self.meetingConfig.getUsedItemAttributes()) + ['classifier']
+        )
         # Council
         council_meeting = self.create('Meeting', date=DateTime() + 1)
         # College
         self.setMeetingConfig('meeting-config-college')
-        item = self.create('MeetingItem')
+        self.meetingConfig.setMeetingConfigsToCloneTo(({'meeting_config': 'meeting-config-council', 'trigger_workflow_transitions_until': 'meeting-config-council.present'},))
 
-
-        item.setOtherMeetingConfigsClonableTo((u'meeting-config-council', ))
+        self.changeUser('pmManager')
         item = self.create('MeetingItem')
+        item.setOtherMeetingConfigsClonableTo((u'meeting-config-council',))
+        item = self.create('MeetingItem', category=COUNCIL_DEFAULT_CATEGORY)
         item.setOtherMeetingConfigsClonableTo((u'meeting-config-council',))
         item.setOtherMeetingConfigsClonableToPrivacy(())
         gic2_uid = org_id_to_uid('groupincharge2')
         item.setProposingGroupWithGroupInCharge(
             '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid))
 
-        private_item = self.create('MeetingItem')
+        private_item = self.create('MeetingItem', category=COUNCIL_DEFAULT_CATEGORY)
         private_item.setOtherMeetingConfigsClonableTo((u'meeting-config-council',))
-        private_item.setOtherMeetingConfigsClonableToPrivacy((u'meeting-config-council', ))
+        private_item.setOtherMeetingConfigsClonableToPrivacy((u'meeting-config-council',))
         private_item.setProposingGroupWithGroupInCharge(
             '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid))
-
         college_meeting = self.create('Meeting', date=DateTime('2021/07/19'))
-
         self.presentItem(item)
         self.presentItem(private_item)
         self.closeMeeting(college_meeting)
@@ -559,7 +562,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
 
         council_private_item = private_item.getItemClonedToOtherMC('meeting-config-council')
         self.assertEqual(council_private_item.getClassifier(), COUNCIL_DEFAULT_CLASSIFIER)
-        self.assertEqual(council_private_item.queryState(), 'presented')
+        # Private items are not presented by default
+        self.assertNotEqual(council_private_item.queryState(), 'presented')
 
 
 def test_suite():
