@@ -391,6 +391,13 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
     def test_ValidateCategoryIfCollegeItemToSendToCouncil(self):
         """Use of category 'indeterminee' on MeetingItemCollege is not allowed
            if item will be sent to Council."""
+        self.changeUser('siteadmin')
+        # make sure we use categories for both MeetingConfigs
+        self.meetingConfig.setUseGroupsAsCategories(False)
+        self.meetingConfig2.setUseGroupsAsCategories(False)
+        # make sure the COUNCIL_DEFAULT_CATEGORY exists or it does not pass validation
+        self._createCategories()
+
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem')
         item.setOtherMeetingConfigsClonableTo(('meeting-config-council',))
@@ -407,15 +414,18 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         # as item is to send to Council, category 'indeterminee' must be used
         self.failIf(item.validate_category(COUNCIL_DEFAULT_CATEGORY))
-        self.assertEqual(item.validate_category('another_category'), msg_mandatory)
+        self.assertEqual(item.validate_category('development'), msg_mandatory)
 
         # but can not be used for items not to send to Council
         item.setOtherMeetingConfigsClonableTo(())
         self.assertEqual(item.validate_category(COUNCIL_DEFAULT_CATEGORY), msg_not_allowed)
-        self.failIf(item.validate_category('another_category'))
+        self.failIf(item.validate_category('development'))
 
         # does not fail when used on MeetingItemCouncil
         self.setMeetingConfig(self.meetingConfig2.getId())
+        # make sure the COUNCIL_DEFAULT_CATEGORY exists or it does not pass validation
+        self.changeUser('siteadmin')
+        self._createCategories()
         self.changeUser('pmManager')
         council_item = self.create('MeetingItem')
         self.assertEqual(council_item.portal_type, 'MeetingItemCouncil')
