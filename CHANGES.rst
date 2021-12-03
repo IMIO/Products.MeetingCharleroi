@@ -4,15 +4,14 @@ Products.MeetingCharleroi Changelog
 4.1.9 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Keep pollType when item is duplicated to other MeetingConfig.
+  [aduchene]
 
 4.1.8 (2021-07-26)
 ------------------
 
 - Added a default classifier when an item is sent from one MeetingConfig to another.
   [aduchene]
-
 
 4.1.7 (2020-10-30)
 ------------------

@@ -114,6 +114,8 @@ def onItemDuplicatedToOtherMC(originalItem, event):
     if not newItem.getClassifier():
         newItem.setClassifier(COUNCIL_DEFAULT_CLASSIFIER)
 
+    newItem.setPollType(originalItem.getPollType())
+
     # check if current state is 'validated' to avoid breaking tests
     if originalItem.portal_type == 'MeetingItemCollege' and \
        newItem.portal_type == 'MeetingItemCouncil' and \

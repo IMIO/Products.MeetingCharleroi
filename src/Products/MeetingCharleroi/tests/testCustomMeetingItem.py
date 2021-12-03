@@ -421,6 +421,20 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         self.assertEqual(council_item.portal_type, 'MeetingItemCouncil')
         self.failIf(council_item.validate_category(COUNCIL_DEFAULT_CATEGORY))
 
+    def test_KeepPollTypeIfCollegeItemToSendToCouncil(self):
+        """When item is sent to Council, keep the poll type."""
+        cfg = self.meetingConfig
+        cfg.setItemManualSentToOtherMCStates(('itemcreated', ))
+        cfg2Id = self.meetingConfig2.getId()
+
+        self.changeUser('pmCreator1')
+        item = self.create('MeetingItem')
+        item.setPollType('secret_separated')
+        item.setOtherMeetingConfigsClonableTo((cfg2Id,))
+        councilItem = item.cloneToOtherMeetingConfig(cfg2Id)
+        self.assertEqual(item.getPollType(), 'secret_separated')
+        self.assertEqual(councilItem.getPollType(), 'secret_separated')
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite
