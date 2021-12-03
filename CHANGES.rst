@@ -6,6 +6,9 @@ Products.MeetingCharleroi Changelog
 
 - Keep pollType when item is duplicated to other MeetingConfig.
   [aduchene]
+- Fixed `test_ValidateCategoryIfCollegeItemToSendToCouncil` due to change in
+  `MeetingItem.validate_category`, the given category must exists.
+  [gbastien]
 
 4.1.8 (2021-07-26)
 ------------------
