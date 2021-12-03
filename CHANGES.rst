@@ -1,7 +1,7 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
-4.1.9 (unreleased)
+4.1.9 (2021-12-03)
 ------------------
 
 - Keep pollType when item is duplicated to other MeetingConfig.
