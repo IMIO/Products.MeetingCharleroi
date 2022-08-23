@@ -535,6 +535,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         """Return the advice types (positive, negative, ...) for given p_meeting_advice_portal_type.
            By default we always use every MeetingConfig.usedAdviceTypes but this is useful
            when using several portal_types for meetingadvice and some may use particular advice types."""
+        import ipdb; ipdb.set_trace()
         item = self.getSelf()
         tool = api.portal.get_tool('portal_plonemeeting')
         cfg = tool.getMeetingConfig(item)
@@ -615,9 +616,10 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
 
         res = False
         tool = api.portal.get_tool('portal_plonemeeting')
+        cfg = tool.getMeetingConfig(self.context)
         is20DaysDelay = self.context.adviceIndex[finance_group_uid()]['delay'] == '20'
         # bypass for Managers
-        isManager = tool.isManager(self.context.getMeetingConfig())
+        isManager = tool.isManager(cfg)
         if days == 10 and _checkPermission(ModifyPortalContent, self.context) and not is20DaysDelay:
             res = True
         # change delay widget
@@ -905,7 +907,10 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
     security = ClassSecurityInfo()
 
     def __init__(self, item):
-        self.context = item  # Implements IMeetingItem
+        self.context = item
+        self.tool = api.portal.get_tool('portal_plonemeeting')
+        self.cfg = self.tool.getMeetingConfig(self.context)
+        self.review_state = self.context.query_state()
 
     security.declarePublic('mayProposeToRefAdmin')
 
