@@ -127,7 +127,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         cfg = self.meetingConfig
         cfg.setUsedAdviceTypes(('asked_again', ) + cfg.getUsedAdviceTypes())
         # while an advice is given, adviser still keep access to item
-        cfg.setKeepAccessToItemWhenAdviceIsGiven(True)
+        cfg.setKeepAccessToItemWhenAdvice('is_given')
         cfg.setItemAdviceStates(('itemcreated_waiting_advices',
                                  'proposed_waiting_advices',))
         cfg.setItemAdviceEditStates = (('itemcreated_waiting_advices',

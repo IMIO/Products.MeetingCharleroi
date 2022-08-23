@@ -137,21 +137,21 @@ agendaTemplate = PodTemplateDescriptor('oj', 'Ordre du jour')
 agendaTemplate.odt_file = 'college-oj.odt'
 agendaTemplate.pod_formats = ['odt', 'pdf', ]
 agendaTemplate.pod_portal_types = ['Meeting']
-agendaTemplate.tal_condition = u'python:tool.isManager(here)'
+agendaTemplate.tal_condition = u'python:tool.isManager(cfg)'
 agendaTemplate.context_variables = [{'name': u'oj_type', 'value': u'full'}]
 
 agendaTemplateBg = PodTemplateDescriptor('oj-bg', 'Ordre du jour Bourgmestre')
 agendaTemplateBg.odt_file = 'college-oj.odt'
 agendaTemplateBg.pod_formats = ['odt', 'pdf', ]
 agendaTemplateBg.pod_portal_types = ['Meeting']
-agendaTemplateBg.tal_condition = u'python:tool.isManager(here)'
+agendaTemplateBg.tal_condition = u'python:tool.isManager(cfg)'
 agendaTemplateBg.context_variables = [{'name': u'oj_type', 'value': u'bg'}]
 
 decisionsTemplate = PodTemplateDescriptor('pv', 'Procès-verbal')
 decisionsTemplate.odt_file = 'college-pv.odt'
 decisionsTemplate.pod_formats = ['odt', 'pdf', ]
 decisionsTemplate.pod_portal_types = ['Meeting']
-decisionsTemplate.tal_condition = u'python:tool.isManager(here)'
+decisionsTemplate.tal_condition = u'python:tool.isManager(cfg)'
 
 itemProjectTemplate = PodTemplateDescriptor('projet-deliberation', 'Projet délibération')
 itemProjectTemplate.odt_file = 'projet-deliberation.odt'
@@ -196,28 +196,28 @@ agendaCouncilTemplateIni = PodTemplateDescriptor('oj-initial', 'Ordre du jour In
 agendaCouncilTemplateIni.odt_file = 'council-oj.odt'
 agendaCouncilTemplateIni.pod_formats = ['odt', 'pdf', ]
 agendaCouncilTemplateIni.pod_portal_types = ['Meeting']
-agendaCouncilTemplateIni.tal_condition = u'python:tool.isManager(here)'
+agendaCouncilTemplateIni.tal_condition = u'python:tool.isManager(cfg)'
 agendaCouncilTemplateIni.context_variables = [{'name': u'oj_type', 'value': u'initial'}]
 
 agendaCouncilTemplateComp = PodTemplateDescriptor('oj-comp', 'Ordre du jour Complémentaire')
 agendaCouncilTemplateComp.odt_file = 'council-oj.odt'
 agendaCouncilTemplateComp.pod_formats = ['odt', 'pdf', ]
 agendaCouncilTemplateComp.pod_portal_types = ['Meeting']
-agendaCouncilTemplateComp.tal_condition = u'python:tool.isManager(here)'
+agendaCouncilTemplateComp.tal_condition = u'python:tool.isManager(cfg)'
 agendaCouncilTemplateComp.context_variables = [{'name': u'oj_type', 'value': u'full'}]
 
 agendaCouncilTemplateBg = PodTemplateDescriptor('oj-bg', 'Ordre du jour Bourgmestre')
 agendaCouncilTemplateBg.odt_file = 'council-oj.odt'
 agendaCouncilTemplateBg.pod_formats = ['odt', 'pdf', ]
 agendaCouncilTemplateBg.pod_portal_types = ['Meeting']
-agendaCouncilTemplateBg.tal_condition = u'python:tool.isManager(here)'
+agendaCouncilTemplateBg.tal_condition = u'python:tool.isManager(cfg)'
 agendaCouncilTemplateBg.context_variables = [{'name': u'oj_type', 'value': u'bg'}]
 
 decisionsCouncilTemplate = PodTemplateDescriptor('pv', 'Procès-verbal')
 decisionsCouncilTemplate.odt_file = 'council-pv.odt'
 decisionsCouncilTemplate.pod_formats = ['odt', 'pdf', ]
 decisionsCouncilTemplate.pod_portal_types = ['Meeting']
-decisionsCouncilTemplate.tal_condition = u'python:tool.isManager(here)'
+decisionsCouncilTemplate.tal_condition = u'python:tool.isManager(cfg)'
 
 itemCouncilRapportTemplate = PodTemplateDescriptor('rapport', 'Rapport')
 itemCouncilRapportTemplate.odt_file = 'council-rapport.odt'

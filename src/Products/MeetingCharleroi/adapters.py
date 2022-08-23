@@ -614,7 +614,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         tool = api.portal.get_tool('portal_plonemeeting')
         is20DaysDelay = self.context.adviceIndex[finance_group_uid()]['delay'] == '20'
         # bypass for Managers
-        isManager = tool.isManager(self.context)
+        isManager = tool.isManager(self.context.getMeetingConfig())
         if days == 10 and _checkPermission(ModifyPortalContent, self.context) and not is20DaysDelay:
             res = True
         # change delay widget

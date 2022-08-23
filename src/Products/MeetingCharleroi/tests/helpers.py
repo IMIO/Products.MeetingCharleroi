@@ -132,7 +132,7 @@ class MeetingCharleroiTestingHelpers(MeetingCommunesTestingHelpers):
                                 'negative_finance',
                                 'not_given_finance'))
         # finances advice can be given when item in state 'prevalidated_waiting_advices'
-        cfg.setKeepAccessToItemWhenAdviceIsGiven(True)
+        cfg.setKeepAccessToItemWhenAdvice('is_given')
 
     def _createFinancesGroup(self):
         """

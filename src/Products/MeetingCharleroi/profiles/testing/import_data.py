@@ -52,14 +52,14 @@ collegeMeeting.meetingConditionsInterface = \
 collegeMeeting.meetingActionsInterface = \
     'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCollegeWorkflowActions'
 collegeMeeting.transitionsToConfirm = []
-# collegeMeeting.transitionsForPresentingAnItem = ['propose', 'proposeToRefAdmin',
-#                                                  'prevalidate', 'validate', 'present', ]
-# collegeMeeting.itemAdviceStates = ['prevalidated', ]
-# collegeMeeting.itemAdviceEditStates = ['prevalidated', 'validated']
-# collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
-#                                       'pre_validation', 'charleroi_add_refadmin',
-#                                       'charleroi_return_to_any_state_when_prevalidated',
-#                                       'waiting_advices']
+collegeMeeting.transitionsForPresentingAnItem = ['propose', 'proposeToRefAdmin',
+                                                 'prevalidate', 'validate', 'present', ]
+collegeMeeting.itemAdviceStates = ['prevalidated', ]
+collegeMeeting.itemAdviceEditStates = ['prevalidated', 'validated']
+collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
+                                      'pre_validation', 'charleroi_add_refadmin',
+                                      'charleroi_return_to_any_state_when_prevalidated',
+                                      'waiting_advices']
 
 collegeMeeting.transitionsForPresentingAnItem = ['propose', 'proposeToRefAdmin',
                                                 'validate', 'present', ]
