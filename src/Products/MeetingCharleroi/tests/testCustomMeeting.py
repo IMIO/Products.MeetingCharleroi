@@ -8,7 +8,7 @@ from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
-from Products.MeetingCommunes.tests.testCustomMeeting import testCustomMeeting as mctcm
+from Products.MeetingCommunes.tests.testCustomMeeting import testCustomMeetingType as mctcm
 from Products.PloneMeeting.utils import org_id_to_uid
 
 

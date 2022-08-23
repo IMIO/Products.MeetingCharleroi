@@ -13,7 +13,6 @@ from collections import OrderedDict
 from Products.CMFCore.permissions import setDefaultRoles
 from Products.PloneMeeting import config as PMconfig
 
-
 PROJECTNAME = "MeetingCharleroi"
 
 # Permissions
@@ -32,7 +31,7 @@ PRODUCT_DEPENDENCIES = []
 
 CHARLEROIROLES = {}
 CHARLEROIROLES['serviceheads'] = 'MeetingServiceHead'
-PMconfig.MEETINGROLES.update(CHARLEROIROLES)
+# PMconfig.MEETINGROLES.update(CHARLEROIROLES)
 
 CHARLEROIMEETINGREVIEWERS = {'meetingitemcommunes_workflow': OrderedDict(
     [('reviewers', ['prevalidated']),
@@ -41,16 +40,16 @@ CHARLEROIMEETINGREVIEWERS = {'meetingitemcommunes_workflow': OrderedDict(
 PMconfig.MEETINGREVIEWERS = CHARLEROIMEETINGREVIEWERS
 
 # text about FD advice used in templates
-FINANCE_ADVICE_LEGAL_TEXT_PRE = "<p>Attendu la demande d'avis adressée sur "\
-    "base d'un dossier complet au Directeur financier en date du {0}.<br/></p>"
+FINANCE_ADVICE_LEGAL_TEXT_PRE = "<p>Attendu la demande d'avis adressée sur " \
+                                "base d'un dossier complet au Directeur financier en date du {0}.<br/></p>"
 
-FINANCE_ADVICE_LEGAL_TEXT = "<p>Attendu l'avis {0} du Directeur financier "\
-    "rendu en date du {1} conformément à l'article L1124-40 du Code de la "\
-    "démocratie locale et de la décentralisation,</p>"
+FINANCE_ADVICE_LEGAL_TEXT = "<p>Attendu l'avis {0} du Directeur financier " \
+                            "rendu en date du {1} conformément à l'article L1124-40 du Code de la " \
+                            "démocratie locale et de la décentralisation,</p>"
 
-FINANCE_ADVICE_LEGAL_TEXT_NOT_GIVEN = "<p>Attendu l'absence d'avis du "\
-    "Directeur financier rendu dans le délai prescrit à l'article L1124-40 "\
-    "du Code de la démocratie locale et de la décentralisation,</p>"
+FINANCE_ADVICE_LEGAL_TEXT_NOT_GIVEN = "<p>Attendu l'absence d'avis du " \
+                                      "Directeur financier rendu dans le délai prescrit à l'article L1124-40 " \
+                                      "du Code de la démocratie locale et de la décentralisation,</p>"
 
 FINANCE_GROUP_ID = u'dirfin'
 
@@ -64,7 +63,7 @@ CHARLEROI_ADVICE_STATES_ALIVE = ('advice_under_edit',
                                  'proposed_to_financial_editor',
                                  'proposed_to_financial_reviewer',
                                  'proposed_to_financial_manager',
-                                 'financial_advice_signed', )
+                                 'financial_advice_signed',)
 PMconfig.ADVICE_STATES_ALIVE = CHARLEROI_ADVICE_STATES_ALIVE
 
 # decision displayed for College item sent to Council
@@ -78,11 +77,16 @@ FINANCE_ADVICE_HISTORIZE_COMMENTS = 'financial_advice_signed_historized_comments
 
 # group suffixes
 PMconfig.EXTRA_GROUP_SUFFIXES = [
-    {'fct_title': u'serviceheads', 'fct_id': u'serviceheads', 'fct_orgs': [], 'enabled': True},
-    {'fct_title': u'financialcontrollers', 'fct_id': u'financialcontrollers', 'fct_orgs': [FINANCE_GROUP_ID], 'enabled': True},
-    {'fct_title': u'financialeditors', 'fct_id': u'financialeditors', 'fct_orgs': [FINANCE_GROUP_ID], 'enabled': True},
-    {'fct_title': u'financialreviewers', 'fct_id': u'financialreviewers', 'fct_orgs': [FINANCE_GROUP_ID], 'enabled': True},
-    {'fct_title': u'financialmanagers', 'fct_id': u'financialmanagers', 'fct_orgs': [FINANCE_GROUP_ID], 'enabled': True},
+    {'fct_title': u'serviceheads', 'fct_id': u'serviceheads', 'fct_orgs': [], "fct_management": False, 'enabled': True},
+    {'fct_title': u'financialcontrollers', 'fct_id': u'financialcontrollers', 'fct_orgs': [FINANCE_GROUP_ID],
+     "fct_management": False, 'enabled': True},
+    {'fct_title': u'financialeditors', 'fct_id': u'financialeditors', 'fct_orgs': [FINANCE_GROUP_ID],
+     "fct_management": False, 'enabled': True},
+    {'fct_title': u'financialreviewers', 'fct_id': u'financialreviewers', 'fct_orgs': [FINANCE_GROUP_ID],
+     "fct_management": False,
+     'enabled': True},
+    {'fct_title': u'financialmanagers', 'fct_id': u'financialmanagers', 'fct_orgs': [FINANCE_GROUP_ID],
+     "fct_management": False, 'enabled': True},
 ]
 
 # Council special categories, items added manually to Council and never considered 'late'
@@ -113,7 +117,7 @@ ADVICE_CATEGORIES = (
     ('non-valeurs', '11. Non-valeurs'),
     ('octrois-de-subsides', '12. Octrois de subsides'),
     ('recrutements-demissions-fins-de-contrats', '13. Recrutements, démissions, fins de contrats'),
-    ('taxes-et-redevances', '14. Taxes et redevances'), )
+    ('taxes-et-redevances', '14. Taxes et redevances'),)
 
 # advice motivation categories
 ADVICE_MOTIVATION_CATEGORIES = (
@@ -134,10 +138,10 @@ ADVICE_MOTIVATION_CATEGORIES = (
     ('competence-du-college-ou-du-conseil-communal',
      u'H. Compétence du Collège ou du conseil communal'),
     ('autres',
-     u'I. Autres'), )
-
+     u'I. Autres'),)
 
 # import at the bottom so monkeypatches are done because PMconfig is imported in MCconfig
 from Products.MeetingCommunes import config as MCconfig
+
 # in those states, finance advice can still be given
-MCconfig.FINANCE_WAITING_ADVICES_STATES = ('prevalidated_waiting_advices', )
+MCconfig.FINANCE_WAITING_ADVICES_STATES = ('prevalidated_waiting_advices',)

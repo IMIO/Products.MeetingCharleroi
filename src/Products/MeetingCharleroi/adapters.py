@@ -58,7 +58,7 @@ import re
 
 # disable most of wfAdaptations
 customWfAdaptations = ('no_publication', 'no_global_observation',
-                       'only_creator_may_delete',
+                       'only_creator_may_delete', 'delayed',
                        'pre_validation', 'items_come_validated',
                        'return_to_proposing_group', 'charleroi_add_refadmin',
                        'charleroi_return_to_any_state_when_prevalidated',
@@ -66,7 +66,6 @@ customWfAdaptations = ('no_publication', 'no_global_observation',
                        'mark_not_applicable', 'removed', 'removed_and_duplicated',
                        'hide_decisions_when_under_writing', 'refused')
 MeetingConfig.wfAdaptations = customWfAdaptations
-originalPerformWorkflowAdaptations = adaptations.performWorkflowAdaptations
 
 noGlobalObsStates = ('itempublished', 'itemfrozen', 'accepted', 'refused',
                      'delayed', 'accepted_but_modified', 'pre_accepted')
@@ -75,19 +74,21 @@ adaptations.noGlobalObsStates = noGlobalObsStates
 adaptations.WF_NOT_CREATOR_EDITS_UNLESS_CLOSED = ('delayed', 'refused', 'accepted',
                                                   'pre_accepted', 'accepted_but_modified')
 
-adaptations.WAITING_ADVICES_FROM_STATES = (
-    {'from_states': ('itemcreated', ),
-     'back_states': ('itemcreated', ),
-     'perm_cloned_states': ('itemcreated',),
-     'remove_modify_access': True},
-    {'from_states': ('proposed', ),
-     'back_states': ('proposed', ),
-     'perm_cloned_states': ('proposed',),
-     'remove_modify_access': True},
-    {'from_states': ('prevalidated', ),
-     'back_states': ('proposed_to_refadmin', 'prevalidated', 'validated'),
-     'perm_cloned_states': ('prevalidated',),
-     'remove_modify_access': True},)
+adaptations.WAITING_ADVICES_FROM_STATES = {
+    '*': (
+        {'from_states': ('itemcreated',),
+         'back_states': ('itemcreated',),
+         'perm_cloned_states': ('itemcreated',),
+         'remove_modify_access': True},
+        {'from_states': ('proposed',),
+         'back_states': ('proposed',),
+         'perm_cloned_states': ('proposed',),
+         'remove_modify_access': True},
+        {'from_states': ('prevalidated',),
+         'back_states': ('proposed_to_refadmin', 'prevalidated', 'validated'),
+         'perm_cloned_states': ('prevalidated',),
+         'remove_modify_access': True},),
+}
 
 RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = {'meetingitemcommunes_workflow':
                                             'meetingitemcommunes_workflow.itemcreated'}
@@ -1051,44 +1052,6 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
                                    meetingWorkflow):
         '''This function applies workflow changes as specified by the
            p_meetingConfig.'''
-        if wfAdaptation == 'no_publication':
-            # we override the PloneMeeting's 'no_publication' wfAdaptation
-            # First, update the meeting workflow
-            wf = meetingWorkflow
-            # Delete transitions 'publish' and 'backToPublished'
-            for tr in ('publish', 'backToPublished'):
-                if tr in wf.transitions:
-                    wf.transitions.deleteTransitions([tr])
-            # Update connections between states and transitions
-            wf.states['frozen'].setProperties(
-                title='frozen', description='',
-                transitions=['backToCreated', 'decide'])
-            wf.states['decided'].setProperties(
-                title='decided', description='', transitions=['backToFrozen', 'close'])
-            # Delete state 'published'
-            if 'published' in wf.states:
-                wf.states.deleteStates(['published'])
-            # Then, update the item workflow.
-            wf = itemWorkflow
-            # Delete transitions 'itempublish' and 'backToItemPublished'
-            for tr in ('itempublish', 'backToItemPublished'):
-                if tr in wf.transitions:
-                    wf.transitions.deleteTransitions([tr])
-            # Update connections between states and transitions
-            wf.states['itemfrozen'].setProperties(
-                title='itemfrozen', description='',
-                transitions=['accept', 'accept_but_modify', 'delay', 'pre_accept', 'backToPresented'])
-            for decidedState in ['accepted', 'delayed', 'accepted_but_modified']:
-                wf.states[decidedState].setProperties(
-                    title=decidedState, description='',
-                    transitions=['backToItemFrozen', ])
-            wf.states['pre_accepted'].setProperties(
-                title='pre_accepted', description='',
-                transitions=['accept', 'accept_but_modify', 'backToItemFrozen'])
-            # Delete state 'published'
-            if 'itempublished' in wf.states:
-                wf.states.deleteStates(['itempublished'])
-            return True
         if wfAdaptation == 'charleroi_add_refadmin':
             # add the 'proposed_to_refadmin' state after proposed state and before prevalidated state
             itemStates = itemWorkflow.states

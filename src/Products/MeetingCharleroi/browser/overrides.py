@@ -12,7 +12,7 @@ from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.utils import finance_group_uid
 from Products.MeetingCommunes.browser.overrides import MCItemDocumentGenerationHelperView, \
     MCMeetingDocumentGenerationHelperView
-from Products.PloneMeeting.browser.views import MeetingBeforeFacetedInfosView
+from Products.PloneMeeting.browser.views import MeetingStaticInfosView
 from collective.contact.plonegroup.utils import get_organizations
 from imio.history.utils import getLastWFAction
 from plone import api
@@ -30,7 +30,7 @@ POLL_TYPE_ITEM = u"<p><strong>Mode de scrutin :</strong> {0}</p>"
 COMMISSION_TYPE_ITEM = "<p><strong>Commission :</strong> {0}</p>"
 
 
-class MCHMeetingBeforeFacetedInfosView(MeetingBeforeFacetedInfosView):
+class MCHMeetingBeforeFacetedInfosView(MeetingStaticInfosView):
     """ """
 
 

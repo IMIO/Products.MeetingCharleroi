@@ -3,7 +3,7 @@
 from copy import deepcopy
 from Products.PloneMeeting.profiles.testing import import_data as pm_import_data
 from Products.MeetingCommunes.profiles.testing import import_data as mc_import_data
-from Products.PloneMeeting.config import MEETINGREVIEWERS
+#from Products.PloneMeeting.config import MEETINGREVIEWERS
 from Products.PloneMeeting.profiles import UserDescriptor
 
 data = deepcopy(mc_import_data.data)
@@ -35,7 +35,7 @@ developers.prereviewers.append(pmManager)
 # move pmReviewerLevel1 from prereviewers (that is second reviewer level)
 # to serviceheads that is first reviewer level
 developers.prereviewers = [descr for descr in developers.prereviewers if descr.id != 'pmReviewerLevel1']
-getattr(developers, MEETINGREVIEWERS['meetingitemcommunes_workflow'].keys()[-1]).append(pmReviewerLevel1)
+# getattr(developers, MEETINGREVIEWERS['meetingitemcommunes_workflow'].keys()[-1]).append(pmReviewerLevel1)
 
 vendors = data.orgs[1]
 vendors.serviceheads.append(pmReviewer2)
@@ -52,10 +52,19 @@ collegeMeeting.meetingConditionsInterface = \
 collegeMeeting.meetingActionsInterface = \
     'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCollegeWorkflowActions'
 collegeMeeting.transitionsToConfirm = []
+# collegeMeeting.transitionsForPresentingAnItem = ['propose', 'proposeToRefAdmin',
+#                                                  'prevalidate', 'validate', 'present', ]
+# collegeMeeting.itemAdviceStates = ['prevalidated', ]
+# collegeMeeting.itemAdviceEditStates = ['prevalidated', 'validated']
+# collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
+#                                       'pre_validation', 'charleroi_add_refadmin',
+#                                       'charleroi_return_to_any_state_when_prevalidated',
+#                                       'waiting_advices']
+
 collegeMeeting.transitionsForPresentingAnItem = ['propose', 'proposeToRefAdmin',
-                                                 'prevalidate', 'validate', 'present', ]
-collegeMeeting.itemAdviceStates = ['prevalidated', ]
-collegeMeeting.itemAdviceEditStates = ['prevalidated', 'validated']
+                                                'validate', 'present', ]
+collegeMeeting.itemAdviceStates = []
+collegeMeeting.itemAdviceEditStates = ['validated']
 collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
                                       'pre_validation', 'charleroi_add_refadmin',
                                       'charleroi_return_to_any_state_when_prevalidated',
