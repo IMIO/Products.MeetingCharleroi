@@ -482,6 +482,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
             # item in state giveable but item not complete
             if item.query_state() in FINANCE_WAITING_ADVICES_STATES:
                 return {'displayDefaultComplementaryMessage': False,
+                        'displayAdviceReviewState': False,
                         'customAdviceMessage':
                         translate('finance_advice_not_giveable_because_item_not_complete',
                                   domain="PloneMeeting",
@@ -495,12 +496,14 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
                                       'proposed_to_director',):
                 # advice was already given but item was returned back to the service
                 return {'displayDefaultComplementaryMessage': False,
+                        'displayAdviceReviewState': False,
                         'customAdviceMessage': translate(
                             'finance_advice_suspended_because_item_sent_back_to_proposing_group',
                             domain="PloneMeeting",
                             context=item.REQUEST,
                             default="Advice is suspended because it was sent back to proposing group.")}
         return {'displayDefaultComplementaryMessage': True,
+                'displayAdviceReviewState': False,
                 'customAdviceMessage': None}
 
     def _adviceDelayMayBeStarted(self, org_uid):
