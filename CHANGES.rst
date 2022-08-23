@@ -1,7 +1,7 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
-4.1.8 (unreleased)
+4.2.0a1 (unreleased)
 ------------------
 
 - Nothing changed yet.
