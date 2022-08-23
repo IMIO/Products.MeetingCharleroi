@@ -149,7 +149,7 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
                             proposingGroupWithGroupInCharge=dev_group_in_charge)
         self.addAnnex(item1)
         self.addAnnex(item1, relatedTo='item_decision')
-        self.assertEqual(item1.queryState(), 'validated')
+        self.assertEqual(item1.query_state(), 'validated')
         meeting = self.create('Meeting', date='2016/12/11 09:00:00')
         item2 = self.create('MeetingItem', title='The second item',
                             preferredMeeting=meeting.UID(),
@@ -157,12 +157,12 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         self.presentItem(item1)
         item1.setDecision(self.decisionText)
         self.decideMeeting(meeting)
-        self.assertEqual(meeting.queryState(), 'decided')
+        self.assertEqual(meeting.query_state(), 'decided')
         item2.setDecision(self.decisionText)
         self.presentItem(item2)
         self.do(meeting, 'close')
-        self.assertEqual(item1.queryState(), 'accepted')
-        self.assertEqual(item2.queryState(), 'accepted')
+        self.assertEqual(item1.query_state(), 'accepted')
+        self.assertEqual(item2.query_state(), 'accepted')
 
     def test_pm_WorkflowPermissions(self):
         """

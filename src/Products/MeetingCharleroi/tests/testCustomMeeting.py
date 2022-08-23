@@ -441,7 +441,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         collegeMeeting, collegeExtraMeeting = self.setupCollegeDemoData()
         self.portal.REQUEST['PUBLISHED'] = collegeMeeting
         self.freezeMeeting(collegeMeeting)
-        self.assertEqual(collegeMeeting.queryState(), 'frozen')
+        self.assertEqual(collegeMeeting.query_state(), 'frozen')
         commItem = self.create('MeetingItem')
         commItem.setCategory('communication')
         commItem.setPreferredMeeting(collegeMeeting.UID())
@@ -457,7 +457,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         # use the Council demo that adds items using special category in a frozen meeting
         meeting = self.setupCouncilDemoData()
         self.changeUser('pmManager')
-        self.assertEqual(meeting.queryState(), 'frozen')
+        self.assertEqual(meeting.query_state(), 'frozen')
         special_items = meeting.getItems(
             ordered=True, additional_catalog_query={'getCategory': COUNCIL_SPECIAL_CATEGORIES})
         # items were presented after meeting freeze

@@ -480,7 +480,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
             # import FINANCE_WAITING_ADVICES_STATES as it is monkeypatched
             from Products.MeetingCommunes.config import FINANCE_WAITING_ADVICES_STATES
             # item in state giveable but item not complete
-            if item.queryState() in FINANCE_WAITING_ADVICES_STATES:
+            if item.query_state() in FINANCE_WAITING_ADVICES_STATES:
                 return {'displayDefaultComplementaryMessage': False,
                         'customAdviceMessage':
                         translate('finance_advice_not_giveable_because_item_not_complete',
@@ -488,7 +488,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
                                   context=item.REQUEST,
                                   default="Advice is still not giveable because item is not considered complete.")}
             elif getLastWFAction(item, 'proposeToFinance') and \
-                item.queryState() in ('itemcreated',
+                item.query_state() in ('itemcreated',
                                       'itemcreated_waiting_advices',
                                       'proposed_to_internal_reviewer',
                                       'proposed_to_internal_reviewer_waiting_advices',
@@ -517,7 +517,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
 
     def _adviceIsAddable(self, org_uid):
         ''' '''
-        return self.adapted()._adviceIsAddableByCurrentUser(org_uid)
+        return self._adviceIsAddableByCurrentUser(org_uid)
 
     def _advicePortalTypeForAdviser(self, groupId):
         """Return the meetingadvice portal_type that will be added for given p_groupId.
@@ -563,7 +563,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
 
         # item must be still in a state where the advice can be given
         # and advice must still not have been given
-        if not item.queryState() == 'prevalidated_waiting_advices':
+        if not item.query_state() == 'prevalidated_waiting_advices':
             return False
         return True
 
@@ -623,7 +623,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
                 res = True
             # to 20 or back from 20
             elif days == 20 or (days == 10 and is20DaysDelay):
-                itemState = self.context.queryState()
+                itemState = self.context.query_state()
                 if itemState == 'prevalidated_waiting_advices' and \
                    tool.adapted().isFinancialUser():
                     res = True
@@ -937,7 +937,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
         res = MeetingItemCommunesWorkflowConditions(self.context).mayCorrect(destinationState)
         tool = api.portal.get_tool('portal_plonemeeting')
         # if item is sent to finances, only finances advisers and MeetingManagers may send it back
-        if self.context.queryState() == 'prevalidated_waiting_advices':
+        if self.context.query_state() == 'prevalidated_waiting_advices':
             res = False
             if destinationState == 'validated':
                 # in this case, we need the 'mayValidate' to True in the REQUEST
@@ -1206,7 +1206,7 @@ class MCHItemPrettyLinkAdapter(ItemPrettyLinkAdapter):
         if self.context.isDefinedInTool():
             return icons
 
-        itemState = self.context.queryState()
+        itemState = self.context.query_state()
         # Add our icons for some review states
         if itemState == 'proposed_to_refadmin':
             icons.append(('proposeToRefAdmin.png',

@@ -297,7 +297,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(advice, 'signFinancialAdvice')
 
         # item was sent back to administrative referent
-        self.assertEqual(item.queryState(), 'proposed_to_refadmin')
+        self.assertEqual(item.query_state(), 'proposed_to_refadmin')
         # now if it goes to director, director is able to validate the item
         self.changeUser('pmRefAdmin1')
         self.do(item, 'prevalidate')
@@ -423,7 +423,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # sign the advice, as it is 'negative_finance', aka not 'positive_finances'
         # it will be automatically sent back to the refadmin
         self.do(advice, 'signFinancialAdvice')
-        self.assertEqual(item.queryState(), 'proposed_to_refadmin')
+        self.assertEqual(item.query_state(), 'proposed_to_refadmin')
         # advice was automatically shown
         self.assertFalse(advice.advice_hide_during_redaction)
 
@@ -457,7 +457,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(advice, 'proposeToFinancialManager')
         self.changeUser('pmFinManager')
         self.do(advice, 'signFinancialAdvice')
-        self.assertEqual(item.queryState(), 'validated')
+        self.assertEqual(item.query_state(), 'validated')
         # advice was automatically shown
         self.assertFalse(advice.advice_hide_during_redaction)
         # advice is no more editable/deletable by finances
@@ -515,7 +515,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmFinManager')
         self.do(advice, 'signFinancialAdvice')
         # no more found now that advice is signed, at has been moved to 'advice_given'
-        self.assertTrue(advice.queryState() in ADVICE_STATES_ENDED)
+        self.assertTrue(advice.query_state() in ADVICE_STATES_ENDED)
         self.assertFalse(item.UID() in [brain.UID for brain in catalog(**query)])
 
     def test_CollegePostPoneNextMeetingWithGivenAdvices(self):
@@ -562,7 +562,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.decideMeeting(meeting)
         self.do(item, 'postpone_next_meeting')
         # item was postponed, cloned item is validated and advices are inherited
-        self.assertEqual(item.queryState(), 'postponed_next_meeting')
+        self.assertEqual(item.query_state(), 'postponed_next_meeting')
         cloneItem = item.getBRefs('ItemPredecessor')[0]
         for adviceInfo in cloneItem.adviceIndex.values():
             self.assertTrue(adviceInfo['inherited'])
@@ -598,7 +598,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertEqual(item.adviceIndex[finance_group_uid()]['delay_infos']['delay_status'],
                          'no_more_giveable')
         # item has been automatically sent back to refadmin
-        self.assertEqual(item.queryState(), 'proposed_to_refadmin')
+        self.assertEqual(item.query_state(), 'proposed_to_refadmin')
         # advice delay is kept
         self.assertEqual(item.adviceIndex[finance_group_uid()]['delay_started_on'],
                          datetime.datetime(2014, 1, 1))
@@ -635,6 +635,6 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertEqual(item.adviceIndex[finance_group_uid()]['delay_infos']['delay_status'],
                          'no_more_giveable')
         # item has been automatically sent back to refadmin
-        self.assertTrue(item.queryState() == 'proposed_to_refadmin')
+        self.assertTrue(item.query_state() == 'proposed_to_refadmin')
         # advice is still 'hidden_during_redaction'
         self.assertTrue(item.adviceIndex[finance_group_uid()]['hidden_during_redaction'])

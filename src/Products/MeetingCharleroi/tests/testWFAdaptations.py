@@ -109,13 +109,13 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
         self.assertEqual(self.transitions(item), [])
         self.changeUser('pmManager')
         self.do(item, 'backToProposedFromPrevalidated')
-        self.assertEqual(item.queryState(), 'proposed')
+        self.assertEqual(item.query_state(), 'proposed')
 
         # back to itemcreated
         self.do(item, 'proposeToRefAdmin')
         self.do(item, 'prevalidate')
         self.do(item, 'backToItemCreatedFromPrevalidated')
-        self.assertEqual(item.queryState(), 'itemcreated')
+        self.assertEqual(item.query_state(), 'itemcreated')
 
     def _waiting_advices_with_prevalidation_active(self):
         '''Enable WFAdaptation 'charleroi_add_refadmin' before executing test.'''

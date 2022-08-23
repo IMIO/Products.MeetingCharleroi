@@ -61,7 +61,7 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
         if not adviceObj or adviceObj.advice_type == 'not_required_finance':
             return False
         # check item state
-        item_state = self.real_context.queryState()
+        item_state = self.real_context.query_state()
         if item_state == 'validated' or adviceHolder.hasMeeting():
             return True
         # check user access (administrators and advisers from finance director service)
