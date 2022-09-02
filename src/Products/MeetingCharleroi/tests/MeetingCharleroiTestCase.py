@@ -27,5 +27,6 @@ from Products.MeetingCommunes.tests.MeetingCommunesTestCase import MeetingCommun
 
 class MeetingCharleroiTestCase(MeetingCommunesTestCase, MeetingCharleroiTestingHelpers):
     """Base class for defining MeetingCharleroi test cases."""
+    subproductIgnoredTestFiles = ['test_robot.py', 'testPerformances.py', 'testContacts.py', 'testVotes.py']
 
     layer = MCH_TESTING_PROFILE_FUNCTIONAL

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from copy import deepcopy
+
+from Products.MeetingCharleroi import CHARLEROI_ITEM_WF_VALIDATION_LEVELS
 from Products.PloneMeeting.profiles.testing import import_data as pm_import_data
 from Products.MeetingCommunes.profiles.testing import import_data as mc_import_data
 #from Products.PloneMeeting.config import MEETINGREVIEWERS
@@ -54,21 +56,12 @@ collegeMeeting.meetingActionsInterface = \
 collegeMeeting.transitionsToConfirm = []
 collegeMeeting.transitionsForPresentingAnItem = ['propose', 'proposeToRefAdmin',
                                                  'prevalidate', 'validate', 'present', ]
-collegeMeeting.itemAdviceStates = ['prevalidated', ]
-collegeMeeting.itemAdviceEditStates = ['prevalidated', 'validated']
-collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
-                                      'pre_validation', 'charleroi_add_refadmin',
-                                      'charleroi_return_to_any_state_when_prevalidated',
-                                      'waiting_advices']
-
 collegeMeeting.transitionsForPresentingAnItem = ['propose', 'proposeToRefAdmin',
                                                 'validate', 'present', ]
-collegeMeeting.itemAdviceStates = []
-collegeMeeting.itemAdviceEditStates = ['validated']
 collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
-                                      'pre_validation', 'charleroi_add_refadmin',
                                       'charleroi_return_to_any_state_when_prevalidated',
                                       'waiting_advices']
+collegeMeeting.itemWFValidationLevels = deepcopy(CHARLEROI_ITEM_WF_VALIDATION_LEVELS)
 
 # Council
 councilMeeting = deepcopy(mc_import_data.councilMeeting)

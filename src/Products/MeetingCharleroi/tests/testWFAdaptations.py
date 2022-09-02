@@ -28,18 +28,6 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
                           'return_to_proposing_group',
                           'waiting_advices'])
 
-    def test_pm_Validate_workflowAdaptations_added_items_come_validated(self):
-        """ """
-        # disable some wfAdaptations interferring with the test
-        cfg = self.meetingConfig
-        cfg.setWorkflowAdaptations(('no_publication', 'no_global_observation'))
-        cfg.at_post_edit_script()
-        # turn to proposed
-        original_proposed_state_mapping_value = self.WF_ITEM_STATE_NAME_MAPPINGS_1['proposed']
-        self.WF_ITEM_STATE_NAME_MAPPINGS_1['proposed'] = 'proposed'
-        super(testWFAdaptations, self).test_pm_Validate_workflowAdaptations_added_items_come_validated()
-        self.WF_ITEM_STATE_NAME_MAPPINGS_1['proposed'] = original_proposed_state_mapping_value
-
     def test_pm_WFA_pre_validation(self):
         '''Will not work as we have also a state before...
            Tested in testCustomWorkflows.py'''

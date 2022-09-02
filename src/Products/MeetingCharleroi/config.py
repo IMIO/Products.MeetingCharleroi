@@ -21,23 +21,49 @@ setDefaultRoles(DEFAULT_ADD_CONTENT_PERMISSION, ('Manager', 'Owner', 'Contributo
 
 product_globals = globals()
 
-# Dependencies of Products to be installed by quick-installer
-# override in custom configuration
-DEPENDENCIES = []
+CHARLEROI_ITEM_WF_VALIDATION_LEVELS = (
+    {'state': 'itemcreated',
+     'state_title': 'itemcreated',
+     'leading_transition': '-',
+     'leading_transition_title': '-',
+     'back_transition': 'backToItemCreated',
+     'back_transition_title': 'backToItemCreated',
+     'suffix': 'creators',
+     'extra_suffixes': [],
+     'enabled': '1',
+     },
+    {'state': 'proposed',
+     'state_title': 'proposed',
+     'leading_transition': 'propose',
+     'leading_transition_title': 'propose',
+     'back_transition': 'backToProposed',
+     'back_transition_title': 'backToProposed',
+     'suffix': 'serviceheads',
+     'extra_suffixes': [],
+     'enabled': '1',
+     },
+    {'state': 'proposed_to_refadmin',
+     'state_title': 'proposed_to_refadmin',
+     'leading_transition': 'proposeToRefAdmin',
+     'leading_transition_title': 'proposeToRefAdmin',
+     'back_transition': 'backToProposedToRefAdmin',
+     'back_transition_title': 'backToProposedToRefAdmin',
+     'suffix': 'prereviewers',
+     'extra_suffixes': [],
+     'enabled': '1',
+     },
+    {'state': 'prevalidated',
+     'state_title': 'prevalidated',
+     'leading_transition': 'prevalidate',
+     'leading_transition_title': 'prevalidate',
+     'back_transition': 'backToPrevalidated',
+     'back_transition_title': 'backToPrevalidated',
+     'suffix': 'reviewers',
+     'extra_suffixes': [],
+     'enabled': '1',
+     },
+)
 
-# Dependend products - not quick-installed - used in testcase
-# override in custom configuration
-PRODUCT_DEPENDENCIES = []
-
-CHARLEROIROLES = {}
-CHARLEROIROLES['serviceheads'] = 'MeetingServiceHead'
-# PMconfig.MEETINGROLES.update(CHARLEROIROLES)
-
-CHARLEROIMEETINGREVIEWERS = {'meetingitemcommunes_workflow': OrderedDict(
-    [('reviewers', ['prevalidated']),
-     ('prereviewers', ['proposed_to_refadmin']),
-     ('serviceheads', ['proposed']), ]), }
-PMconfig.MEETINGREVIEWERS = CHARLEROIMEETINGREVIEWERS
 
 # text about FD advice used in templates
 FINANCE_ADVICE_LEGAL_TEXT_PRE = "<p>Attendu la demande d'avis adressée sur " \

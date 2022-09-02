@@ -535,7 +535,6 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         """Return the advice types (positive, negative, ...) for given p_meeting_advice_portal_type.
            By default we always use every MeetingConfig.usedAdviceTypes but this is useful
            when using several portal_types for meetingadvice and some may use particular advice types."""
-        import ipdb; ipdb.set_trace()
         item = self.getSelf()
         tool = api.portal.get_tool('portal_plonemeeting')
         cfg = tool.getMeetingConfig(item)
