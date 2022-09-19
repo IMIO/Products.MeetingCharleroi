@@ -315,8 +315,6 @@ class MeetingCharleroiTestingHelpers(MeetingCommunesTestingHelpers):
         cfg2.setSelectablePrivacies(charleroi_import_data.councilMeeting.selectablePrivacies)
         cfg2.setWorkflowAdaptations(charleroi_import_data.councilMeeting.workflowAdaptations)
 
-        # items come validated
-        cfg2.setTransitionsForPresentingAnItem(('present', ))
         cfg2.setItemReferenceFormat(charleroi_import_data.councilMeeting.itemReferenceFormat)
         cfg2.setUsedItemAttributes(charleroi_import_data.councilMeeting.usedItemAttributes)
         # setup inserting methods

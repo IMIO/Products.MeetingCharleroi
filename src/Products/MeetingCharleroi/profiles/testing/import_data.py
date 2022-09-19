@@ -58,9 +58,7 @@ collegeMeeting.transitionsForPresentingAnItem = ['propose', 'proposeToRefAdmin',
                                                  'prevalidate', 'validate', 'present', ]
 collegeMeeting.transitionsForPresentingAnItem = ['propose', 'proposeToRefAdmin',
                                                 'validate', 'present', ]
-collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
-                                      'charleroi_return_to_any_state_when_prevalidated',
-                                      'waiting_advices']
+collegeMeeting.workflowAdaptations = ['no_publication', 'pre_accepted', 'accepted_but_modified', 'delayed', 'refused']
 collegeMeeting.itemWFValidationLevels = deepcopy(CHARLEROI_ITEM_WF_VALIDATION_LEVELS)
 
 # Council

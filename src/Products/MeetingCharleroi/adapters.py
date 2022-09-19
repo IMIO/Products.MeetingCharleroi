@@ -58,8 +58,8 @@ import re
 
 # disable most of wfAdaptations
 customWfAdaptations = ('no_publication', 'no_global_observation',
-                       'only_creator_may_delete', 'delayed',
-                       'pre_validation', 'items_come_validated',
+                       'only_creator_may_delete', 'delayed', 'accepted_but_modified',
+                       'pre_validation', 'items_come_validated', 'pre_accepted',
                        'return_to_proposing_group', 'charleroi_add_refadmin',
                        'charleroi_return_to_any_state_when_prevalidated',
                        'waiting_advices', 'postpone_next_meeting',

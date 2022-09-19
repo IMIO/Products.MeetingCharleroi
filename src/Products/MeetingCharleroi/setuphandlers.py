@@ -324,7 +324,7 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
     for date in dates:
         meetingId = secrFolder.invokeFactory('MeetingCollege', id=date.strftime('%Y%m%d'))
         meeting = getattr(secrFolder, meetingId)
-        meeting.setDate(date)
+        meeting.date = date.asdatetime()
         pTool.changeOwnershipOf(meeting, userId)
         meeting.processForm()
         # -13 meeting is closed
