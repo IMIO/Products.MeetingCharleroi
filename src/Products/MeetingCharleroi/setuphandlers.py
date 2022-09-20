@@ -337,7 +337,7 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
             meetingForItems = meeting
         # +1 is an extraordinary meeting we will insert extralate items into
         if date == baseDate + 1:
-            meeting.setExtraordinarySession(True)
+            meeting.extraordinary_session = True
             meetingForExtraLateItems = meeting
 
     # items dict here : the key is the user we will create the item for

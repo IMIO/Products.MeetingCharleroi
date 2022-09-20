@@ -75,7 +75,7 @@ def onAdviceAfterTransition(advice, event):
     # but if we are in a '_updateAdvices', do not _updateAdvices again...
     # also bypass if we are creating the advice as onAdviceAdded is called after onAdviceTransition
     if event.transition and not item.REQUEST.get('currentlyUpdatingAdvice', False):
-        item.updateLocalRoles()
+        item.update_local_roles()
     return
 
 

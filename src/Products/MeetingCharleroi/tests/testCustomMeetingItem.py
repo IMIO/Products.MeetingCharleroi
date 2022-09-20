@@ -113,7 +113,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         self.presentItem(item1)
         self.freezeMeeting(collegeMeeting1)
         collegeMeeting2 = self.create('Meeting', date=DateTime('2016/12/20'))
-        collegeMeeting2.setExtraordinarySession(True)
+        collegeMeeting2.extraordinary_session = True
         item2 = self.create('MeetingItem')
         item2.setDecision(self.decisionText)
         item2.setOtherMeetingConfigsClonableTo((cfg2Id,))
