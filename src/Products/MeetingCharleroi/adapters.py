@@ -788,7 +788,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         '''Returns 'late' by default except if item is inserted into a Council meeting
            and is coming from a College item presented to an extraordinary meeting.'''
         if self.context.portal_type == 'MeetingItemCouncil':
-            predecessor = self.context.getPredecessor()
+            predecessor = self.context.get_predecessor()
             if predecessor and \
                predecessor.portal_type == 'MeetingItemCollege' and \
                (predecessor.hasMeeting() and predecessor.getMeeting().getExtraordinarySession()):
@@ -963,7 +963,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
                                                        'completeness_evaluation_asked_again'):
                     res = True
             # only administrators may send back to director from finances
-            elif destinationState == 'prevalidated' and tool.isManager(self.context, realManagers=True):
+            elif destinationState == 'prevalidated' and tool.isManager(self.cfg, realManagers=True):
                 res = True
 
         return res
@@ -1047,7 +1047,7 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
            made especially to hide/show the 'Finances category' faceted widget."""
         member = api.user.get_current()
         if '{0}_advisers'.format(finance_group_uid()) in member.getGroups() or \
-           self.context.isManager(context):
+           self.context.isManager(self.cfg):
             return False
         return True
 
