@@ -121,8 +121,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         # switch to council
         self.setMeetingConfig(self.meetingConfig2.getId())
 
-        meetingCouncil = self._createMeetingWithItems(withItems=False, meetingDate=DateTime() + 1)
-        meetingCouncil2 = self._createMeetingWithItems(withItems=False, meetingDate=DateTime() + 30)
+        meetingCouncil = self._createMeetingWithItems(withItems=False, meetingDate=(DateTime() + 1).asdatetime())
+        meetingCouncil2 = self._createMeetingWithItems(withItems=False, meetingDate=(DateTime() + 30).asdatetime())
         meetingCouncilUID = meetingCouncil.UID()
         meetingCouncilUID2 = meetingCouncil2.UID()
 
@@ -344,7 +344,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         itemVen2 = self.create('MeetingItem', proposingGroup=self.vendors_uid)
         itemPol1 = self.create('MeetingItem', proposingGroup=org_id_to_uid(POLICE_GROUP_PREFIX))
         itemPol2 = self.create('MeetingItem', proposingGroup=org_id_to_uid(POLICE_GROUP_PREFIX))
-        meeting = self.create('Meeting', date=DateTime())
+        meeting = self.create('Meeting', date=DateTime().asdatetime())
         for item in [itemDev1, itemDev2, itemDev3,
                      itemVen1, itemVen2,
                      itemPol1, itemPol2, ]:
@@ -376,7 +376,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         itemVen1 = self.create('MeetingItem', proposingGroup=self.vendors_uid, category='remboursement')
         itemVen2 = self.create('MeetingItem', proposingGroup=self.vendors_uid, category='affaires-juridiques')
         itemVen3 = self.create('MeetingItem', proposingGroup=self.vendors_uid, category=COMMUNICATION_CAT_ID)
-        meeting = self.create('Meeting', date=DateTime())
+        meeting = self.create('Meeting', date=DateTime().asdatetime())
         for item in [itemDev1, itemDev2, itemDev3,
                      itemVen1, itemVen2, itemVen3]:
             self.presentItem(item)
@@ -482,7 +482,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         self.setupCouncilConfig()
         self.changeUser('pmManager')
         # Council
-        council_meeting = self.create('Meeting', date=DateTime() + 1)
+        council_meeting = self.create('Meeting', date=(DateTime() + 1).asdatetime())
         # College
         self.setMeetingConfig('meeting-config-college')
         publicItem = self.create('MeetingItem')
@@ -496,7 +496,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         secretItem.setOtherMeetingConfigsClonableToPrivacy((u'meeting-config-council', ))
         secretItem.setProposingGroupWithGroupInCharge(
             '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid))
-        college_meeting = self.create('Meeting', date=DateTime('2017/02/12'))
+        college_meeting = self.create('Meeting', date=DateTime('2017/02/12').asdatetime())
         self.presentItem(publicItem)
         self.presentItem(secretItem)
         self.closeMeeting(college_meeting)

@@ -736,7 +736,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         """ """
         # do the query unrestricted so we have same result for users
         # that do not have access to every items of the meeting
-        brains = meeting.getItems(ordered=True,
+        brains = meeting.get_items(ordered=True,
                                   theObjects=False,
                                   additional_catalog_query=additionalQuery,
                                   unrestricted=True)
@@ -1047,7 +1047,7 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
            made especially to hide/show the 'Finances category' faceted widget."""
         member = api.user.get_current()
         if '{0}_advisers'.format(finance_group_uid()) in member.getGroups() or \
-           self.context.isManager(self.cfg):
+           self.context.isManager(self.getMeetingConfig(context)):
             return False
         return True
 

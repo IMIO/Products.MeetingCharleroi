@@ -68,7 +68,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # First, define recurring items in the meeting config
         self.changeUser('pmManager')
         # create a meeting (with 7 items)
-        meetingDate = DateTime().strftime('%y/%m/%d %H:%M:00')
+        meetingDate = DateTime().strftime('%y/%m/%d %H:%M:00').asdatetime()
         meeting = self.create('Meeting', date=meetingDate)
         item1 = self.create('MeetingItem')  # id=o2
         item1.setProposingGroup(self.vendors_uid)
