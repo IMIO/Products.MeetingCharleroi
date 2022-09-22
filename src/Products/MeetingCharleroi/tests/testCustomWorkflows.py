@@ -39,7 +39,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # First, define recurring items in the meeting config
         self.changeUser('pmManager')
         # create a meeting
-        meeting = self.create('Meeting', date='2007/12/11 09:00:00')
+        meeting = self.create('Meeting', date=DateTime('2007/12/11 09:00:00').asdatetime())
         # create 2 items and present it to the meeting
         item1 = self.create('MeetingItem', title='The first item')
         self.presentItem(item1)
@@ -557,7 +557,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
 
         # item was automatically validated, present it into a meeting
         self.changeUser('pmManager')
-        meeting = self.create('Meeting', date=DateTime('2016/12/11'))
+        meeting = self.create('Meeting', date=DateTime('2016/12/11').asdatetime())
         self.presentItem(item)
         self.decideMeeting(meeting)
         self.do(item, 'postpone_next_meeting')
@@ -589,11 +589,11 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(item, 'wait_advices_from_prevalidated')
         self.changeUser('pmFinController')
         item.setCompleteness('completeness_complete')
-        item.updateLocalRoles()
+        item.update_local_roles()
 
         # now does advice timed out
         item.adviceIndex[finance_group_uid()]['delay_started_on'] = datetime.datetime(2014, 1, 1)
-        item.updateLocalRoles()
+        item.update_local_roles()
         # advice is timed out
         self.assertEqual(item.adviceIndex[finance_group_uid()]['delay_infos']['delay_status'],
                          'no_more_giveable')
@@ -630,7 +630,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertTrue(item.adviceIndex[finance_group_uid()]['hidden_during_redaction'])
         # now does advice timed out
         item.adviceIndex[finance_group_uid()]['delay_started_on'] = datetime.datetime(2014, 1, 1)
-        item.updateLocalRoles()
+        item.update_local_roles()
         # advice is timed out
         self.assertEqual(item.adviceIndex[finance_group_uid()]['delay_infos']['delay_status'],
                          'no_more_giveable')

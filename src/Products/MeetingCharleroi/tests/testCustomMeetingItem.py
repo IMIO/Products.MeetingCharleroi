@@ -99,11 +99,11 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         # create the Council meeting
         self.setMeetingConfig(cfg2Id)
         self.setupCouncilConfig()
-        councilMeeting = self.create('Meeting', date=DateTime('2017/01/01'))
+        councilMeeting = self.create('Meeting', date=DateTime('2017/01/01').asdatetime())
         self.freezeMeeting(councilMeeting)
         # create elements in College
         self.setMeetingConfig(cfgId)
-        collegeMeeting1 = self.create('Meeting', date=DateTime('2016/12/15'))
+        collegeMeeting1 = self.create('Meeting', date=DateTime('2016/12/15').asdatetime())
         item1 = self.create('MeetingItem')
         item1.setDecision(self.decisionText)
         item1.setOtherMeetingConfigsClonableTo((cfg2Id,))
@@ -112,7 +112,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         item1.setProposingGroupWithGroupInCharge(dev_group_in_charge)
         self.presentItem(item1)
         self.freezeMeeting(collegeMeeting1)
-        collegeMeeting2 = self.create('Meeting', date=DateTime('2016/12/20'))
+        collegeMeeting2 = self.create('Meeting', date=DateTime('2016/12/20').asdatetime())
         collegeMeeting2.extraordinary_session = True
         item2 = self.create('MeetingItem')
         item2.setDecision(self.decisionText)
@@ -147,7 +147,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         # items are inserted following listType and listType 'lateextracollege'
         # will be after 'late'
-        self.assertEqual([item.getListType() for item in councilMeeting.getItems(ordered=True)],
+        self.assertEqual([item.getListType() for item in councilMeeting.get_items(ordered=True)],
                          ['late', 'lateextracollege', 'communication'])
 
     def test_ListTypeCommunication(self):
@@ -158,7 +158,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
                     title='Communications')
 
         self.changeUser('pmManager')
-        collegeMeeting = self.create('Meeting', date=DateTime('2016/12/15'))
+        collegeMeeting = self.create('Meeting', date=DateTime('2016/12/15').asdatetime())
         item1 = self.create('MeetingItem')
         gic2_uid = org_id_to_uid('groupincharge2')
         dev_group_in_charge = '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid)
@@ -177,14 +177,14 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         item4.setProposingGroupWithGroupInCharge(dev_group_in_charge)
         self.presentItem(item4)
 
-        listTypes = set([item.getListType() for item in collegeMeeting.getItems(ordered=True)])
+        listTypes = set([item.getListType() for item in collegeMeeting.get_items(ordered=True)])
         self.assertSetEqual(listTypes, {'late', 'normal'})
 
         self.setMeetingConfig(self.meetingConfig2.getId())
         self.setupCouncilConfig()
         self.create('meetingcategory', id='%ss' % COMMUNICATION_CAT_ID, title='Communications')
 
-        councilMeeting = self.create('Meeting', date=DateTime('2017/01/01'))
+        councilMeeting = self.create('Meeting', date=DateTime('2017/01/01').asdatetime())
         self.setCurrentMeeting(councilMeeting)
 
         self.changeUser('pmManager')
@@ -206,15 +206,15 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         item4.setProposingGroupWithGroupInCharge(dev_group_in_charge)
         self.presentItem(item4)
 
-        self.assertEqual([item.getListType() for item in councilMeeting.getItems(ordered=True)],
+        self.assertEqual([item.getListType() for item in councilMeeting.get_items(ordered=True)],
                          ['normal', 'late', 'communication', 'communication'])
 
     def test_ItemRefForActeCollege(self):
         """Test the method rendering the item reference of items in a College meeting."""
         collegeMeeting, collegeExtraMeeting = self.setupCollegeDemoData()
         self.changeUser('pmManager')
-        items = collegeMeeting.getItems(ordered=True)
-        year = collegeMeeting.getDate().year()
+        items = collegeMeeting.get_items(ordered=True)
+        year = collegeMeeting.date.year
         self.assertEqual(
             [item.getItemReference() for item in items],
             ['{0}/2/ZP/1'.format(year), '{0}/2/ZP/2'.format(year), '{0}/2/ZP/3'.format(year),
@@ -235,7 +235,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         # now check with 'pmCreator1' that may only see items of 'developers'
         # compare with what is returned for a user that may see everything
-        dev_items = collegeMeeting.getItems(
+        dev_items = collegeMeeting.get_items(
             ordered=True, additional_catalog_query={'getProposingGroup': self.developers_uid})
         dev_refs = [item.getItemReference() for item in dev_items]
         self.assertEqual(
@@ -246,7 +246,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
              '{0}/2/C/10'.format(year), '{0}/2/8'.format(year),  # OJ Council
              '-', '-', '-'])
         self.changeUser('pmCreator1')
-        dev_items_for_creator = collegeMeeting.getItems(
+        dev_items_for_creator = collegeMeeting.get_items(
             ordered=True, additional_catalog_query={'getProposingGroup': self.developers_uid})
         dev_refs_for_creator = [item.getItemReference() for item in dev_items_for_creator]
         self.assertEqual(dev_refs, dev_refs_for_creator)
@@ -255,8 +255,8 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         """Test the method rendering the item reference of items in a College meeting."""
         meeting = self.setupCouncilDemoData()
         self.changeUser('pmManager')
-        items = meeting.getItems(ordered=True)
-        year = meeting.getDate().year()
+        items = meeting.get_items(ordered=True)
+        year = meeting.date.year
         self.assertEqual(
             [item.getItemReference() for item in items],
             ['{0}/1/1'.format(year),
@@ -294,7 +294,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         # now check with 'pmCreator1' that may only see items of 'developers'
         # compare with what is returned for a user that may see everything
-        dev_items = meeting.getItems(
+        dev_items = meeting.get_items(
             ordered=True, additional_catalog_query={'getProposingGroup': self.developers_uid})
         dev_refs = [item.getItemReference() for item in dev_items]
         self.assertEqual(
@@ -320,7 +320,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
              '{0}/1/17'.format(year),
              '{0}/1/U/5'.format(year)])
         self.changeUser('pmCreator1')
-        dev_items_for_creator = meeting.getItems(
+        dev_items_for_creator = meeting.get_items(
             ordered=True,
             additional_catalog_query={'getProposingGroup': self.developers_uid})
         dev_refs_for_creator = [item.getItemReference() for item in dev_items_for_creator]

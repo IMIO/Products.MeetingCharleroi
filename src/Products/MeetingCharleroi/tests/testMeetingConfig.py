@@ -33,6 +33,18 @@ class testMeetingConfig(MeetingCharleroiTestCase, mctmc):
         """ """
         return ['pmRefAdmin1', 'pmReviewerLevel1', 'pmServiceHead1']
 
+    def test_pm_Validate_itemWFValidationLevels_removed_used_state_in_config(self):
+        """ PloneMeeting has hardcoded msg value... """
+        pass
+
+    def test_pm_Validate_itemWFValidationLevels_removed_used_state_item(self):
+        """ PloneMeeting has hardcoded msg value... """
+        pass
+
+    def test_pm_Validate_itemWFValidationLevels_removed_depending_used_state_item(self):
+        """ PloneMeeting has hardcoded msg value... """
+        pass
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite

@@ -75,7 +75,7 @@ msgstr ""
 msgid "finance_advice_suspended_because_item_sent_back_to_proposing_group"
 msgstr ""
 
-#. Default: "Pre-validated"
+#. Default: "Prevalidated"
 msgid "icon_help_prevalidated"
 msgstr ""
 

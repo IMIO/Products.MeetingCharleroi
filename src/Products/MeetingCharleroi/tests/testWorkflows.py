@@ -100,8 +100,8 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         self.do(item2, 'present')
         self.addAnnex(item2)
         # So now we should have 5 items, 4 normal (3 recurrings + 1 normal) and one late
-        self.failUnless(len(meeting.getItems()) == 5)
-        self.failUnless(len(meeting.getItems(listTypes=['late'])) == 1)
+        self.failUnless(len(meeting.get_items()) == 5)
+        self.failUnless(len(meeting.get_items(list_types=['late'])) == 1)
         self.changeUser('pmManager')
         item1.setDecision(self.decisionText)
 
@@ -182,7 +182,7 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         # no recurring items defined...
         self.meetingConfig = getattr(self.tool, 'meeting-config-council')
         meeting = self.create('Meeting', date='2007/12/11 09:00:00')
-        self.assertEqual(len(meeting.getItems()), 0)
+        self.assertEqual(len(meeting.get_items()), 0)
 
     def _checkRecurringItemsCollege(self):
         '''Tests the recurring items system.'''
@@ -206,29 +206,29 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
                     meetingTransitionInsertingMe='decide')
         self.changeUser('pmManager')
         # create a meeting without supplementary items, only the recurring items
-        meeting = self.create('Meeting', date=DateTime('2019/06/28'))
+        meeting = self.create('Meeting', date=DateTime('2019/06/28').asdatetime())
         # The recurring items must have as owner the meeting creator
-        for item in meeting.getItems():
+        for item in meeting.get_items():
             self.assertEqual(item.getOwner().getId(), 'pmManager')
         # The meeting must contain recurring items : 2 defined and one added here above
-        self.failUnless(len(meeting.getItems()) == 3)
-        self.failIf(meeting.getItems(listTypes=['late']))
+        self.failUnless(len(meeting.get_items()) == 3)
+        self.failIf(meeting.get_items(list_types=['late']))
         # After freeze, the meeting must have one recurring item more
         self.freezeMeeting(meeting)
-        self.failUnless(len(meeting.getItems()) == 4)
-        self.failUnless(len(meeting.getItems(listTypes=['late'])) == 1)
+        self.failUnless(len(meeting.get_items()) == 4)
+        self.failUnless(len(meeting.get_items(list_types=['late'])) == 1)
         # Back to created: rec item 2 is inserted again
         self.backToState(meeting, 'created')
-        self.failUnless(len(meeting.getItems()) == 5)
-        self.failUnless(len(meeting.getItems(listTypes=['late'])) == 1)
+        self.failUnless(len(meeting.get_items()) == 5)
+        self.failUnless(len(meeting.get_items(list_types=['late'])) == 1)
         # Recurring items can be added twice...
         self.freezeMeeting(meeting)
-        self.failUnless(len(meeting.getItems()) == 6)
-        self.failUnless(len(meeting.getItems(listTypes=['late'])) == 2)
+        self.failUnless(len(meeting.get_items()) == 6)
+        self.failUnless(len(meeting.get_items(list_types=['late'])) == 2)
         # Decide the meeting, a third late item is added
         self.decideMeeting(meeting)
-        self.failUnless(len(meeting.getItems()) == 7)
-        self.failUnless(len(meeting.getItems(listTypes=['late'])) == 3)
+        self.failUnless(len(meeting.get_items()) == 7)
+        self.failUnless(len(meeting.get_items(list_types=['late'])) == 3)
 
     def test_pm_RemoveContainer(self):
         '''Run the test_pm_RemoveContainer from PloneMeeting.'''

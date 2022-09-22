@@ -791,7 +791,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
             predecessor = self.context.get_predecessor()
             if predecessor and \
                predecessor.portal_type == 'MeetingItemCollege' and \
-               (predecessor.hasMeeting() and predecessor.getMeeting().getExtraordinarySession()):
+               (predecessor.hasMeeting() and predecessor.getMeeting().extraordinary_session):
                 return 'lateextracollege'
 
         return self.context.getListTypeLateValue(meeting)
@@ -1046,8 +1046,7 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
         """Condition for enabling the meetingcharleroi_non_finances.css
            made especially to hide/show the 'Finances category' faceted widget."""
         member = api.user.get_current()
-        if '{0}_advisers'.format(finance_group_uid()) in member.getGroups() or \
-           self.context.isManager(self.getMeetingConfig(context)):
+        if '{0}_advisers'.format(finance_group_uid()) in member.getGroups() or "Manager" in member.getRoles():
             return False
         return True
 

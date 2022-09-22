@@ -29,7 +29,7 @@ msgstr ""
 msgid "icon_help_proposed_to_refadmin"
 msgstr ""
 
-#. Default: "Pre-validated"
+#. Default: "Prevalidated"
 msgid "icon_help_prevalidated"
 msgstr ""
 

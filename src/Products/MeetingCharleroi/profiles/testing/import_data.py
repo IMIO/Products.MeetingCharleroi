@@ -30,9 +30,12 @@ developers = data.orgs[0]
 developers.serviceheads.append(pmServiceHead1)
 developers.serviceheads.append(pmRefAdmin1)
 developers.serviceheads.append(pmReviewer1)
+developers.serviceheads.append(pmReviewerLevel1)
+developers.serviceheads.append(pmReviewerLevel2)
 developers.serviceheads.append(pmManager)
 developers.prereviewers.append(pmRefAdmin1)
 developers.prereviewers.append(pmReviewer1)
+developers.prereviewers.append(pmReviewerLevel2)
 developers.prereviewers.append(pmManager)
 # move pmReviewerLevel1 from prereviewers (that is second reviewer level)
 # to serviceheads that is first reviewer level
@@ -54,15 +57,11 @@ collegeMeeting.meetingConditionsInterface = \
 collegeMeeting.meetingActionsInterface = \
     'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCollegeWorkflowActions'
 collegeMeeting.transitionsToConfirm = []
-collegeMeeting.transitionsForPresentingAnItem = ['propose', 'proposeToRefAdmin',
-                                                 'prevalidate', 'validate', 'present', ]
-collegeMeeting.transitionsForPresentingAnItem = ['propose', 'proposeToRefAdmin',
-                                                'validate', 'present', ]
 collegeMeeting.workflowAdaptations = ['no_publication', 'pre_accepted', 'accepted_but_modified', 'delayed', 'refused']
 collegeMeeting.itemWFValidationLevels = deepcopy(CHARLEROI_ITEM_WF_VALIDATION_LEVELS)
-collegeMeeting.itemAdviceStates = ['proposed', 'prevalidated', 'validated']
-collegeMeeting.itemAdviceEditStates = ['proposed', 'prevalidated', 'validated']
-collegeMeeting.itemAdviceViewStates = ['proposed', 'prevalidated', 'validated', 'presented', 'itemfrozen', 'accepted']
+collegeMeeting.itemAdviceStates = ['prevalidated', ]
+collegeMeeting.itemAdviceEditStates = ['prevalidated', 'validated']
+collegeMeeting.itemAdviceViewStates = collegeMeeting.itemAdviceEditStates + ['presented', 'itemfrozen', 'accepted']
 
 # Council
 councilMeeting = deepcopy(mc_import_data.councilMeeting)
