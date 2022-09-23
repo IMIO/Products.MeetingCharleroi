@@ -53,12 +53,12 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         self.addAnnex(item1)
         self.addAnnex(item1, relatedTo='item_decision')
         self.do(item1, 'propose')
-        self.assertRaises(Unauthorized, self.addAnnex, item1, relatedTo='item_decision')
+        self.assertRaises(Unauthorized, self.addAnnex, item1)
         self.failIf(self.transitions(item1))  # He may trigger no more action
         self.failIf(self.hasPermission('PloneMeeting: Add annex', item1))
         # pmManager creates a meeting
         self.changeUser('pmManager')
-        meeting = self.create('Meeting', date='2007/12/11 09:00:00')
+        meeting = self.create('Meeting', date=DateTime('2007/12/11 09:00:00').asdatetime())
         self.addAnnex(item1, relatedTo='item_decision')
         # pmCreator2 creates and proposes an item
         self.changeUser('pmCreator2')
@@ -136,12 +136,6 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         # apply WFAdaptation defined in zcharleroi.import_data
         cfg = self.meetingConfig
         self.setupCouncilConfig()
-        itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
-        self.assertFalse('itemcreated' in itemWF.states)
-        self.assertFalse('proposed' in itemWF.states)
-        self.assertTrue('validated' in itemWF.states)
-        self.assertEqual(itemWF.initial_state, 'validated')
-
         self.changeUser('pmManager')
         gic2_uid = org_id_to_uid('groupincharge2')
         dev_group_in_charge = '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid)
@@ -149,8 +143,9 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
                             proposingGroupWithGroupInCharge=dev_group_in_charge)
         self.addAnnex(item1)
         self.addAnnex(item1, relatedTo='item_decision')
+        import ipdb; ipdb.set_trace() # TODO: REMOVE ME <-----------------------------------------------------------------------
         self.assertEqual(item1.query_state(), 'validated')
-        meeting = self.create('Meeting', date='2016/12/11 09:00:00')
+        meeting = self.create('Meeting', date=DateTime('2016/12/11 09:00:00').asdatetime())
         item2 = self.create('MeetingItem', title='The second item',
                             preferredMeeting=meeting.UID(),
                             proposingGroupWithGroupInCharge=dev_group_in_charge)
@@ -181,7 +176,7 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         # we do the test for the council config
         # no recurring items defined...
         self.meetingConfig = getattr(self.tool, 'meeting-config-council')
-        meeting = self.create('Meeting', date='2007/12/11 09:00:00')
+        meeting = self.create('Meeting', date=DateTime('2007/12/11 09:00:00').asdatetime())
         self.assertEqual(len(meeting.get_items()), 0)
 
     def _checkRecurringItemsCollege(self):

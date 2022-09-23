@@ -43,6 +43,10 @@ class testMeetingItem(MeetingCharleroiTestCase, mctmi):
            the council have a specific management of the getDecision accessor.'''
         pass
 
+    def test_pm_SendItemToOtherMCManually(self):
+        """ Bypass as final state does not match, and it's tested in testCustomMeetingItem. """
+        pass
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite
