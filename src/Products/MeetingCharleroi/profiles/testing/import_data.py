@@ -2,7 +2,7 @@
 
 from copy import deepcopy
 
-from Products.MeetingCharleroi import CHARLEROI_ITEM_WF_VALIDATION_LEVELS
+from Products.MeetingCharleroi import CHARLEROI_COLLEGE_ITEM_WF_VALIDATION_LEVELS
 from Products.PloneMeeting.profiles.testing import import_data as pm_import_data
 from Products.MeetingCommunes.profiles.testing import import_data as mc_import_data
 #from Products.PloneMeeting.config import MEETINGREVIEWERS
@@ -58,7 +58,7 @@ collegeMeeting.meetingActionsInterface = \
     'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCollegeWorkflowActions'
 collegeMeeting.transitionsToConfirm = []
 collegeMeeting.workflowAdaptations = ['no_publication', 'pre_accepted', 'accepted_but_modified', 'delayed', 'refused']
-collegeMeeting.itemWFValidationLevels = deepcopy(CHARLEROI_ITEM_WF_VALIDATION_LEVELS)
+collegeMeeting.itemWFValidationLevels = deepcopy(CHARLEROI_COLLEGE_ITEM_WF_VALIDATION_LEVELS)
 collegeMeeting.itemAdviceStates = ['prevalidated', ]
 collegeMeeting.itemAdviceEditStates = ['prevalidated', 'validated']
 collegeMeeting.itemAdviceViewStates = collegeMeeting.itemAdviceEditStates + ['presented', 'itemfrozen', 'accepted']

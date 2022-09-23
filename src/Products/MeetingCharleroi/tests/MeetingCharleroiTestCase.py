@@ -19,6 +19,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 # 02110-1301, USA.
 #
+import copy
 
 from Products.MeetingCharleroi.testing import MCH_TESTING_PROFILE_FUNCTIONAL
 from Products.MeetingCharleroi.tests.helpers import MeetingCharleroiTestingHelpers
@@ -31,7 +32,7 @@ from collective.contact.plonegroup.utils import select_org_for_function
 from copy import deepcopy
 from plone import api
 from plone.memoize.forever import _memos
-from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
+from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX, CHARLEROI_COUNCIL_ITEM_WF_VALIDATION_LEVELS
 from Products.MeetingCharleroi.config import PROJECTNAME
 from Products.MeetingCharleroi.profiles.zcharleroi import (
     import_data as charleroi_import_data,
@@ -301,14 +302,16 @@ class MeetingCharleroiTestCase(MeetingCommunesTestCase, MeetingCharleroiTestingH
         self._setupPoliceGroup()
         cfg2.setListTypes(charleroi_import_data.councilMeeting.listTypes)
         cfg2.setSelectablePrivacies(charleroi_import_data.councilMeeting.selectablePrivacies)
-        cfg2.setWorkflowAdaptations(charleroi_import_data.councilMeeting.workflowAdaptations)
 
         cfg2.setItemReferenceFormat(charleroi_import_data.councilMeeting.itemReferenceFormat)
         cfg2.setUsedItemAttributes(charleroi_import_data.councilMeeting.usedItemAttributes)
         # setup inserting methods
         cfg2.setInsertingMethodsOnAddItem(charleroi_import_data.councilMeeting.insertingMethodsOnAddItem)
+
+        cfg2.setItemWFValidationLevels(copy.deepcopy(CHARLEROI_COUNCIL_ITEM_WF_VALIDATION_LEVELS))
         cfg2.at_post_edit_script()
         self._createCategories()
+        self._activate_wfas(('no_publication', 'no_global_observation', 'return_to_proposing_group', 'mark_not_applicable', 'refused'))
 
     def setupCollegeConfig(self):
         """ """
@@ -318,7 +321,6 @@ class MeetingCharleroiTestCase(MeetingCommunesTestCase, MeetingCharleroiTestingH
         self._configureFinancesAdvice(cfg)
         self._activate_wfas(
             (
-                "charleroi_add_refadmin",
                 "charleroi_return_to_any_state_when_prevalidated",
                 "waiting_advices",
             ),

@@ -12,10 +12,9 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
         '''Test what are the available wfAdaptations.'''
         # we removed the 'archiving' and 'creator_initiated_decisions' wfAdaptations
         self.assertEqual(sorted(self.meetingConfig.listWorkflowAdaptations().keys()),
-                         ['charleroi_add_refadmin',
+                         [
                           'charleroi_return_to_any_state_when_prevalidated',
                           'hide_decisions_when_under_writing',
-                          'items_come_validated',
                           'mark_not_applicable',
                           'no_global_observation',
                           'no_publication',
@@ -32,26 +31,6 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
         '''Will not work as we have also a state before...
            Tested in testCustomWorkflows.py'''
         pass
-
-    def test_pm_WFA_charleroi_add_refadmin(self):
-        '''Test that permissions are correct when the WFA is enabled.'''
-        cfg = self.meetingConfig
-        self.changeUser('siteadmin')
-        cfg.setWorkflowAdaptations(())
-        cfg.at_post_edit_script()
-        itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
-        self.assertFalse('proposed_to_refadmin' in itemWF.states)
-        # activate, needs the 'pre_validation' WFA
-        cfg.setWorkflowAdaptations(('charleroi_add_refadmin', ))
-        cfg.at_post_edit_script()
-        itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
-        self.assertFalse('proposed_to_refadmin' in itemWF.states)
-        # together with 'pre_validation', it is ok
-        cfg.setWorkflowAdaptations(('pre_validation',
-                                    'charleroi_add_refadmin', ))
-        cfg.at_post_edit_script()
-        itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
-        self.assertTrue('proposed_to_refadmin' in itemWF.states)
 
     def test_pm_WFA_charleroi_return_to_any_state_when_prevalidated(self):
         '''Test that permissions are correct when the WFA is enabled.'''
@@ -75,10 +54,8 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
         self.assertFalse('backToProposedFromPrevalidated' in itemWF.transitions)
         self.assertTrue('backToItemCreatedFromPrevalidated' in itemWF.transitions)
 
-        # together with 'pre_validation' and 'charleroi_add_refadmin', it is ok
-        cfg.setWorkflowAdaptations(('pre_validation',
-                                    'charleroi_add_refadmin',
-                                    'charleroi_return_to_any_state_when_prevalidated'))
+        cfg.setWorkflowAdaptations((
+                                    'charleroi_return_to_any_state_when_prevalidated',))
         cfg.at_post_edit_script()
         itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
         self.assertTrue('backToProposedFromPrevalidated' in itemWF.transitions)
@@ -104,16 +81,6 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
         self.do(item, 'prevalidate')
         self.do(item, 'backToItemCreatedFromPrevalidated')
         self.assertEqual(item.query_state(), 'itemcreated')
-
-    def _waiting_advices_with_prevalidation_active(self):
-        '''Enable WFAdaptation 'charleroi_add_refadmin' before executing test.'''
-        cfg = self.meetingConfig
-        cfg.setWorkflowAdaptations(('pre_validation', 'charleroi_add_refadmin', 'waiting_advices'))
-        cfg.at_post_edit_script()
-        # put pmReviewerLevel1 in _refadmins group
-        self.portal.portal_groups.addPrincipalToGroup('pmReviewerLevel1', 'developers_prereviewers')
-        self.portal.REQUEST.set('mayWaitAdvices', True)
-        super(testWFAdaptations, self)._waiting_advices_with_prevalidation_active()
 
     def _setItemToWaitingAdvices(self, item, transition=None):
         """We need to ask finances advice to be able to do the transition."""

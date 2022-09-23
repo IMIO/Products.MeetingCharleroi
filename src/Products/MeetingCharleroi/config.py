@@ -21,7 +21,7 @@ setDefaultRoles(DEFAULT_ADD_CONTENT_PERMISSION, ('Manager', 'Owner', 'Contributo
 
 product_globals = globals()
 
-CHARLEROI_ITEM_WF_VALIDATION_LEVELS = (
+CHARLEROI_COLLEGE_ITEM_WF_VALIDATION_LEVELS = (
     {'state': 'itemcreated',
      'state_title': 'itemcreated',
      'leading_transition': '-',
@@ -61,6 +61,38 @@ CHARLEROI_ITEM_WF_VALIDATION_LEVELS = (
      'suffix': 'reviewers',
      'extra_suffixes': [],
      'enabled': '1',
+     },
+)
+CHARLEROI_COUNCIL_ITEM_WF_VALIDATION_LEVELS = (
+    {'state': 'itemcreated',
+     'state_title': 'itemcreated',
+     'leading_transition': '-',
+     'leading_transition_title': '-',
+     'back_transition': 'backToItemCreated',
+     'back_transition_title': 'backToItemCreated',
+     'suffix': 'creators',
+     'extra_suffixes': [],
+     'enabled': '0',
+     },
+    {'state': 'proposed',
+     'state_title': 'proposed',
+     'leading_transition': 'propose',
+     'leading_transition_title': 'propose',
+     'back_transition': 'backToProposed',
+     'back_transition_title': 'backToProposed',
+     'suffix': 'serviceheads',
+     'extra_suffixes': [],
+     'enabled': '0',
+     },
+    {'state': 'prevalidated',
+     'state_title': 'prevalidated',
+     'leading_transition': 'prevalidate',
+     'leading_transition_title': 'prevalidate',
+     'back_transition': 'backToPrevalidated',
+     'back_transition_title': 'backToPrevalidated',
+     'suffix': 'reviewers',
+     'extra_suffixes': [],
+     'enabled': '0',
      },
 )
 

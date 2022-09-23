@@ -593,7 +593,7 @@ collegeMeeting.itemGroupInChargeStates = collegeMeeting.itemPowerObserversStates
 collegeMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed', 'accepted_but_modified', 'pre_accepted']
 collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
                                       'only_creator_may_delete', 'return_to_proposing_group',
-                                      'pre_validation', 'charleroi_add_refadmin', 'waiting_advices',
+                                      'pre_validation', 'waiting_advices',
                                       'postpone_next_meeting', 'mark_not_applicable',
                                       'removed', 'refused', 'charleroi_return_to_any_state_when_prevalidated']
 collegeMeeting.transitionsForPresentingAnItem = ('propose', 'proposeToRefAdmin', 'prevalidate', 'validate', 'present', )
@@ -930,7 +930,7 @@ councilMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed',
                                     'accepted_but_modified', 'pre_accepted',
                                     'marked_not_applicable']
 councilMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
-                                      'return_to_proposing_group', 'items_come_validated',
+                                      'return_to_proposing_group',
                                       'mark_not_applicable', 'refused']
 councilMeeting.transitionsForPresentingAnItem = ('present', )
 councilMeeting.onMeetingTransitionItemActionToExecute = deepcopy(

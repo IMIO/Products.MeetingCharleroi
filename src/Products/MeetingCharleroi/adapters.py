@@ -59,8 +59,8 @@ import re
 # disable most of wfAdaptations
 customWfAdaptations = ('no_publication', 'no_global_observation',
                        'only_creator_may_delete', 'delayed', 'accepted_but_modified',
-                       'pre_validation', 'items_come_validated', 'pre_accepted',
-                       'return_to_proposing_group', 'charleroi_add_refadmin',
+                       'pre_validation', 'pre_accepted',
+                       'return_to_proposing_group',
                        'charleroi_return_to_any_state_when_prevalidated', 'postpone_next_meeting',
                        'waiting_advices', 'waiting_advices_proposing_group_send_back',
                        'mark_not_applicable', 'removed', 'removed_and_duplicated',
@@ -1058,91 +1058,6 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
                                    meetingWorkflow):
         '''This function applies workflow changes as specified by the
            p_meetingConfig.'''
-        if wfAdaptation == 'charleroi_add_refadmin':
-            # add the 'proposed_to_refadmin' state after proposed state and before prevalidated state
-            itemStates = itemWorkflow.states
-            if 'proposed_to_refadmin' not in itemStates and 'prevalidated' in itemStates:
-                # create proposed_to_refadmin state
-                wf = itemWorkflow
-                if 'proposed_to_refadmin' not in wf.states:
-                    wf.states.addState('proposed_to_refadmin')
-                for tr in ('proposeToRefAdmin', 'backToProposedToRefAdmin'):
-                    if tr not in wf.transitions:
-                        wf.transitions.addTransition(tr)
-                transition = wf.transitions['proposeToRefAdmin']
-                transition.setProperties(
-                    title='proposeToRefAdmin',
-                    new_state_id='proposed_to_refadmin', trigger_type=1, script_name='',
-                    actbox_name='proposeToRefAdmin', actbox_url='',
-                    actbox_icon='%(portal_url)s/proposeToRefAdmin.png', actbox_category='workflow',
-                    props={'guard_expr': 'python:here.wfConditions().mayProposeToRefAdmin()'})
-                transition = wf.transitions['backToProposedToRefAdmin']
-                transition.setProperties(
-                    title='backToProposedToRefAdmin',
-                    new_state_id='proposed_to_refadmin', trigger_type=1, script_name='',
-                    actbox_name='backToProposedToRefAdmin', actbox_url='',
-                    actbox_icon='%(portal_url)s/backToProposedToRefAdmin.png', actbox_category='workflow',
-                    props={'guard_expr': 'python:here.wfConditions().mayCorrect("proposed_to_refadmin")'})
-                # Update connections between states and transitions
-                wf.states['proposed'].setProperties(
-                    title='proposed', description='',
-                    transitions=['backToItemCreated', 'proposeToRefAdmin'])
-                wf.states['proposed_to_refadmin'].setProperties(
-                    title='proposed_to_refadmin', description='',
-                    transitions=['backToProposed', 'prevalidate'])
-                wf.states['prevalidated'].setProperties(
-                    title='prevalidated', description='',
-                    transitions=['backToProposedToRefAdmin', 'validate'])
-                # Initialize permission->roles mapping for new state "proposed_to_refadmin",
-                # which is the same as state "proposed" in the previous setting.
-                proposed = wf.states['proposed']
-                proposed_to_refadmin = wf.states['proposed_to_refadmin']
-                for permission, roles in proposed.permission_roles.iteritems():
-                    proposed_to_refadmin.setPermission(permission, 0, roles)
-                # Update permission->roles mappings for states 'proposed' and
-                # 'proposed_to_refadmin': 'proposed' is 'mainly managed' by
-                # 'MeetingServiceHead', while 'proposed_to_refadmin' is "mainly managed" by
-                # 'MeetingPreReviewer'.
-                for permission in proposed.permission_roles.iterkeys():
-                    roles = list(proposed.permission_roles[permission])
-                    if 'MeetingPreReviewer' not in roles:
-                        continue
-                    roles.remove('MeetingPreReviewer')
-                    roles.append('MeetingServiceHead')
-                    proposed.setPermission(permission, 0, roles)
-                for permission in proposed_to_refadmin.permission_roles.iterkeys():
-                    roles = list(proposed_to_refadmin.permission_roles[permission])
-                    if 'MeetingRefAdmin' not in roles:
-                        continue
-                    roles.remove('MeetingServiceHead')
-                    roles.append('MeetingPreReviewer')
-                    proposed_to_refadmin.setPermission(permission, 0, roles)
-                # The previous update on state 'proposed_to_refadmin' was a bit too restrictive:
-                # it prevents the MeetingServiceHead from consulting the item once it has been
-                # proposed_to_refadmin. So here we grant him back this right.
-                for viewPerm in ('View', 'Access contents information'):
-                    grantPermission(proposed_to_refadmin, viewPerm, 'MeetingServiceHead')
-                # Update permission->role mappings for every other state, taking into
-                # account new role 'MeetingServiceHead'. The idea is: later in the
-                # workflow, MeetingServiceHead and MeetingPreReviewer are granted exactly
-                # the same rights.
-                for stateName in wf.states.keys():
-                    if stateName in ('itemcreated', 'proposed', 'proposed_to_refadmin'):
-                        continue
-                    state = wf.states[stateName]
-                    for permission in state.permission_roles.iterkeys():
-                        roles = state.permission_roles[permission]
-                        if ('MeetingPreReviewer' in roles) and \
-                           ('MeetingServiceHead' not in roles):
-                            grantPermission(state, permission, 'MeetingServiceHead')
-                # Transition "backToProposedToServiceHead" must be protected by a popup, like
-                # any other "correct"-like transition.
-                toConfirm = meetingConfig.getTransitionsToConfirm()
-                if 'MeetingItem.backToProposedToRefAdmin' not in toConfirm:
-                    toConfirm = list(toConfirm)
-                    toConfirm.append('MeetingItem.backToProposedToRefAdmin')
-                    meetingConfig.setTransitionsToConfirm(toConfirm)
-            return True
         if wfAdaptation == 'charleroi_return_to_any_state_when_prevalidated':
             # Allow reviewers and managers to send items back to any previous state in one click
             if 'prevalidated' in itemWorkflow.states:
