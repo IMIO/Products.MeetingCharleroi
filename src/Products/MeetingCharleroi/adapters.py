@@ -963,7 +963,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
                                                        'completeness_evaluation_asked_again'):
                     res = True
             # only administrators may send back to director from finances
-            elif destinationState == 'prevalidated' and tool.isManager(self.cfg, realManagers=True):
+            elif destinationState == 'prevalidated' and tool.isManager(realManagers=True):
                 res = True
 
         return res
