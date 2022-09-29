@@ -52,7 +52,6 @@ class MeetingCharleroiTestCase(MeetingCommunesTestCase, MeetingCharleroiTestingH
     subproductIgnoredTestFiles = [
         "test_robot.py",
         "testPerformances.py",
-        "testContacts.py",
         "testVotes.py",
     ]
 
