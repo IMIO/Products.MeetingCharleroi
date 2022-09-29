@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime
 
 from DateTime import DateTime
 from imio.history.utils import getLastWFAction
@@ -482,7 +483,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         self.setupCouncilConfig()
         self.changeUser('pmManager')
         # Council
-        council_meeting = self.create('Meeting', date=(DateTime() + 1).asdatetime())
+        self.setMeetingConfig('meeting-config-council')
+        council_meeting = self.create('Meeting', date=(datetime.datetime.today() + datetime.timedelta(1)))
         # College
         self.setMeetingConfig('meeting-config-college')
         publicItem = self.create('MeetingItem')

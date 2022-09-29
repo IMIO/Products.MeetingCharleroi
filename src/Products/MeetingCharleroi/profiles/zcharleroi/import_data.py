@@ -2,7 +2,8 @@
 
 from copy import deepcopy
 from DateTime import DateTime
-from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
+from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID, CHARLEROI_COUNCIL_ITEM_WF_VALIDATION_LEVELS, \
+    CHARLEROI_COLLEGE_ITEM_WF_VALIDATION_LEVELS
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
@@ -456,19 +457,23 @@ collegeMeeting.usedItemAttributes = ['description',
                                      'itemIsSigned',
                                      'bourgmestreObservations',
                                      'proposingGroupWithGroupInCharge']
-collegeMeeting.usedMeetingAttributes = ['startDate',
-                                        'endDate',
-                                        'approvalDate',
-                                        'signatures',
-                                        'assembly',
-                                        'assemblyExcused',
-                                        'assemblyAbsents',
-                                        'assemblyGuests',
-                                        'assemblyStaves',
-                                        'place',
-                                        'extraordinarySession',
-                                        'observations',
-                                        'assemblyPolice']
+collegeMeeting.usedMeetingAttributes = [
+    'start_date',
+    'end_date',
+    'signatures',
+    'assembly',
+    'assembly_excused',
+    'assembly_absents',
+    'assembly_guests',
+    'assembly_staves',
+    # 'assemblyPrivacySecretAbsents',
+    'place',
+    'authority_notice',
+    'observations',
+    'extraordinary_session',
+    'observations',
+    # 'assemblyPolice'
+]
 collegeMeeting.recordMeetingHistoryStates = []
 collegeMeeting.itemsListVisibleColumns = ('Creator',
                                           'static_item_reference',
@@ -481,7 +486,7 @@ collegeMeeting.itemsListVisibleColumns = ('Creator',
                                           'actions')
 collegeMeeting.itemColumns = ('Creator', 'CreationDate', 'ModificationDate', 'review_state',
                               'getCategory', 'proposing_group_acronym', 'advices', 'toDiscuss',
-                              'getItemIsSigned', 'linkedMeetingDate', 'actions')
+                              'getItemIsSigned', 'meeting_date', 'actions')
 collegeMeeting.xhtmlTransformFields = ('MeetingItem.description',
                                        'MeetingItem.decision',
                                        'MeetingItem.observations',
@@ -491,8 +496,8 @@ collegeMeeting.dashboardItemsListingsFilters = ('c4', 'c5', 'c6', 'c7', 'c8', 'c
 collegeMeeting.dashboardMeetingAvailableItemsFilters = ('c4', 'c5', 'c11', 'c16')
 collegeMeeting.dashboardMeetingLinkedItemsFilters = ('c4', 'c5', 'c6', 'c7', 'c11', 'c16')
 collegeMeeting.xhtmlTransformTypes = ('removeBlanks',)
-collegeMeeting.itemWorkflow = 'meetingitemcommunes_workflow'
-collegeMeeting.meetingWorkflow = 'meetingcommunes_workflow'
+collegeMeeting.itemWorkflow = 'meetingitem_workflow'
+collegeMeeting.meetingWorkflow = 'meeting_workflow'
 collegeMeeting.itemConditionsInterface = \
     'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCollegeWorkflowConditions'
 collegeMeeting.itemActionsInterface = \
@@ -501,6 +506,7 @@ collegeMeeting.meetingConditionsInterface = \
     'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCollegeWorkflowConditions'
 collegeMeeting.meetingActionsInterface = \
     'Products.MeetingCharleroi.interfaces.IMeetingCharleroiCollegeWorkflowActions'
+collegeMeeting.itemWFValidationLevels = deepcopy(CHARLEROI_COLLEGE_ITEM_WF_VALIDATION_LEVELS)
 collegeMeeting.transitionsToConfirm = ['MeetingItem.delay', ]
 collegeMeeting.meetingTopicStates = ('created', 'frozen')
 collegeMeeting.decisionTopicStates = ('decided', 'closed')
@@ -540,7 +546,7 @@ collegeMeeting.itemAdviceViewStates = ('itemcreated_waiting_advices',
                                        'accepted_but_modified',
                                        'refused',
                                        'delayed',)
-collegeMeeting.usedAdviceTypes = ('asked_again', 'positive', 'positive_with_remarks',
+collegeMeeting.usedAdviceTypes = ('positive', 'positive_with_remarks',
                                   'negative', 'nil', 'positive_finance', 'positive_with_remarks_finance',
                                   'cautious_finance', 'negative_finance', 'not_given_finance', 'not_required_finance')
 collegeMeeting.enableAdviceInvalidation = False
@@ -591,11 +597,11 @@ collegeMeeting.itemPowerObserversStates = ('itemfrozen',
                                            'pre_accepted')
 collegeMeeting.itemGroupInChargeStates = collegeMeeting.itemPowerObserversStates + ('validated', 'presented')
 collegeMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed', 'accepted_but_modified', 'pre_accepted']
-collegeMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
+collegeMeeting.workflowAdaptations = ['no_publication', 'waiting_advices', 'waiting_advices_proposing_group_send_back',
                                       'only_creator_may_delete', 'return_to_proposing_group',
-                                      'pre_validation', 'waiting_advices',
-                                      'postpone_next_meeting', 'mark_not_applicable',
-                                      'removed', 'refused', 'charleroi_return_to_any_state_when_prevalidated']
+                                      'postpone_next_meeting', 'mark_not_applicable', 'delayed', 'pre_accepted',
+                                      'removed', 'refused', 'charleroi_return_to_any_state_when_prevalidated',
+                                      'accepted_but_modified']
 collegeMeeting.transitionsForPresentingAnItem = ('propose', 'proposeToRefAdmin', 'prevalidate', 'validate', 'present', )
 collegeMeeting.onTransitionFieldTransforms = (
     ({'transition': 'delay',
@@ -857,18 +863,20 @@ councilMeeting.usedItemAttributes = ['description',
                                      'itemInitiator',
                                      'bourgmestreObservations',
                                      'proposingGroupWithGroupInCharge']
-councilMeeting.usedMeetingAttributes = ['startDate',
-                                        'endDate',
-                                        'signatures',
-                                        'assembly',
-                                        'assemblyExcused',
-                                        'assemblyAbsents',
-                                        'assemblyGuests',
-                                        'assemblyStaves',
-                                        'assemblyPrivacySecretAbsents',
-                                        'place',
-                                        'authorityNotice',
-                                        'observations', ]
+councilMeeting.usedMeetingAttributes = [
+    'start_date',
+    'end_date',
+    'signatures',
+    'assembly',
+    'assembly_excused',
+    'assembly_absents',
+    'assembly_guests',
+    'assembly_staves',
+    # 'assemblyPrivacySecretAbsents',
+    'place',
+    'authority_notice',
+    'observations',
+]
 councilMeeting.recordMeetingHistoryStates = []
 councilMeeting.itemsListVisibleColumns = ('Creator',
                                           'static_item_reference',
@@ -886,15 +894,16 @@ councilMeeting.itemColumns = ('Creator',
                               'getCategory',
                               'proposing_group_acronym',
                               'advices',
-                              'linkedMeetingDate',
+                              'meeting_date',
                               'actions')
 councilMeeting.xhtmlTransformFields = ('MeetingItem.description',
                                        'MeetingItem.decision',
                                        'MeetingItem.observations',
                                        'Meeting.observations', )
 councilMeeting.xhtmlTransformTypes = ('removeBlanks',)
-councilMeeting.itemWorkflow = 'meetingitemcommunes_workflow'
-councilMeeting.meetingWorkflow = 'meetingcommunes_workflow'
+councilMeeting.itemWorkflow = 'meetingitem_workflow'
+councilMeeting.meetingWorkflow = 'meeting_workflow'
+councilMeeting.itemWFValidationLevels = deepcopy(CHARLEROI_COUNCIL_ITEM_WF_VALIDATION_LEVELS)
 councilMeeting.itemConditionsInterface = \
     'Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCouncilWorkflowConditions'
 councilMeeting.itemActionsInterface = \
@@ -929,7 +938,7 @@ councilMeeting.itemAdviceViewStates = ()
 councilMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed',
                                     'accepted_but_modified', 'pre_accepted',
                                     'marked_not_applicable']
-councilMeeting.workflowAdaptations = ['no_publication', 'no_global_observation',
+councilMeeting.workflowAdaptations = ['no_publication',
                                       'return_to_proposing_group',
                                       'mark_not_applicable', 'refused']
 councilMeeting.transitionsForPresentingAnItem = ('present', )

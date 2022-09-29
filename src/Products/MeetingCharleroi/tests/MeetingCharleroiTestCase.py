@@ -21,6 +21,7 @@
 #
 import copy
 
+from DateTime import DateTime
 from Products.MeetingCharleroi.testing import MCH_TESTING_PROFILE_FUNCTIONAL
 from Products.MeetingCharleroi.tests.helpers import MeetingCharleroiTestingHelpers
 from Products.MeetingCommunes.tests.MeetingCommunesTestCase import (
@@ -32,7 +33,8 @@ from collective.contact.plonegroup.utils import select_org_for_function
 from copy import deepcopy
 from plone import api
 from plone.memoize.forever import _memos
-from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX, CHARLEROI_COUNCIL_ITEM_WF_VALIDATION_LEVELS
+from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX, CHARLEROI_COUNCIL_ITEM_WF_VALIDATION_LEVELS, \
+    COUNCIL_SPECIAL_CATEGORIES
 from Products.MeetingCharleroi.config import PROJECTNAME
 from Products.MeetingCharleroi.profiles.zcharleroi import (
     import_data as charleroi_import_data,
@@ -88,6 +90,7 @@ class MeetingCharleroiTestCase(MeetingCommunesTestCase, MeetingCharleroiTestingH
         )
         # finances advice can be given when item in state 'prevalidated_waiting_advices'
         cfg.setKeepAccessToItemWhenAdvice("is_given")
+        self._activate_wfas(("charleroi_return_to_any_state_when_prevalidated", "waiting_advices"), keep_existing=True)
 
     def _createFinancesGroup(self):
         """
@@ -310,8 +313,14 @@ class MeetingCharleroiTestCase(MeetingCommunesTestCase, MeetingCharleroiTestingH
 
         cfg2.setItemWFValidationLevels(copy.deepcopy(CHARLEROI_COUNCIL_ITEM_WF_VALIDATION_LEVELS))
         cfg2.at_post_edit_script()
+        self.setMeetingConfig(cfg2.id)
         self._createCategories()
-        self._activate_wfas(('no_publication', 'no_global_observation', 'return_to_proposing_group', 'mark_not_applicable', 'refused'))
+        self._activate_wfas(
+            charleroi_import_data.councilMeeting.workflowAdaptations,
+            cfg=cfg,
+            keep_existing=False,
+        )
+        self.setMeetingConfig(cfg.id)
 
     def setupCollegeConfig(self):
         """ """
@@ -320,14 +329,13 @@ class MeetingCharleroiTestCase(MeetingCommunesTestCase, MeetingCharleroiTestingH
         self._setupPoliceGroup()
         self._configureFinancesAdvice(cfg)
         self._activate_wfas(
-            (
-                "charleroi_return_to_any_state_when_prevalidated",
-                "waiting_advices",
-            ),
+            charleroi_import_data.collegeMeeting.workflowAdaptations,
             cfg=cfg,
-            keep_existing=True,
+            keep_existing=False,
         )
+        cfg.setListTypes(charleroi_import_data.collegeMeeting.listTypes)
         cfg.setInsertingMethodsOnAddItem(charleroi_import_data.collegeMeeting.insertingMethodsOnAddItem)
+        cfg.setOrderedGroupsInCharge([])  # We'll use organization's order
         cfg.setUseGroupsAsCategories(charleroi_import_data.collegeMeeting.useGroupsAsCategories)
         cfg.setItemReferenceFormat(charleroi_import_data.collegeMeeting.itemReferenceFormat)
         # let creators select the 'toDiscuss' value
@@ -354,8 +362,9 @@ class MeetingCharleroiTestCase(MeetingCommunesTestCase, MeetingCharleroiTestingH
         current_cfg = self.meetingConfig
         self.setMeetingConfig(self.meetingConfig2.getId())
         self._createItemTemplates()
-        # self._createRecurringItems()
+        self._createRecurringItems()
         self.setupCouncilConfig()
+        self.changeUser("pmManager")
         councilMeeting = _addCouncilDemoData(
             collegeMeeting,
             collegeExtraMeeting,

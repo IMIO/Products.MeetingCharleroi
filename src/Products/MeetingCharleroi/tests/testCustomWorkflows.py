@@ -68,7 +68,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # First, define recurring items in the meeting config
         self.changeUser('pmManager')
         # create a meeting (with 7 items)
-        meetingDate = DateTime().strftime('%y/%m/%d %H:%M:00').asdatetime()
+        meetingDate = DateTime('2007/12/11 09:00:00').asdatetime()
         meeting = self.create('Meeting', date=meetingDate)
         item1 = self.create('MeetingItem')  # id=o2
         item1.setProposingGroup(self.vendors_uid)
@@ -145,7 +145,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
                                                    context=self.request)
         self.assertEqual(
             translate(
-                item.wfConditions().mayWait_advices_from_itemcreated().msg,
+                item.wfConditions().mayWait_advices(item.query_state(),  "prevalidated_waiting_advices").msg,
                 context=self.request),
             advice_required_to_ask_advices)
         # now ask 'vendors' advice
@@ -181,7 +181,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
                          ['backToItemCreated', 'proposeToRefAdmin'])
         self.assertEqual(
             translate(
-                item.wfConditions().mayWait_advices_from_proposed().msg,
+                item.wfConditions().mayWait_advices(item.query_state(),  "prevalidated_waiting_advices").msg,
                 context=self.request),
             advice_required_to_ask_advices)
         item.setOptionalAdvisers((self.developers_uid, self.vendors_uid, ))
@@ -374,7 +374,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertTrue(item.adviceIndex[finance_group_uid()]['delay_started_on'])
         # advice may be added
         toAdd, toEdit = item.getAdvicesGroupsInfosForUser()
-        self.assertEqual(toAdd, [(finance_group_uid(), u'Directeur Financier')])
+        self.assertEqual(toAdd, [finance_group_uid(),])
         self.assertFalse(toEdit)
         # add advice
         advice = createContentInContainer(
@@ -563,7 +563,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(item, 'postpone_next_meeting')
         # item was postponed, cloned item is validated and advices are inherited
         self.assertEqual(item.query_state(), 'postponed_next_meeting')
-        cloneItem = item.getBRefs('ItemPredecessor')[0]
+        cloneItem = item.get_successors()[0]
         for adviceInfo in cloneItem.adviceIndex.values():
             self.assertTrue(adviceInfo['inherited'])
 

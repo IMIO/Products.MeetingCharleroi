@@ -143,6 +143,7 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
                             proposingGroupWithGroupInCharge=dev_group_in_charge)
         self.addAnnex(item1)
         self.addAnnex(item1, relatedTo='item_decision')
+        self.validateItem(item1)
         self.assertEqual(item1.query_state(), 'validated')
         meeting = self.create('Meeting', date=DateTime('2016/12/11 09:00:00').asdatetime())
         item2 = self.create('MeetingItem', title='The second item',

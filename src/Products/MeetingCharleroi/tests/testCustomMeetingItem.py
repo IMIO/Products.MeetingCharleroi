@@ -148,46 +148,22 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         # items are inserted following listType and listType 'lateextracollege'
         # will be after 'late'
         self.assertEqual([item.getListType() for item in councilMeeting.get_items(ordered=True)],
-                         ['late', 'lateextracollege', 'communication'])
+                         ['late', 'lateextracollege'])
 
     def test_ListTypeCommunication(self):
-        self.setupCollegeConfig()
-
+        self.setupCouncilConfig()
+        self.setMeetingConfig(self.meetingConfig2.getId())
         self.create('meetingcategory',
                     id='%ss' % COMMUNICATION_CAT_ID,
                     title='Communications')
-
-        self.changeUser('pmManager')
-        collegeMeeting = self.create('Meeting', date=DateTime('2016/12/15').asdatetime())
-        item1 = self.create('MeetingItem')
         gic2_uid = org_id_to_uid('groupincharge2')
         dev_group_in_charge = '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid)
-        item1.setProposingGroupWithGroupInCharge(dev_group_in_charge)
-        self.presentItem(item1)
-        item2 = self.create('MeetingItem', category=COMMUNICATION_CAT_ID)
-        item2.setProposingGroupWithGroupInCharge(dev_group_in_charge)
-        self.presentItem(item2)
-        self.freezeMeeting(collegeMeeting)
-        item3 = self.create('MeetingItem',
-                            category='%ss' % COMMUNICATION_CAT_ID,
-                            preferredMeeting=collegeMeeting.UID())
-        item3.setProposingGroupWithGroupInCharge(dev_group_in_charge)
-        self.presentItem(item3)
-        item4 = self.create('MeetingItem')
-        item4.setProposingGroupWithGroupInCharge(dev_group_in_charge)
-        self.presentItem(item4)
 
-        listTypes = set([item.getListType() for item in collegeMeeting.get_items(ordered=True)])
-        self.assertSetEqual(listTypes, {'late', 'normal'})
 
-        self.setMeetingConfig(self.meetingConfig2.getId())
-        self.setupCouncilConfig()
-        self.create('meetingcategory', id='%ss' % COMMUNICATION_CAT_ID, title='Communications')
-
+        self.changeUser('pmManager')
         councilMeeting = self.create('Meeting', date=DateTime('2017/01/01').asdatetime())
         self.setCurrentMeeting(councilMeeting)
 
-        self.changeUser('pmManager')
         item1 = self.create('MeetingItem')
         item1.setProposingGroupWithGroupInCharge(dev_group_in_charge)
         self.presentItem(item1)
@@ -217,20 +193,20 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         year = collegeMeeting.date.year
         self.assertEqual(
             [item.getItemReference() for item in items],
-            ['{0}/2/ZP/1'.format(year), '{0}/2/ZP/2'.format(year), '{0}/2/ZP/3'.format(year),
-             '{0}/2/ZP/4'.format(year), '{0}/2/ZP/5'.format(year),  # ZP items
-             '{0}/2/ZP/C/1'.format(year), '{0}/2/ZP/C/2'.format(year),
-             '{0}/2/ZP/C/3'.format(year), '{0}/2/ZP/C/4'.format(year),  # ZP items to Council
-             '{0}/2/ZP/C/5'.format(year), '{0}/2/ZP/C/6'.format(year),
-             '{0}/2/ZP/C/7'.format(year), '{0}/2/ZP/C/8'.format(year),
+            ['{0}/1/ZP/1'.format(year), '{0}/1/ZP/2'.format(year), '{0}/1/ZP/3'.format(year),
+             '{0}/1/ZP/4'.format(year), '{0}/1/ZP/5'.format(year),  # ZP items
+             '{0}/1/ZP/C/1'.format(year), '{0}/1/ZP/C/2'.format(year),
+             '{0}/1/ZP/C/3'.format(year), '{0}/1/ZP/C/4'.format(year),  # ZP items to Council
+             '{0}/1/ZP/C/5'.format(year), '{0}/1/ZP/C/6'.format(year),
+             '{0}/1/ZP/C/7'.format(year), '{0}/1/ZP/C/8'.format(year),
              '-', '-', '-',  # ZP Communications
-             '{0}/2/1'.format(year), '{0}/2/2'.format(year), '{0}/2/3'.format(year),
-             '{0}/2/4'.format(year), '{0}/2/5'.format(year), '{0}/2/6'.format(year),
-             '{0}/2/7'.format(year),  # normal items
-             '{0}/2/C/1'.format(year), '{0}/2/C/2'.format(year), '{0}/2/C/3'.format(year),
-             '{0}/2/C/4'.format(year), '{0}/2/C/5'.format(year),  # items to Council
-             '{0}/2/C/6'.format(year), '{0}/2/C/7'.format(year), '{0}/2/C/8'.format(year),
-             '{0}/2/C/9'.format(year), '{0}/2/C/10'.format(year), '{0}/2/8'.format(year),  # OJ Council
+             '{0}/1/1'.format(year), '{0}/1/2'.format(year), '{0}/1/3'.format(year),
+             '{0}/1/4'.format(year), '{0}/1/5'.format(year), '{0}/1/6'.format(year),
+             '{0}/1/7'.format(year),  # normal items
+             '{0}/1/C/1'.format(year), '{0}/1/C/2'.format(year), '{0}/1/C/3'.format(year),
+             '{0}/1/C/4'.format(year), '{0}/1/C/5'.format(year),  # items to Council
+             '{0}/1/C/6'.format(year), '{0}/1/C/7'.format(year), '{0}/1/C/8'.format(year),
+             '{0}/1/C/9'.format(year), '{0}/1/C/10'.format(year), '{0}/1/8'.format(year),  # OJ Council
              '-', '-', '-'])  # communications
 
         # now check with 'pmCreator1' that may only see items of 'developers'
@@ -240,10 +216,10 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         dev_refs = [item.getItemReference() for item in dev_items]
         self.assertEqual(
             dev_refs,
-            ['{0}/2/3'.format(year), '{0}/2/4'.format(year),
-             '{0}/2/C/4'.format(year), '{0}/2/C/5'.format(year), '{0}/2/C/6'.format(year),
-             '{0}/2/C/7'.format(year), '{0}/2/C/8'.format(year), '{0}/2/C/9'.format(year),
-             '{0}/2/C/10'.format(year), '{0}/2/8'.format(year),  # OJ Council
+            ['{0}/1/3'.format(year), '{0}/1/4'.format(year),
+             '{0}/1/C/4'.format(year), '{0}/1/C/5'.format(year), '{0}/1/C/6'.format(year),
+             '{0}/1/C/7'.format(year), '{0}/1/C/8'.format(year), '{0}/1/C/9'.format(year),
+             '{0}/1/C/10'.format(year), '{0}/1/8'.format(year),  # OJ Council
              '-', '-', '-'])
         self.changeUser('pmCreator1')
         dev_items_for_creator = collegeMeeting.get_items(
@@ -257,9 +233,9 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         self.changeUser('pmManager')
         items = meeting.get_items(ordered=True)
         year = meeting.date.year
-        self.assertEqual(
-            [item.getItemReference() for item in items],
-            ['{0}/1/1'.format(year),
+
+        result = [item.getItemReference() for item in items]
+        expected = ['{0}/1/1'.format(year),
              '{0}/1/2'.format(year),
              '{0}/1/U/1'.format(year),
              '{0}/1/3'.format(year),
@@ -290,7 +266,8 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
              '{0}/1/17'.format(year),
              '{0}/1/18'.format(year),
              '{0}/1/U/5'.format(year),
-             '{0}/1/U/6'.format(year)])
+             '{0}/1/U/6'.format(year)]
+        self.assertEqual(result, expected)
 
         # now check with 'pmCreator1' that may only see items of 'developers'
         # compare with what is returned for a user that may see everything
@@ -311,11 +288,11 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
              '{0}/1/S/6'.format(year),
              '{0}/1/S/7'.format(year),
              '{0}/1/S/8'.format(year),
-             '{0}/1/6'.format(year),
-             '{0}/1/7'.format(year),
+             '{0}/1/4'.format(year),
+             '{0}/1/5'.format(year),
              '{0}/1/U/2'.format(year),
              '{0}/1/11'.format(year),
-             '{0}/1/13'.format(year),
+             '{0}/1/12'.format(year),
              '{0}/1/15'.format(year),
              '{0}/1/17'.format(year),
              '{0}/1/U/5'.format(year)])
@@ -391,6 +368,7 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
     def test_ValidateCategoryIfCollegeItemToSendToCouncil(self):
         """Use of category 'indeterminee' on MeetingItemCollege is not allowed
            if item will be sent to Council."""
+        self.setupCouncilConfig()
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem')
         item.setOtherMeetingConfigsClonableTo(('meeting-config-council',))

@@ -56,15 +56,29 @@ from zope.interface import implements
 
 import re
 
-# disable most of wfAdaptations
-customWfAdaptations = ('no_publication', 'no_global_observation',
-                       'only_creator_may_delete', 'delayed', 'accepted_but_modified',
-                       'pre_validation', 'pre_accepted',
-                       'return_to_proposing_group',
-                       'charleroi_return_to_any_state_when_prevalidated', 'postpone_next_meeting',
-                       'waiting_advices', 'waiting_advices_proposing_group_send_back',
-                       'mark_not_applicable', 'removed', 'removed_and_duplicated',
-                       'hide_decisions_when_under_writing', 'refused')
+customWfAdaptations = (  # ORDER IS IMPORTANT
+    'only_creator_may_delete',
+    # first define meeting workflow state removal
+    'no_publication',
+    # then define added item decided states
+    'accepted_but_modified',
+    'postpone_next_meeting',
+    'mark_not_applicable',
+    'removed',
+    'removed_and_duplicated',
+    'refused',
+    'delayed',
+    'pre_accepted',
+    # charleroi specific
+    'charleroi_return_to_any_state_when_prevalidated',
+    # then other adaptations
+    'return_to_proposing_group',
+    'decide_item_when_back_to_meeting_from_returned_to_proposing_group',
+    'hide_decisions_when_under_writing',
+    'waiting_advices',
+    'waiting_advices_proposing_group_send_back',
+    'meetingmanager_correct_closed_meeting',
+)
 MeetingConfig.wfAdaptations = customWfAdaptations
 
 noGlobalObsStates = ('itempublished', 'itemfrozen', 'accepted', 'refused',
@@ -91,7 +105,7 @@ adaptations.WAITING_ADVICES_FROM_STATES = {
 }
 
 RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = {'meetingitemcommunes_workflow':
-                                            'meetingitemcommunes_workflow.itemcreated'}
+                                                'meetingitemcommunes_workflow.itemcreated'}
 adaptations.RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE
 
 
@@ -113,6 +127,7 @@ class CustomCharleroiMeeting(CustomMeeting):
         cleanRamCacheFor('Products.MeetingCharleroi.adapters._itemNumberCalculationQueryUids')
         # call old monkeypatched method
         self.__pm_old_updateItemReferences(startNumber, check_needed)
+
     Meeting.updateItemReferences = updateItemReferences
 
     def getDefaultAssemblyPolice(self):
@@ -121,6 +136,7 @@ class CustomCharleroiMeeting(CustomMeeting):
             tool = api.portal.get_tool('portal_plonemeeting')
             return tool.getMeetingConfig(self).getAssemblyPolice()
         return ''
+
     Meeting.getDefaultAssemblyPolice = getDefaultAssemblyPolice
 
     def _getPoliceItems(self, itemUids, categories=[], excludedCategories=[], listTypes=['normal']):
@@ -382,7 +398,7 @@ class CustomCharleroiMeeting(CustomMeeting):
             elif itemType == 'cc-arret-oj':
                 return self._getStandardCCArretOJItems(itemUids, listTypes=listTypes)
             else:
-                return 'The itemType given to getPrintableItemsForAgenda '\
+                return 'The itemType given to getPrintableItemsForAgenda ' \
                        'must be prescriptive, toCouncil, communication or cc-arret-oj'
         else:
             if itemType == 'prescriptive':
@@ -393,7 +409,7 @@ class CustomCharleroiMeeting(CustomMeeting):
             elif itemType == 'communication':
                 return self._getPoliceCommunicationItems(itemUids, listTypes=listTypes)
             else:
-                return 'The itemType given to getPrintableItemsForAgenda '\
+                return 'The itemType given to getPrintableItemsForAgenda ' \
                        'must be prescriptive, toCouncil or communication'
 
 
@@ -418,6 +434,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
             if ann.get(annotation_key, None):
                 decision = DECISION_ITEM_SENT_TO_COUNCIL
         return decision
+
     MeetingItem.getDecision = getDecision
 
     MeetingItem.__pm_old_getRawDecision = MeetingItem.getRawDecision
@@ -432,6 +449,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
             if ann.get(annotation_key, None):
                 decision = DECISION_ITEM_SENT_TO_COUNCIL
         return decision
+
     MeetingItem.getRawDecision = getRawDecision
 
     security.declarePrivate('setDecision')
@@ -442,6 +460,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         if value.strip() == DECISION_ITEM_SENT_TO_COUNCIL:
             return
         self.getField('decision').set(self, value, **kwargs)
+
     MeetingItem.setDecision = setDecision
 
     MeetingItem.__pm_old_validate_category = MeetingItem.validate_category
@@ -475,8 +494,8 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
            the item is not 'complete', we display a clear message.'''
         item = self.getSelf()
         if advice['id'] == finance_group_uid() and \
-           advice['delay'] and \
-           not advice['delay_started_on']:
+                advice['delay'] and \
+                not advice['delay_started_on']:
             # import FINANCE_WAITING_ADVICES_STATES as it is monkeypatched
             from Products.MeetingCommunes.config import FINANCE_WAITING_ADVICES_STATES
             # item in state giveable but item not complete
@@ -484,16 +503,16 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
                 return {'displayDefaultComplementaryMessage': False,
                         'displayAdviceReviewState': False,
                         'customAdviceMessage':
-                        translate('finance_advice_not_giveable_because_item_not_complete',
-                                  domain="PloneMeeting",
-                                  context=item.REQUEST,
-                                  default="Advice is still not giveable because item is not considered complete.")}
+                            translate('finance_advice_not_giveable_because_item_not_complete',
+                                      domain="PloneMeeting",
+                                      context=item.REQUEST,
+                                      default="Advice is still not giveable because item is not considered complete.")}
             elif getLastWFAction(item, 'proposeToFinance') and \
-                item.query_state() in ('itemcreated',
-                                      'itemcreated_waiting_advices',
-                                      'proposed_to_internal_reviewer',
-                                      'proposed_to_internal_reviewer_waiting_advices',
-                                      'proposed_to_director',):
+                    item.query_state() in ('itemcreated',
+                                           'itemcreated_waiting_advices',
+                                           'proposed_to_internal_reviewer',
+                                           'proposed_to_internal_reviewer_waiting_advices',
+                                           'proposed_to_director',):
                 # advice was already given but item was returned back to the service
                 return {'displayDefaultComplementaryMessage': False,
                         'displayAdviceReviewState': False,
@@ -561,7 +580,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         # a finance controller may evaluate if advice is actually asked
         # and may not change completeness if advice is currently given or has been given
         if finance_group_uid() not in item.adviceIndex or \
-           not '%s_financialcontrollers' % finance_group_uid() in member.getGroups():
+                not '%s_financialcontrollers' % finance_group_uid() in member.getGroups():
             return False
 
         # item must be still in a state where the advice can be given
@@ -569,14 +588,6 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         if not item.query_state() == 'prevalidated_waiting_advices':
             return False
         return True
-
-    def _findCustomOneLevelFor(self, insertMethod):
-        '''Manage our custom inserting method 'on_police_then_other_groups'.'''
-        if insertMethod == 'on_police_then_other_groups':
-            return 2
-        if insertMethod == 'on_communication':
-            return 3
-        raise NotImplementedError
 
     def _findCustomOrderFor(self, insertMethod):
         '''Manage our custom inserting methods 'on_communication'
@@ -629,7 +640,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
             elif days == 20 or (days == 10 and is20DaysDelay):
                 itemState = self.context.query_state()
                 if itemState == 'prevalidated_waiting_advices' and \
-                   tool.adapted().isFinancialUser():
+                        tool.adapted().isFinancialUser():
                     res = True
             # to 5, only available thru change delay widget
             elif days == 5 and not is20DaysDelay:
@@ -642,6 +653,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         '''Compute the College item reference.'''
         item = self.getSelf()
         tool = api.portal.get_tool('portal_plonemeeting')
+        cfg = tool.getMeetingConfig(self.context)
         isPoliceItem = bool(item.getProposingGroup(theObject=True).getId().startswith(POLICE_GROUP_PREFIX))
         isCommuItem = bool(item.getCategory() == COMMUNICATION_CAT_ID)
         toSendToCouncil = bool('meeting-config-council' in item.getOtherMeetingConfigsClonableTo())
@@ -661,8 +673,10 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         ref = '-'
         if not isCommuItem:
             meeting = item.getMeeting()
-            year = meeting.getDate().strftime('%Y')
-            meetingNumber = meeting.getMeetingNumber()
+            year = meeting.date.strftime('%Y')
+            meetingNumber = cfg.getLastMeetingNumber() + 1
+            if meeting.meeting_number != -1:
+                meetingNumber = meeting.meeting_number
             ref = str(year) + '/' + str(meetingNumber)
             additionalQuery.update(notCommunicationItems)
             if isPrivacySecret:
@@ -699,6 +713,8 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
     def getItemRefForActeCouncil(self, oj=False):
         '''Compute the Council item reference.'''
         item = self.getSelf()
+        tool = api.portal.get_tool('portal_plonemeeting')
+        cfg = tool.getMeetingConfig(self.context)
         isSpecialItem = bool(item.getCategory() in COUNCIL_SPECIAL_CATEGORIES)
         isLateItem = bool(item.getListType() != 'normal')
 
@@ -710,8 +726,10 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         lateItems = {'listType': {'not': 'normal'}}
 
         meeting = item.getMeeting()
-        year = meeting.getDate().strftime('%Y')
-        meetingNumber = meeting.getMeetingNumber()
+        year = meeting.date.strftime('%Y')
+        meetingNumber = cfg.getLastMeetingNumber() + 1
+        if meeting.meeting_number != -1:
+            meetingNumber = meeting.meeting_number
         ref = str(year) + '/' + str(meetingNumber)
         if isSpecialItem:
             ref = ref + '/S'
@@ -727,19 +745,19 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         ref = ref + '/' + str(itemNumber)
         return ref
 
-    def _itemNumberCalculationQueryUids_cachekey(method, self, meeting, additionalQuery):
-        '''cachekey method for self._itemNumberCalculationQueryUids.'''
-        return (self.context.REQUEST._debug, meeting, additionalQuery)
-
-    @ram.cache(_itemNumberCalculationQueryUids_cachekey)
+    # def _itemNumberCalculationQueryUids_cachekey(method, self, meeting, additionalQuery):
+    #     '''cachekey method for self._itemNumberCalculationQueryUids.'''
+    #     return (self.context.REQUEST._debug, meeting, additionalQuery)
+    #
+    # @ram.cache(_itemNumberCalculationQueryUids_cachekey)
     def _itemNumberCalculationQueryUids(self, meeting, additionalQuery):
         """ """
         # do the query unrestricted so we have same result for users
         # that do not have access to every items of the meeting
         brains = meeting.get_items(ordered=True,
-                                  theObjects=False,
-                                  additional_catalog_query=additionalQuery,
-                                  unrestricted=True)
+                                   the_objects=False,
+                                   additional_catalog_query=additionalQuery,
+                                   unrestricted=True)
         return [brain.UID for brain in brains]
 
     def _itemNumberCalculation(self, item, meeting, additionalQuery={}):
@@ -790,8 +808,8 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         if self.context.portal_type == 'MeetingItemCouncil':
             predecessor = self.context.get_predecessor()
             if predecessor and \
-               predecessor.portal_type == 'MeetingItemCollege' and \
-               (predecessor.hasMeeting() and predecessor.getMeeting().extraordinary_session):
+                    predecessor.portal_type == 'MeetingItemCollege' and \
+                    (predecessor.hasMeeting() and predecessor.getMeeting().extraordinary_session):
                 return 'lateextracollege'
 
         return self.context.getListTypeLateValue(meeting)
@@ -923,7 +941,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
 
     def mayWait_advices_from_proposed_to_refadmin(self):
         """ """
-        return self._mayWaitAdvices(self._getWaitingAdvicesStateFrom('proposed_to_refadmin'))
+        return self.mayWait_advices(self._getWaitingAdvicesStateFrom('proposed_to_refadmin'))
 
     security.declarePublic('mayValidate')
 
@@ -933,7 +951,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
             # if finances advice is asked, item may only be validated
             # if the advice has actually be given
             if finance_group_uid() in self.context.adviceIndex and \
-               not self.context.adviceIndex[finance_group_uid()]['type'].endswith('_finance'):
+                    not self.context.adviceIndex[finance_group_uid()]['type'].endswith('_finance'):
                 res = False
         return res
 
@@ -958,9 +976,9 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
                 if self.context.REQUEST.get('maybackTo_proposed_to_refadmin_from_waiting_advices', False):
                     res = True
                 elif tool.adapted().isFinancialUser() and \
-                    self.context.getCompleteness() in ('completeness_incomplete',
-                                                       'completeness_not_yet_evaluated',
-                                                       'completeness_evaluation_asked_again'):
+                        self.context.getCompleteness() in ('completeness_incomplete',
+                                                           'completeness_not_yet_evaluated',
+                                                           'completeness_evaluation_asked_again'):
                     res = True
             # only administrators may send back to director from finances
             elif destinationState == 'prevalidated' and tool.isManager(realManagers=True):
@@ -1096,6 +1114,7 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
                 return True
         return False
 
+
 # ------------------------------------------------------------------------------
 InitializeClass(CustomCharleroiMeeting)
 InitializeClass(CustomCharleroiMeetingItem)
@@ -1109,6 +1128,8 @@ InitializeClass(MeetingItemCharleroiCouncilWorkflowConditions)
 InitializeClass(MeetingCharleroiCouncilWorkflowActions)
 InitializeClass(MeetingCharleroiCouncilWorkflowConditions)
 InitializeClass(CustomCharleroiToolPloneMeeting)
+
+
 # ------------------------------------------------------------------------------
 
 

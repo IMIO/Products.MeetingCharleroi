@@ -8,10 +8,9 @@
 #
 # GNU General Public License (GPL)
 #
-from datetime import datetime
+import datetime
 from datetime import timedelta
 from collective.eeafaceted.dashboard.utils import addFacetedCriteria
-from DateTime import DateTime
 from imio.helpers.catalog import addOrUpdateIndexes
 from plone import api
 from plone.app.textfield.value import RichTextValue
@@ -317,7 +316,7 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], templateId='template5'):
     if members is None:
         _createObjectByType('Folder', site, id='Members')
     # create 5 meetings : 2 passed, 1 current and 2 future
-    today = datetime.now()
+    today = datetime.datetime.now()
     if not dates:
         dates = [today - timedelta(days=13),
                  today - timedelta(days=6),
@@ -725,7 +724,10 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], templateId='template5'):
                 for transition in cfg1.getTransitionsForPresentingAnItem():
                     if item_received_finances_advice and transition == 'validate':
                         continue
-                    wfTool.doActionFor(newItem, transition)
+                    try:  # Try them all
+                        wfTool.doActionFor(newItem, transition)
+                    except:
+                        continue
                     item_received_finances_advice = _add_finance_advice(item, newItem, transition)
 
                 if step == 'depose':
@@ -750,7 +752,7 @@ def _addCouncilDemoData(collegeMeeting,
     cfg2 = tool.objectValues('MeetingConfig')[1]
     cfg2Id = cfg2.getId()
     dgenFolder = tool.getPloneMeetingFolder(cfg2Id, userId)
-    date = (DateTime() + 1).asdatetime()
+    date = (datetime.datetime.today() + timedelta(1))
     with api.env.adopt_user(userId):
         councilCategoryIds = ['designations', 'engagements', 'contentieux']
         meetingId = dgenFolder.invokeFactory(
@@ -777,10 +779,11 @@ def _addCouncilDemoData(collegeMeeting,
                 if i == len(councilCategoryIds):
                     i = 0
                 wfTool.doActionFor(councilItem, 'present')
+                councilItem.reindexObject()
 
         # freeze the meeting and insert emergency items
         itemsToCouncilEmergency = [
-            item for item in collegeMeeting.getItems(ordered=True)
+            item for item in collegeMeeting.get_items(ordered=True)
             if item.getOtherMeetingConfigsClonableTo() and item.getOtherMeetingConfigsClonableToEmergency()]
         wfTool.doActionFor(meeting, 'freeze')
         for item in itemsToCouncilEmergency[1:]:
@@ -788,14 +791,16 @@ def _addCouncilDemoData(collegeMeeting,
             if councilItem.getPrivacy() == 'secret':
                 councilItem.setCategory(councilCategoryIds[1])
                 wfTool.doActionFor(councilItem, 'present')
+                councilItem.reindexObject()
 
         # present items from collegeExtraMeeting
-        for item in collegeExtraMeeting.getItems():
+        for item in collegeExtraMeeting.get_items():
             if item.getOtherMeetingConfigsClonableTo():
                 councilItem = item.cloneToOtherMeetingConfig(cfg2Id)
                 if councilItem.getPrivacy() == 'secret':
                     councilItem.setCategory(councilCategoryIds[2])
                     wfTool.doActionFor(councilItem, 'present')
+                    councilItem.reindexObject()
 
         # now add some special items, aka items using categories "proposes-par-un-conseiller"
         # "interventions" and "questions-actualite"
@@ -937,6 +942,7 @@ def _addCouncilDemoData(collegeMeeting,
             if 'bourgmestreObservations' in item:
                 newItem.setBourgmestreObservations(item['bourgmestreObservations'])
 
+            newItem.at_post_create_script()
             newItem.reindexObject()
             wfTool.doActionFor(newItem, 'present')
 
