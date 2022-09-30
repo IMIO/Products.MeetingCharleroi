@@ -30,10 +30,6 @@ POLL_TYPE_ITEM = u"<p><strong>Mode de scrutin :</strong> {0}</p>"
 COMMISSION_TYPE_ITEM = "<p><strong>Commission :</strong> {0}</p>"
 
 
-class MCHMeetingBeforeFacetedInfosView(MeetingStaticInfosView):
-    """ """
-
-
 class MCBaseDocumentGenerationHelperView(object):
     def getPoliceGroups(self):
         orgs = get_organizations()

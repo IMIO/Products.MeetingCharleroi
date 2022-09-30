@@ -34,7 +34,7 @@ msgid "PloneMeeting_label_assemblyPolice"
 msgstr ""
 
 #. Default: "Absents for the secret meeting"
-msgid "PloneMeeting_label_assemblyPrivacySecretAbsents"
+msgid "title_assembly_privacy_secret_absents"
 msgstr ""
 
 #. Default: "Plan"
@@ -98,7 +98,7 @@ msgid "late"
 msgstr ""
 
 #. Default: "Assembly for Police"
-msgid "meeting_assemblyPolice"
+msgid "title_assembly_police"
 msgstr ""
 
 #. Default: "The finances advice has not been selected on this item."

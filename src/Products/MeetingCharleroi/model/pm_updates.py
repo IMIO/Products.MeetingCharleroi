@@ -50,42 +50,42 @@ def update_item_schema(baseSchema):
 MeetingItem.schema = update_item_schema(MeetingItem.schema)
 
 
-def update_meeting_schema(meetingInterface):
-    meetingInterface.assemblyPolice = schema.Text(
-        title=u'assemblyPolice',
-        required=False
-        # allowable_content_types="text/plain",
-        # optional=True,
-        # widget=TextAreaWidget(
-        #     condition="python: 'assemblyPolice' in here.shownAssemblyFields()",
-        #     label='Assemblypolice',
-        #     label_msgid='meeting_assemblyPolice',
-        #     i18n_domain='PloneMeeting',
-        # ),
-        # default_output_type="text/html",
-        # default_method="getDefaultAssemblyPolice",
-        # default_content_type="text/plain",
-    )
-
-    meetingInterface.assemblyPrivacySecretAbsents = schema.Text(
-        title=u'assemblyPrivacySecretAbsents',
-        required=False
-        # allowable_content_types="text/plain",
-        # optional=True,
-        # widget=TextAreaWidget(
-        #     condition="python: 'assemblyPrivacySecretAbsents' in here.shownAssemblyFields()",
-        #     label='Assemblyprivacysecretabsents',
-        #     label_msgid='PloneMeeting_label_assemblyPrivacySecretAbsents',
-        #     i18n_domain='PloneMeeting',
-        # ),
-        # default_output_type="text/html",
-        # default_content_type="text/plain",
-    )
-
-    return meetingInterface
-
-
-meeting.IMeeting = update_meeting_schema(meeting.IMeeting)
+# def update_meeting_schema(meetingInterface):
+#     meetingInterface.assemblyPolice = schema.Text(
+#         title=u'assemblyPolice',
+#         required=False
+#         allowable_content_types="text/plain",
+#         optional=True,
+#         widget=TextAreaWidget(
+#             condition="python: 'assemblyPolice' in here.shownAssemblyFields()",
+#             label='Assemblypolice',
+#             label_msgid='meeting_assemblyPolice',
+#             i18n_domain='PloneMeeting',
+#         ),
+#         default_output_type="text/html",
+#         default_method="getDefaultAssemblyPolice",
+#         default_content_type="text/plain",
+#     )
+#
+#     meetingInterface.assemblyPrivacySecretAbsents = schema.Text(
+#         title=u'assemblyPrivacySecretAbsents',
+#         required=False
+#         allowable_content_types="text/plain",
+#         optional=True,
+#         widget=TextAreaWidget(
+#             condition="python: 'assemblyPrivacySecretAbsents' in here.shownAssemblyFields()",
+#             label='Assemblyprivacysecretabsents',
+#             label_msgid='title_assembly_privacy_secret_absents',
+#             i18n_domain='PloneMeeting',
+#         ),
+#         default_output_type="text/html",
+#         default_content_type="text/plain",
+#     )
+#
+#     return meetingInterface
+#
+#
+# meeting.IMeeting = update_meeting_schema(meeting.IMeeting)
 
 
 def update_config_schema(baseSchema):
