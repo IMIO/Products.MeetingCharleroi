@@ -4,8 +4,12 @@ Products.MeetingCharleroi Changelog
 4.2.0a1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Compatible for PloneMeeting 4.2.
+  [aduchene]
+- Removed specific `charleroi_add_refadmin` WFA and use itemWFValidationLevels instead.
+  [aduchene]
+- Use a custom schema policy to add attributes on Meeting's schema (DX).
+  [aduchene]
 
 4.1.7 (2020-10-30)
 ------------------
