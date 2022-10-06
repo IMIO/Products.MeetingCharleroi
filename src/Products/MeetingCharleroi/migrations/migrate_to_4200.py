@@ -7,7 +7,9 @@ from Products.MeetingCharleroi.config import CHARLEROI_COUNCIL_ITEM_WF_VALIDATIO
 
 import logging
 
+from imio.helpers.content import richtextval
 from imio.pyutils.utils import replace_in_list
+from plone import api
 
 logger = logging.getLogger("MeetingSeraing")
 
@@ -24,8 +26,10 @@ class Migrate_To_4200(MCMigrate_To_4200):
             cfg.setUsedMeetingAttributes(used_attrs)
 
     def _hook_custom_meeting_to_dx(self, old, new):
-        new.assembly_police = deepcopy(old.assemblyPolice)
-        new.assembly_privacy_secret_absents = deepcopy(old.assemblyPrivacySecretAbsents)
+        new.assembly_police = old.getAssemblyPolice() and \
+            richtextval(old.getAssemblyPolice()) or None
+        new.assembly_privacy_secret_absents = old.getAssemblyPrivacySecretAbsents() and \
+            richtextval(old.getAssemblyPrivacySecretAbsents()) or None
 
     def _doConfigureItemWFValidationLevels(self, cfg):
         """Apply correct itemWFValidationLevels and fix WFAs."""
@@ -44,7 +48,11 @@ class Migrate_To_4200(MCMigrate_To_4200):
 
     def run(self, profile_name="profile-Products.MeetingCharleroi:default", extra_omitted=[]):
         super(Migrate_To_4200, self).run(extra_omitted=extra_omitted)
-
+        portal_types = api.portal.get_tool('portal_types')
+        portal_types["Meeting"].schema_policy = "custom_charleroi_schema_policy_meeting"
+        for cfg in self.tool.objectValues("MeetingConfig"):
+            MeetingTypeInfo = portal_types[cfg.getMeetingTypeName()]
+            MeetingTypeInfo.schema_policy = "custom_charleroi_schema_policy_meeting"
         logger.info("Done migrating to MeetingCharleroi 4200...")
 
 
