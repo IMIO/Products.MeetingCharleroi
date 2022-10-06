@@ -1,8 +1,8 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
-4.2.0a1 (unreleased)
-------------------
+4.2.0a1 (2022-10-06)
+--------------------
 
 - Compatible for PloneMeeting 4.2.
   [aduchene]
