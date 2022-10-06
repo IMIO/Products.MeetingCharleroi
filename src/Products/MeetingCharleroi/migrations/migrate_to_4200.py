@@ -11,7 +11,7 @@ from imio.helpers.content import richtextval
 from imio.pyutils.utils import replace_in_list
 from plone import api
 
-logger = logging.getLogger("MeetingSeraing")
+logger = logging.getLogger("MeetingCharleroi")
 
 
 class Migrate_To_4200(MCMigrate_To_4200):
@@ -26,10 +26,10 @@ class Migrate_To_4200(MCMigrate_To_4200):
             cfg.setUsedMeetingAttributes(used_attrs)
 
     def _hook_custom_meeting_to_dx(self, old, new):
-        new.assembly_police = old.getAssemblyPolice() and \
-            richtextval(old.getAssemblyPolice()) or None
-        new.assembly_privacy_secret_absents = old.getAssemblyPrivacySecretAbsents() and \
-            richtextval(old.getAssemblyPrivacySecretAbsents()) or None
+        new.assembly_police = old.getRawAssemblyPolice() and \
+            richtextval(old.getRawAssemblyPolice()) or None
+        new.assembly_privacy_secret_absents = old.getRawAssemblyPrivacySecretAbsents() and \
+            richtextval(old.getRawAssemblyPrivacySecretAbsents()) or None
 
     def _doConfigureItemWFValidationLevels(self, cfg):
         """Apply correct itemWFValidationLevels and fix WFAs."""
@@ -46,25 +46,27 @@ class Migrate_To_4200(MCMigrate_To_4200):
             )
         super(Migrate_To_4200, self)._doConfigureItemWFValidationLevels(cfg)
 
-    def run(self, profile_name="profile-Products.MeetingCharleroi:default", extra_omitted=[]):
-        super(Migrate_To_4200, self).run(extra_omitted=extra_omitted)
+    def _applyCustomMeetingSchemaPolicy(self):
+        """
+        Apply our custom meeting policy
+        """
         portal_types = api.portal.get_tool('portal_types')
         portal_types["Meeting"].schema_policy = "custom_charleroi_schema_policy_meeting"
         for cfg in self.tool.objectValues("MeetingConfig"):
             MeetingTypeInfo = portal_types[cfg.getMeetingTypeName()]
             MeetingTypeInfo.schema_policy = "custom_charleroi_schema_policy_meeting"
+
+    def run(self, profile_name="profile-Products.MeetingCharleroi:default", extra_omitted=[]):
+        super(Migrate_To_4200, self).run(extra_omitted=extra_omitted)
+        self._applyCustomMeetingSchemaPolicy()
         logger.info("Done migrating to MeetingCharleroi 4200...")
 
 
 # The migration function -------------------------------------------------------
 def migrate(context):
     """This migration function:
-
-    1) Change MeetingConfig workflows to use meeting_workflow/meetingitem_workflow;
-    2) Call PloneMeeting migration to 4200 and 4201;
-    3) In _after_reinstall hook, adapt items and meetings workflow_history
-       to reflect new defined workflow done in 1);
-    4) Add new searches.
+    1) Call PloneMeeting migration to 4200 and 4201;
+    2) Apply our custom meeting policy
     """
     migrator = Migrate_To_4200(context)
     migrator.run()

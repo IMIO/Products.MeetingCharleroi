@@ -1,5 +1,6 @@
 from Products.CMFPlone.utils import safe_unicode
 from Products.PloneMeeting.content.meeting import IMeeting, assembly_constraint, Meeting
+from Products.PloneMeeting.interfaces import IDXMeetingContent
 from Products.PloneMeeting.widgets.pm_textarea import PMTextAreaFieldWidget
 from plone import api
 from plone.app.textfield import RichText
@@ -9,10 +10,10 @@ from Products.PloneMeeting.config import PMMessageFactory as _
 from plone.supermodel import model
 
 
-class IMeetingCustomCharleroi(IMeeting):
+class IMeetingCustomCharleroi(IDXMeetingContent):
     """ """
 
-    form.order_before(extra_field="signatures")
+    form.order_before(assembly_police="signatures")
     form.widget("assembly_police", PMTextAreaFieldWidget)
     assembly_police = RichText(
         title=_("title_assembly_police"),
@@ -23,7 +24,7 @@ class IMeetingCustomCharleroi(IMeeting):
         required=False,
     )
 
-    form.order_after(extra_field="assembly_police")
+    form.order_after(assembly_privacy_secret_absents="assembly_police")
     form.widget("assembly_privacy_secret_absents", PMTextAreaFieldWidget)
     assembly_privacy_secret_absents = RichText(
         title=_("title_assembly_privacy_secret_absents"),
@@ -57,4 +58,4 @@ class CustomCharleroiMeetingSchemaPolicy(DexteritySchemaPolicy):
     """ """
 
     def bases(self, schemaName, tree):
-        return (IMeetingCustomCharleroi,)
+        return (IMeeting, IMeetingCustomCharleroi,)
