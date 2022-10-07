@@ -27,7 +27,7 @@ def update_item_schema(baseSchema):
                 widget=RichWidget(
                     label_msgid="PloneMeeting_bourgmestreObservations",
                     description_msgid="bourgmestre_observations_descr",
-                    condition="python: here.attributeIsUsed('bourgmestreObservations')",
+                    condition="python: here.attribute_is_used('bourgmestreObservations')",
                     rows=20,
                     label="BourgmestreObservations",
                     i18n_domain="PloneMeeting",

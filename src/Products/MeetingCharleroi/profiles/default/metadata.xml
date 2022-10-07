@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <metadata>
-  <version>4.1</version>
+  <version>4.2</version>
   <dependencies>
     <dependency>profile-Products.MeetingCommunes:financesadvice</dependency>
   </dependencies>
