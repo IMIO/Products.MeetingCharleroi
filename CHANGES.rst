@@ -1,7 +1,7 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
-4.2.0a2 (unreleased)
+4.2.0a2 (2022-10-07)
 --------------------
 
 - Replace attributeIsUsed to attribute_is_used.
