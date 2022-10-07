@@ -132,7 +132,7 @@ class CustomCharleroiMeeting(CustomMeeting):
 
     def getDefaultAssemblyPolice(self):
         """ """
-        if self.attributeIsUsed('assemblyPolice'):
+        if self.attribute_is_used('assemblyPolice'):
             tool = api.portal.get_tool('portal_plonemeeting')
             return tool.getMeetingConfig(self).getAssemblyPolice()
         return ''
