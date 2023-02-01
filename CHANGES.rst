@@ -2,7 +2,7 @@ Products.MeetingCharleroi Changelog
 ===================================
 
 
-4.2.0a3 (unreleased)
+4.2.0a3 (2023-02-01)
 --------------------
 
 - Fixed some naming issues (listTypes => list_types).
