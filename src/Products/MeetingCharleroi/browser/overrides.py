@@ -12,7 +12,6 @@ from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.utils import finance_group_uid
 from Products.MeetingCommunes.browser.overrides import MCItemDocumentGenerationHelperView, \
     MCMeetingDocumentGenerationHelperView
-from Products.PloneMeeting.browser.views import MeetingStaticInfosView
 from collective.contact.plonegroup.utils import get_organizations
 from imio.history.utils import getLastWFAction
 from plone import api
@@ -62,7 +61,7 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
             return True
         # check user access (administrators and advisers from finance director service)
         tool = api.portal.get_tool('portal_plonemeeting')
-        if tool.isManager(self.real_context, realManagers=True) \
+        if tool.isManager(realManagers=True) \
                 or (item_state == 'prevalidated_waiting_advices' and
                     tool.get_orgs_for_user(suffixes=['advisers'],
                                            using_groups=[finance_group_uid()],

@@ -5,8 +5,12 @@ Products.MeetingCharleroi Changelog
 4.2.0a3 (unreleased)
 --------------------
 
-- Nothing changed yet.
-
+- Fixed some naming issues (listTypes => list_types).
+  [aduchene]
+- Fixed minor issues in adapter.py.
+  [aduchene]
+- Removed `MCHItemPrettyLinkAdapter` as it is now useless.
+  [aduchene]
 
 4.2.0a2 (2022-10-07)
 --------------------
