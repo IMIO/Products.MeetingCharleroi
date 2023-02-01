@@ -95,10 +95,10 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         cfg.setItemAutoSentToOtherMCStates(('itemfrozen', ))
         # create 2 College meetings, one extraordinarySession and one normal session
         # then send an item from each to a Council meeting
-        self.changeUser('pmManager')
         # create the Council meeting
         self.setMeetingConfig(cfg2Id)
         self.setupCouncilConfig()
+        self.changeUser('pmManager')
         councilMeeting = self.create('Meeting', date=DateTime('2017/01/01'))
         self.freezeMeeting(councilMeeting)
         # create elements in College
@@ -134,7 +134,6 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         self.presentItem(itemFromExtraSession)
         self.assertEqual(itemFromExtraSession.getListType(), 'lateextracollege')
-
         self.presentItem(communicationitem)
         self.assertNotEqual(communicationitem.getListType(), 'lateextracollege')
 
@@ -182,12 +181,13 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         self.setMeetingConfig(self.meetingConfig2.getId())
         self.setupCouncilConfig()
+        self.changeUser('siteadmin')
         self.create('meetingcategory', id='%ss' % COMMUNICATION_CAT_ID, title='Communications')
 
+        self.changeUser('pmManager')
         councilMeeting = self.create('Meeting', date=DateTime('2017/01/01'))
         self.setCurrentMeeting(councilMeeting)
 
-        self.changeUser('pmManager')
         item1 = self.create('MeetingItem')
         item1.setProposingGroupWithGroupInCharge(dev_group_in_charge)
         self.presentItem(item1)
@@ -391,6 +391,13 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
     def test_ValidateCategoryIfCollegeItemToSendToCouncil(self):
         """Use of category 'indeterminee' on MeetingItemCollege is not allowed
            if item will be sent to Council."""
+        self.changeUser('siteadmin')
+        # make sure we use categories for both MeetingConfigs
+        self.meetingConfig.setUseGroupsAsCategories(False)
+        self.meetingConfig2.setUseGroupsAsCategories(False)
+        # make sure the COUNCIL_DEFAULT_CATEGORY exists or it does not pass validation
+        self._createCategories()
+
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem')
         item.setOtherMeetingConfigsClonableTo(('meeting-config-council',))
@@ -407,19 +414,36 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
 
         # as item is to send to Council, category 'indeterminee' must be used
         self.failIf(item.validate_category(COUNCIL_DEFAULT_CATEGORY))
-        self.assertEqual(item.validate_category('another_category'), msg_mandatory)
+        self.assertEqual(item.validate_category('development'), msg_mandatory)
 
         # but can not be used for items not to send to Council
         item.setOtherMeetingConfigsClonableTo(())
         self.assertEqual(item.validate_category(COUNCIL_DEFAULT_CATEGORY), msg_not_allowed)
-        self.failIf(item.validate_category('another_category'))
+        self.failIf(item.validate_category('development'))
 
         # does not fail when used on MeetingItemCouncil
         self.setMeetingConfig(self.meetingConfig2.getId())
+        # make sure the COUNCIL_DEFAULT_CATEGORY exists or it does not pass validation
+        self.changeUser('siteadmin')
+        self._createCategories()
         self.changeUser('pmManager')
         council_item = self.create('MeetingItem')
         self.assertEqual(council_item.portal_type, 'MeetingItemCouncil')
         self.failIf(council_item.validate_category(COUNCIL_DEFAULT_CATEGORY))
+
+    def test_KeepPollTypeIfCollegeItemToSendToCouncil(self):
+        """When item is sent to Council, keep the poll type."""
+        cfg = self.meetingConfig
+        cfg.setItemManualSentToOtherMCStates(('itemcreated', ))
+        cfg2Id = self.meetingConfig2.getId()
+
+        self.changeUser('pmCreator1')
+        item = self.create('MeetingItem')
+        item.setPollType('secret_separated')
+        item.setOtherMeetingConfigsClonableTo((cfg2Id,))
+        councilItem = item.cloneToOtherMeetingConfig(cfg2Id)
+        self.assertEqual(item.getPollType(), 'secret_separated')
+        self.assertEqual(councilItem.getPollType(), 'secret_separated')
 
 
 def test_suite():

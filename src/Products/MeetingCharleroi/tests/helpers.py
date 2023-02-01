@@ -304,6 +304,7 @@ class MeetingCharleroiTestingHelpers(MeetingCommunesTestingHelpers):
 
     def setupCouncilConfig(self):
         """ """
+        current_user_id = self.member.getId()
         self.changeUser('siteadmin')
         cfg = getattr(self.tool, 'meeting-config-college')
         cfg.setItemManualSentToOtherMCStates(charleroi_import_data.collegeMeeting.itemManualSentToOtherMCStates)
@@ -323,6 +324,7 @@ class MeetingCharleroiTestingHelpers(MeetingCommunesTestingHelpers):
         cfg2.setInsertingMethodsOnAddItem(charleroi_import_data.councilMeeting.insertingMethodsOnAddItem)
         cfg2.at_post_edit_script()
         self._createCategories()
+        self.changeUser(current_user_id)
 
     def setupCollegeConfig(self):
         """ """

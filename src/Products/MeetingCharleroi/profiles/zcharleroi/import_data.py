@@ -4,9 +4,11 @@ from copy import deepcopy
 from DateTime import DateTime
 from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
+from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CLASSIFIER
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
+from Products.MeetingCommunes.config import PORTAL_CATEGORIES
 from Products.PloneMeeting.config import DEFAULT_LIST_TYPES
 from Products.PloneMeeting.indexes import DELAYAWARE_ROW_ID_PATTERN
 from Products.PloneMeeting.profiles import AnnexTypeDescriptor
@@ -130,6 +132,11 @@ council_categories = [
     CategoryDescriptor(COMMUNICATION_CAT_ID,
                        'Communication',
                        description=''),
+]
+
+council_classifiers = [
+    CategoryDescriptor(COUNCIL_DEFAULT_CLASSIFIER,
+                       'non-publiable')
 ]
 
 # Pod templates ----------------------------------------------------------------
@@ -833,6 +840,7 @@ councilMeeting.places = """Place1\n\r
 Place2\n\r
 Place3\n\r"""
 councilMeeting.categories = council_categories
+councilMeeting.classifiers = council_classifiers + PORTAL_CATEGORIES
 councilMeeting.shortName = 'Council'
 councilMeeting.itemCreatedOnlyUsingTemplate = True
 councilMeeting.listTypes = DEFAULT_LIST_TYPES + \
