@@ -32,7 +32,7 @@ def onAdviceAfterTransition(advice, event):
         return
 
     item = advice.getParentNode()
-    itemState = item.queryState()
+    itemState = item.query_state()
 
     oldStateId = event.old_state.id
     newStateId = event.new_state.id
@@ -76,7 +76,7 @@ def onAdviceAfterTransition(advice, event):
     # but if we are in a '_updateAdvices', do not _updateAdvices again...
     # also bypass if we are creating the advice as onAdviceAdded is called after onAdviceTransition
     if event.transition and not item.REQUEST.get('currentlyUpdatingAdvice', False):
-        item.updateLocalRoles()
+        item.update_local_roles()
     return
 
 
@@ -93,7 +93,7 @@ def onAdvicesUpdated(item, event):
         if adviceInfo['delay_infos']['delay_status'] == 'timed_out' and \
            'delay_infos' in event.old_adviceIndex[groupId] and not \
            event.old_adviceIndex[groupId]['delay_infos']['delay_status'] == 'timed_out':
-            if item.queryState() == 'prevalidated_waiting_advices':
+            if item.query_state() == 'prevalidated_waiting_advices':
                 wfTool = api.portal.get_tool('portal_workflow')
                 item.adviceIndex[groupId]['delay_stopped_on'] = datetime.now()
                 item.REQUEST.set('maybackTo_proposed_to_refadmin_from_waiting_advices', True)
@@ -120,7 +120,7 @@ def onItemDuplicatedToOtherMC(originalItem, event):
     if originalItem.portal_type == 'MeetingItemCollege' and \
        newItem.portal_type == 'MeetingItemCouncil' and \
        newItem.getPrivacy() == 'public' and \
-       newItem.queryState() == 'validated':
+       newItem.query_state() == 'validated':
         tool = api.portal.get_tool('portal_plonemeeting')
         destMeetingConfig = tool.getMeetingConfig(newItem)
         # if no mapping was defined for category, use the default

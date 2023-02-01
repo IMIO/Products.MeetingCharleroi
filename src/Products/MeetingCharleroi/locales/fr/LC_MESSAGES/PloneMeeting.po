@@ -35,7 +35,7 @@ msgid "PloneMeeting_label_assemblyPolice"
 msgstr "Présents pour la Zone de Police par défaut"
 
 #. Default: "Absents for the secret meeting"
-msgid "PloneMeeting_label_assemblyPrivacySecretAbsents"
+msgid "title_assembly_privacy_secret_absents"
 msgstr "Absents pour la séance à huis clos"
 
 #. Default: "Plan"
@@ -78,7 +78,7 @@ msgstr "Cet avis ne pourra être rendu que lorsque le point sera considéré 'co
 msgid "finance_advice_suspended_because_item_sent_back_to_proposing_group"
 msgstr "Cet avis est suspendu car le point a été renvoyé vers le groupe proposant."
 
-#. Default: "Pre-validated"
+#. Default: "Prevalidated"
 msgid "icon_help_prevalidated"
 msgstr "Proposé au directeur"
 
@@ -99,7 +99,7 @@ msgid "late"
 msgstr "Urgence"
 
 #. Default: "Assembly for Police"
-msgid "meeting_assemblyPolice"
+msgid "title_assembly_police"
 msgstr "Présents pour la Zone de Police"
 
 #. Default: "The finances advice has not been selected on this item."

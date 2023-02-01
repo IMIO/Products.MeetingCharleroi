@@ -35,7 +35,7 @@ msgid "PloneMeeting_label_assemblyPolice"
 msgstr ""
 
 #. Default: "Absents for the secret meeting"
-msgid "PloneMeeting_label_assemblyPrivacySecretAbsents"
+msgid "title_assembly_privacy_secret_absents"
 msgstr ""
 
 #. Default: "Plan"
@@ -78,9 +78,9 @@ msgstr "Advice is still not giveable because item is not considered complete."
 msgid "finance_advice_suspended_because_item_sent_back_to_proposing_group"
 msgstr "Advice is suspended because it was sent back to proposing group."
 
-#. Default: "Pre-validated"
+#. Default: "Prevalidated"
 msgid "icon_help_prevalidated"
-msgstr "Pre-validated"
+msgstr "Prevalidated"
 
 #. Default: "Proposed to admin referent"
 msgid "icon_help_proposed_to_refadmin"
@@ -99,7 +99,7 @@ msgid "late"
 msgstr ""
 
 #. Default: "Assembly for Police"
-msgid "meeting_assemblyPolice"
+msgid "title_assembly_police"
 msgstr ""
 
 #. Default: "The finances advice has not been selected on this item."

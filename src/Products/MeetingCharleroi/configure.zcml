@@ -1,26 +1,84 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:browser="http://namespaces.zope.org/browser"
            xmlns:five="http://namespaces.zope.org/five"
+           xmlns:grok="http://namespaces.zope.org/grok"
            xmlns:i18n="http://namespaces.zope.org/i18n"
            i18n_domain="MeetingCharleroi">
 
-  <!-- registerTranslations before including package Products.PloneMeeting
-       so Products.MeetingCharleroi can overrides Products.PloneMeeting translations -->
-  <i18n:registerTranslations directory="locales" />
+    <!-- registerTranslations before including package Products.PloneMeeting
+         so Products.MeetingCharleroi can overrides Products.PloneMeeting translations -->
+    <i18n:registerTranslations directory="locales"/>
 
-  <include package=".browser" />
-  <include package="Products.CMFPlacefulWorkflow"/>
-  <include package="Products.MeetingCommunes"/>
-  <include package="Products.PloneMeeting"/>
-  <include file="events.zcml" />
-  <include file="profiles.zcml" />
+    <include package=".browser"/>
+    <include file="events.zcml"/>
+    <include file="profiles.zcml"/>
+    <include package="Products.CMFPlacefulWorkflow"/>
+    <include package="Products.MeetingCommunes"/>
+    <include package="Products.PloneMeeting"/>
+    <include package="five.grok" />
+    <grok:grok package="." />
+    <includeOverrides file="overrides.zcml"/>
 
-  <utility component=".vocabularies.AdviceCategoriesVocabularyFactory"
-           name="Products.MeetingCharleroi.vocabularies.advicecategoriesvocabulary" />
-  <utility component=".vocabularies.AdviceMotivationCategoriesVocabularyFactory"
-           name="Products.MeetingCharleroi.vocabularies.advicemotivationcategoriesvocabulary" />
+    <adapter for="Products.PloneMeeting.interfaces.IMeetingItem"
+             factory="Products.MeetingCharleroi.adapters.MeetingItemCharleroiCollegeWorkflowActions"
+             provides="Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCollegeWorkflowActions"/>
 
-  <!-- Indexes -->
-  <adapter name="financesAdviceCategory" factory=".indexes.financesAdviceCategory" />
+    <adapter for="Products.PloneMeeting.interfaces.IMeetingItem"
+             factory="Products.MeetingCharleroi.adapters.MeetingItemCharleroiCollegeWorkflowConditions"
+             provides="Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCollegeWorkflowConditions"/>
+
+    <adapter for="Products.PloneMeeting.content.meeting.IMeeting"
+             factory="Products.MeetingCharleroi.adapters.MeetingCharleroiCollegeWorkflowActions"
+             provides="Products.MeetingCharleroi.interfaces.IMeetingCharleroiCollegeWorkflowActions"/>
+
+    <adapter for="Products.PloneMeeting.content.meeting.IMeeting"
+             factory="Products.MeetingCharleroi.adapters.MeetingCharleroiCollegeWorkflowConditions"
+             provides="Products.MeetingCharleroi.interfaces.IMeetingCharleroiCollegeWorkflowConditions"/>
+
+    <adapter for="Products.PloneMeeting.interfaces.IMeetingItem"
+             factory="Products.MeetingCharleroi.adapters.MeetingItemCharleroiCouncilWorkflowActions"
+             provides="Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCouncilWorkflowActions"/>
+
+    <adapter for="Products.PloneMeeting.interfaces.IMeetingItem"
+             factory="Products.MeetingCharleroi.adapters.MeetingItemCharleroiCouncilWorkflowConditions"
+             provides="Products.MeetingCharleroi.interfaces.IMeetingItemCharleroiCouncilWorkflowConditions"/>
+
+    <adapter for="Products.PloneMeeting.content.meeting.IMeeting"
+             factory="Products.MeetingCharleroi.adapters.MeetingCharleroiCouncilWorkflowActions"
+             provides="Products.MeetingCharleroi.interfaces.IMeetingCharleroiCouncilWorkflowActions"/>
+
+    <adapter for="Products.PloneMeeting.content.meeting.IMeeting"
+             factory="Products.MeetingCharleroi.adapters.MeetingCharleroiCouncilWorkflowConditions"
+             provides="Products.MeetingCharleroi.interfaces.IMeetingCharleroiCouncilWorkflowConditions"/>
+
+    <configure package="Products.MeetingCommunes">
+        <adapter for="Products.PloneMeeting.interfaces.IMeetingItem"
+                 factory="Products.MeetingCharleroi.adapters.CustomCharleroiMeetingItem"
+                 provides="Products.PloneMeeting.interfaces.IMeetingItemCustom"/>
+
+        <adapter for="Products.PloneMeeting.content.meeting.IMeeting"
+                 factory="Products.MeetingCharleroi.adapters.CustomCharleroiMeeting"
+                 provides="Products.PloneMeeting.interfaces.IMeetingCustom"/>
+
+        <adapter for="Products.PloneMeeting.interfaces.IMeetingConfig"
+                 factory="Products.MeetingCharleroi.adapters.CustomCharleroiMeetingConfig"
+                 provides="Products.PloneMeeting.interfaces.IMeetingConfigCustom"/>
+
+        <adapter for="Products.PloneMeeting.interfaces.IToolPloneMeeting"
+                 factory="Products.MeetingCharleroi.adapters.CustomCharleroiToolPloneMeeting"
+                 provides="Products.PloneMeeting.interfaces.IToolPloneMeetingCustom"/>
+    </configure>
+
+    <utility component=".vocabularies.AdviceCategoriesVocabularyFactory"
+             name="Products.MeetingCharleroi.vocabularies.advicecategoriesvocabulary"/>
+    <utility component=".vocabularies.AdviceMotivationCategoriesVocabularyFactory"
+             name="Products.MeetingCharleroi.vocabularies.advicemotivationcategoriesvocabulary"/>
+
+    <!-- Custom meeting fields -->
+    <utility factory=".meeting.CustomCharleroiMeetingSchemaPolicy"
+             name="custom_charleroi_schema_policy_meeting" />
+
+    <!-- Indexes -->
+    <adapter name="financesAdviceCategory" factory=".indexes.financesAdviceCategory"/>
 
 </configure>

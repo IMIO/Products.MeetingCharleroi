@@ -39,7 +39,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # First, define recurring items in the meeting config
         self.changeUser('pmManager')
         # create a meeting
-        meeting = self.create('Meeting', date='2007/12/11 09:00:00')
+        meeting = self.create('Meeting', date=DateTime('2007/12/11 09:00:00').asdatetime())
         # create 2 items and present it to the meeting
         item1 = self.create('MeetingItem', title='The first item')
         self.presentItem(item1)
@@ -68,7 +68,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # First, define recurring items in the meeting config
         self.changeUser('pmManager')
         # create a meeting (with 7 items)
-        meetingDate = DateTime().strftime('%y/%m/%d %H:%M:00')
+        meetingDate = DateTime('2007/12/11 09:00:00').asdatetime()
         meeting = self.create('Meeting', date=meetingDate)
         item1 = self.create('MeetingItem')  # id=o2
         item1.setProposingGroup(self.vendors_uid)
@@ -127,7 +127,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         cfg = self.meetingConfig
         cfg.setUsedAdviceTypes(('asked_again', ) + cfg.getUsedAdviceTypes())
         # while an advice is given, adviser still keep access to item
-        cfg.setKeepAccessToItemWhenAdviceIsGiven(True)
+        cfg.setKeepAccessToItemWhenAdvice('is_given')
         cfg.setItemAdviceStates(('itemcreated_waiting_advices',
                                  'proposed_waiting_advices',))
         cfg.setItemAdviceEditStates = (('itemcreated_waiting_advices',
@@ -145,7 +145,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
                                                    context=self.request)
         self.assertEqual(
             translate(
-                item.wfConditions().mayWait_advices_from_itemcreated().msg,
+                item.wfConditions().mayWait_advices(item.query_state(),  "prevalidated_waiting_advices").msg,
                 context=self.request),
             advice_required_to_ask_advices)
         # now ask 'vendors' advice
@@ -181,7 +181,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
                          ['backToItemCreated', 'proposeToRefAdmin'])
         self.assertEqual(
             translate(
-                item.wfConditions().mayWait_advices_from_proposed().msg,
+                item.wfConditions().mayWait_advices(item.query_state(),  "prevalidated_waiting_advices").msg,
                 context=self.request),
             advice_required_to_ask_advices)
         item.setOptionalAdvisers((self.developers_uid, self.vendors_uid, ))
@@ -297,7 +297,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(advice, 'signFinancialAdvice')
 
         # item was sent back to administrative referent
-        self.assertEqual(item.queryState(), 'proposed_to_refadmin')
+        self.assertEqual(item.query_state(), 'proposed_to_refadmin')
         # now if it goes to director, director is able to validate the item
         self.changeUser('pmRefAdmin1')
         self.do(item, 'prevalidate')
@@ -374,7 +374,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertTrue(item.adviceIndex[finance_group_uid()]['delay_started_on'])
         # advice may be added
         toAdd, toEdit = item.getAdvicesGroupsInfosForUser()
-        self.assertEqual(toAdd, [(finance_group_uid(), u'Directeur Financier')])
+        self.assertEqual(toAdd, [finance_group_uid(),])
         self.assertFalse(toEdit)
         # add advice
         advice = createContentInContainer(
@@ -423,7 +423,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # sign the advice, as it is 'negative_finance', aka not 'positive_finances'
         # it will be automatically sent back to the refadmin
         self.do(advice, 'signFinancialAdvice')
-        self.assertEqual(item.queryState(), 'proposed_to_refadmin')
+        self.assertEqual(item.query_state(), 'proposed_to_refadmin')
         # advice was automatically shown
         self.assertFalse(advice.advice_hide_during_redaction)
 
@@ -457,7 +457,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(advice, 'proposeToFinancialManager')
         self.changeUser('pmFinManager')
         self.do(advice, 'signFinancialAdvice')
-        self.assertEqual(item.queryState(), 'validated')
+        self.assertEqual(item.query_state(), 'validated')
         # advice was automatically shown
         self.assertFalse(advice.advice_hide_during_redaction)
         # advice is no more editable/deletable by finances
@@ -515,7 +515,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmFinManager')
         self.do(advice, 'signFinancialAdvice')
         # no more found now that advice is signed, at has been moved to 'advice_given'
-        self.assertTrue(advice.queryState() in ADVICE_STATES_ENDED)
+        self.assertTrue(advice.query_state() in ADVICE_STATES_ENDED)
         self.assertFalse(item.UID() in [brain.UID for brain in catalog(**query)])
 
     def test_CollegePostPoneNextMeetingWithGivenAdvices(self):
@@ -557,13 +557,13 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
 
         # item was automatically validated, present it into a meeting
         self.changeUser('pmManager')
-        meeting = self.create('Meeting', date=DateTime('2016/12/11'))
+        meeting = self.create('Meeting', date=DateTime('2016/12/11').asdatetime())
         self.presentItem(item)
         self.decideMeeting(meeting)
         self.do(item, 'postpone_next_meeting')
         # item was postponed, cloned item is validated and advices are inherited
-        self.assertEqual(item.queryState(), 'postponed_next_meeting')
-        cloneItem = item.getBRefs('ItemPredecessor')[0]
+        self.assertEqual(item.query_state(), 'postponed_next_meeting')
+        cloneItem = item.get_successors()[0]
         for adviceInfo in cloneItem.adviceIndex.values():
             self.assertTrue(adviceInfo['inherited'])
 
@@ -589,16 +589,16 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(item, 'wait_advices_from_prevalidated')
         self.changeUser('pmFinController')
         item.setCompleteness('completeness_complete')
-        item.updateLocalRoles()
+        item.update_local_roles()
 
         # now does advice timed out
         item.adviceIndex[finance_group_uid()]['delay_started_on'] = datetime.datetime(2014, 1, 1)
-        item.updateLocalRoles()
+        item.update_local_roles()
         # advice is timed out
         self.assertEqual(item.adviceIndex[finance_group_uid()]['delay_infos']['delay_status'],
                          'no_more_giveable')
         # item has been automatically sent back to refadmin
-        self.assertEqual(item.queryState(), 'proposed_to_refadmin')
+        self.assertEqual(item.query_state(), 'proposed_to_refadmin')
         # advice delay is kept
         self.assertEqual(item.adviceIndex[finance_group_uid()]['delay_started_on'],
                          datetime.datetime(2014, 1, 1))
@@ -630,11 +630,11 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertTrue(item.adviceIndex[finance_group_uid()]['hidden_during_redaction'])
         # now does advice timed out
         item.adviceIndex[finance_group_uid()]['delay_started_on'] = datetime.datetime(2014, 1, 1)
-        item.updateLocalRoles()
+        item.update_local_roles()
         # advice is timed out
         self.assertEqual(item.adviceIndex[finance_group_uid()]['delay_infos']['delay_status'],
                          'no_more_giveable')
         # item has been automatically sent back to refadmin
-        self.assertTrue(item.queryState() == 'proposed_to_refadmin')
+        self.assertTrue(item.query_state() == 'proposed_to_refadmin')
         # advice is still 'hidden_during_redaction'
         self.assertTrue(item.adviceIndex[finance_group_uid()]['hidden_during_redaction'])

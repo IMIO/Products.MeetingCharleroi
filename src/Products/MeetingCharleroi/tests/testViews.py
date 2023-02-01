@@ -29,6 +29,9 @@ from Products.MeetingCommunes.tests.testViews import testViews as mctv
 class testViews(MeetingCharleroiTestCase, mctv):
     ''' '''
 
+    def test_pm_UpdateDelayAwareAdvicesUpdateAllAdvices(self):
+        self.meetingConfig.setItemAdviceViewStates(tuple())  # Make sure we are not interfering with the test
+        super(testViews, self).test_pm_UpdateDelayAwareAdvicesUpdateAllAdvices()
 
 def test_suite():
     from unittest import TestSuite, makeSuite

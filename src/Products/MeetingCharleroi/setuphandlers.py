@@ -8,9 +8,9 @@
 #
 # GNU General Public License (GPL)
 #
-
+import datetime
+from datetime import timedelta
 from collective.eeafaceted.dashboard.utils import addFacetedCriteria
-from DateTime import DateTime
 from imio.helpers.catalog import addOrUpdateIndexes
 from plone import api
 from plone.app.textfield.value import RichTextValue
@@ -262,7 +262,7 @@ def addCollegeDemoData(context):
     return collegeMeeting, collegeExtraMeeting
 
 
-def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateId='template5'):
+def _demoData(site, userId, firstTwoGroupIds, dates=[], templateId='template5'):
     """ """
     wfTool = api.portal.get_tool('portal_workflow')
     tool = api.portal.get_tool('portal_plonemeeting')
@@ -273,8 +273,8 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
 
     def _add_finance_advice(item, newItem, last_transition):
         if item['toDiscuss'] and \
-           item['category'] in ['affaires-juridiques', 'remboursement'] and \
-           last_transition == 'prevalidate':
+                item['category'] in ['affaires-juridiques', 'remboursement'] and \
+                last_transition == 'prevalidate':
             finance_group = finance_group_uid()
             if finance_group:
                 finance_advice_id = '{0}__rowid__unique_id_002'.format(finance_group)
@@ -285,10 +285,10 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
                     finance_group = finance_group_uid()
                     finance_advice_id = '{0}__rowid__unique_id_002'.format(finance_group)
                 newItem.setOptionalAdvisers((finance_advice_id, ))
-                newItem.updateLocalRoles()
+                newItem.update_local_roles()
                 wfTool.doActionFor(newItem, 'wait_advices_from_prevalidated')
                 newItem.setCompleteness('completeness_complete')
-                newItem.updateLocalRoles()
+                newItem.update_local_roles()
                 with api.env.adopt_user('dfin'):
                     advice = createContentInContainer(
                         newItem,
@@ -318,28 +318,35 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
     if members is None:
         _createObjectByType('Folder', site, id='Members')
     # create 5 meetings : 2 passed, 1 current and 2 future
+    today = datetime.datetime.now()
     if not dates:
-        baseDate = DateTime()
-        dates = [baseDate - 13, baseDate - 6, baseDate + 1, baseDate + 8, baseDate + 15]
+        dates = [today - timedelta(days=13),
+                 today - timedelta(days=6),
+                 today + timedelta(days=1),
+                 today + timedelta(days=8),
+                 today + timedelta(days=15)]
     mTool.createMemberArea(userId)
     secrFolder = tool.getPloneMeetingFolder(cfg1_id, userId)
     for date in dates:
-        meetingId = secrFolder.invokeFactory('MeetingCollege', id=date.strftime('%Y%m%d'))
+        meetingId = secrFolder.invokeFactory(
+            cfg1.getMeetingTypeName(),
+            id=date.strftime('%Y%m%d'),
+            date=date)
         meeting = getattr(secrFolder, meetingId)
-        meeting.setDate(date)
+        meeting.date = date
         pTool.changeOwnershipOf(meeting, userId)
         meeting.processForm()
         # -13 meeting is closed
-        if date == baseDate - 13:
+        if date == today - timedelta(days=13):
             wfTool.doActionFor(meeting, 'freeze')
             wfTool.doActionFor(meeting, 'decide')
             wfTool.doActionFor(meeting, 'close')
-        # -6 is meeting we will insert items into
-        if date == baseDate - 6:
+        # -6 meeting is frozen
+        if date == today - timedelta(days=6):
             meetingForItems = meeting
         # +1 is an extraordinary meeting we will insert extralate items into
-        if date == baseDate + 1:
-            meeting.setExtraordinarySession(True)
+        if date == today + timedelta(days=1):
+            meeting.extraordinary_session = True
             meetingForExtraLateItems = meeting
 
     # items dict here : the key is the user we will create the item for
@@ -689,40 +696,45 @@ def _demoData(site, userId, firstTwoGroupIds, dates=[], baseDate=None, templateI
         for item in items:
             # get the template then clone it
             template = getattr(tool.getMeetingConfig(userFolder).itemtemplates, item['templateId'])
-            newItem = template.clone(newOwnerId=userId,
-                                     destFolder=userFolder,
-                                     newPortalType=cfg1.getItemTypeName())
-            newItem.setOtherMeetingConfigsClonableToEmergency(item['otherMeetingConfigsClonableToEmergency'])
-            newItem.setOtherMeetingConfigsClonableToPrivacy(item['otherMeetingConfigsClonableToPrivacy'])
-            newItem.setTitle(item['title'])
-            newItem.setProposingGroup(item['proposingGroup'])
-            # manage MeetingItem.groupInCharge
-            groupInCharge = newItem.getProposingGroup(theObject=True).get_groups_in_charge()[0]
-            value = '{0}__groupincharge__{1}'.format(newItem.getProposingGroup(),
-                                                     groupInCharge)
-            newItem.setProposingGroupWithGroupInCharge(value)
-            newItem.setItemAssemblyExcused('Roger Bidon')
-            newItem.setItemAssemblyAbsents('Jean-Michel Jamaila')
-            newItem.setCategory(item['category'])
-            newItem.setToDiscuss(item['toDiscuss'])
-            newItem.setOtherMeetingConfigsClonableTo(item['otherMeetingConfigsClonableTo'])
-            newItem.setPreferredMeeting(meetingForItems.UID())
-            newItem.reindexObject()
+            with api.env.adopt_user(username=userId):
+                tool.invalidateAllCache()
+                newItem = template.clone(newOwnerId=userId,
+                                         destFolder=userFolder,
+                                         newPortalType=cfg1.getItemTypeName())
+                newItem.setOtherMeetingConfigsClonableToEmergency(item['otherMeetingConfigsClonableToEmergency'])
+                newItem.setOtherMeetingConfigsClonableToPrivacy(item['otherMeetingConfigsClonableToPrivacy'])
+                newItem.setTitle(item['title'])
+                newItem.setProposingGroup(item['proposingGroup'])
+                # manage MeetingItem.groupInCharge
+                groupInCharge = newItem.getProposingGroup(theObject=True).get_groups_in_charge()[0]
+                value = '{0}__groupincharge__{1}'.format(newItem.getProposingGroup(),
+                                                         groupInCharge)
+                newItem.setProposingGroupWithGroupInCharge(value)
+                newItem.setItemAssemblyExcused('Roger Bidon')
+                newItem.setItemAssemblyAbsents('Jean-Michel Jamaila')
+                newItem.setCategory(item['category'])
+                newItem.setToDiscuss(item['toDiscuss'])
+                newItem.setOtherMeetingConfigsClonableTo(item['otherMeetingConfigsClonableTo'])
+                newItem.setPreferredMeeting(meetingForItems.UID())
+                newItem.reindexObject()
 
-            if step == 'extra_late':
-                site.REQUEST['PUBLISHED'] = meetingForExtraLateItems
-            else:
-                site.REQUEST['PUBLISHED'] = meetingForItems
-            item_received_finances_advice = False
-            for transition in cfg1.getTransitionsForPresentingAnItem():
-                if item_received_finances_advice and transition == 'validate':
-                    continue
-                wfTool.doActionFor(newItem, transition)
-                item_received_finances_advice = _add_finance_advice(item, newItem, transition)
+                if step == 'extra_late':
+                    site.REQUEST['PUBLISHED'] = meetingForExtraLateItems
+                else:
+                    site.REQUEST['PUBLISHED'] = meetingForItems
+                item_received_finances_advice = False
+                for transition in cfg1.getTransitionsForPresentingAnItem():
+                    if item_received_finances_advice and transition == 'validate':
+                        continue
+                    try:  # Try them all
+                        wfTool.doActionFor(newItem, transition)
+                    except:
+                        continue
+                    item_received_finances_advice = _add_finance_advice(item, newItem, transition)
 
-            if step == 'depose':
-                newItem.setListType('depose')
-            newItem.reindexObject(idxs=['listType'])
+                if step == 'depose':
+                    newItem.setListType('depose')
+                newItem.reindexObject(idxs=['listType'])
 
     return meetingForItems, meetingForExtraLateItems
 
@@ -738,24 +750,23 @@ def _addCouncilDemoData(collegeMeeting,
     portal = api.portal.get()
     tool = api.portal.get_tool('portal_plonemeeting')
     wfTool = api.portal.get_tool('portal_workflow')
-
-    wfTool = api.portal.get_tool('portal_workflow')
     tool = api.portal.get_tool('portal_plonemeeting')
     cfg2 = tool.objectValues('MeetingConfig')[1]
     cfg2Id = cfg2.getId()
     dgenFolder = tool.getPloneMeetingFolder(cfg2Id, userId)
-    date = DateTime() + 1
+    date = (datetime.datetime.today() + timedelta(1))
     with api.env.adopt_user(userId):
         councilCategoryIds = ['designations', 'engagements', 'contentieux']
-        meetingId = dgenFolder.invokeFactory('MeetingCouncil',
-                                             date=date,
-                                             id=date.strftime('%Y%m%d'))
+        meetingId = dgenFolder.invokeFactory(
+                cfg2.getMeetingTypeName(),
+                id=date.strftime('%Y%m%d'),
+                date=date)
         meeting = getattr(dgenFolder, meetingId)
         meeting.processForm()
         portal.REQUEST['PUBLISHED'] = meeting
         # get every items to send to council without emergency
         itemsToCouncilNoEmergency = [
-            item for item in collegeMeeting.getItems(ordered=True)
+            item for item in collegeMeeting.get_items(ordered=True)
             if item.getOtherMeetingConfigsClonableTo() and
             not item.getOtherMeetingConfigsClonableToEmergency()]
         # send to council every items
@@ -770,10 +781,11 @@ def _addCouncilDemoData(collegeMeeting,
                 if i == len(councilCategoryIds):
                     i = 0
                 wfTool.doActionFor(councilItem, 'present')
+                councilItem.reindexObject()
 
         # freeze the meeting and insert emergency items
         itemsToCouncilEmergency = [
-            item for item in collegeMeeting.getItems(ordered=True)
+            item for item in collegeMeeting.get_items(ordered=True)
             if item.getOtherMeetingConfigsClonableTo() and item.getOtherMeetingConfigsClonableToEmergency()]
         wfTool.doActionFor(meeting, 'freeze')
         for item in itemsToCouncilEmergency[1:]:
@@ -781,14 +793,16 @@ def _addCouncilDemoData(collegeMeeting,
             if councilItem.getPrivacy() == 'secret':
                 councilItem.setCategory(councilCategoryIds[1])
                 wfTool.doActionFor(councilItem, 'present')
+                councilItem.reindexObject()
 
         # present items from collegeExtraMeeting
-        for item in collegeExtraMeeting.getItems():
+        for item in collegeExtraMeeting.get_items():
             if item.getOtherMeetingConfigsClonableTo():
                 councilItem = item.cloneToOtherMeetingConfig(cfg2Id)
                 if councilItem.getPrivacy() == 'secret':
                     councilItem.setCategory(councilCategoryIds[2])
                     wfTool.doActionFor(councilItem, 'present')
+                    councilItem.reindexObject()
 
         # now add some special items, aka items using categories "proposes-par-un-conseiller"
         # "interventions" and "questions-actualite"
@@ -942,6 +956,7 @@ def _addCouncilDemoData(collegeMeeting,
             if 'bourgmestreObservations' in item:
                 newItem.setBourgmestreObservations(item['bourgmestreObservations'])
 
+            newItem.at_post_create_script()
             newItem.reindexObject()
             wfTool.doActionFor(newItem, 'present')
 

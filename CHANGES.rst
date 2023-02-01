@@ -2,10 +2,27 @@ Products.MeetingCharleroi Changelog
 ===================================
 
 
-4.1.10 (unreleased)
--------------------
+4.2.0a3 (unreleased)
+--------------------
 
 - Nothing changed yet.
+
+
+4.2.0a2 (2022-10-07)
+--------------------
+
+- Replace attributeIsUsed to attribute_is_used.
+  [aduchene]
+
+4.2.0a1 (2022-10-06)
+--------------------
+
+- Compatible for PloneMeeting 4.2.
+  [aduchene]
+- Removed specific `charleroi_add_refadmin` WFA and use itemWFValidationLevels instead.
+  [aduchene]
+- Use a custom schema policy to add attributes on Meeting's schema (DX).
+  [aduchene]
 
 4.1.9 (2021-12-03)
 ------------------

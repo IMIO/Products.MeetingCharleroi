@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime
 
 from DateTime import DateTime
 from imio.history.utils import getLastWFAction
@@ -9,7 +10,7 @@ from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CLASSIFIER
 from Products.MeetingCharleroi.config import COUNCIL_SPECIAL_CATEGORIES
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
-from Products.MeetingCommunes.tests.testCustomMeeting import testCustomMeeting as mctcm
+from Products.MeetingCommunes.tests.testCustomMeeting import testCustomMeetingType as mctcm
 from Products.PloneMeeting.utils import org_id_to_uid
 
 
@@ -27,7 +28,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         self.setMeetingConfig(self.meetingConfig2.getId())
         self.changeUser('pmManager')
         meeting = self._createMeetingWithItems()
-        orderedItems = meeting.getItems(ordered=True)
+        orderedItems = meeting.get_items(ordered=True)
         # the meeting is created with 5 items
         self.assertEqual(len(orderedItems), 5)
         itemUids = [item.UID() for item in orderedItems]
@@ -74,24 +75,24 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         self.presentItem(item1)
         self.presentItem(item2)
         # now we have 4 normal items and 2 late items
-        self.assertEqual(len(meeting.getItems()), 5)
-        self.assertEqual(len(meeting.getItems(listTypes=['late'])), 2)
+        self.assertEqual(len(meeting.get_items()), 5)
+        self.assertEqual(len(meeting.get_items(list_types=['late'])), 2)
         # same using getNumberOfItems
-        self.assertEqual(meeting.adapted().getNumberOfItems(itemUids, listTypes=['normal']), 3)
-        self.assertEqual(meeting.adapted().getNumberOfItems(itemUids, listTypes=['late']), 2)
+        self.assertEqual(meeting.adapted().getNumberOfItems(itemUids, list_types=['normal']), 3)
+        self.assertEqual(meeting.adapted().getNumberOfItems(itemUids, list_types=['late']), 2)
 
         # we can combinate parameters
         # we know that we have 2 late items that are using the 'development' category...
-        lateItems = meeting.getItems(listTypes=['late'])
+        lateItems = meeting.get_items(list_types=['late'])
         self.assertEqual(len(lateItems), 2)
         self.assertEqual(lateItems[0].getCategory(), 'development')
         self.assertEqual(lateItems[1].getCategory(), 'development')
         self.assertEqual(
-            meeting.adapted().getNumberOfItems(itemUids, categories=['development', ], listTypes=['late']),
+            meeting.adapted().getNumberOfItems(itemUids, categories=['development', ], list_types=['late']),
             2)
         # we have so 0 normal item using the 'development' category
         self.assertEqual(
-            meeting.adapted().getNumberOfItems(itemUids, categories=['development', ], listTypes=['normal']),
+            meeting.adapted().getNumberOfItems(itemUids, categories=['development', ], list_types=['normal']),
             0)
 
     def test_GetPrintableItemsForAgenda(self):
@@ -122,8 +123,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         # switch to council
         self.setMeetingConfig(self.meetingConfig2.getId())
 
-        meetingCouncil = self._createMeetingWithItems(withItems=False, meetingDate=DateTime() + 1)
-        meetingCouncil2 = self._createMeetingWithItems(withItems=False, meetingDate=DateTime() + 30)
+        meetingCouncil = self._createMeetingWithItems(withItems=False, meetingDate=(DateTime() + 1).asdatetime())
+        meetingCouncil2 = self._createMeetingWithItems(withItems=False, meetingDate=(DateTime() + 30).asdatetime())
         meetingCouncilUID = meetingCouncil.UID()
         meetingCouncilUID2 = meetingCouncil2.UID()
 
@@ -203,7 +204,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         itemNMCDepose.setListType('depose')
         self.presentItem(itemNMCDepose)
 
-        orderedItems = meeting.getItems(listTypes=['normal', 'late', 'depose'], ordered=True)
+        orderedItems = meeting.get_items(list_types=['normal', 'late', 'depose'], ordered=True)
         item1 = orderedItems[0]
         item2 = orderedItems[1]
         item3 = orderedItems[2]
@@ -221,11 +222,11 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
                                                                             itemType='prescriptive')
         standardLateItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
                                                                          standard=True,
-                                                                         listTypes='late',
+                                                                         list_types='late',
                                                                          itemType='prescriptive')
         standardDeposeItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
                                                                            standard=True,
-                                                                           listTypes='depose',
+                                                                           list_types='depose',
                                                                            itemType='prescriptive')
         # To council items (normal, late and depose)
         standardCouncilItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
@@ -234,11 +235,11 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         standardCouncilLateItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
                                                                                 standard=True,
                                                                                 itemType='toCouncil',
-                                                                                listTypes='late')
+                                                                                list_types='late')
         standardCouncilDeposeItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
                                                                                   standard=True,
                                                                                   itemType='toCouncil',
-                                                                                  listTypes='depose')
+                                                                                  list_types='depose')
 
         # Communication items
         standardCommuItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
@@ -271,7 +272,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         # self.assertEqual(standardComplItems[gic1][researchCat][0], itemCompl)
 
         # Every item in the meeting is now from the police group
-        for item in meeting.getItems(listTypes=['normal', 'late', 'depose']):
+        for item in meeting.get_items(list_types=['normal', 'late', 'depose']):
             item.setProposingGroup(org_id_to_uid(POLICE_GROUP_PREFIX))
 
         # Police prescriptive items (normal, late and depose)
@@ -280,11 +281,11 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
                                                                           itemType='prescriptive')
         policeLateItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
                                                                        standard=False,
-                                                                       listTypes=['late'],
+                                                                       list_types=['late'],
                                                                        itemType='prescriptive')
         policeDeposeItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
                                                                          standard=False,
-                                                                         listTypes=['depose'],
+                                                                         list_types=['depose'],
                                                                          itemType='prescriptive')
         # Police to council items (normal, emergency and
         # complementary(emergency+late))
@@ -297,7 +298,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         policeComplItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
                                                                         standard=False,
                                                                         itemType='toCouncil',
-                                                                        listTypes=['late'])
+                                                                        list_types=['late'])
         # Police communication items
         policeCommuItems = meeting.adapted().getPrintableItemsForAgenda(itemUids,
                                                                         standard=False,
@@ -345,14 +346,14 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         itemVen2 = self.create('MeetingItem', proposingGroup=self.vendors_uid)
         itemPol1 = self.create('MeetingItem', proposingGroup=org_id_to_uid(POLICE_GROUP_PREFIX))
         itemPol2 = self.create('MeetingItem', proposingGroup=org_id_to_uid(POLICE_GROUP_PREFIX))
-        meeting = self.create('Meeting', date=DateTime())
+        meeting = self.create('Meeting', date=DateTime().asdatetime())
         for item in [itemDev1, itemDev2, itemDev3,
                      itemVen1, itemVen2,
                      itemPol1, itemPol2, ]:
             self.presentItem(item)
 
         police_uid = org_id_to_uid(POLICE_GROUP_PREFIX)
-        orderedItems = meeting.getItems(ordered=True)
+        orderedItems = meeting.get_items(ordered=True)
         self.assertEqual([item.getId() for item in orderedItems],
                          ['o6', 'o7', 'o1', 'o2', 'o3', 'o4', 'o5'])
         self.assertEqual([item.getProposingGroup() for item in orderedItems],
@@ -377,12 +378,12 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         itemVen1 = self.create('MeetingItem', proposingGroup=self.vendors_uid, category='remboursement')
         itemVen2 = self.create('MeetingItem', proposingGroup=self.vendors_uid, category='affaires-juridiques')
         itemVen3 = self.create('MeetingItem', proposingGroup=self.vendors_uid, category=COMMUNICATION_CAT_ID)
-        meeting = self.create('Meeting', date=DateTime())
+        meeting = self.create('Meeting', date=DateTime().asdatetime())
         for item in [itemDev1, itemDev2, itemDev3,
                      itemVen1, itemVen2, itemVen3]:
             self.presentItem(item)
 
-        orderedItems = meeting.getItems(ordered=True)
+        orderedItems = meeting.get_items(ordered=True)
         self.assertEqual([item.getCategory() for item in orderedItems],
                          [COMMUNICATION_CAT_ID, COMMUNICATION_CAT_ID,
                           'affaires-juridiques', 'affaires-juridiques',
@@ -391,7 +392,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
     def test_pm_FullInsertingProcess(self):
         '''Test inserting an item using the relevant inserting methods.'''
         collegeMeeting, collegeExtraMeeting = self.setupCollegeDemoData()
-        orderedItems = collegeMeeting.getItems(ordered=True)
+        orderedItems = collegeMeeting.get_items(ordered=True)
         cfg2_id = self.meetingConfig2.getId()
         self.assertEqual([
             (item.getListType(), item.getProposingGroup(True).id, item.getGroupsInCharge(True, first=True).id,
@@ -442,7 +443,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         collegeMeeting, collegeExtraMeeting = self.setupCollegeDemoData()
         self.portal.REQUEST['PUBLISHED'] = collegeMeeting
         self.freezeMeeting(collegeMeeting)
-        self.assertEqual(collegeMeeting.queryState(), 'frozen')
+        self.assertEqual(collegeMeeting.query_state(), 'frozen')
         commItem = self.create('MeetingItem')
         commItem.setCategory('communication')
         commItem.setPreferredMeeting(collegeMeeting.UID())
@@ -458,8 +459,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         # use the Council demo that adds items using special category in a frozen meeting
         meeting = self.setupCouncilDemoData()
         self.changeUser('pmManager')
-        self.assertEqual(meeting.queryState(), 'frozen')
-        special_items = meeting.getItems(
+        self.assertEqual(meeting.query_state(), 'frozen')
+        special_items = meeting.get_items(
             ordered=True, additional_catalog_query={'getCategory': COUNCIL_SPECIAL_CATEGORIES})
         # items were presented after meeting freeze
         for item in special_items:
@@ -483,7 +484,8 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         self.setupCouncilConfig()
         self.changeUser('pmManager')
         # Council
-        council_meeting = self.create('Meeting', date=DateTime() + 1)
+        self.setMeetingConfig('meeting-config-council')
+        council_meeting = self.create('Meeting', date=(datetime.datetime.today() + datetime.timedelta(1)))
         # College
         self.setMeetingConfig('meeting-config-college')
         publicItem = self.create('MeetingItem')
@@ -497,7 +499,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         secretItem.setOtherMeetingConfigsClonableToPrivacy((u'meeting-config-council', ))
         secretItem.setProposingGroupWithGroupInCharge(
             '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid))
-        college_meeting = self.create('Meeting', date=DateTime('2017/02/12'))
+        college_meeting = self.create('Meeting', date=DateTime('2017/02/12').asdatetime())
         self.presentItem(publicItem)
         self.presentItem(secretItem)
         self.closeMeeting(college_meeting)

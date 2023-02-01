@@ -53,12 +53,12 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         self.addAnnex(item1)
         self.addAnnex(item1, relatedTo='item_decision')
         self.do(item1, 'propose')
-        self.assertRaises(Unauthorized, self.addAnnex, item1, relatedTo='item_decision')
+        self.assertRaises(Unauthorized, self.addAnnex, item1)
         self.failIf(self.transitions(item1))  # He may trigger no more action
         self.failIf(self.hasPermission('PloneMeeting: Add annex', item1))
         # pmManager creates a meeting
         self.changeUser('pmManager')
-        meeting = self.create('Meeting', date='2007/12/11 09:00:00')
+        meeting = self.create('Meeting', date=DateTime('2007/12/11 09:00:00').asdatetime())
         self.addAnnex(item1, relatedTo='item_decision')
         # pmCreator2 creates and proposes an item
         self.changeUser('pmCreator2')
@@ -100,8 +100,8 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         self.do(item2, 'present')
         self.addAnnex(item2)
         # So now we should have 5 items, 4 normal (3 recurrings + 1 normal) and one late
-        self.failUnless(len(meeting.getItems()) == 5)
-        self.failUnless(len(meeting.getItems(listTypes=['late'])) == 1)
+        self.failUnless(len(meeting.get_items()) == 5)
+        self.failUnless(len(meeting.get_items(list_types=['late'])) == 1)
         self.changeUser('pmManager')
         item1.setDecision(self.decisionText)
 
@@ -136,12 +136,6 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         # apply WFAdaptation defined in zcharleroi.import_data
         cfg = self.meetingConfig
         self.setupCouncilConfig()
-        itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
-        self.assertFalse('itemcreated' in itemWF.states)
-        self.assertFalse('proposed' in itemWF.states)
-        self.assertTrue('validated' in itemWF.states)
-        self.assertEqual(itemWF.initial_state, 'validated')
-
         self.changeUser('pmManager')
         gic2_uid = org_id_to_uid('groupincharge2')
         dev_group_in_charge = '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid)
@@ -149,20 +143,21 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
                             proposingGroupWithGroupInCharge=dev_group_in_charge)
         self.addAnnex(item1)
         self.addAnnex(item1, relatedTo='item_decision')
-        self.assertEqual(item1.queryState(), 'validated')
-        meeting = self.create('Meeting', date='2016/12/11 09:00:00')
+        self.validateItem(item1)
+        self.assertEqual(item1.query_state(), 'validated')
+        meeting = self.create('Meeting', date=DateTime('2016/12/11 09:00:00').asdatetime())
         item2 = self.create('MeetingItem', title='The second item',
                             preferredMeeting=meeting.UID(),
                             proposingGroupWithGroupInCharge=dev_group_in_charge)
         self.presentItem(item1)
         item1.setDecision(self.decisionText)
         self.decideMeeting(meeting)
-        self.assertEqual(meeting.queryState(), 'decided')
+        self.assertEqual(meeting.query_state(), 'decided')
         item2.setDecision(self.decisionText)
         self.presentItem(item2)
         self.do(meeting, 'close')
-        self.assertEqual(item1.queryState(), 'accepted')
-        self.assertEqual(item2.queryState(), 'accepted')
+        self.assertEqual(item1.query_state(), 'accepted')
+        self.assertEqual(item2.query_state(), 'accepted')
 
     def test_pm_WorkflowPermissions(self):
         """
@@ -181,8 +176,8 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         # we do the test for the council config
         # no recurring items defined...
         self.meetingConfig = getattr(self.tool, 'meeting-config-council')
-        meeting = self.create('Meeting', date='2007/12/11 09:00:00')
-        self.assertEqual(len(meeting.getItems()), 0)
+        meeting = self.create('Meeting', date=DateTime('2007/12/11 09:00:00').asdatetime())
+        self.assertEqual(len(meeting.get_items()), 0)
 
     def _checkRecurringItemsCollege(self):
         '''Tests the recurring items system.'''
@@ -206,29 +201,29 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
                     meetingTransitionInsertingMe='decide')
         self.changeUser('pmManager')
         # create a meeting without supplementary items, only the recurring items
-        meeting = self.create('Meeting', date=DateTime('2019/06/28'))
+        meeting = self.create('Meeting', date=DateTime('2019/06/28').asdatetime())
         # The recurring items must have as owner the meeting creator
-        for item in meeting.getItems():
+        for item in meeting.get_items():
             self.assertEqual(item.getOwner().getId(), 'pmManager')
         # The meeting must contain recurring items : 2 defined and one added here above
-        self.failUnless(len(meeting.getItems()) == 3)
-        self.failIf(meeting.getItems(listTypes=['late']))
+        self.failUnless(len(meeting.get_items()) == 3)
+        self.failIf(meeting.get_items(list_types=['late']))
         # After freeze, the meeting must have one recurring item more
         self.freezeMeeting(meeting)
-        self.failUnless(len(meeting.getItems()) == 4)
-        self.failUnless(len(meeting.getItems(listTypes=['late'])) == 1)
+        self.failUnless(len(meeting.get_items()) == 4)
+        self.failUnless(len(meeting.get_items(list_types=['late'])) == 1)
         # Back to created: rec item 2 is inserted again
         self.backToState(meeting, 'created')
-        self.failUnless(len(meeting.getItems()) == 5)
-        self.failUnless(len(meeting.getItems(listTypes=['late'])) == 1)
+        self.failUnless(len(meeting.get_items()) == 5)
+        self.failUnless(len(meeting.get_items(list_types=['late'])) == 1)
         # Recurring items can be added twice...
         self.freezeMeeting(meeting)
-        self.failUnless(len(meeting.getItems()) == 6)
-        self.failUnless(len(meeting.getItems(listTypes=['late'])) == 2)
+        self.failUnless(len(meeting.get_items()) == 6)
+        self.failUnless(len(meeting.get_items(list_types=['late'])) == 2)
         # Decide the meeting, a third late item is added
         self.decideMeeting(meeting)
-        self.failUnless(len(meeting.getItems()) == 7)
-        self.failUnless(len(meeting.getItems(listTypes=['late'])) == 3)
+        self.failUnless(len(meeting.get_items()) == 7)
+        self.failUnless(len(meeting.get_items(list_types=['late'])) == 3)
 
     def test_pm_RemoveContainer(self):
         '''Run the test_pm_RemoveContainer from PloneMeeting.'''

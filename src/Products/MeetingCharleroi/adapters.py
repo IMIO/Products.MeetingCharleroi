@@ -56,17 +56,30 @@ from zope.interface import implements
 
 import re
 
-# disable most of wfAdaptations
-customWfAdaptations = ('no_publication', 'no_global_observation',
-                       'only_creator_may_delete',
-                       'pre_validation', 'items_come_validated',
-                       'return_to_proposing_group', 'charleroi_add_refadmin',
-                       'charleroi_return_to_any_state_when_prevalidated',
-                       'waiting_advices', 'postpone_next_meeting',
-                       'mark_not_applicable', 'removed', 'removed_and_duplicated',
-                       'hide_decisions_when_under_writing', 'refused')
+customWfAdaptations = (  # ORDER IS IMPORTANT
+    'only_creator_may_delete',
+    # first define meeting workflow state removal
+    'no_publication',
+    # then define added item decided states
+    'accepted_but_modified',
+    'postpone_next_meeting',
+    'mark_not_applicable',
+    'removed',
+    'removed_and_duplicated',
+    'refused',
+    'delayed',
+    'pre_accepted',
+    # charleroi specific
+    'charleroi_return_to_any_state_when_prevalidated',
+    # then other adaptations
+    'return_to_proposing_group',
+    'decide_item_when_back_to_meeting_from_returned_to_proposing_group',
+    'hide_decisions_when_under_writing',
+    'waiting_advices',
+    'waiting_advices_proposing_group_send_back',
+    'meetingmanager_correct_closed_meeting',
+)
 MeetingConfig.wfAdaptations = customWfAdaptations
-originalPerformWorkflowAdaptations = adaptations.performWorkflowAdaptations
 
 noGlobalObsStates = ('itempublished', 'itemfrozen', 'accepted', 'refused',
                      'delayed', 'accepted_but_modified', 'pre_accepted')
@@ -75,22 +88,24 @@ adaptations.noGlobalObsStates = noGlobalObsStates
 adaptations.WF_NOT_CREATOR_EDITS_UNLESS_CLOSED = ('delayed', 'refused', 'accepted',
                                                   'pre_accepted', 'accepted_but_modified')
 
-adaptations.WAITING_ADVICES_FROM_STATES = (
-    {'from_states': ('itemcreated', ),
-     'back_states': ('itemcreated', ),
-     'perm_cloned_states': ('itemcreated',),
-     'remove_modify_access': True},
-    {'from_states': ('proposed', ),
-     'back_states': ('proposed', ),
-     'perm_cloned_states': ('proposed',),
-     'remove_modify_access': True},
-    {'from_states': ('prevalidated', ),
-     'back_states': ('proposed_to_refadmin', 'prevalidated', 'validated'),
-     'perm_cloned_states': ('prevalidated',),
-     'remove_modify_access': True},)
+adaptations.WAITING_ADVICES_FROM_STATES = {
+    '*': (
+        {'from_states': ('itemcreated',),
+         'back_states': ('itemcreated',),
+         'perm_cloned_states': ('itemcreated',),
+         'remove_modify_access': True},
+        {'from_states': ('proposed',),
+         'back_states': ('proposed',),
+         'perm_cloned_states': ('proposed',),
+         'remove_modify_access': True},
+        {'from_states': ('prevalidated',),
+         'back_states': ('proposed_to_refadmin', 'prevalidated', 'validated'),
+         'perm_cloned_states': ('prevalidated',),
+         'remove_modify_access': True},),
+}
 
 RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = {'meetingitemcommunes_workflow':
-                                            'meetingitemcommunes_workflow.itemcreated'}
+                                                'meetingitemcommunes_workflow.itemcreated'}
 adaptations.RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE
 
 
@@ -112,14 +127,16 @@ class CustomCharleroiMeeting(CustomMeeting):
         cleanRamCacheFor('Products.MeetingCharleroi.adapters._itemNumberCalculationQueryUids')
         # call old monkeypatched method
         self.__pm_old_updateItemReferences(startNumber, check_needed)
+
     Meeting.updateItemReferences = updateItemReferences
 
     def getDefaultAssemblyPolice(self):
         """ """
-        if self.attributeIsUsed('assemblyPolice'):
+        if self.attribute_is_used('assemblyPolice'):
             tool = api.portal.get_tool('portal_plonemeeting')
             return tool.getMeetingConfig(self).getAssemblyPolice()
         return ''
+
     Meeting.getDefaultAssemblyPolice = getDefaultAssemblyPolice
 
     def _getPoliceItems(self, itemUids, categories=[], excludedCategories=[], listTypes=['normal']):
@@ -381,7 +398,7 @@ class CustomCharleroiMeeting(CustomMeeting):
             elif itemType == 'cc-arret-oj':
                 return self._getStandardCCArretOJItems(itemUids, listTypes=listTypes)
             else:
-                return 'The itemType given to getPrintableItemsForAgenda '\
+                return 'The itemType given to getPrintableItemsForAgenda ' \
                        'must be prescriptive, toCouncil, communication or cc-arret-oj'
         else:
             if itemType == 'prescriptive':
@@ -392,7 +409,7 @@ class CustomCharleroiMeeting(CustomMeeting):
             elif itemType == 'communication':
                 return self._getPoliceCommunicationItems(itemUids, listTypes=listTypes)
             else:
-                return 'The itemType given to getPrintableItemsForAgenda '\
+                return 'The itemType given to getPrintableItemsForAgenda ' \
                        'must be prescriptive, toCouncil or communication'
 
 
@@ -417,6 +434,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
             if ann.get(annotation_key, None):
                 decision = DECISION_ITEM_SENT_TO_COUNCIL
         return decision
+
     MeetingItem.getDecision = getDecision
 
     MeetingItem.__pm_old_getRawDecision = MeetingItem.getRawDecision
@@ -431,6 +449,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
             if ann.get(annotation_key, None):
                 decision = DECISION_ITEM_SENT_TO_COUNCIL
         return decision
+
     MeetingItem.getRawDecision = getRawDecision
 
     security.declarePrivate('setDecision')
@@ -441,6 +460,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         if value.strip() == DECISION_ITEM_SENT_TO_COUNCIL:
             return
         self.getField('decision').set(self, value, **kwargs)
+
     MeetingItem.setDecision = setDecision
 
     MeetingItem.__pm_old_validate_category = MeetingItem.validate_category
@@ -474,32 +494,35 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
            the item is not 'complete', we display a clear message.'''
         item = self.getSelf()
         if advice['id'] == finance_group_uid() and \
-           advice['delay'] and \
-           not advice['delay_started_on']:
+                advice['delay'] and \
+                not advice['delay_started_on']:
             # import FINANCE_WAITING_ADVICES_STATES as it is monkeypatched
             from Products.MeetingCommunes.config import FINANCE_WAITING_ADVICES_STATES
             # item in state giveable but item not complete
-            if item.queryState() in FINANCE_WAITING_ADVICES_STATES:
+            if item.query_state() in FINANCE_WAITING_ADVICES_STATES:
                 return {'displayDefaultComplementaryMessage': False,
+                        'displayAdviceReviewState': False,
                         'customAdviceMessage':
-                        translate('finance_advice_not_giveable_because_item_not_complete',
-                                  domain="PloneMeeting",
-                                  context=item.REQUEST,
-                                  default="Advice is still not giveable because item is not considered complete.")}
+                            translate('finance_advice_not_giveable_because_item_not_complete',
+                                      domain="PloneMeeting",
+                                      context=item.REQUEST,
+                                      default="Advice is still not giveable because item is not considered complete.")}
             elif getLastWFAction(item, 'proposeToFinance') and \
-                item.queryState() in ('itemcreated',
-                                      'itemcreated_waiting_advices',
-                                      'proposed_to_internal_reviewer',
-                                      'proposed_to_internal_reviewer_waiting_advices',
-                                      'proposed_to_director',):
+                    item.query_state() in ('itemcreated',
+                                           'itemcreated_waiting_advices',
+                                           'proposed_to_internal_reviewer',
+                                           'proposed_to_internal_reviewer_waiting_advices',
+                                           'proposed_to_director',):
                 # advice was already given but item was returned back to the service
                 return {'displayDefaultComplementaryMessage': False,
+                        'displayAdviceReviewState': False,
                         'customAdviceMessage': translate(
                             'finance_advice_suspended_because_item_sent_back_to_proposing_group',
                             domain="PloneMeeting",
                             context=item.REQUEST,
                             default="Advice is suspended because it was sent back to proposing group.")}
         return {'displayDefaultComplementaryMessage': True,
+                'displayAdviceReviewState': False,
                 'customAdviceMessage': None}
 
     def _adviceDelayMayBeStarted(self, org_uid):
@@ -516,7 +539,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
 
     def _adviceIsAddable(self, org_uid):
         ''' '''
-        return self.adapted()._adviceIsAddableByCurrentUser(org_uid)
+        return self._adviceIsAddableByCurrentUser(org_uid)
 
     def _advicePortalTypeForAdviser(self, groupId):
         """Return the meetingadvice portal_type that will be added for given p_groupId.
@@ -557,22 +580,14 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         # a finance controller may evaluate if advice is actually asked
         # and may not change completeness if advice is currently given or has been given
         if finance_group_uid() not in item.adviceIndex or \
-           not '%s_financialcontrollers' % finance_group_uid() in member.getGroups():
+                not '%s_financialcontrollers' % finance_group_uid() in member.getGroups():
             return False
 
         # item must be still in a state where the advice can be given
         # and advice must still not have been given
-        if not item.queryState() == 'prevalidated_waiting_advices':
+        if not item.query_state() == 'prevalidated_waiting_advices':
             return False
         return True
-
-    def _findCustomOneLevelFor(self, insertMethod):
-        '''Manage our custom inserting method 'on_police_then_other_groups'.'''
-        if insertMethod == 'on_police_then_other_groups':
-            return 2
-        if insertMethod == 'on_communication':
-            return 3
-        raise NotImplementedError
 
     def _findCustomOrderFor(self, insertMethod):
         '''Manage our custom inserting methods 'on_communication'
@@ -611,9 +626,10 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
 
         res = False
         tool = api.portal.get_tool('portal_plonemeeting')
+        cfg = tool.getMeetingConfig(self.context)
         is20DaysDelay = self.context.adviceIndex[finance_group_uid()]['delay'] == '20'
         # bypass for Managers
-        isManager = tool.isManager(self.context)
+        isManager = tool.isManager(cfg)
         if days == 10 and _checkPermission(ModifyPortalContent, self.context) and not is20DaysDelay:
             res = True
         # change delay widget
@@ -622,9 +638,9 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
                 res = True
             # to 20 or back from 20
             elif days == 20 or (days == 10 and is20DaysDelay):
-                itemState = self.context.queryState()
+                itemState = self.context.query_state()
                 if itemState == 'prevalidated_waiting_advices' and \
-                   tool.adapted().isFinancialUser():
+                        tool.adapted().isFinancialUser():
                     res = True
             # to 5, only available thru change delay widget
             elif days == 5 and not is20DaysDelay:
@@ -637,6 +653,7 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         '''Compute the College item reference.'''
         item = self.getSelf()
         tool = api.portal.get_tool('portal_plonemeeting')
+        cfg = tool.getMeetingConfig(self.context)
         isPoliceItem = bool(item.getProposingGroup(theObject=True).getId().startswith(POLICE_GROUP_PREFIX))
         isCommuItem = bool(item.getCategory() == COMMUNICATION_CAT_ID)
         toSendToCouncil = bool('meeting-config-council' in item.getOtherMeetingConfigsClonableTo())
@@ -656,8 +673,10 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         ref = '-'
         if not isCommuItem:
             meeting = item.getMeeting()
-            year = meeting.getDate().strftime('%Y')
-            meetingNumber = meeting.getMeetingNumber()
+            year = meeting.date.strftime('%Y')
+            meetingNumber = cfg.getLastMeetingNumber() + 1
+            if meeting.meeting_number != -1:
+                meetingNumber = meeting.meeting_number
             ref = str(year) + '/' + str(meetingNumber)
             additionalQuery.update(notCommunicationItems)
             if isPrivacySecret:
@@ -694,6 +713,8 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
     def getItemRefForActeCouncil(self, oj=False):
         '''Compute the Council item reference.'''
         item = self.getSelf()
+        tool = api.portal.get_tool('portal_plonemeeting')
+        cfg = tool.getMeetingConfig(self.context)
         isSpecialItem = bool(item.getCategory() in COUNCIL_SPECIAL_CATEGORIES)
         isLateItem = bool(item.getListType() != 'normal')
 
@@ -705,8 +726,10 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         lateItems = {'listType': {'not': 'normal'}}
 
         meeting = item.getMeeting()
-        year = meeting.getDate().strftime('%Y')
-        meetingNumber = meeting.getMeetingNumber()
+        year = meeting.date.strftime('%Y')
+        meetingNumber = cfg.getLastMeetingNumber() + 1
+        if meeting.meeting_number != -1:
+            meetingNumber = meeting.meeting_number
         ref = str(year) + '/' + str(meetingNumber)
         if isSpecialItem:
             ref = ref + '/S'
@@ -722,19 +745,19 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         ref = ref + '/' + str(itemNumber)
         return ref
 
-    def _itemNumberCalculationQueryUids_cachekey(method, self, meeting, additionalQuery):
-        '''cachekey method for self._itemNumberCalculationQueryUids.'''
-        return (self.context.REQUEST._debug, meeting, additionalQuery)
-
-    @ram.cache(_itemNumberCalculationQueryUids_cachekey)
+    # def _itemNumberCalculationQueryUids_cachekey(method, self, meeting, additionalQuery):
+    #     '''cachekey method for self._itemNumberCalculationQueryUids.'''
+    #     return (self.context.REQUEST._debug, meeting, additionalQuery)
+    #
+    # @ram.cache(_itemNumberCalculationQueryUids_cachekey)
     def _itemNumberCalculationQueryUids(self, meeting, additionalQuery):
         """ """
         # do the query unrestricted so we have same result for users
         # that do not have access to every items of the meeting
-        brains = meeting.getItems(ordered=True,
-                                  theObjects=False,
-                                  additional_catalog_query=additionalQuery,
-                                  unrestricted=True)
+        brains = meeting.get_items(ordered=True,
+                                   the_objects=False,
+                                   additional_catalog_query=additionalQuery,
+                                   unrestricted=True)
         return [brain.UID for brain in brains]
 
     def _itemNumberCalculation(self, item, meeting, additionalQuery={}):
@@ -783,10 +806,10 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         '''Returns 'late' by default except if item is inserted into a Council meeting
            and is coming from a College item presented to an extraordinary meeting.'''
         if self.context.portal_type == 'MeetingItemCouncil':
-            predecessor = self.context.getPredecessor()
+            predecessor = self.context.get_predecessor()
             if predecessor and \
-               predecessor.portal_type == 'MeetingItemCollege' and \
-               (predecessor.hasMeeting() and predecessor.getMeeting().getExtraordinarySession()):
+                    predecessor.portal_type == 'MeetingItemCollege' and \
+                    (predecessor.hasMeeting() and predecessor.getMeeting().extraordinary_session):
                 return 'lateextracollege'
 
         return self.context.getListTypeLateValue(meeting)
@@ -901,7 +924,10 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
     security = ClassSecurityInfo()
 
     def __init__(self, item):
-        self.context = item  # Implements IMeetingItem
+        self.context = item
+        self.tool = api.portal.get_tool('portal_plonemeeting')
+        self.cfg = self.tool.getMeetingConfig(self.context)
+        self.review_state = self.context.query_state()
 
     security.declarePublic('mayProposeToRefAdmin')
 
@@ -915,7 +941,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
 
     def mayWait_advices_from_proposed_to_refadmin(self):
         """ """
-        return self._mayWaitAdvices(self._getWaitingAdvicesStateFrom('proposed_to_refadmin'))
+        return self.mayWait_advices(self._getWaitingAdvicesStateFrom('proposed_to_refadmin'))
 
     security.declarePublic('mayValidate')
 
@@ -925,7 +951,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
             # if finances advice is asked, item may only be validated
             # if the advice has actually be given
             if finance_group_uid() in self.context.adviceIndex and \
-               not self.context.adviceIndex[finance_group_uid()]['type'].endswith('_finance'):
+                    not self.context.adviceIndex[finance_group_uid()]['type'].endswith('_finance'):
                 res = False
         return res
 
@@ -936,7 +962,7 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
         res = MeetingItemCommunesWorkflowConditions(self.context).mayCorrect(destinationState)
         tool = api.portal.get_tool('portal_plonemeeting')
         # if item is sent to finances, only finances advisers and MeetingManagers may send it back
-        if self.context.queryState() == 'prevalidated_waiting_advices':
+        if self.context.query_state() == 'prevalidated_waiting_advices':
             res = False
             if destinationState == 'validated':
                 # in this case, we need the 'mayValidate' to True in the REQUEST
@@ -950,12 +976,12 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
                 if self.context.REQUEST.get('maybackTo_proposed_to_refadmin_from_waiting_advices', False):
                     res = True
                 elif tool.adapted().isFinancialUser() and \
-                    self.context.getCompleteness() in ('completeness_incomplete',
-                                                       'completeness_not_yet_evaluated',
-                                                       'completeness_evaluation_asked_again'):
+                        self.context.getCompleteness() in ('completeness_incomplete',
+                                                           'completeness_not_yet_evaluated',
+                                                           'completeness_evaluation_asked_again'):
                     res = True
             # only administrators may send back to director from finances
-            elif destinationState == 'prevalidated' and tool.isManager(self.context, realManagers=True):
+            elif destinationState == 'prevalidated' and tool.isManager(realManagers=True):
                 res = True
 
         return res
@@ -1038,8 +1064,7 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
         """Condition for enabling the meetingcharleroi_non_finances.css
            made especially to hide/show the 'Finances category' faceted widget."""
         member = api.user.get_current()
-        if '{0}_advisers'.format(finance_group_uid()) in member.getGroups() or \
-           self.context.isManager(context):
+        if '{0}_advisers'.format(finance_group_uid()) in member.getGroups() or "Manager" in member.getRoles():
             return False
         return True
 
@@ -1051,129 +1076,6 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
                                    meetingWorkflow):
         '''This function applies workflow changes as specified by the
            p_meetingConfig.'''
-        if wfAdaptation == 'no_publication':
-            # we override the PloneMeeting's 'no_publication' wfAdaptation
-            # First, update the meeting workflow
-            wf = meetingWorkflow
-            # Delete transitions 'publish' and 'backToPublished'
-            for tr in ('publish', 'backToPublished'):
-                if tr in wf.transitions:
-                    wf.transitions.deleteTransitions([tr])
-            # Update connections between states and transitions
-            wf.states['frozen'].setProperties(
-                title='frozen', description='',
-                transitions=['backToCreated', 'decide'])
-            wf.states['decided'].setProperties(
-                title='decided', description='', transitions=['backToFrozen', 'close'])
-            # Delete state 'published'
-            if 'published' in wf.states:
-                wf.states.deleteStates(['published'])
-            # Then, update the item workflow.
-            wf = itemWorkflow
-            # Delete transitions 'itempublish' and 'backToItemPublished'
-            for tr in ('itempublish', 'backToItemPublished'):
-                if tr in wf.transitions:
-                    wf.transitions.deleteTransitions([tr])
-            # Update connections between states and transitions
-            wf.states['itemfrozen'].setProperties(
-                title='itemfrozen', description='',
-                transitions=['accept', 'accept_but_modify', 'delay', 'pre_accept', 'backToPresented'])
-            for decidedState in ['accepted', 'delayed', 'accepted_but_modified']:
-                wf.states[decidedState].setProperties(
-                    title=decidedState, description='',
-                    transitions=['backToItemFrozen', ])
-            wf.states['pre_accepted'].setProperties(
-                title='pre_accepted', description='',
-                transitions=['accept', 'accept_but_modify', 'backToItemFrozen'])
-            # Delete state 'published'
-            if 'itempublished' in wf.states:
-                wf.states.deleteStates(['itempublished'])
-            return True
-        if wfAdaptation == 'charleroi_add_refadmin':
-            # add the 'proposed_to_refadmin' state after proposed state and before prevalidated state
-            itemStates = itemWorkflow.states
-            if 'proposed_to_refadmin' not in itemStates and 'prevalidated' in itemStates:
-                # create proposed_to_refadmin state
-                wf = itemWorkflow
-                if 'proposed_to_refadmin' not in wf.states:
-                    wf.states.addState('proposed_to_refadmin')
-                for tr in ('proposeToRefAdmin', 'backToProposedToRefAdmin'):
-                    if tr not in wf.transitions:
-                        wf.transitions.addTransition(tr)
-                transition = wf.transitions['proposeToRefAdmin']
-                transition.setProperties(
-                    title='proposeToRefAdmin',
-                    new_state_id='proposed_to_refadmin', trigger_type=1, script_name='',
-                    actbox_name='proposeToRefAdmin', actbox_url='',
-                    actbox_icon='%(portal_url)s/proposeToRefAdmin.png', actbox_category='workflow',
-                    props={'guard_expr': 'python:here.wfConditions().mayProposeToRefAdmin()'})
-                transition = wf.transitions['backToProposedToRefAdmin']
-                transition.setProperties(
-                    title='backToProposedToRefAdmin',
-                    new_state_id='proposed_to_refadmin', trigger_type=1, script_name='',
-                    actbox_name='backToProposedToRefAdmin', actbox_url='',
-                    actbox_icon='%(portal_url)s/backToProposedToRefAdmin.png', actbox_category='workflow',
-                    props={'guard_expr': 'python:here.wfConditions().mayCorrect("proposed_to_refadmin")'})
-                # Update connections between states and transitions
-                wf.states['proposed'].setProperties(
-                    title='proposed', description='',
-                    transitions=['backToItemCreated', 'proposeToRefAdmin'])
-                wf.states['proposed_to_refadmin'].setProperties(
-                    title='proposed_to_refadmin', description='',
-                    transitions=['backToProposed', 'prevalidate'])
-                wf.states['prevalidated'].setProperties(
-                    title='prevalidated', description='',
-                    transitions=['backToProposedToRefAdmin', 'validate'])
-                # Initialize permission->roles mapping for new state "proposed_to_refadmin",
-                # which is the same as state "proposed" in the previous setting.
-                proposed = wf.states['proposed']
-                proposed_to_refadmin = wf.states['proposed_to_refadmin']
-                for permission, roles in proposed.permission_roles.iteritems():
-                    proposed_to_refadmin.setPermission(permission, 0, roles)
-                # Update permission->roles mappings for states 'proposed' and
-                # 'proposed_to_refadmin': 'proposed' is 'mainly managed' by
-                # 'MeetingServiceHead', while 'proposed_to_refadmin' is "mainly managed" by
-                # 'MeetingPreReviewer'.
-                for permission in proposed.permission_roles.iterkeys():
-                    roles = list(proposed.permission_roles[permission])
-                    if 'MeetingPreReviewer' not in roles:
-                        continue
-                    roles.remove('MeetingPreReviewer')
-                    roles.append('MeetingServiceHead')
-                    proposed.setPermission(permission, 0, roles)
-                for permission in proposed_to_refadmin.permission_roles.iterkeys():
-                    roles = list(proposed_to_refadmin.permission_roles[permission])
-                    if 'MeetingRefAdmin' not in roles:
-                        continue
-                    roles.remove('MeetingServiceHead')
-                    roles.append('MeetingPreReviewer')
-                    proposed_to_refadmin.setPermission(permission, 0, roles)
-                # The previous update on state 'proposed_to_refadmin' was a bit too restrictive:
-                # it prevents the MeetingServiceHead from consulting the item once it has been
-                # proposed_to_refadmin. So here we grant him back this right.
-                for viewPerm in ('View', 'Access contents information'):
-                    grantPermission(proposed_to_refadmin, viewPerm, 'MeetingServiceHead')
-                # Update permission->role mappings for every other state, taking into
-                # account new role 'MeetingServiceHead'. The idea is: later in the
-                # workflow, MeetingServiceHead and MeetingPreReviewer are granted exactly
-                # the same rights.
-                for stateName in wf.states.keys():
-                    if stateName in ('itemcreated', 'proposed', 'proposed_to_refadmin'):
-                        continue
-                    state = wf.states[stateName]
-                    for permission in state.permission_roles.iterkeys():
-                        roles = state.permission_roles[permission]
-                        if ('MeetingPreReviewer' in roles) and \
-                           ('MeetingServiceHead' not in roles):
-                            grantPermission(state, permission, 'MeetingServiceHead')
-                # Transition "backToProposedToServiceHead" must be protected by a popup, like
-                # any other "correct"-like transition.
-                toConfirm = meetingConfig.getTransitionsToConfirm()
-                if 'MeetingItem.backToProposedToRefAdmin' not in toConfirm:
-                    toConfirm = list(toConfirm)
-                    toConfirm.append('MeetingItem.backToProposedToRefAdmin')
-                    meetingConfig.setTransitionsToConfirm(toConfirm)
-            return True
         if wfAdaptation == 'charleroi_return_to_any_state_when_prevalidated':
             # Allow reviewers and managers to send items back to any previous state in one click
             if 'prevalidated' in itemWorkflow.states:
@@ -1212,6 +1114,7 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
                 return True
         return False
 
+
 # ------------------------------------------------------------------------------
 InitializeClass(CustomCharleroiMeeting)
 InitializeClass(CustomCharleroiMeetingItem)
@@ -1225,6 +1128,8 @@ InitializeClass(MeetingItemCharleroiCouncilWorkflowConditions)
 InitializeClass(MeetingCharleroiCouncilWorkflowActions)
 InitializeClass(MeetingCharleroiCouncilWorkflowConditions)
 InitializeClass(CustomCharleroiToolPloneMeeting)
+
+
 # ------------------------------------------------------------------------------
 
 
@@ -1243,7 +1148,7 @@ class MCHItemPrettyLinkAdapter(ItemPrettyLinkAdapter):
         if self.context.isDefinedInTool():
             return icons
 
-        itemState = self.context.queryState()
+        itemState = self.context.query_state()
         # Add our icons for some review states
         if itemState == 'proposed_to_refadmin':
             icons.append(('proposeToRefAdmin.png',
