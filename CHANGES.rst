@@ -1,6 +1,7 @@
 Products.MeetingCharleroi Changelog
 ===================================
 
+
 4.2.0a3 (unreleased)
 --------------------
 
@@ -21,6 +22,21 @@ Products.MeetingCharleroi Changelog
 - Removed specific `charleroi_add_refadmin` WFA and use itemWFValidationLevels instead.
   [aduchene]
 - Use a custom schema policy to add attributes on Meeting's schema (DX).
+  [aduchene]
+
+4.1.9 (2021-12-03)
+------------------
+
+- Keep pollType when item is duplicated to other MeetingConfig.
+  [aduchene]
+- Fixed `test_ValidateCategoryIfCollegeItemToSendToCouncil` due to change in
+  `MeetingItem.validate_category`, the given category must exists.
+  [gbastien]
+
+4.1.8 (2021-07-26)
+------------------
+
+- Added a default classifier when an item is sent from one MeetingConfig to another.
   [aduchene]
 
 4.1.7 (2020-10-30)
