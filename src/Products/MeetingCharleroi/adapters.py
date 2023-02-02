@@ -5,6 +5,8 @@
 
 from AccessControl import ClassSecurityInfo
 from collections import OrderedDict
+
+from Products.PloneMeeting.widgets.pm_textarea import get_textarea_value
 from collective.contact.plonegroup.utils import get_organizations
 from DateTime import DateTime
 from Globals import InitializeClass
@@ -132,6 +134,26 @@ class CustomCharleroiMeeting(CustomMeeting):
         self.__pm_old_updateItemReferences(startNumber, check_needed)
 
     Meeting.updateItemReferences = updateItemReferences
+
+    def get_assembly_privacy_secret_absents(self, for_display=True, striked=True, mark_empty_tags=False, raw=True):
+        """ """
+        return get_textarea_value(
+            self.assembly_privacy_secret_absents,
+            self,
+            for_display=for_display,
+            striked=striked,
+            mark_empty_tags=mark_empty_tags,
+            raw=raw)
+
+    def get_assembly_police(self, for_display=True, striked=True, mark_empty_tags=False, raw=True):
+        """ """
+        return get_textarea_value(
+            self.assembly_police,
+            self,
+            for_display=for_display,
+            striked=striked,
+            mark_empty_tags=mark_empty_tags,
+            raw=raw)
 
     def getDefaultAssemblyPolice(self):
         """ """

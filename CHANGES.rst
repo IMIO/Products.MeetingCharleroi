@@ -5,8 +5,8 @@ Products.MeetingCharleroi Changelog
 4.2.0b3 (unreleased)
 --------------------
 
-- Nothing changed yet.
-
+- Add back `get_assembly_privacy_secret_absents` and `get_assembly_police`.
+  [aduchene]
 
 4.2.0b2 (2023-02-02)
 --------------------
