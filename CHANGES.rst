@@ -5,8 +5,9 @@ Products.MeetingCharleroi Changelog
 4.2.0a4 (unreleased)
 --------------------
 
-- Nothing changed yet.
-
+- Added a `IMeetingCharleroiLayer BrowserLayer` so it is possible to override
+  PloneMeeting's documentgenerator views.
+  [aduchene]
 
 4.2.0a3 (2023-02-01)
 --------------------

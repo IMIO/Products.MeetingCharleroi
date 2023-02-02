@@ -3,4 +3,22 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:plone="http://namespaces.plone.org/plone">
 
+    <!-- collective.documentgenerator helper view for MeetingItem -->
+    <browser:page
+        for="Products.PloneMeeting.interfaces.IMeetingItem"
+        class=".overrides.MCHItemDocumentGenerationHelperView"
+        permission="zope2.View"
+        layer="Products.MeetingCharleroi.interfaces.IMeetingCharleroiLayer"
+        name="document_generation_helper_view"
+     />
+
+    <!-- collective.documentgenerator helper view for Meeting -->
+    <browser:page
+        for="Products.PloneMeeting.interfaces.IMeeting"
+        class=".overrides.MCHMeetingDocumentGenerationHelperView"
+        permission="zope2.View"
+        layer="Products.MeetingCharleroi.interfaces.IMeetingCharleroiLayer"
+        name="document_generation_helper_view"
+     />
+
 </configure>
