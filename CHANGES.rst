@@ -2,7 +2,7 @@ Products.MeetingCharleroi Changelog
 ===================================
 
 
-4.2.0a4 (unreleased)
+4.2.0a4 (2023-02-02)
 --------------------
 
 - Removed `custom_charleroi_schema_policy_meeting` schema policy, override
