@@ -2,7 +2,7 @@ Products.MeetingCharleroi Changelog
 ===================================
 
 
-4.2.0b1 (unreleased)
+4.2.0b1 (2023-02-02)
 --------------------
 
 - Fixed `MCHMeetingDocumentGenerationHelperView` and add test about the newly added browser layer.
