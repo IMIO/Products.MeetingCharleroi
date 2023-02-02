@@ -525,50 +525,37 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         When a MeetingItem is sent from College to Council, a default classifier
         must be set in order to present it.
         """
-        self.changeUser('siteadmin')
         self.setMeetingConfig('meeting-config-council')
-        self.meetingConfig.setUseGroupsAsCategories(False)
         self.setupCouncilConfig()
-        self.meetingConfig.setUsedItemAttributes(
-            list(self.meetingConfig.getUsedItemAttributes()) + ['classifier']
-        )
+        self.changeUser('pmManager')
         # Council
-        council_meeting = self.create('Meeting', date=DateTime() + 1)
+        self.setMeetingConfig('meeting-config-council')
+        council_meeting = self.create('Meeting', date=(datetime.datetime.today() + datetime.timedelta(1)))
         # College
         self.setMeetingConfig('meeting-config-college')
-        self.meetingConfig.setMeetingConfigsToCloneTo(({
-            'meeting_config': 'meeting-config-council',
-            'trigger_workflow_transitions_until': 'meeting-config-council.present'
-        },))
-
-        self.changeUser('pmManager')
-        item = self.create('MeetingItem')
-        item.setOtherMeetingConfigsClonableTo((u'meeting-config-council',))
-        item = self.create('MeetingItem', category=COUNCIL_DEFAULT_CATEGORY)
-        item.setOtherMeetingConfigsClonableTo((u'meeting-config-council',))
-        item.setOtherMeetingConfigsClonableToPrivacy(())
+        publicItem = self.create('MeetingItem')
+        publicItem.setOtherMeetingConfigsClonableTo((u'meeting-config-council',))
+        publicItem.setOtherMeetingConfigsClonableToPrivacy(())
         gic2_uid = org_id_to_uid('groupincharge2')
-        item.setProposingGroupWithGroupInCharge(
+        publicItem.setProposingGroupWithGroupInCharge(
             '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid))
-
-        private_item = self.create('MeetingItem', category=COUNCIL_DEFAULT_CATEGORY)
-        private_item.setOtherMeetingConfigsClonableTo((u'meeting-config-council',))
-        private_item.setOtherMeetingConfigsClonableToPrivacy((u'meeting-config-council',))
-        private_item.setProposingGroupWithGroupInCharge(
+        secretItem = self.create('MeetingItem')
+        secretItem.setOtherMeetingConfigsClonableTo((u'meeting-config-council',))
+        secretItem.setOtherMeetingConfigsClonableToPrivacy((u'meeting-config-council',))
+        secretItem.setProposingGroupWithGroupInCharge(
             '{0}__groupincharge__{1}'.format(self.developers_uid, gic2_uid))
-        college_meeting = self.create('Meeting', date=DateTime('2021/07/19'))
-        self.presentItem(item)
-        self.presentItem(private_item)
+        college_meeting = self.create('Meeting', date=DateTime('2017/02/12').asdatetime())
+        self.presentItem(publicItem)
+        self.presentItem(secretItem)
         self.closeMeeting(college_meeting)
-
-        council_item = item.getItemClonedToOtherMC('meeting-config-council')
+        council_item = publicItem.getItemClonedToOtherMC('meeting-config-council')
         self.assertEqual(council_item.getClassifier(), COUNCIL_DEFAULT_CLASSIFIER)
-        self.assertEqual(council_item.queryState(), 'presented')
+        self.assertEqual(council_item.query_state(), 'presented')
 
-        council_private_item = private_item.getItemClonedToOtherMC('meeting-config-council')
+        council_private_item = secretItem.getItemClonedToOtherMC('meeting-config-council')
         self.assertEqual(council_private_item.getClassifier(), COUNCIL_DEFAULT_CLASSIFIER)
         # Private items are not presented by default
-        self.assertNotEqual(council_private_item.queryState(), 'presented')
+        self.assertNotEqual(council_private_item.query_state(), 'presented')
 
 
 def test_suite():
