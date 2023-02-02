@@ -10,6 +10,9 @@ Products.MeetingCharleroi Changelog
   [gbastien]
 - Fixed version (4200 instead 4.2) in metadata.xml so portal_setup is happy.
   [gbastien]
+- Added a `IMeetingCharleroiLayer BrowserLayer` so it is possible to override
+  PloneMeeting's documentgenerator views.
+  [aduchene]
 
 4.2.0a3 (2023-02-01)
 --------------------

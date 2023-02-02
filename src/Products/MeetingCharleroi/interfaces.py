@@ -19,7 +19,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 # 02110-1301, USA.
 #
-
+from Products.MeetingCommunes.interfaces import IMeetingCommunesLayer
 from Products.MeetingCommunes.interfaces import IMeetingCommunesWorkflowActions
 from Products.MeetingCommunes.interfaces import IMeetingCommunesWorkflowConditions
 from Products.MeetingCommunes.interfaces import IMeetingItemCommunesWorkflowActions
@@ -192,4 +192,6 @@ class IMeetingCharleroiCouncilWorkflowConditions(IMeetingCommunesWorkflowConditi
         """
           Guard for the 'backToXXX' transitions
         """
-# ------------------------------------------------------------------------------
+
+class IMeetingCharleroiLayer(IMeetingCommunesLayer):
+    ''' '''

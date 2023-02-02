@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<layers>
+    <layer name="Products.MeetingCharleroi.interfaces.IMeetingCharleroiLayer"
+           interface="Products.MeetingCharleroi.interfaces.IMeetingCharleroiLayer" />
+</layers>
