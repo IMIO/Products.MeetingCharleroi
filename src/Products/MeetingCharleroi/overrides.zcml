@@ -3,4 +3,8 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:plone="http://namespaces.plone.org/plone">
 
+    <!-- Custom meeting fields -->
+    <utility factory=".meeting.CustomCharleroiMeetingSchemaPolicy"
+             name="schema_policy_meeting" />
+
 </configure>

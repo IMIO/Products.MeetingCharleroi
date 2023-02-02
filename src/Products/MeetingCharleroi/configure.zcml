@@ -74,7 +74,7 @@
     <utility component=".vocabularies.AdviceMotivationCategoriesVocabularyFactory"
              name="Products.MeetingCharleroi.vocabularies.advicemotivationcategoriesvocabulary"/>
 
-    <!-- Custom meeting fields -->
+    <!-- XXX to be removed when portal_types correct in production instance -->
     <utility factory=".meeting.CustomCharleroiMeetingSchemaPolicy"
              name="custom_charleroi_schema_policy_meeting" />
 
