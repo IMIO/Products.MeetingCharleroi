@@ -2,7 +2,7 @@ Products.MeetingCharleroi Changelog
 ===================================
 
 
-4.2.0b2 (unreleased)
+4.2.0b2 (2023-02-02)
 --------------------
 
 - meeting.getDate() -> meeting.date.
