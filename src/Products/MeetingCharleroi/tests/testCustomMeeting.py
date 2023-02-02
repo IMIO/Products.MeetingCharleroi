@@ -557,6 +557,26 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         # Private items are not presented by default
         self.assertNotEqual(council_private_item.query_state(), 'presented')
 
+    def test_MeetingFieldsetsOrder(self):
+        """As we added custom fields on meeting, make sure fieldsets are still
+           correctly ordered, this actually tests the reorder_groups function
+           from PloneMeeting."""
+        self.changeUser('pmManager')
+        meeting = self.create('Meeting')
+        edit_form = meeting.restrictedTraverse('@@edit')
+        edit_form.update()
+        self.assertEqual(
+            [group.__name__ for group in edit_form.groups],
+            ['dates_and_data', 'assembly'])
+        # in the ++add++ form order is correct as well
+        folder = meeting.aq_inner.aq_parent
+        add_form = folder.restrictedTraverse(
+            '++add++{0}'.format(meeting.portal_type)).form_instance
+        add_form.update()
+        self.assertEqual(
+            [group.__name__ for group in add_form.groups],
+            ['dates_and_data', 'assembly'])
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite

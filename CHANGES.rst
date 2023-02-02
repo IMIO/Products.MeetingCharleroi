@@ -5,8 +5,11 @@ Products.MeetingCharleroi Changelog
 4.2.0a4 (unreleased)
 --------------------
 
-- Nothing changed yet.
-
+- Removed `custom_charleroi_schema_policy_meeting` schema policy, override
+  the default one instead (schema_policy_meeting).
+  [gbastien]
+- Fixed version (4200 instead 4.2) in metadata.xml so portal_setup is happy.
+  [gbastien]
 
 4.2.0a3 (2023-02-01)
 --------------------

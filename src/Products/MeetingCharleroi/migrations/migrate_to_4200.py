@@ -58,7 +58,7 @@ class Migrate_To_4200(MCMigrate_To_4200):
 
     def run(self, profile_name="profile-Products.MeetingCharleroi:default", extra_omitted=[]):
         super(Migrate_To_4200, self).run(extra_omitted=extra_omitted)
-        self._applyCustomMeetingSchemaPolicy()
+        # self._applyCustomMeetingSchemaPolicy()
         logger.info("Done migrating to MeetingCharleroi 4200...")
 
 

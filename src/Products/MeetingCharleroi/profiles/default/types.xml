@@ -2,5 +2,4 @@
 <object name="portal_types"
         meta_type="Plone Types Tool">
  <object name="meetingadvicefinances" meta_type="Dexterity FTI"/>
- <object name="Meeting" meta_type="Dexterity FTI"/>
 </object>

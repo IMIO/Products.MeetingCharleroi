@@ -74,10 +74,6 @@
     <utility component=".vocabularies.AdviceMotivationCategoriesVocabularyFactory"
              name="Products.MeetingCharleroi.vocabularies.advicemotivationcategoriesvocabulary"/>
 
-    <!-- Custom meeting fields -->
-    <utility factory=".meeting.CustomCharleroiMeetingSchemaPolicy"
-             name="custom_charleroi_schema_policy_meeting" />
-
     <!-- Indexes -->
     <adapter name="financesAdviceCategory" factory=".indexes.financesAdviceCategory"/>
 

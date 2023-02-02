@@ -19,4 +19,8 @@
         name="document_generation_helper_view"
      />
 
+    <!-- Custom meeting fields -->
+    <utility factory=".meeting.CustomCharleroiMeetingSchemaPolicy"
+             name="schema_policy_meeting" />
+
 </configure>
