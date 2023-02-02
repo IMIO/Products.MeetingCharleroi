@@ -273,7 +273,7 @@ class CustomCharleroiMeeting(CustomMeeting):
         res = OrderedDict(
             sorted(
                 res.items(),
-                key=lambda t: (t[0] and t[0].getDate().strftime('%Y%m%d') or DateTime('1950/01/01'))))
+                key=lambda t: (t[0] and t[0].date.strftime('%Y%m%d') or DateTime('1950/01/01'))))
         return res
 
     def _getPolicePrescriptiveItems(self, itemUids, list_types=['normal']):

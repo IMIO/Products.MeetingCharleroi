@@ -5,8 +5,8 @@ Products.MeetingCharleroi Changelog
 4.2.0b2 (unreleased)
 --------------------
 
-- Nothing changed yet.
-
+- meeting.getDate() -> meeting.date.
+  [aduchene]
 
 4.2.0b1 (2023-02-02)
 --------------------
