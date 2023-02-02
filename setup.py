@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '4.2.0b3.dev0'
+version = '4.2.0b3'
 
 setup(name='Products.MeetingCharleroi',
       version=version,
