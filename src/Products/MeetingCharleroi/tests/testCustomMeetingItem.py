@@ -25,6 +25,7 @@
 from DateTime import DateTime
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.permissions import View
+from Products.MeetingCharleroi.browser.overrides import MCHItemDocumentGenerationHelperView
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import DECISION_ITEM_SENT_TO_COUNCIL
@@ -413,6 +414,13 @@ class testCustomMeetingItem(MeetingCharleroiTestCase, mctcmi):
         self.assertEqual(item.getPollType(), 'secret_separated')
         self.assertEqual(councilItem.getPollType(), 'secret_separated')
 
+    def test_MCHItemDocumentGenerationHelperView(self):
+        """Test if the browser layer is correctly applied"""
+        self.changeUser('pmCreator1')
+        item = self.create('MeetingItem')
+        view = item.restrictedTraverse("@@document-generation")
+        helper = view.get_generation_context_helper()
+        self.assertTrue(isinstance(helper, MCHItemDocumentGenerationHelperView))
 
 def test_suite():
     from unittest import TestSuite, makeSuite

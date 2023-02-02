@@ -2,6 +2,7 @@
 import datetime
 
 from DateTime import DateTime
+from Products.MeetingCharleroi.browser.overrides import MCHMeetingDocumentGenerationHelperView
 from imio.history.utils import getLastWFAction
 from plone import api
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
@@ -577,6 +578,13 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
             [group.__name__ for group in add_form.groups],
             ['dates_and_data', 'assembly'])
 
+    def test_MCHMeetingDocumentGenerationHelperView(self):
+        """Test if the browser layer is correctly applied"""
+        self.changeUser('pmManager')
+        meeting = self.create('Meeting')
+        view = meeting.restrictedTraverse("@@document-generation")
+        helper = view.get_generation_context_helper()
+        self.assertTrue(isinstance(helper, MCHMeetingDocumentGenerationHelperView))
 
 def test_suite():
     from unittest import TestSuite, makeSuite

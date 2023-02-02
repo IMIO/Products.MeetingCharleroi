@@ -14,7 +14,7 @@
 
     <!-- collective.documentgenerator helper view for Meeting -->
     <browser:page
-        for="Products.PloneMeeting.interfaces.IMeeting"
+        for="Products.PloneMeeting.content.meeting.IMeeting"
         class=".overrides.MCHMeetingDocumentGenerationHelperView"
         permission="zope2.View"
         layer="Products.MeetingCharleroi.interfaces.IMeetingCharleroiLayer"
