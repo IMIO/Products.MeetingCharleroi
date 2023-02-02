@@ -138,8 +138,8 @@ class CustomCharleroiMeeting(CustomMeeting):
     def get_assembly_privacy_secret_absents(self, for_display=True, striked=True, mark_empty_tags=False, raw=True):
         """ """
         return get_textarea_value(
-            self.assembly_privacy_secret_absents,
-            self,
+            self.context.assembly_privacy_secret_absents,
+            self.context,
             for_display=for_display,
             striked=striked,
             mark_empty_tags=mark_empty_tags,
@@ -148,8 +148,8 @@ class CustomCharleroiMeeting(CustomMeeting):
     def get_assembly_police(self, for_display=True, striked=True, mark_empty_tags=False, raw=True):
         """ """
         return get_textarea_value(
-            self.assembly_police,
-            self,
+            self.context.assembly_police,
+            self.context,
             for_display=for_display,
             striked=striked,
             mark_empty_tags=mark_empty_tags,

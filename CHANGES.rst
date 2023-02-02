@@ -2,6 +2,12 @@ Products.MeetingCharleroi Changelog
 ===================================
 
 
+4.2.0b4 (unreleased)
+--------------------
+
+- Nothing changed yet.
+
+
 4.2.0b3 (2023-02-02)
 --------------------
 
