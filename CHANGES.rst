@@ -5,8 +5,9 @@ Products.MeetingCharleroi Changelog
 4.2.0b4 (unreleased)
 --------------------
 
-- Nothing changed yet.
-
+- Updated `meetingitem_view` regarding changes in `PloneMeeting`
+  (votesResult after motivation or after decision).
+  [gbastien]
 
 4.2.0b3 (2023-02-02)
 --------------------
