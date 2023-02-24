@@ -1,11 +1,11 @@
 # encoding: utf-8
 
+from Products.MeetingCharleroi.config import ADVICE_CATEGORIES
+from Products.MeetingCharleroi.config import ADVICE_MOTIVATION_CATEGORIES
 from zope.interface import implements
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
-from Products.MeetingCharleroi.config import ADVICE_CATEGORIES
-from Products.MeetingCharleroi.config import ADVICE_MOTIVATION_CATEGORIES
 
 
 class AdviceCategoriesVocabulary(object):

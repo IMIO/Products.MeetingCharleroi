@@ -7,14 +7,15 @@
 # GNU General Public License (GPL)
 #
 
-from Products.CMFPlone.utils import safe_unicode
-from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
-from Products.MeetingCharleroi.utils import finance_group_uid
-from Products.MeetingCommunes.browser.overrides import MCItemDocumentGenerationHelperView, \
-    MCMeetingDocumentGenerationHelperView
 from collective.contact.plonegroup.utils import get_organizations
 from imio.history.utils import getLastWFAction
 from plone import api
+from Products.CMFPlone.utils import safe_unicode
+from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
+from Products.MeetingCharleroi.utils import finance_group_uid
+from Products.MeetingCommunes.browser.overrides import MCItemDocumentGenerationHelperView
+from Products.MeetingCommunes.browser.overrides import MCMeetingDocumentGenerationHelperView
+
 
 FIN_ADVICE_LINE1 = u"<p>Considérant la communication du dossier au Directeur financier faite en date du {0}, " \
                    u"conformément à l'article L1124-40 §1er, 3° et 4° du " \

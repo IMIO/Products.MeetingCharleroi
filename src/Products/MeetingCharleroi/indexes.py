@@ -9,8 +9,8 @@
 
 from plone.indexer import indexer
 from Products.MeetingCharleroi.utils import finance_group_uid
-from Products.PluginIndexes.common.UnIndex import _marker
 from Products.PloneMeeting.interfaces import IMeetingItem
+from Products.PluginIndexes.common.UnIndex import _marker
 
 
 @indexer(IMeetingItem)

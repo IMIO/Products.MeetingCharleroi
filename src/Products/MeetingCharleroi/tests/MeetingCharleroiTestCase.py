@@ -4,46 +4,27 @@
 #
 # GNU General Public License (GPL)
 #
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-# 02110-1301, USA.
-#
-import copy
 
-from DateTime import DateTime
-from Products.MeetingCharleroi.testing import MCH_TESTING_PROFILE_FUNCTIONAL
-from Products.MeetingCharleroi.tests.helpers import MeetingCharleroiTestingHelpers
-from Products.MeetingCommunes.tests.MeetingCommunesTestCase import (
-    MeetingCommunesTestCase,
-)
 from collective.contact.plonegroup.utils import get_all_suffixes
 from collective.contact.plonegroup.utils import get_organizations
 from collective.contact.plonegroup.utils import select_org_for_function
 from copy import deepcopy
 from plone import api
 from plone.memoize.forever import _memos
-from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX, CHARLEROI_COUNCIL_ITEM_WF_VALIDATION_LEVELS, \
-    COUNCIL_SPECIAL_CATEGORIES
+from Products.MeetingCharleroi.config import CHARLEROI_COUNCIL_ITEM_WF_VALIDATION_LEVELS
+from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.config import PROJECTNAME
-from Products.MeetingCharleroi.profiles.zcharleroi import (
-    import_data as charleroi_import_data,
-)
+from Products.MeetingCharleroi.profiles.zcharleroi import import_data as charleroi_import_data
 from Products.MeetingCharleroi.setuphandlers import _addCouncilDemoData
 from Products.MeetingCharleroi.setuphandlers import _demoData
+from Products.MeetingCharleroi.testing import MCH_TESTING_PROFILE_FUNCTIONAL
+from Products.MeetingCharleroi.tests.helpers import MeetingCharleroiTestingHelpers
 from Products.MeetingCharleroi.utils import finance_group_uid
+from Products.MeetingCommunes.tests.MeetingCommunesTestCase import MeetingCommunesTestCase
 from Products.PloneMeeting.exportimport.content import ToolInitializer
 from Products.PloneMeeting.utils import org_id_to_uid
+
+import copy
 
 
 class MeetingCharleroiTestCase(MeetingCommunesTestCase, MeetingCharleroiTestingHelpers):
@@ -335,7 +316,7 @@ class MeetingCharleroiTestCase(MeetingCommunesTestCase, MeetingCharleroiTestingH
         cfg.setListTypes(charleroi_import_data.collegeMeeting.listTypes)
         cfg.setInsertingMethodsOnAddItem(charleroi_import_data.collegeMeeting.insertingMethodsOnAddItem)
         cfg.setOrderedGroupsInCharge([])  # We'll use organization's order
-        cfg.setUseGroupsAsCategories(charleroi_import_data.collegeMeeting.useGroupsAsCategories)
+        self._enableField('category')
         cfg.setItemReferenceFormat(charleroi_import_data.collegeMeeting.itemReferenceFormat)
         # let creators select the 'toDiscuss' value
         cfg.setToDiscussSetOnItemInsert(False)

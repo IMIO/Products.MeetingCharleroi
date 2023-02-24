@@ -8,19 +8,16 @@
 #
 # GNU General Public License (GPL)
 #
-import datetime
-from datetime import timedelta
-
-from Products.MeetingCommunes.config import PORTAL_CATEGORIES
 from collective.eeafaceted.dashboard.utils import addFacetedCriteria
+from datetime import timedelta
 from imio.helpers.catalog import addOrUpdateIndexes
+from imio.helpers.content import get_vocab
 from plone import api
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
-from imio.helpers.content import get_vocab
 from plone.memoize.forever import _memos
 from Products.CMFPlone.utils import _createObjectByType
-from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID, COUNCIL_DEFAULT_CLASSIFIER
+from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CLASSIFIER
@@ -32,6 +29,7 @@ from Products.MeetingCommunes.config import PORTAL_CATEGORIES
 from Products.PloneMeeting.exportimport.content import ToolInitializer
 from Products.PloneMeeting.utils import org_id_to_uid
 
+import datetime
 import logging
 import os
 

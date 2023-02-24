@@ -5,8 +5,6 @@
 
 from AccessControl import ClassSecurityInfo
 from collections import OrderedDict
-
-from Products.PloneMeeting.widgets.pm_textarea import get_textarea_value
 from collective.contact.plonegroup.utils import get_organizations
 from DateTime import DateTime
 from Globals import InitializeClass
@@ -52,11 +50,13 @@ from Products.PloneMeeting.MeetingItem import MeetingItem
 # states taken into account by the 'no_global_observation' wfAdaptation
 from Products.PloneMeeting.model import adaptations
 from Products.PloneMeeting.model.adaptations import grantPermission
+from Products.PloneMeeting.widgets.pm_textarea import get_textarea_value
 from zope.annotation import IAnnotations
 from zope.i18n import translate
 from zope.interface import implements
 
 import re
+
 
 customWfAdaptations = (  # ORDER IS IMPORTANT
     'only_creator_may_delete',

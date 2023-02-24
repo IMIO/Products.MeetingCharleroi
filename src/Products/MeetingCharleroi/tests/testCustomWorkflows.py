@@ -5,7 +5,6 @@
 # Copyright (c) 2019 by Imio.be
 #
 
-import datetime
 from DateTime import DateTime
 from plone import api
 from plone.app.textfield.value import RichTextValue
@@ -17,6 +16,8 @@ from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingChar
 from Products.MeetingCharleroi.utils import finance_group_uid
 from Products.PloneMeeting.config import ADVICE_STATES_ENDED
 from zope.i18n import translate
+
+import datetime
 
 
 class testCustomWorkflows(MeetingCharleroiTestCase):

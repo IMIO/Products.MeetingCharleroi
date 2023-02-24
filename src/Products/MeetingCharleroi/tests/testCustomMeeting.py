@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-import datetime
-
 from DateTime import DateTime
-from Products.MeetingCharleroi.browser.overrides import MCHMeetingDocumentGenerationHelperView
 from imio.history.utils import getLastWFAction
 from plone import api
+from Products.MeetingCharleroi.browser.overrides import MCHMeetingDocumentGenerationHelperView
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CLASSIFIER
@@ -13,6 +11,8 @@ from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 from Products.MeetingCommunes.tests.testCustomMeeting import testCustomMeetingType as mctcm
 from Products.PloneMeeting.utils import org_id_to_uid
+
+import datetime
 
 
 class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
@@ -104,7 +104,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         pm = api.portal.get_tool('portal_plonemeeting')
         self.changeUser('admin')
         # make categories available
-        self.meetingConfig.setUseGroupsAsCategories(False)
+        self._enableField('category')
         self._setupPoliceGroup()
         # find groups in charge within meeting groups.
         for group in pm.getMeetingGroups():
@@ -369,7 +369,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         cfg.setInsertingMethodsOnAddItem(
             ({'insertingMethod': 'on_communication',
               'reverse': '0'}, ))
-        cfg.setUseGroupsAsCategories(False)
+        self._enableField('category')
 
         self.changeUser('pmManager')
         # create items with various categories
@@ -531,7 +531,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         self.changeUser('pmManager')
         # Council
         self.setMeetingConfig('meeting-config-council')
-        council_meeting = self.create('Meeting', date=(datetime.datetime.today() + datetime.timedelta(1)))
+        self.create('Meeting', date=(datetime.datetime.today() + datetime.timedelta(1)))
         # College
         self.setMeetingConfig('meeting-config-college')
         publicItem = self.create('MeetingItem')
@@ -585,6 +585,7 @@ class testCustomMeeting(MeetingCharleroiTestCase, mctcm):
         view = meeting.restrictedTraverse("@@document-generation")
         helper = view.get_generation_context_helper()
         self.assertTrue(isinstance(helper, MCHMeetingDocumentGenerationHelperView))
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite

@@ -22,8 +22,8 @@
 # 02110-1301, USA.
 #
 
-from Products.MeetingCommunes.tests.testSetup import testSetup as mcts
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
+from Products.MeetingCommunes.tests.testSetup import testSetup as mcts
 
 
 class testSetup(MeetingCharleroiTestCase, mcts):

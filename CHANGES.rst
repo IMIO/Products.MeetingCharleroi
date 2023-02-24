@@ -8,6 +8,8 @@ Products.MeetingCharleroi Changelog
 - Updated `meetingitem_view` regarding changes in `PloneMeeting`
   (votesResult after motivation or after decision).
   [gbastien]
+- Adapted code regarding removal of `MeetingConfig.useGroupsAsCategories`.
+  [gbastien]
 
 4.2.0b3 (2023-02-02)
 --------------------

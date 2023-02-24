@@ -1,13 +1,15 @@
-from Products.CMFPlone.utils import safe_unicode
-from Products.PloneMeeting.content.meeting import IMeeting, assembly_constraint, Meeting
-from Products.PloneMeeting.interfaces import IDXMeetingContent
-from Products.PloneMeeting.widgets.pm_textarea import PMTextAreaFieldWidget
 from plone import api
 from plone.app.textfield import RichText
 from plone.dexterity.schema import DexteritySchemaPolicy
 from plone.directives import form
-from Products.PloneMeeting.config import PMMessageFactory as _
 from plone.supermodel import model
+from Products.CMFPlone.utils import safe_unicode
+from Products.PloneMeeting.config import PMMessageFactory as _
+from Products.PloneMeeting.content.meeting import assembly_constraint
+from Products.PloneMeeting.content.meeting import IMeeting
+from Products.PloneMeeting.content.meeting import Meeting
+from Products.PloneMeeting.interfaces import IDXMeetingContent
+from Products.PloneMeeting.widgets.pm_textarea import PMTextAreaFieldWidget
 
 
 class IMeetingCustomCharleroi(IDXMeetingContent):
