@@ -2,11 +2,12 @@
 
 from copy import deepcopy
 from DateTime import DateTime
-from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID, CHARLEROI_COUNCIL_ITEM_WF_VALIDATION_LEVELS, \
-    CHARLEROI_COLLEGE_ITEM_WF_VALIDATION_LEVELS
+from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
+from Products.MeetingCharleroi.config import CHARLEROI_COLLEGE_ITEM_WF_VALIDATION_LEVELS
+from Products.MeetingCharleroi.config import CHARLEROI_COUNCIL_ITEM_WF_VALIDATION_LEVELS
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
-from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CLASSIFIER
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
+from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CLASSIFIER
 from Products.MeetingCharleroi.config import FINANCE_GROUP_ID
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCommunes.config import PORTAL_CATEGORIES
@@ -453,7 +454,8 @@ collegeMeeting.categories = college_categories
 collegeMeeting.shortName = 'College'
 collegeMeeting.annexTypes = [annexe, annexeBudget, annexeCahier,
                              annexeDecision, annexeAvis, annexeAvisLegal]
-collegeMeeting.usedItemAttributes = ['description',
+collegeMeeting.usedItemAttributes = ['category',
+                                     'description',
                                      'completeness',
                                      'budgetInfos',
                                      'manuallyLinkedItems',
@@ -528,7 +530,6 @@ collegeMeeting.insertingMethodsOnAddItem = (
     {'insertingMethod': 'on_categories', 'reverse': '0'})
 collegeMeeting.listTypes = DEFAULT_LIST_TYPES + \
     [{'identifier': 'depose', 'label': u'Déposé en séance', 'used_in_inserting_method': '0'}]
-collegeMeeting.useGroupsAsCategories = False
 collegeMeeting.toDiscussSetOnItemInsert = True
 collegeMeeting.toDiscussDefault = False
 collegeMeeting.recordItemHistoryStates = []
@@ -857,10 +858,10 @@ councilMeeting.listTypes = DEFAULT_LIST_TYPES + \
       'label': u'Communication',
       'used_in_inserting_method': '1'}]
 councilMeeting.selectablePrivacies = ('secret_heading', 'public', 'secret')
-councilMeeting.useGroupsAsCategories = False
 councilMeeting.annexTypes = [annexe, annexeBudget, annexeCahier,
                              annexeDecision, annexeAvis, annexeAvisLegal]
-councilMeeting.usedItemAttributes = ['description',
+councilMeeting.usedItemAttributes = ['category',
+                                     'description',
                                      'motivation',
                                      'observations',
                                      'privacy',

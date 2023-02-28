@@ -11,7 +11,10 @@
 
 from collections import OrderedDict
 from Products.CMFCore.permissions import setDefaultRoles
+# import at the bottom so monkeypatches are done because PMconfig is imported in MCconfig
+from Products.MeetingCommunes import config as MCconfig
 from Products.PloneMeeting import config as PMconfig
+
 
 PROJECTNAME = "MeetingCharleroi"
 
@@ -199,8 +202,6 @@ ADVICE_MOTIVATION_CATEGORIES = (
     ('autres',
      u'I. Autres'),)
 
-# import at the bottom so monkeypatches are done because PMconfig is imported in MCconfig
-from Products.MeetingCommunes import config as MCconfig
 
 # in those states, finance advice can still be given
 MCconfig.FINANCE_WAITING_ADVICES_STATES = ('prevalidated_waiting_advices',)
