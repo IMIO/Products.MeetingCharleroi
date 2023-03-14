@@ -2,7 +2,7 @@ Products.MeetingCharleroi Changelog
 ===================================
 
 
-4.2.0rc1 (unreleased)
+4.2.0rc1 (2023-03-14)
 ---------------------
 
 - Updated `meetingitem_view` regarding changes in `PloneMeeting`
