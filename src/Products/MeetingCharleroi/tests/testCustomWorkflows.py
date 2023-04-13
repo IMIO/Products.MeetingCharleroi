@@ -146,7 +146,8 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
                                                    context=self.request)
         self.assertEqual(
             translate(
-                item.wfConditions().mayWait_advices(item.query_state(),  "prevalidated_waiting_advices").msg,
+                item.wfConditions().mayWait_advices(
+                    item.query_state(), "prevalidated_waiting_advices").msg,
                 context=self.request),
             advice_required_to_ask_advices)
         # now ask 'vendors' advice
@@ -182,7 +183,8 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
                          ['backToItemCreated', 'proposeToRefAdmin'])
         self.assertEqual(
             translate(
-                item.wfConditions().mayWait_advices(item.query_state(),  "prevalidated_waiting_advices").msg,
+                item.wfConditions().mayWait_advices(
+                    item.query_state(), "prevalidated_waiting_advices").msg,
                 context=self.request),
             advice_required_to_ask_advices)
         item.setOptionalAdvisers((self.developers_uid, self.vendors_uid, ))
@@ -273,6 +275,10 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
                'advice_type': u'negative_finance',
                'advice_comment': RichTextValue(u'My comment finances'),
                'advice_category': u'acquisitions'})
+        # actions panel displays available transitions
+        self.assertTrue(
+            "@@triggertransition?transition=proposeToFinancialEditor" in
+            advice.restrictedTraverse('actions_panel')())
         # MeetingManager may not change item state when sent to finance, but Manager may
         self.do(advice, 'proposeToFinancialEditor')
         self.changeUser('pmManager')
@@ -375,7 +381,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertTrue(item.adviceIndex[finance_group_uid()]['delay_started_on'])
         # advice may be added
         toAdd, toEdit = item.getAdvicesGroupsInfosForUser()
-        self.assertEqual(toAdd, [finance_group_uid(),])
+        self.assertEqual(toAdd, [finance_group_uid()])
         self.assertFalse(toEdit)
         # add advice
         advice = createContentInContainer(

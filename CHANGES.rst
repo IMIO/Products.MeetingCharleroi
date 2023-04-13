@@ -5,8 +5,9 @@ Products.MeetingCharleroi Changelog
 4.2.0rc2 (unreleased)
 ---------------------
 
-- Nothing changed yet.
-
+- Completed `test_CollegeProcessWithFinancesAdvice` to check that `transitions`
+  are displayed in the `actions_panel`.
+  [gbastien]
 
 4.2.0rc1 (2023-03-14)
 ---------------------
