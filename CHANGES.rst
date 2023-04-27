@@ -8,6 +8,8 @@ Products.MeetingCharleroi Changelog
 - Completed `test_CollegeProcessWithFinancesAdvice` to check that `transitions`
   are displayed in the `actions_panel`.
   [gbastien]
+- Fixed translation of `Data that will be used on new item` on `meetingitem_view.pt`.
+  [gbastien]
 
 4.2.0rc1 (2023-03-14)
 ---------------------
