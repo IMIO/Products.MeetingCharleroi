@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from Products.Archetypes.event import ObjectEditedEvent
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 from Products.MeetingCharleroi.utils import finance_group_uid
 from Products.MeetingCommunes.tests.testWFAdaptations import testWFAdaptations as mctwfa
+from Products.PloneMeeting.config import MEETING_REMOVE_MOG_WFA
+from zope.event import notify
 
 
 class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
@@ -18,7 +21,9 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
                 "no_publication",
                 "accepted_but_modified",
                 "postpone_next_meeting",
+                "itemdecided",
                 "mark_not_applicable",
+                MEETING_REMOVE_MOG_WFA,
                 "removed",
                 "removed_and_duplicated",
                 "refused",
@@ -50,13 +55,13 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
         cfg = self.meetingConfig
         self.changeUser("siteadmin")
         cfg.setWorkflowAdaptations(())
-        cfg.at_post_edit_script()
+        notify(ObjectEditedEvent(cfg))
         itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
         self.assertFalse("backToProposedFromPrevalidated" in itemWF.transitions)
         self.assertFalse("backToItemCreatedFromPrevalidated" in itemWF.transitions)
         # activate, needs the 'charleroi_return_to_any_state_when_prevalidated' WFA
         cfg.setWorkflowAdaptations(("charleroi_return_to_any_state_when_prevalidated",))
-        cfg.at_post_edit_script()
+        notify(ObjectEditedEvent(cfg))
         itemWF = self.wfTool.getWorkflowsFor(cfg.getItemTypeName())[0]
         self.assertTrue("backToProposedFromPrevalidated" in itemWF.transitions)
         self.assertTrue("backToItemCreatedFromPrevalidated" in itemWF.transitions)

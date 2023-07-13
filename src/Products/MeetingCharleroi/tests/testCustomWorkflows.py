@@ -9,12 +9,14 @@ from DateTime import DateTime
 from plone import api
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
+from Products.Archetypes.event import ObjectEditedEvent
 from Products.CMFCore.permissions import DeleteObjects
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.MeetingCharleroi.profiles.zcharleroi import import_data as charleroi_import_data
 from Products.MeetingCharleroi.tests.MeetingCharleroiTestCase import MeetingCharleroiTestCase
 from Products.MeetingCharleroi.utils import finance_group_uid
 from Products.PloneMeeting.config import ADVICE_STATES_ENDED
+from zope.event import notify
 from zope.i18n import translate
 
 import datetime
@@ -28,7 +30,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         super(testCustomWorkflows, self).setUp()
         cfg = self.meetingConfig
         cfg.setWorkflowAdaptations(charleroi_import_data.collegeMeeting.workflowAdaptations)
-        cfg.at_post_edit_script()
+        notify(ObjectEditedEvent(cfg))
 
     def test_FreezeMeeting(self):
         """

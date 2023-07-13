@@ -11,7 +11,6 @@ from Globals import InitializeClass
 from imio.helpers.cache import cleanRamCacheFor
 from imio.history.utils import getLastWFAction
 from plone import api
-from plone.memoize import ram
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.permissions import ReviewPortalContent
 from Products.CMFCore.utils import _checkPermission
@@ -39,7 +38,7 @@ from Products.MeetingCommunes.adapters import MeetingCommunesWorkflowActions
 from Products.MeetingCommunes.adapters import MeetingCommunesWorkflowConditions
 from Products.MeetingCommunes.adapters import MeetingItemCommunesWorkflowActions
 from Products.MeetingCommunes.adapters import MeetingItemCommunesWorkflowConditions
-from Products.PloneMeeting.adapters import ItemPrettyLinkAdapter
+from Products.PloneMeeting.config import MEETING_REMOVE_MOG_WFA
 from Products.PloneMeeting.interfaces import IMeetingConfigCustom
 from Products.PloneMeeting.interfaces import IMeetingCustom
 from Products.PloneMeeting.interfaces import IMeetingItemCustom
@@ -49,7 +48,6 @@ from Products.PloneMeeting.MeetingConfig import MeetingConfig
 from Products.PloneMeeting.MeetingItem import MeetingItem
 # states taken into account by the 'no_global_observation' wfAdaptation
 from Products.PloneMeeting.model import adaptations
-from Products.PloneMeeting.model.adaptations import grantPermission
 from Products.PloneMeeting.widgets.pm_textarea import get_textarea_value
 from zope.annotation import IAnnotations
 from zope.i18n import translate
@@ -65,7 +63,9 @@ customWfAdaptations = (  # ORDER IS IMPORTANT
     # then define added item decided states
     'accepted_but_modified',
     'postpone_next_meeting',
+    'itemdecided',
     'mark_not_applicable',
+    MEETING_REMOVE_MOG_WFA,
     'removed',
     'removed_and_duplicated',
     'refused',
@@ -109,8 +109,8 @@ adaptations.WAITING_ADVICES_FROM_STATES = {
          'new_state_id': None},),
 }
 
-RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = {'meetingitemcommunes_workflow':
-                                                'meetingitemcommunes_workflow.itemcreated'}
+RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = {
+    'meetingitemcommunes_workflow': 'meetingitemcommunes_workflow.itemcreated'}
 adaptations.RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE
 
 

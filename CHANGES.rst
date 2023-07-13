@@ -10,6 +10,10 @@ Products.MeetingCharleroi Changelog
   [gbastien]
 - Fixed translation of `Data that will be used on new item` on `meetingitem_view.pt`.
   [gbastien]
+- Fixed tests now that `MeetingConfig.at_post_edit_script` is replaced by
+  `notify(ObjectEditedEvent(cfg))` and to take into account new workflow adapations
+  `MEETING_REMOVE_MOG_WFA` and `itemdecided`.
+  [gbastien]
 
 4.2.0rc1 (2023-03-14)
 ---------------------

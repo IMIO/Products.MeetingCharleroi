@@ -11,6 +11,7 @@ from collective.contact.plonegroup.utils import select_org_for_function
 from copy import deepcopy
 from plone import api
 from plone.memoize.forever import _memos
+from Products.Archetypes.event import ObjectEditedEvent
 from Products.MeetingCharleroi.config import CHARLEROI_COUNCIL_ITEM_WF_VALIDATION_LEVELS
 from Products.MeetingCharleroi.config import POLICE_GROUP_PREFIX
 from Products.MeetingCharleroi.config import PROJECTNAME
@@ -23,6 +24,7 @@ from Products.MeetingCharleroi.utils import finance_group_uid
 from Products.MeetingCommunes.tests.MeetingCommunesTestCase import MeetingCommunesTestCase
 from Products.PloneMeeting.exportimport.content import ToolInitializer
 from Products.PloneMeeting.utils import org_id_to_uid
+from zope.event import notify
 
 import copy
 
@@ -243,9 +245,10 @@ class MeetingCharleroiTestCase(MeetingCommunesTestCase, MeetingCharleroiTestingH
                 "title": template.title,
                 "description": template.description,
                 "category": template.category,
-                "proposingGroup": template.proposingGroup.startswith(POLICE_GROUP_PREFIX)
-                and template.proposingGroup
-                or self.developers_uid,
+                "proposingGroup":
+                    template.proposingGroup.startswith(POLICE_GROUP_PREFIX) and
+                    template.proposingGroup or
+                    self.developers_uid,
                 # 'templateUsingGroups': template.templateUsingGroups,
                 "decision": template.decision,
             }
@@ -292,7 +295,7 @@ class MeetingCharleroiTestCase(MeetingCommunesTestCase, MeetingCharleroiTestingH
         cfg2.setInsertingMethodsOnAddItem(charleroi_import_data.councilMeeting.insertingMethodsOnAddItem)
 
         cfg2.setItemWFValidationLevels(copy.deepcopy(CHARLEROI_COUNCIL_ITEM_WF_VALIDATION_LEVELS))
-        cfg2.at_post_edit_script()
+        notify(ObjectEditedEvent(cfg2))
         self.setMeetingConfig(cfg2.id)
         self._createCategories()
         self._activate_wfas(
