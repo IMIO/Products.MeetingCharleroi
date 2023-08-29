@@ -14,6 +14,8 @@ Products.MeetingCharleroi Changelog
   `notify(ObjectEditedEvent(cfg))` and to take into account new workflow adapations
   `MEETING_REMOVE_MOG_WFA` and `itemdecided`.
   [gbastien]
+- Adapted code as field `MeetingConfig.useCopies` was removed.
+  [gbastien]
 
 4.2.0rc1 (2023-03-14)
 ---------------------

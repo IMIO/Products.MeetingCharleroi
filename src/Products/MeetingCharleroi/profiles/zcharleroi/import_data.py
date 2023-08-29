@@ -465,7 +465,8 @@ collegeMeeting.usedItemAttributes = ['category',
                                      'otherMeetingConfigsClonableToPrivacy',
                                      'itemIsSigned',
                                      'bourgmestreObservations',
-                                     'proposingGroupWithGroupInCharge']
+                                     'proposingGroupWithGroupInCharge',
+                                     'copyGroups']
 collegeMeeting.usedMeetingAttributes = [
     'start_date',
     'end_date',
@@ -640,7 +641,6 @@ collegeMeeting.onMeetingTransitionItemActionToExecute = (
 collegeMeeting.meetingPowerObserversStates = ('frozen', 'decided', 'closed')
 collegeMeeting.powerAdvisersGroups = ('dirgen', 'dirfin', )
 collegeMeeting.itemBudgetInfosStates = ('proposed', 'validated', 'presented')
-collegeMeeting.useCopies = True
 collegeMeeting.selectableCopyGroups = [police_grp.getIdSuffixed('reviewers'),
                                        police_compta_grp.getIdSuffixed('reviewers'),
                                        dirgen_grp.getIdSuffixed('reviewers'),
@@ -871,7 +871,8 @@ councilMeeting.usedItemAttributes = ['category',
                                      'pollTypeObservations',
                                      'itemInitiator',
                                      'bourgmestreObservations',
-                                     'proposingGroupWithGroupInCharge']
+                                     'proposingGroupWithGroupInCharge',
+                                     'copyGroups']
 councilMeeting.usedMeetingAttributes = [
     'start_date',
     'end_date',
@@ -961,7 +962,6 @@ councilMeeting.itemRestrictedPowerObserversStates = councilMeeting.itemPowerObse
 councilMeeting.meetingPowerObserversStates = ('frozen', 'decided', 'closed')
 councilMeeting.meetingRestrictedPowerObserversStates = councilMeeting.meetingPowerObserversStates
 councilMeeting.powerAdvisersGroups = ()
-councilMeeting.useCopies = True
 councilMeeting.selectableCopyGroups = [police_grp.getIdSuffixed('reviewers'),
                                        police_compta_grp.getIdSuffixed('reviewers'),
                                        dirgen_grp.getIdSuffixed('reviewers'),
