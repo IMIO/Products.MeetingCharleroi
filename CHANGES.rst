@@ -2,7 +2,7 @@ Products.MeetingCharleroi Changelog
 ===================================
 
 
-4.2.0rc2 (unreleased)
+4.2.0rc2 (2023-10-20)
 ---------------------
 
 - Completed `test_CollegeProcessWithFinancesAdvice` to check that `transitions`
