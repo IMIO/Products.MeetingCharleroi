@@ -11,13 +11,13 @@ from Products.PloneMeeting.profiles.testing import import_data as pm_import_data
 data = deepcopy(mc_import_data.data)
 
 # Users
-pmFinController = UserDescriptor('pmFinController', [])
-pmFinEditor = UserDescriptor('pmFinEditor', [])
-pmFinReviewer = UserDescriptor('pmFinReviewer', [])
-pmFinManager = UserDescriptor('pmFinManager', [])
-dfin = UserDescriptor('dfin', [])
-pmServiceHead1 = UserDescriptor('pmServiceHead1', [])
-pmRefAdmin1 = UserDescriptor('pmRefAdmin1', [])
+pmFinController = UserDescriptor('pmFinController', [], fullname='M. PMFinController')
+pmFinEditor = UserDescriptor('pmFinEditor', [], fullname='M. PMFinEditor')
+pmFinReviewer = UserDescriptor('pmFinReviewer', [], fullname='M. PMFinReviewer')
+pmFinManager = UserDescriptor('pmFinManager', [], fullname='M. PMFinManager')
+dfin = UserDescriptor('dfin', [], fullname='M. DFin')
+pmServiceHead1 = UserDescriptor('pmServiceHead1', [], fullname='M. PMServiceHead')
+pmRefAdmin1 = UserDescriptor('pmRefAdmin1', [], fullname='M. PMRefAdmin1')
 # Inherited users
 pmReviewer1 = deepcopy(pm_import_data.pmReviewer1)
 pmReviewer2 = deepcopy(pm_import_data.pmReviewer2)

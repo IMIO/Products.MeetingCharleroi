@@ -56,40 +56,6 @@ from zope.interface import implements
 import re
 
 
-customWfAdaptations = (  # ORDER IS IMPORTANT
-    'only_creator_may_delete',
-    # first define meeting workflow state removal
-    'no_publication',
-    # then define added item decided states
-    'accepted_but_modified',
-    'postpone_next_meeting',
-    'itemdecided',
-    'mark_not_applicable',
-    MEETING_REMOVE_MOG_WFA,
-    'removed',
-    'removed_and_duplicated',
-    'refused',
-    'delayed',
-    'pre_accepted',
-    # charleroi specific
-    'charleroi_return_to_any_state_when_prevalidated',
-    # then other adaptations
-    'return_to_proposing_group',
-    'decide_item_when_back_to_meeting_from_returned_to_proposing_group',
-    'hide_decisions_when_under_writing',
-    'waiting_advices',
-    'waiting_advices_proposing_group_send_back',
-    'meetingmanager_correct_closed_meeting',
-)
-MeetingConfig.wfAdaptations = customWfAdaptations
-
-noGlobalObsStates = ('itempublished', 'itemfrozen', 'accepted', 'refused',
-                     'delayed', 'accepted_but_modified', 'pre_accepted')
-adaptations.noGlobalObsStates = noGlobalObsStates
-
-adaptations.WF_NOT_CREATOR_EDITS_UNLESS_CLOSED = ('delayed', 'refused', 'accepted',
-                                                  'pre_accepted', 'accepted_but_modified')
-
 adaptations.WAITING_ADVICES_FROM_STATES = {
     '*': (
         {'from_states': ('itemcreated',),
@@ -108,10 +74,6 @@ adaptations.WAITING_ADVICES_FROM_STATES = {
          'remove_modify_access': True,
          'new_state_id': None},),
 }
-
-RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = {
-    'meetingitemcommunes_workflow': 'meetingitemcommunes_workflow.itemcreated'}
-adaptations.RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE = RETURN_TO_PROPOSING_GROUP_STATE_TO_CLONE
 
 
 class CustomCharleroiMeeting(CustomMeeting):
@@ -1092,52 +1054,6 @@ class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):
         if '{0}_advisers'.format(finance_group_uid()) in member.getGroups() or "Manager" in member.getRoles():
             return False
         return True
-
-    def performCustomWFAdaptations(self,
-                                   meetingConfig,
-                                   wfAdaptation,
-                                   logger,
-                                   itemWorkflow,
-                                   meetingWorkflow):
-        '''This function applies workflow changes as specified by the
-           p_meetingConfig.'''
-        if wfAdaptation == 'charleroi_return_to_any_state_when_prevalidated':
-            # Allow reviewers and managers to send items back to any previous state in one click
-            if 'prevalidated' in itemWorkflow.states:
-                transitions = itemWorkflow.transitions
-
-                if 'proposed_to_refadmin' in itemWorkflow.states:
-                    if 'backToProposedFromPrevalidated' not in transitions:
-                        transitions.addTransition('backToProposedFromPrevalidated')
-
-                    transition = itemWorkflow.transitions['backToProposedFromPrevalidated']
-                    transition.setProperties(
-                        title='backToProposedFromPrevalidated',
-                        new_state_id='proposed', trigger_type=1, script_name='',
-                        actbox_name='backToProposed', actbox_url='',
-                        actbox_icon='%(portal_url)s/backToProposed.png', actbox_category='workflow',
-                        props={'guard_expr': 'python:here.wfConditions().mayCorrect("prevalidated")'})
-
-                if 'backToItemCreatedFromPrevalidated' not in transitions:
-                    transitions.addTransition('backToItemCreatedFromPrevalidated')
-
-                transition = itemWorkflow.transitions['backToItemCreatedFromPrevalidated']
-                transition.setProperties(
-                    title='backToItemCreatedFromPrevalidated',
-                    new_state_id='itemcreated', trigger_type=1, script_name='',
-                    actbox_name='backToItemCreated', actbox_url='',
-                    actbox_icon='%(portal_url)s/backToItemCreated.png', actbox_category='workflow',
-                    props={'guard_expr': 'python:here.wfConditions().mayCorrect("prevalidated")'})
-
-                # Update connections between states and transitions
-                itemWorkflow.states['prevalidated'].setProperties(
-                    title='prevalidated', description='',
-                    transitions=['backToProposedFromPrevalidated',
-                                 'backToItemCreatedFromPrevalidated',
-                                 'backToProposedToRefAdmin',
-                                 'validate'])
-                return True
-        return False
 
 
 # ------------------------------------------------------------------------------
