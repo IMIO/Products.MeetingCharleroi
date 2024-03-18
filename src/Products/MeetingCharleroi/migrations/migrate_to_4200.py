@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from copy import deepcopy
+
 from imio.helpers.content import richtextval
 from imio.pyutils.utils import replace_in_list
 from plone import api
