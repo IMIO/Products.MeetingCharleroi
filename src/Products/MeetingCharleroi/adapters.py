@@ -55,6 +55,34 @@ from zope.interface import implements
 
 import re
 
+customWfAdaptations = (  # ORDER IS IMPORTANT
+    'item_validation_shortcuts',
+    'only_creator_may_delete',
+    # first define meeting workflow state removal
+    'no_publication',
+    # then define added item decided states
+    'accepted_but_modified',
+    'postpone_next_meeting',
+    'itemdecided',
+    'mark_not_applicable',
+    MEETING_REMOVE_MOG_WFA,
+    'removed',
+    'removed_and_duplicated',
+    'refused',
+    'delayed',
+    'pre_accepted',
+    # charleroi specific
+    'charleroi_return_to_any_state_when_prevalidated',
+    # then other adaptations
+    'return_to_proposing_group',
+    'decide_item_when_back_to_meeting_from_returned_to_proposing_group',
+    'hide_decisions_when_under_writing',
+    'waiting_advices',
+    'waiting_advices_proposing_group_send_back',
+    'meetingmanager_correct_closed_meeting',
+)
+MeetingConfig.wfAdaptations = customWfAdaptations
+
 
 adaptations.WAITING_ADVICES_FROM_STATES = {
     '*': (

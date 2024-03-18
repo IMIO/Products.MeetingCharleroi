@@ -182,7 +182,10 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmReviewer1')
         # no advice to ask
         self.assertEqual(self.transitions(item),
-                         ['backToItemCreated', 'proposeToRefAdmin'])
+                         ['backToItemCreated',
+                          'prevalidate',
+                          'proposeToRefAdmin',
+                          'validate'])
         self.assertEqual(
             translate(
                 item.wfConditions().mayWait_advices(
@@ -192,16 +195,20 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         item.setOptionalAdvisers((self.developers_uid, self.vendors_uid, ))
         item.at_post_edit_script()
         self.assertEqual(self.transitions(item),
-                         ['backToItemCreated', 'proposeToRefAdmin', 'wait_advices_from_proposed'])
+                         ['backToItemCreated',
+                          'prevalidate',
+                          'proposeToRefAdmin',
+                          'validate',
+                          'wait_advices_from_proposed'])
         self.do(item, 'wait_advices_from_proposed')
         self.changeUser('pmAdviser1')
         createContentInContainer(item,
-                                 'meetingadvice',
+                                 item.adapted()._advicePortalTypeForAdviser(self.developers_uid),
                                  **{'advice_group': self.developers_uid,
                                     'advice_type': u'positive',
                                     'advice_comment': RichTextValue(u'My comment developers')})
         # no more advice to give
-        self.assertTrue(not item.hasAdvices(toGive=True))
+        self.assertFalse(item.hasAdvices(toGive=True))
         # item may be taken back by 'pmReviewer1'
         self.assertFalse(self.transitions(item))
         self.changeUser('pmReviewer1')
