@@ -5,8 +5,8 @@ Products.MeetingCharleroi Changelog
 4.2.0rc3 (unreleased)
 ---------------------
 
-- Nothing changed yet.
-
+- Make `no_freeze` and `no_decide` WF adaptations available.
+  [gbastien]
 
 4.2.0rc2 (2023-10-20)
 ---------------------

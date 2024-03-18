@@ -59,7 +59,9 @@ customWfAdaptations = (  # ORDER IS IMPORTANT
     'item_validation_shortcuts',
     'only_creator_may_delete',
     # first define meeting workflow state removal
+    'no_freeze',
     'no_publication',
+    'no_decide',
     # then define added item decided states
     'accepted_but_modified',
     'postpone_next_meeting',
