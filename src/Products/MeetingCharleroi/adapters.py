@@ -57,6 +57,7 @@ import re
 
 customWfAdaptations = (  # ORDER IS IMPORTANT
     'item_validation_shortcuts',
+    'itemdecided',
     'only_creator_may_delete',
     # first define meeting workflow state removal
     'no_freeze',
@@ -65,9 +66,7 @@ customWfAdaptations = (  # ORDER IS IMPORTANT
     # then define added item decided states
     'accepted_but_modified',
     'postpone_next_meeting',
-    'itemdecided',
     'mark_not_applicable',
-    MEETING_REMOVE_MOG_WFA,
     'removed',
     'removed_and_duplicated',
     'refused',
@@ -82,6 +81,7 @@ customWfAdaptations = (  # ORDER IS IMPORTANT
     'waiting_advices',
     'waiting_advices_proposing_group_send_back',
     'meetingmanager_correct_closed_meeting',
+    MEETING_REMOVE_MOG_WFA,
 )
 MeetingConfig.wfAdaptations = customWfAdaptations
 
