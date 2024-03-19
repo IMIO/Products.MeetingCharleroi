@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 #
-# File: events.py
-#
-# Copyright (c) 2016 by Imio.be
-#
 # GNU General Public License (GPL)
 #
 
@@ -32,7 +28,6 @@ def onAdviceAfterTransition(advice, event):
         return
 
     item = advice.getParentNode()
-    itemState = item.query_state()
 
     oldStateId = event.old_state.id
     newStateId = event.new_state.id
@@ -50,7 +45,7 @@ def onAdviceAfterTransition(advice, event):
         # if item was still in state 'prevalidated_waiting_advices',
         # it is automatically validated if advice is 'positive_finance'
         # otherwise it is sent back to the refadmin
-        if itemState == 'prevalidated_waiting_advices':
+        if item.query_state() == 'prevalidated_waiting_advices':
             wfTool = api.portal.get_tool('portal_workflow')
             if advice.advice_type == 'positive_finance':
                 item.REQUEST.set('mayValidate', True)

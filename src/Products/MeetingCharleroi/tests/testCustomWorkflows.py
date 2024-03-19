@@ -182,7 +182,10 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmReviewer1')
         # no advice to ask
         self.assertEqual(self.transitions(item),
-                         ['backToItemCreated', 'proposeToRefAdmin'])
+                         ['backToItemCreated',
+                          'prevalidate',
+                          'proposeToRefAdmin',
+                          'validate'])
         self.assertEqual(
             translate(
                 item.wfConditions().mayWait_advices(
@@ -192,16 +195,20 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         item.setOptionalAdvisers((self.developers_uid, self.vendors_uid, ))
         item.at_post_edit_script()
         self.assertEqual(self.transitions(item),
-                         ['backToItemCreated', 'proposeToRefAdmin', 'wait_advices_from_proposed'])
+                         ['backToItemCreated',
+                          'prevalidate',
+                          'proposeToRefAdmin',
+                          'validate',
+                          'wait_advices_from_proposed'])
         self.do(item, 'wait_advices_from_proposed')
         self.changeUser('pmAdviser1')
         createContentInContainer(item,
-                                 'meetingadvice',
+                                 item.adapted()._advicePortalTypeForAdviser(self.developers_uid),
                                  **{'advice_group': self.developers_uid,
                                     'advice_type': u'positive',
                                     'advice_comment': RichTextValue(u'My comment developers')})
         # no more advice to give
-        self.assertTrue(not item.hasAdvices(toGive=True))
+        self.assertFalse(item.hasAdvices(toGive=True))
         # item may be taken back by 'pmReviewer1'
         self.assertFalse(self.transitions(item))
         self.changeUser('pmReviewer1')
@@ -211,7 +218,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         '''How does the process behave when the 'finances' advice is asked.'''
         cfg = self.meetingConfig
         self.changeUser('siteadmin')
-        self._configureFinancesAdvice(cfg)
+        self._configureCharleroiFinancesAdvice(cfg)
 
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')
@@ -226,25 +233,27 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(item, 'propose')
         self.assertFalse(self.transitions(item))
         self.changeUser('pmServiceHead1')
-        self.assertEqual(self.transitions(item), ['backToItemCreated', 'proposeToRefAdmin'])
+        self.assertEqual(self.transitions(item),
+                         ['backToItemCreated', 'proposeToRefAdmin'])
         self.do(item, 'proposeToRefAdmin')
         self.assertFalse(self.transitions(item))
         self.changeUser('pmRefAdmin1')
-        self.assertEqual(self.transitions(item), ['backToProposed', 'prevalidate'])
+        self.assertEqual(self.transitions(item),
+                         ['backToItemCreated', 'backToProposed', 'prevalidate'])
         self.do(item, 'prevalidate')
         self.assertFalse(self.transitions(item))
         self.changeUser('pmReviewer1')
         # may only validate if no finances advice or finances advice is given
         self.assertEqual(self.transitions(item),
-                         ['backToItemCreatedFromPrevalidated',
-                          'backToProposedFromPrevalidated',
+                         ['backToItemCreated',
+                          'backToProposed',
                           'backToProposedToRefAdmin',
                           'wait_advices_from_prevalidated'])
         # remove fact that finances advice was asked
         item.setOptionalAdvisers(())
         self.assertEqual(self.transitions(item),
-                         ['backToItemCreatedFromPrevalidated',
-                          'backToProposedFromPrevalidated',
+                         ['backToItemCreated',
+                          'backToProposed',
                           'backToProposedToRefAdmin',
                           'wait_advices_from_prevalidated'])
         item.setOptionalAdvisers(('{0}__rowid__unique_id_002'.format(finance_group_uid()), ))
@@ -272,7 +281,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmFinController')
         advice = createContentInContainer(
             item,
-            'meetingadvicefinances',
+            item.adapted()._advicePortalTypeForAdviser(finance_group_uid()),
             **{'advice_group': finance_group_uid(),
                'advice_type': u'negative_finance',
                'advice_comment': RichTextValue(u'My comment finances'),
@@ -302,8 +311,17 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('siteadmin')
         self.assertEqual(self.transitions(item), ['backTo_prevalidated_from_waiting_advices'])
 
+        # will check advice_given_by
+        view = item.restrictedTraverse('@@advice-infos')
+        view(advice.advice_group,
+             False,
+             item.adapted().getCustomAdviceMessageFor(
+                 item.adviceIndex[advice.advice_group]))
+        self.assertIsNone(view.get_advice_given_by())
+
         self.changeUser('pmFinManager')
         self.do(advice, 'signFinancialAdvice')
+        self.assertEqual(view.get_advice_given_by(), u'M. PMFinManager')
 
         # item was sent back to administrative referent
         self.assertEqual(item.query_state(), 'proposed_to_refadmin')
@@ -314,8 +332,8 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         # now item may be validated but finances advice may not be asked
         # anymore as it was already given
         self.assertEqual(self.transitions(item),
-                         ['backToItemCreatedFromPrevalidated',
-                          'backToProposedFromPrevalidated',
+                         ['backToItemCreated',
+                          'backToProposed',
                           'backToProposedToRefAdmin',
                           'validate'])
         # if finances advice is 'asked_again', it is giveable again
@@ -323,8 +341,8 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         changeView()
         self.assertEqual(advice.advice_type, 'asked_again')
         self.assertEqual(self.transitions(item),
-                         ['backToItemCreatedFromPrevalidated',
-                          'backToProposedFromPrevalidated',
+                         ['backToItemCreated',
+                          'backToProposed',
                           'backToProposedToRefAdmin',
                           'wait_advices_from_prevalidated'])
 
@@ -332,7 +350,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         '''Test the finances advice workflow.'''
         cfg = self.meetingConfig
         self.changeUser('siteadmin')
-        self._configureFinancesAdvice(cfg)
+        self._configureCharleroiFinancesAdvice(cfg)
         # put users in finances group
         self._setupFinancesGroup()
         self.changeUser('pmCreator1')
@@ -479,7 +497,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         '''Test the finances advice workflow.'''
         cfg = self.meetingConfig
         self.changeUser('siteadmin')
-        self._configureFinancesAdvice(cfg)
+        self._configureCharleroiFinancesAdvice(cfg)
         # put users in finances group
         self._setupFinancesGroup()
         update_advices_view = self.portal.restrictedTraverse('@@update-delay-aware-advices')
@@ -532,7 +550,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
            is asked, it must be mandatorily given for the item to be validated.'''
         cfg = self.meetingConfig
         self.changeUser('siteadmin')
-        self._configureFinancesAdvice(cfg)
+        self._configureCharleroiFinancesAdvice(cfg)
 
         self.changeUser('pmCreator1')
         item = self.create('MeetingItem', title='The first item')
@@ -584,7 +602,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
            is set to True so advice is considered 'not_given' as if it was never added.'''
         cfg = self.meetingConfig
         self.changeUser('siteadmin')
-        self._configureFinancesAdvice(cfg)
+        self._configureCharleroiFinancesAdvice(cfg)
 
         # first case, delay exceeded and advice was never given, the item is sent back to refadmin
         self.changeUser('pmCreator1')

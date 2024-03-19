@@ -40,7 +40,7 @@ class MeetingCharleroiTestCase(MeetingCommunesTestCase, MeetingCharleroiTestingH
 
     layer = MCH_TESTING_PROFILE_FUNCTIONAL
 
-    def _configureFinancesAdvice(self, cfg):
+    def _configureCharleroiFinancesAdvice(self, cfg):
         """ """
         # add finances group
         self._createFinancesGroup()
@@ -56,23 +56,16 @@ class MeetingCharleroiTestCase(MeetingCommunesTestCase, MeetingCharleroiTestingH
         cfg.setTransitionsReinitializingDelays(
             charleroi_import_data.collegeMeeting.transitionsReinitializingDelays
         )
-        # configure usedAdviceTypes
-        cfg.setUsedAdviceTypes(
-            (
-                "asked_again",
-                "positive",
-                "positive_with_remarks",
-                "negative",
-                "nil",
-                "positive_finance",
-                "positive_with_remarks_finance",
-                "negative_finance",
-                "not_given_finance",
-            )
-        )
+
+        # configure advisersConfig
+        config = deepcopy(charleroi_import_data.data.advisersConfig)
+        config[0]['org_uids'] = [finance_group_uid()]
+        self.tool.setAdvisersConfig(config)
+        self.tool.at_post_edit_script()
+
         # finances advice can be given when item in state 'prevalidated_waiting_advices'
         cfg.setKeepAccessToItemWhenAdvice("is_given")
-        self._activate_wfas(("charleroi_return_to_any_state_when_prevalidated", "waiting_advices"), keep_existing=True)
+        self._activate_wfas("waiting_advices", keep_existing=True)
 
     def _createFinancesGroup(self):
         """
@@ -310,7 +303,7 @@ class MeetingCharleroiTestCase(MeetingCommunesTestCase, MeetingCharleroiTestingH
         cfg = self.meetingConfig
 
         self._setupPoliceGroup()
-        self._configureFinancesAdvice(cfg)
+        self._configureCharleroiFinancesAdvice(cfg)
         self._activate_wfas(
             charleroi_import_data.collegeMeeting.workflowAdaptations,
             cfg=cfg,

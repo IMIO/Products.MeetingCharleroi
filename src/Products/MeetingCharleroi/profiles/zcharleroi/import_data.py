@@ -565,7 +565,6 @@ collegeMeeting.customAdvisers = [
     {'delay_label': 'Incidence financi\xc3\xa8re',
      'for_item_created_until': '',
      'org': FINANCE_GROUP_ID,
-     'available_on': '',
      'delay': '10',
      'gives_auto_advice_on_help_message': '',
      'gives_auto_advice_on': '',
@@ -577,7 +576,6 @@ collegeMeeting.customAdvisers = [
     {'delay_label': 'Incidence financi\xc3\xa8re (urgence)',
      'for_item_created_until': '',
      'org': FINANCE_GROUP_ID,
-     'available_on': '',
      'delay': '5',
      'gives_auto_advice_on_help_message': '',
      'gives_auto_advice_on': '',
@@ -589,7 +587,6 @@ collegeMeeting.customAdvisers = [
     {'delay_label': 'Incidence financi\xc3\xa8re (prolongation)',
      'for_item_created_until': '',
      'org': FINANCE_GROUP_ID,
-     'available_on': '',
      'delay': '20',
      'gives_auto_advice_on_help_message': '',
      'gives_auto_advice_on': '',
@@ -606,11 +603,12 @@ collegeMeeting.itemPowerObserversStates = ('itemfrozen',
                                            'pre_accepted')
 collegeMeeting.itemGroupInChargeStates = collegeMeeting.itemPowerObserversStates + ('validated', 'presented')
 collegeMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed', 'accepted_but_modified', 'pre_accepted']
-collegeMeeting.workflowAdaptations = ['no_publication', 'waiting_advices', 'waiting_advices_proposing_group_send_back',
-                                      'only_creator_may_delete', 'return_to_proposing_group',
+collegeMeeting.workflowAdaptations = ['no_publication',
+                                      'waiting_advices', 'waiting_advices_proposing_group_send_back',
+                                      'item_validation_shortcuts', 'only_creator_may_delete',
+                                      'return_to_proposing_group',
                                       'postpone_next_meeting', 'mark_not_applicable', 'delayed', 'pre_accepted',
-                                      'removed', 'refused', 'charleroi_return_to_any_state_when_prevalidated',
-                                      'accepted_but_modified']
+                                      'removed', 'refused', 'accepted_but_modified']
 collegeMeeting.transitionsForPresentingAnItem = ('propose', 'proposeToRefAdmin', 'prevalidate', 'validate', 'present', )
 collegeMeeting.onTransitionFieldTransforms = (
     ({'transition': 'delay',
@@ -1102,3 +1100,17 @@ data = PloneMeetingConfiguration(meetingFolderTitle='Mes séances',
 data.usersOutsideGroups = [bourgmestre, conseiller,
                            conseiller1, conseiller2, conseiller3, conseiller4, conseiller5,
                            conseiller6, conseiller7, conseiller8, conseiller9, conseiller10]
+
+data.advisersConfig = (
+    {'advice_types': ['positive_finance',
+                      'positive_with_remarks_finance',
+                      'cautious_finance',
+                      'negative_finance',
+                      'not_given_finance',
+                      'not_required_finance'],
+     'base_wf': 'meetingadvicefinances_workflow',
+     'default_advice_type': 'positive_finance',
+     'org_uids': [dirfin_grp.id],
+     'portal_type': 'meetingadvicefinances',
+     'show_advice_on_final_wf_transition': '1',
+     'wf_adaptations': []},)

@@ -17,7 +17,7 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
         catalog = self.portal.portal_catalog
         cfg = self.meetingConfig
         self.changeUser('siteadmin')
-        self._configureFinancesAdvice(cfg)
+        self._configureCharleroiFinancesAdvice(cfg)
         # put users in finances group
         self._setupFinancesGroup()
         self.changeUser('pmCreator1')
@@ -69,7 +69,7 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
            - the delay '20' is reserved to finance advisers."""
         cfg = self.meetingConfig
         self.changeUser('siteadmin')
-        self._configureFinancesAdvice(cfg)
+        self._configureCharleroiFinancesAdvice(cfg)
         # put users in finances group
         self._setupFinancesGroup()
         self.changeUser('pmCreator1')
