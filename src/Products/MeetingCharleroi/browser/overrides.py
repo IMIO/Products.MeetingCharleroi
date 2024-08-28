@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 #
-# File: overrides.py
-#
-# Copyright (c) 2017 by Imio.be
-#
 # GNU General Public License (GPL)
 #
 
@@ -124,10 +120,14 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
         return body
 
     def print_observation_and_poll(self):
+        body = u''
         if self.context.getObservations():
-            return safe_unicode(self.context.getObservations()) + u'<p></p>'
-        else:
-            return u''
+            body = safe_unicode(self.context.getObservations()) + u'<p></p>'
+        privacy = u"publique" if self.context.getPrivacy() == "public" else u"à huis-clos"
+        body += u"<p>Après en avoir délibéré en séance {} ;</p>".format(privacy)
+        if self.context.get_item_votes(include_unexisting=False):
+            body += safe_unicode(self.context.getVotesResult())
+        return body
 
     def printDelibeContent(self):
         """Printed on a College item, get the whole body of the delibe in one shot."""

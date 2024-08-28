@@ -5,8 +5,8 @@ Products.MeetingCharleroi Changelog
 4.2.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Print votes result in Council delibe.
+  [gbastien]
 
 4.2.0 (2024-03-19)
 ------------------
