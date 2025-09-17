@@ -7,6 +7,9 @@ Products.MeetingCharleroi Changelog
 
 - Print votes result in Council delibe.
   [gbastien]
+- Removed override of `MeetingConfig.wfAdaptations` as custom WFA
+  `charleroi_return_to_any_state_when_prevalidated` was removed.
+  [gbastien]
 
 4.2.0 (2024-03-19)
 ------------------

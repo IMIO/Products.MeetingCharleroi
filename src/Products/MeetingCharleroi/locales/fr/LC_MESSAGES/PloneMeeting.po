@@ -34,10 +34,6 @@ msgstr "Observations Bourgmestre"
 msgid "PloneMeeting_label_assemblyPolice"
 msgstr "Présents pour la Zone de Police par défaut"
 
-#. Default: "Absents for the secret meeting"
-msgid "title_assembly_privacy_secret_absents"
-msgstr "Absents pour la séance à huis clos"
-
 #. Default: "Plan"
 msgid "PloneMeeting_label_decision"
 msgstr "Dispositif"
@@ -98,10 +94,6 @@ msgstr "En attente des avis (Proposé au chef de service)"
 msgid "late"
 msgstr "Urgence"
 
-#. Default: "Assembly for Police"
-msgid "title_assembly_police"
-msgstr "Présents pour la Zone de Police"
-
 #. Default: "The finances advice has not been selected on this item."
 msgid "no_finances_advice_asked"
 msgstr "L'avis des finances n'a pas été demandé sur ce point."
@@ -148,13 +140,17 @@ msgstr "Un point a été renvoyé aux référents administratifs par les finance
 msgid "serviceheads"
 msgstr "Chefs de service"
 
+#. Default: "Assembly for Police"
+msgid "title_assembly_police"
+msgstr "Présents pour la Zone de Police"
+
+#. Default: "Absents for the secret meeting"
+msgid "title_assembly_privacy_secret_absents"
+msgstr "Absents pour la séance à huis clos"
+
 #. Default: "Add referent's admin"
 msgid "wa_charleroi_add_refadmin"
 msgstr "Ajout du référent administratif"
-
-#. Default: "Back transitions from \"Proposed to director\" (prevalidated)"
-msgid "wa_charleroi_return_to_any_state_when_prevalidated"
-msgstr "Ajouter les transitions \"retour\" depuis l'état \"Proposé au directeur\" (prevalidated)"
 
 #. Default: "Wait advices"
 msgid "wa_waiting_advices"

@@ -2,10 +2,6 @@
 #
 # File: pm_updates.py
 #
-# Copyright (c) 2019 by Imio.be
-# Generator: ArchGenXML Version 2.7
-#            http://plone.org/products/archgenxml
-#
 # GNU General Public License (GPL)
 #
 

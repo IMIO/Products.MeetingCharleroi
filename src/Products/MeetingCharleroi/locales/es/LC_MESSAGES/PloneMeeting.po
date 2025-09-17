@@ -34,10 +34,6 @@ msgstr ""
 msgid "PloneMeeting_label_assemblyPolice"
 msgstr ""
 
-#. Default: "Absents for the secret meeting"
-msgid "title_assembly_privacy_secret_absents"
-msgstr ""
-
 #. Default: "Plan"
 msgid "PloneMeeting_label_decision"
 msgstr ""
@@ -98,10 +94,6 @@ msgstr ""
 msgid "late"
 msgstr ""
 
-#. Default: "Assembly for Police"
-msgid "title_assembly_police"
-msgstr ""
-
 #. Default: "The finances advice has not been selected on this item."
 msgid "no_finances_advice_asked"
 msgstr ""
@@ -148,12 +140,16 @@ msgstr ""
 msgid "serviceheads"
 msgstr ""
 
-#. Default: "Add referent's admin"
-msgid "wa_charleroi_add_refadmin"
+#. Default: "Assembly for Police"
+msgid "title_assembly_police"
 msgstr ""
 
-#. Default: "Back transitions from \"Proposed to director\" (prevalidated)"
-msgid "wa_charleroi_return_to_any_state_when_prevalidated"
+#. Default: "Absents for the secret meeting"
+msgid "title_assembly_privacy_secret_absents"
+msgstr ""
+
+#. Default: "Add referent's admin"
+msgid "wa_charleroi_add_refadmin"
 msgstr ""
 
 #. Default: "Wait advices"

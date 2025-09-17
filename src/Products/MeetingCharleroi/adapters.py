@@ -38,13 +38,11 @@ from Products.MeetingCommunes.adapters import MeetingCommunesWorkflowActions
 from Products.MeetingCommunes.adapters import MeetingCommunesWorkflowConditions
 from Products.MeetingCommunes.adapters import MeetingItemCommunesWorkflowActions
 from Products.MeetingCommunes.adapters import MeetingItemCommunesWorkflowConditions
-from Products.PloneMeeting.config import MEETING_REMOVE_MOG_WFA
 from Products.PloneMeeting.interfaces import IMeetingConfigCustom
 from Products.PloneMeeting.interfaces import IMeetingCustom
 from Products.PloneMeeting.interfaces import IMeetingItemCustom
 from Products.PloneMeeting.interfaces import IToolPloneMeetingCustom
 from Products.PloneMeeting.Meeting import Meeting
-from Products.PloneMeeting.MeetingConfig import MeetingConfig
 from Products.PloneMeeting.MeetingItem import MeetingItem
 # states taken into account by the 'no_global_observation' wfAdaptation
 from Products.PloneMeeting.model import adaptations
@@ -54,36 +52,6 @@ from zope.i18n import translate
 from zope.interface import implements
 
 import re
-
-customWfAdaptations = (  # ORDER IS IMPORTANT
-    'item_validation_shortcuts',
-    'itemdecided',
-    'only_creator_may_delete',
-    # first define meeting workflow state removal
-    'no_freeze',
-    'no_publication',
-    'no_decide',
-    # then define added item decided states
-    'accepted_but_modified',
-    'postpone_next_meeting',
-    'mark_not_applicable',
-    'removed',
-    'removed_and_duplicated',
-    'refused',
-    'delayed',
-    'pre_accepted',
-    # charleroi specific
-    'charleroi_return_to_any_state_when_prevalidated',
-    # then other adaptations
-    'return_to_proposing_group',
-    'decide_item_when_back_to_meeting_from_returned_to_proposing_group',
-    'hide_decisions_when_under_writing',
-    'waiting_advices',
-    'waiting_advices_proposing_group_send_back',
-    'meetingmanager_correct_closed_meeting',
-    MEETING_REMOVE_MOG_WFA,
-)
-MeetingConfig.wfAdaptations = customWfAdaptations
 
 
 adaptations.WAITING_ADVICES_FROM_STATES = {

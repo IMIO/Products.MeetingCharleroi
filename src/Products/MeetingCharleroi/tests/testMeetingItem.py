@@ -36,7 +36,7 @@ class testMeetingItem(MeetingCharleroiTestCase, mctmi):
         pass
 
     def test_pm_SendItemToOtherMCAutoReplacedFields(self):
-        """Bypass as it is faling because of DECISION_ITEM_SENT_TO_COUNCIL."""
+        """Bypass as it is failing because of DECISION_ITEM_SENT_TO_COUNCIL."""
         pass
 
 
