@@ -2,7 +2,7 @@ Products.MeetingCharleroi Changelog
 ===================================
 
 
-4.2.1 (unreleased)
+4.2.1 (2025-09-18)
 ------------------
 
 - Print votes result in Council delibe.
