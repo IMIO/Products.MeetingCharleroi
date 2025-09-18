@@ -4,6 +4,7 @@ global-exclude *svnignore
 include *.conf
 include *.ignore
 include *.py
+include *.txt
 include Makefile
 include base.cfg
 include buildout.cfg
