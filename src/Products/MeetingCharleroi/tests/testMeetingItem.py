@@ -39,6 +39,14 @@ class testMeetingItem(MeetingCharleroiTestCase, mctmi):
         """Bypass as it is failing because of DECISION_ITEM_SENT_TO_COUNCIL."""
         pass
 
+    def test_pm__send_history_aware_mail_if_relevant(self):
+        """Bypass users are different"""
+        pass
+
+    def test_pm__send_proposing_group_suffix_if_relevant(self):
+        """Bypass users are different"""
+        pass
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite

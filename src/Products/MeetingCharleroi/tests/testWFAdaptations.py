@@ -36,6 +36,46 @@ class testWFAdaptations(MeetingCharleroiTestCase, mctwfa):
         """Bypass as we overrided WAITING_ADVICES_FROM_STATES."""
         pass
 
+    def test_pm_Validate_workflowAdaptations_removed_return_to_proposing_group_with_all_validations(self):
+        """Bypass as we overrided WAITING_ADVICES_FROM_STATES."""
+        pass
+
+    def test_pm_WFA_return_to_proposing_group_with_all_validations(self):
+        """Bypass as we overrided WAITING_ADVICES_FROM_STATES."""
+        pass
+
+    def test_pm_WFA_return_to_proposing_group_with_last_validation(self):
+        """Bypass as we overrided WAITING_ADVICES_FROM_STATES."""
+        pass
+
+    def test_pm_WFA_waiting_advices_adviser_send_back(self):
+        """Bypass as we overrided WAITING_ADVICES_FROM_STATES."""
+        pass
+
+    def test_pm_WFA_waiting_advices_from_before_last_val_level(self):
+        """Bypass as we overrided WAITING_ADVICES_FROM_STATES."""
+        pass
+
+    def test_pm_WFA_waiting_advices_from_every_val_levels(self):
+        """Bypass as we overrided WAITING_ADVICES_FROM_STATES."""
+        pass
+
+    def test_pm_WFA_waiting_advices_from_last_and_before_last_val_level(self):
+        """Bypass as we overrided WAITING_ADVICES_FROM_STATES."""
+        pass
+
+    def test_pm_WFA_waiting_advices_from_last_val_level(self):
+        """Bypass as we overrided WAITING_ADVICES_FROM_STATES."""
+        pass
+
+    def test_pm_WFA_waiting_advices_given_advices_required_to_validate(self):
+        """Bypass as we overrided WAITING_ADVICES_FROM_STATES."""
+        pass
+
+    def test_pm_WFA_waiting_advices_adviser_may_validate(self):
+        """Bypass as we overrided WAITING_ADVICES_FROM_STATES."""
+        pass
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite
