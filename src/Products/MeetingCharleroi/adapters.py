@@ -526,26 +526,26 @@ class CustomCharleroiMeetingItem(CustomMeetingItem):
         ''' '''
         return self._adviceIsAddableByCurrentUser(org_uid)
 
-    def _advicePortalTypeForAdviser(self, groupId):
-        """Return the meetingadvice portal_type that will be added for given p_groupId.
-           By default we always use meetingadvice but this makes it possible to have several
-           portal_types for meetingadvice."""
-        if groupId == finance_group_uid():
-            return "meetingadvicefinances"
-        else:
-            return "meetingadvice"
+    #def _advicePortalTypeForAdviser(self, groupId):
+    #    """Return the meetingadvice portal_type that will be added for given p_groupId.
+    #       By default we always use meetingadvice but this makes it possible to have several
+    #       portal_types for meetingadvice."""
+    #    if groupId == finance_group_uid():
+    #        return "meetingadvicefinances"
+    #    else:
+    #        return "meetingadvice"
 
-    def _adviceTypesForAdviser(self, meeting_advice_portal_type):
-        """Return the advice types (positive, negative, ...) for given p_meeting_advice_portal_type.
-           By default we always use every MeetingConfig.usedAdviceTypes but this is useful
-           when using several portal_types for meetingadvice and some may use particular advice types."""
-        item = self.getSelf()
-        tool = api.portal.get_tool('portal_plonemeeting')
-        cfg = tool.getMeetingConfig(item)
-        if meeting_advice_portal_type == 'meetingadvice':
-            return [t for t in cfg.getUsedAdviceTypes() if not t.endswith('_finance')]
-        else:
-            return [t for t in cfg.getUsedAdviceTypes() if t.endswith('_finance')]
+    #def _adviceTypesForAdviser(self, meeting_advice_portal_type):
+    #    """Return the advice types (positive, negative, ...) for given p_meeting_advice_portal_type.
+    #       By default we always use every MeetingConfig.usedAdviceTypes but this is useful
+    #       when using several portal_types for meetingadvice and some may use particular advice types."""
+    #    item = self.getSelf()
+    #    tool = api.portal.get_tool('portal_plonemeeting')
+    #    cfg = tool.getMeetingConfig(item)
+    #    if meeting_advice_portal_type == 'meetingadvice':
+    #        return [t for t in cfg.getUsedAdviceTypes() if not t.endswith('_finance')]
+    #    else:
+    #        return [t for t in cfg.getUsedAdviceTypes() if t.endswith('_finance')]
 
     security.declarePublic('mayEvaluateCompleteness')
 

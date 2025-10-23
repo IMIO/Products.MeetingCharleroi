@@ -5,8 +5,10 @@ Products.MeetingCharleroi Changelog
 4.2.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Removed overrides of `MeetingItem._advicePortalTypeForAdviser` and
+  `MeetingItem._adviceTypesForAdviser` as we use
+  `ToolPloneMeeting.get_extra_adviser_infos` now.
+  [gbastien]
 
 4.2.1 (2025-09-18)
 ------------------
