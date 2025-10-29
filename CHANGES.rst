@@ -9,6 +9,8 @@ Products.MeetingCharleroi Changelog
   `MeetingItem._adviceTypesForAdviser` as we use
   `ToolPloneMeeting.get_extra_adviser_infos` now.
   [gbastien]
+- Update `meetingitem_view.pt` due to upstream changes.
+  [aduchene]
 
 4.2.1 (2025-09-18)
 ------------------
