@@ -2,7 +2,7 @@ Products.MeetingCharleroi Changelog
 ===================================
 
 
-4.2.2 (unreleased)
+4.2.2 (2025-10-29)
 ------------------
 
 - Removed overrides of `MeetingItem._advicePortalTypeForAdviser` and
