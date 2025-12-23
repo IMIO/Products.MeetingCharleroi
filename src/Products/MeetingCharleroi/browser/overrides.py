@@ -119,10 +119,14 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
             body += safe_unicode(self.context.getDecision()) + u'<p></p>'
         return body
 
-    def print_observation_and_poll(self):
+    def print_observations(self):
         body = u''
         if self.context.getObservations():
             body = safe_unicode(self.context.getObservations()) + u'<p></p>'
+        return body
+
+    def print_observations_and_poll(self):
+        body = self.print_observations()
         privacy = u"publique" if self.context.getPrivacy() == "public" else u"à huis-clos"
         body += u"<p>Après en avoir délibéré en séance {} ;</p>".format(privacy)
         if self.context.get_item_votes(include_unexisting=False):
@@ -132,13 +136,14 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
     def printDelibeContent(self):
         """Printed on a College item, get the whole body of the delibe in one shot."""
         return self.print_motivation() + \
+            self.print_observations() + \
             self.print_decision() + \
             self.print_autority()
 
     def printDelibeContentCouncil(self):
         """Printed on a Council item, get the whole body of the delibe in one shot."""
         return self.print_motivation() + \
-            self.print_observation_and_poll() + \
+            self.print_observations_and_poll() + \
             self.print_decision() + \
             self.print_autority()
 

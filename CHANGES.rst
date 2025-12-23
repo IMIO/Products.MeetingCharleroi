@@ -5,8 +5,11 @@ Products.MeetingCharleroi Changelog
 4.2.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Display item `observations` between `motivation` and `decision` in College PV.
+  [gbastien]
+- Adapatble method `MeetingIem._advicePortalTypeForAdviser` was moved to
+  `ToolPloneMeeting` (no more adaptable).
+  [gbastien]
 
 4.2.2 (2025-10-29)
 ------------------

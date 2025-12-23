@@ -203,7 +203,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.do(item, 'wait_advices_from_proposed')
         self.changeUser('pmAdviser1')
         createContentInContainer(item,
-                                 item.adapted()._advicePortalTypeForAdviser(self.developers_uid),
+                                 self.tool._advicePortalTypeForAdviser(self.developers_uid),
                                  **{'advice_group': self.developers_uid,
                                     'advice_type': u'positive',
                                     'advice_comment': RichTextValue(u'My comment developers')})
@@ -281,7 +281,7 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.changeUser('pmFinController')
         advice = createContentInContainer(
             item,
-            item.adapted()._advicePortalTypeForAdviser(finance_group_uid()),
+            self.tool._advicePortalTypeForAdviser(finance_group_uid()),
             **{'advice_group': finance_group_uid(),
                'advice_type': u'negative_finance',
                'advice_comment': RichTextValue(u'My comment finances'),
