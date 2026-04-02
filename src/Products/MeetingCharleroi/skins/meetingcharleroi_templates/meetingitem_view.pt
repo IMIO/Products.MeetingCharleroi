@@ -51,7 +51,7 @@
               </div>
               <tal:comment replace="nothing">Groups in charge</tal:comment>
               <div class="discreet" tal:condition="python: context.show_groups_in_charge()"
-                                    tal:define="groupsInCharge python: context.getGroupsInCharge(includeAuto=True);">
+                                    tal:define="groupsInCharge python: context.getGroupsInCharge(includeAuto=False);">
                   <span class="item_attribute_label"
                         i18n:translate="PloneMeeting_label_groupsInCharge"></span>:&nbsp;&nbsp;
                   <tal:displayGroupsInCharge condition="groupsInCharge">
@@ -132,16 +132,16 @@
                      i18n:translate="legend_details" i18n:domain="plone">Details</a>
             </div>
 
-            <tal:comment replace="nothing">Copy groups for this item</tal:comment>
+            <tal:comment replace="nothing">Copy groups</tal:comment>
             <tal:copyGroups condition="python: context.attribute_is_used('copyGroups')">
                 <div class="discreet" tal:define="copyGroups python: context.getAllCopyGroups();
                                                   copy_groups_have_access python: context.check_copy_groups_have_access();">
-                    <span class="item_attribute_label"
-                          i18n:translate="PloneMeeting_label_copyGroups"></span>
-                    <span tal:define="css_class string:fa fa-question-circle help-doc pmHelp"
-                          i18n:attributes="title"
-                          tal:attributes="title python: context.getCopyGroupsHelpMsg(cfg);
-                                          class python: css_class + (copy_groups_have_access and ' green-colored' or '');">
+                    <span tal:attributes="class python: copy_groups_have_access and 'green-colored pmHelp' or 'pmHelp';
+                                          title python: context.getCopyGroupsHelpMsg(cfg);"
+                          i18n:attributes="title">
+                      <span class="item_attribute_label"
+                            i18n:translate="PloneMeeting_label_copyGroups"></span>
+                      <span class="fa fa-question-circle help-doc"></span>
                     </span>:&nbsp;&nbsp;
                     <tal:displayCopyGroups condition="copyGroups">
                         <span tal:replace="structure python: context.displayCopyGroups()">Copy groups</span>
@@ -149,6 +149,24 @@
                     <span tal:condition="not: copyGroups">-</span>
                 </div>
             </tal:copyGroups>
+
+            <tal:comment replace="nothing">Restricted copy groups</tal:comment>
+            <tal:restrictedCopyGroups condition="python: context.attribute_is_used('restrictedCopyGroups')">
+                <div class="discreet" tal:define="restrictedCopyGroups python: context.getAllRestrictedCopyGroups();
+                                                  restricted_copy_groups_have_access python: context.check_copy_groups_have_access(restricted=True);">
+                    <span tal:attributes="class python: restricted_copy_groups_have_access and 'green-colored pmHelp' or 'pmHelp';
+                                          title python: context.getCopyGroupsHelpMsg(cfg, restricted=True);"
+                          i18n:attributes="title">
+                      <span class="item_attribute_label"
+                            i18n:translate="PloneMeeting_label_restrictedCopyGroups"></span>
+                      <span class="fa fa-question-circle help-doc"></span>
+                    </span>:&nbsp;&nbsp;
+                    <tal:displayRestrictedCopyGroups condition="restrictedCopyGroups">
+                        <span tal:replace="structure python: context.displayCopyGroups(restricted=True)">Restricted copy groups</span>
+                    </tal:displayRestrictedCopyGroups>
+                    <span tal:condition="not: restrictedCopyGroups">-</span>
+                </div>
+            </tal:restrictedCopyGroups>
 
             <tal:comment replace="nothing">Item is signed?</tal:comment>
             <div class="discreet"
@@ -179,7 +197,7 @@
                                    class string:${edit_css_classes} item_${context/getEmergency}">
                     <span metal:use-macro="python: here.widget('emergency', mode='view')" />
                 </span>
-                <span class="discreet"> — <a href="item-emergency-history" class="link-overlay-pm" i18n:translate="" i18n:domain="plone">History</a></span>
+                <span class="discreet"> — <a href="item-emergency-history" class="link-overlay-pm-info" i18n:translate="" i18n:domain="plone">History</a></span>
             </div>
 
             <tal:comment replace="nothing">Item completeness</tal:comment>
@@ -193,7 +211,7 @@
                                    class string:${edit_css_classes} item_${context/getCompleteness}">
                     <span metal:use-macro="python: here.widget('completeness', mode='view')" />
                 </span>
-                <span class="discreet"> — <a href="item-completeness-history" class="link-overlay-pm" i18n:translate="" i18n:domain="plone">History</a></span>
+                <span class="discreet"> — <a href="item-completeness-history" class="link-overlay-pm-info" i18n:translate="" i18n:domain="plone">History</a></span>
             </div>
         </td>
         <td style="padding-right: 0.5em;" width="50%" align="right">
@@ -218,6 +236,16 @@
                   </tal:link>
               </tal:hasMeeting>
               <span tal:condition="not:nocall:meeting">-</span>
+            </div>
+
+            <tal:comment replace="nothing">Meeting deadline date</tal:comment>
+            <div class="discreet" tal:condition="python: 'meetingDeadlineDate' in usedAttrs">
+                <span class="item_attribute_label"
+                      i18n:translate="PloneMeeting_label_meetingDeadlineDate"></span>:&nbsp;&nbsp;
+                <span style="display: inline-block">
+                  <tal:block metal:use-macro="python: here.widget('meetingDeadlineDate', mode='view')" />
+                </span>
+                <span tal:condition="python: context.getMeetingDeadlineDate() is None">-</span>
             </div>
 
             <tal:comment replace="nothing">List type</tal:comment>
@@ -347,7 +375,8 @@
                               parent_tag=null,
                               load_view='@@load_item_assembly_and_signatures',
                               base_url=null,
-                              toggle_type='${toggle_type}');"
+                              toggle_type='${toggle_type}',
+                              sync=false);;initializeItemAttendeesDND();"
            class="collapsible discreet not-auto-collapsible-activable">
           <span class="meeting_attribute_label" i18n:translate="redefinable_assembly_and_signatures">
               <span i18n:name="assembly"
@@ -437,6 +466,22 @@
         </div>
     </tal:defines>
 
+    <tal:comment replace="nothing">Externals linked elements</tal:comment>
+    <tal:external-infos condition="python: context.restrictedTraverse('@@load-external-infos').show_section()">
+        <div id="external-infos"
+             class="collapsible discreet not-auto-collapsible-activable"
+             tal:attributes="onclick python: 'toggleDetails(\'collapsible-external-infos\', toggle_parent_active=true, parent_tag=null, load_view=\'@@load-external-infos?external_user_id=%s\');;' % request.get('external_user_id', '');">
+          <span class="item_attribute_label" i18n:translate="external_linked_elements">
+              External linked elements
+          </span>
+        </div>
+        <div id="collapsible-external-infos" class="collapsible-content discreet">
+          <div class="collapsible-inner-content">
+             <img tal:attributes="src string:${portal_url}/spinner_small.gif" />
+          </div>
+        </div>
+    </tal:external-infos>
+
     <tal:comment replace="nothing">Description</tal:comment>
     <tal:field define="fieldName python: 'description'; ajaxEdit python:True">
        <metal:f use-macro="context/@@pm-macros/viewContentField"/>
@@ -473,6 +518,11 @@
       </div>
     </fieldset>
     </tal:block>
+
+    <tal:comment replace="nothing">Emergency motivation</tal:comment>
+    <tal:field define="fieldName python: 'emergencyMotivation'; ajaxEdit python:True">
+       <metal:f use-macro="context/@@pm-macros/viewContentField"/>
+    </tal:field>
 
     <tal:comment replace="nothing">Motivation</tal:comment>
     <tal:field define="fieldName python: 'motivation'; ajaxEdit python:True">
@@ -648,6 +698,16 @@
 
     <tal:comment replace="nothing">Internal notes</tal:comment>
     <tal:field define="fieldName python: 'internalNotes'; ajaxEdit python:True">
+       <metal:f use-macro="context/@@pm-macros/viewContentField"/>
+    </tal:field>
+
+    <tal:comment replace="nothing">Needed follow up</tal:comment>
+    <tal:field define="fieldName python: 'neededFollowUp'; ajaxEdit python:True">
+       <metal:f use-macro="context/@@pm-macros/viewContentField"/>
+    </tal:field>
+
+    <tal:comment replace="nothing">Provided follow up</tal:comment>
+    <tal:field define="fieldName python: 'providedFollowUp'; ajaxEdit python:True">
        <metal:f use-macro="context/@@pm-macros/viewContentField"/>
     </tal:field>
 

@@ -10,6 +10,10 @@ Products.MeetingCharleroi Changelog
 - Adapatble method `MeetingIem._advicePortalTypeForAdviser` was moved to
   `ToolPloneMeeting` (no more adaptable).
   [gbastien]
+- Resync `meetingitem_view.pt` and `meetingitem_edit.pt`.
+  [gbastien]
+- Removed no more used `meeting_edit.pt` from `meetingcharleroi_templates`.
+  [gbastien]
 
 4.2.2 (2025-10-29)
 ------------------
