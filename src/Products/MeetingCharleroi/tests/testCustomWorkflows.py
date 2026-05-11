@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# File: testWorkflows.py
-#
-# Copyright (c) 2019 by Imio.be
+# GNU General Public License (GPL)
 #
 
 from DateTime import DateTime
@@ -417,10 +415,15 @@ class testCustomWorkflows(MeetingCharleroiTestCase):
         self.assertTrue(advice.advice_hide_during_redaction)
         # editable
         self.assertTrue(item.adapted()._adviceIsEditableByCurrentUser(finance_group_uid()))
-
         # send advice to finances editor
         self.assertEqual(self.transitions(advice), ['proposeToFinancialEditor'])
         self.do(advice, 'proposeToFinancialEditor')
+
+        # even if using waiting_advices_proposing_group_send_back,
+        # make sure finances advice can not be asked_again by directors
+        self.changeUser('pmReviewer1')
+        self.assertFalse(item.adapted().mayAskAdviceAgain(advice))
+
         # send advice to finances reviewer
         self.changeUser('pmFinEditor')
         # editable

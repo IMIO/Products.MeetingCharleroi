@@ -14,6 +14,11 @@ Products.MeetingCharleroi Changelog
   [gbastien]
 - Removed no more used `meeting_edit.pt` from `meetingcharleroi_templates`.
   [gbastien]
+- Fixed `MeetingItem.mayAskAdviceAgain` to not be able to ask again a finances
+  advice as `MeetingItemCharleroiCollegeWorkflowConditions.mayCorrect` was overrided.
+  [gbastien]
+- Display `customAdviceMessage` and `displayAdviceReviewState` in finances advice popup.
+  [gbastien]
 
 4.2.2 (2025-10-29)
 ------------------
