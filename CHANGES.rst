@@ -2,7 +2,7 @@ Products.MeetingCharleroi Changelog
 ===================================
 
 
-4.2.3 (unreleased)
+4.2.3 (2026-05-20)
 ------------------
 
 - Display item `observations` between `motivation` and `decision` in College PV.
