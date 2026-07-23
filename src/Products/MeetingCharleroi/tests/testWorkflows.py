@@ -71,8 +71,6 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         # pmReviewer1 validates item1 and adds an annex to it
         self.changeUser('pmServiceHead1')
         self.addAnnex(item1, relatedTo='item_decision')
-        self.do(item1, 'proposeToRefAdmin')
-        self.changeUser('pmRefAdmin1')
         self.do(item1, 'prevalidate')
         self.changeUser('pmReviewer1')
         self.do(item1, 'validate')
@@ -91,7 +89,6 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         self.do(meeting, 'freeze')
         # pmReviewer2 validates item2
         self.changeUser('pmReviewer2')
-        self.do(item2, 'proposeToRefAdmin')
         self.do(item2, 'prevalidate')
         self.do(item2, 'validate')
         # pmManager inserts item2 into the meeting, as late item, and adds an
@@ -134,7 +131,6 @@ class testWorkflows(MeetingCharleroiTestCase, pmtw):
         self.setMeetingConfig('meeting-config-council')
         # items come from College or could be created by a MeetingManager directly 'validated'
         # apply WFAdaptation defined in zcharleroi.import_data
-        cfg = self.meetingConfig
         self.setupCouncilConfig()
         self.changeUser('pmManager')
         gic2_uid = org_id_to_uid('groupincharge2')

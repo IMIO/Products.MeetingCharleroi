@@ -25,8 +25,7 @@ from Products.PloneMeeting.utils import org_id_to_uid
 class MeetingCharleroiTestingHelpers(MeetingCommunesTestingHelpers):
     '''Stub class that provides some helper methods about testing.'''
 
-    TRANSITIONS_FOR_PROPOSING_ITEM_FIRST_LEVEL_1 = TRANSITIONS_FOR_PROPOSING_ITEM_FIRST_LEVEL_2 = ('propose',
-                                                                                                   'proposeToRefAdmin')
+    TRANSITIONS_FOR_PROPOSING_ITEM_FIRST_LEVEL_1 = TRANSITIONS_FOR_PROPOSING_ITEM_FIRST_LEVEL_2 = ('propose', )
     TRANSITIONS_FOR_PUBLISHING_MEETING_1 = TRANSITIONS_FOR_PUBLISHING_MEETING_2 = ('freeze', 'publish', )
     TRANSITIONS_FOR_FREEZING_MEETING_1 = TRANSITIONS_FOR_FREEZING_MEETING_2 = ('freeze', )
     TRANSITIONS_FOR_DECIDING_MEETING_1 = TRANSITIONS_FOR_DECIDING_MEETING_2 = ('freeze', 'publish', 'decide')
@@ -35,18 +34,13 @@ class MeetingCharleroiTestingHelpers(MeetingCommunesTestingHelpers):
                                                                              'decide',
                                                                              'close', )
 
-    TRANSITIONS_FOR_PROPOSING_ITEM_1 = ('propose',
-                                         'proposeToRefAdmin',
-                                         'prevalidate',
-                                        )
+    TRANSITIONS_FOR_PROPOSING_ITEM_1 = ('propose', 'prevalidate', )
 
     TRANSITIONS_FOR_VALIDATING_ITEM_1 = ('propose',
-                                         'proposeToRefAdmin',
                                          'prevalidate',
                                          'validate', )
 
     TRANSITIONS_FOR_PRESENTING_ITEM_1 = ('propose',
-                                         'proposeToRefAdmin',
                                          'prevalidate',
                                          'validate',
                                          'present', )
@@ -66,7 +60,6 @@ class MeetingCharleroiTestingHelpers(MeetingCommunesTestingHelpers):
                         'backToPresented',
                         'backToValidated',
                         'backToPrevalidated',
-                        'backToProposedToRefAdmin',
                         'backToProposed',
                         'backToItemCreated', ),
         'proposed': ('backToItemPublished',
@@ -74,7 +67,6 @@ class MeetingCharleroiTestingHelpers(MeetingCommunesTestingHelpers):
                      'backToPresented',
                      'backToValidated',
                      'backToPrevalidated',
-                     'backToProposedToRefAdmin',
                      'backToProposed', ),
         'prevalidated': ('backToItemPublished',
                          'backToItemFrozen',
@@ -91,9 +83,8 @@ class MeetingCharleroiTestingHelpers(MeetingCommunesTestingHelpers):
 
     WF_ITEM_STATE_NAME_MAPPINGS_1 = {
         'itemcreated': 'itemcreated',
-        'proposed_first_level': 'proposed_to_refadmin',
+        'proposed_first_level': 'proposed',
         'proposed': 'prevalidated',
-        'proposed_to_refadmin': 'proposed_to_refadmin',
         'prevalidated': 'prevalidated',
         'validated': 'validated',
         'presented': 'presented',

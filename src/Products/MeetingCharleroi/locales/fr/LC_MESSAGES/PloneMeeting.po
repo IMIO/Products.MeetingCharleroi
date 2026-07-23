@@ -78,10 +78,6 @@ msgstr "Cet avis est suspendu car le point a été renvoyé vers le groupe propo
 msgid "icon_help_prevalidated"
 msgstr "Proposé au directeur"
 
-#. Default: "Proposed to admin referent"
-msgid "icon_help_proposed_to_refadmin"
-msgstr "Proposé au référent administratif"
-
 #. Default: "Waiting finances advice"
 msgid "icon_help_waiting_advices_from_prevalidated"
 msgstr "En attente avis finances"
@@ -123,18 +119,6 @@ msgstr "Directeur"
 msgid "reviewers"
 msgstr "Directeurs"
 
-#. Default: "An item was automatically sent back to the administrative referent because the signed finances advice was not positive (notify 'MeetingReviewers')"
-msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice"
-msgstr "Un point a été automatiquement renvoyé aux référents administratifs parce que l'avis finances signé n'était pas 'Favorable' (prévient les directeurs du groupe proposant)"
-
-#. Default: "The item is entitled '${itemTitle}'. You can access it here: ${objectUrl}."
-msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_body"
-msgstr "Le titre du point est '${itemTitle}'. Vous pouvez y accéder ici: ${objectUrl}."
-
-#. Default: "An item has been sent back to the administrative referent by the finances"
-msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_subject"
-msgstr "Un point a été renvoyé aux référents administratifs par les finances"
-
 # Suffix
 #. Default: "Service heads"
 msgid "serviceheads"
@@ -147,10 +131,6 @@ msgstr "Présents pour la Zone de Police"
 #. Default: "Absents for the secret meeting"
 msgid "title_assembly_privacy_secret_absents"
 msgstr "Absents pour la séance à huis clos"
-
-#. Default: "Add referent's admin"
-msgid "wa_charleroi_add_refadmin"
-msgstr "Ajout du référent administratif"
 
 #. Default: "Wait advices"
 msgid "wa_waiting_advices"

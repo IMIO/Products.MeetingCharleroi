@@ -78,10 +78,6 @@ msgstr "Advice is suspended because it was sent back to proposing group."
 msgid "icon_help_prevalidated"
 msgstr "Prevalidated"
 
-#. Default: "Proposed to admin referent"
-msgid "icon_help_proposed_to_refadmin"
-msgstr "Proposed to admin referent"
-
 #. Default: "Waiting finances advice"
 msgid "icon_help_waiting_advices_from_prevalidated"
 msgstr "Waiting finances advice"
@@ -123,18 +119,6 @@ msgstr ""
 msgid "reviewers"
 msgstr ""
 
-#. Default: "An item was automatically sent back to the administrative referent because the signed finances advice was not positive (notify 'MeetingReviewers')"
-msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice"
-msgstr ""
-
-#. Default: "The item is entitled '${itemTitle}'. You can access it here: ${objectUrl}."
-msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_body"
-msgstr ""
-
-#. Default: "An item has been sent back to the administrative referent by the finances"
-msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_subject"
-msgstr ""
-
 # Suffix
 #. Default: "Service heads"
 msgid "serviceheads"
@@ -146,10 +130,6 @@ msgstr ""
 
 #. Default: "Absents for the secret meeting"
 msgid "title_assembly_privacy_secret_absents"
-msgstr ""
-
-#. Default: "Add referent's admin"
-msgid "wa_charleroi_add_refadmin"
 msgstr ""
 
 #. Default: "Wait advices"
