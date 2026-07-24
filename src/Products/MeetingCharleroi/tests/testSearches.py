@@ -17,10 +17,6 @@ class testSearches(MeetingCharleroiTestCase, mcts):
         pass
 
 
-    def test_pm_SearchItemsToValidateOfHighestHierarchicLevel(self):
-        """Suffix "serviceheads" is used instead "prereviewers" for first validation level."""
-        pass
-
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
