@@ -45,4 +45,12 @@
       handler="Products.MeetingCharleroi.migrations.migrate_to_4201.migrate"
       profile="Products.MeetingCharleroi:default" />
 
+  <genericsetup:upgradeStep
+      title="Go to MeetingCharleroi 4202"
+      description=""
+      source="4201"
+      destination="4202"
+      handler="Products.MeetingCharleroi.migrations.migrate_to_4202.migrate"
+      profile="Products.MeetingCharleroi:default" />
+
 </configure>
