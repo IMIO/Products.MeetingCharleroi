@@ -34,7 +34,7 @@ class Migrate_To_4202(Migrator):
             item_wf_val_levels.pop(2)
             cfg.setItemWFValidationLevels(item_wf_val_levels)
         # transitionsToConfirm
-        transitions_to_confirm = cfg.getTransitionsToConfirm()
+        transitions_to_confirm = list(cfg.getTransitionsToConfirm())
         if "MeetingItem.proposeToRefAdmin" in transitions_to_confirm:
             transitions_to_confirm.remove("MeetingItem.proposeToRefAdmin")
         if "MeetingItem.backToProposedToRefAdmin" in transitions_to_confirm:
@@ -58,7 +58,7 @@ class Migrate_To_4202(Migrator):
                           'adviceAnnexConfidentialVisibleFor',
                           'meetingAnnexConfidentialVisibleFor',
                           'itemInternalNotesEditableBy']:
-            values = getattr(cfg, attr_name)
+            values = list(getattr(cfg, attr_name))
             if "suffix_proposing_group_prereviewers" in values:
                 values.remove("suffix_proposing_group_prereviewers")
             if "suffix_profile_prereviewers" in values:
