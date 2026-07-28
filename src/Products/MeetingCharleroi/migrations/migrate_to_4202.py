@@ -39,6 +39,7 @@ class Migrate_To_4202(Migrator):
             transitions_to_confirm.remove("MeetingItem.proposeToRefAdmin")
         if "MeetingItem.backToProposedToRefAdmin" in transitions_to_confirm:
             transitions_to_confirm.remove("MeetingItem.backToProposedToRefAdmin")
+        cfg.setTransitionsToConfirm(transitions_to_confirm)
         # searchitemsproposedtorefadmin
         collection = cfg.searches.searches_items.get('searchitemsproposedtorefadmin')
         if collection:
