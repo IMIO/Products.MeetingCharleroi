@@ -44,7 +44,7 @@ def onAdviceAfterTransition(advice, event):
         advice.advice_hide_during_redaction = False
         # if item was still in state 'prevalidated_waiting_advices',
         # it is automatically validated if advice is 'positive_finance'
-        # otherwise it is sent back to the refadmin
+        # otherwise it is sent back to the serviceheads
         if item.query_state() == 'prevalidated_waiting_advices':
             wfTool = api.portal.get_tool('portal_workflow')
             if advice.advice_type == 'positive_finance':
@@ -55,14 +55,12 @@ def onAdviceAfterTransition(advice, event):
                 item.REQUEST.set('mayValidate', False)
                 msg = _AP('backTo_validated_from_waiting_advices_done_descr')
             else:
-                item.REQUEST.set('maybackTo_proposed_to_refadmin_from_waiting_advices', True)
+                item.REQUEST.set('maybackTo_proposed_from_waiting_advices', True)
                 wfTool.doActionFor(item,
-                                   'backTo_proposed_to_refadmin_from_waiting_advices',
+                                   'backTo_proposed_from_waiting_advices',
                                    comment='item_wf_changed_finance_advice_not_positive')
-                item.REQUEST.set('maybackTo_proposed_to_refadmin_from_waiting_advices', False)
-                sendMailIfRelevant(item, 'sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice',
-                                   'MeetingReviewer', isRole=True)
-                msg = _AP('backTo_proposed_to_refadmin_from_waiting_advices_done_descr')
+                item.REQUEST.set('maybackTo_proposed_from_waiting_advices', False)
+                msg = _AP('backTo_proposed_from_waiting_advices_done_descr')
             plone_utils.addPortalMessage(msg)
 
     # in some corner case, we could be here and we are actually already updating advices,
@@ -84,18 +82,18 @@ def onAdvicesUpdated(item, event):
         if groupId != finance_group_uid():
             continue
 
-        # when a finance advice is just timed out, we will send the item back to the refadmin
+        # when a finance advice is just timed out, we will send the item back to the serviceheads
         if adviceInfo['delay_infos']['delay_status'] == 'timed_out' and \
            'delay_infos' in event.old_adviceIndex[groupId] and not \
            event.old_adviceIndex[groupId]['delay_infos']['delay_status'] == 'timed_out':
             if item.query_state() == 'prevalidated_waiting_advices':
                 wfTool = api.portal.get_tool('portal_workflow')
                 item.adviceIndex[groupId]['delay_stopped_on'] = datetime.now()
-                item.REQUEST.set('maybackTo_proposed_to_refadmin_from_waiting_advices', True)
+                item.REQUEST.set('maybackTo_proposed_from_waiting_advices', True)
                 wfTool.doActionFor(item,
-                                   'backTo_proposed_to_refadmin_from_waiting_advices',
+                                   'backTo_proposed_from_waiting_advices',
                                    comment='item_wf_changed_finance_advice_timed_out')
-                item.REQUEST.set('maybackTo_proposed_to_refadmin_from_waiting_advices', False)
+                item.REQUEST.set('maybackTo_proposed_from_waiting_advices', False)
 
 
 def onItemDuplicatedToOtherMC(originalItem, event):

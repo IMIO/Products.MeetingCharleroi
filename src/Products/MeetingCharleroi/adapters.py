@@ -12,7 +12,6 @@ from imio.helpers.cache import cleanRamCacheFor
 from imio.history.utils import getLastWFAction
 from plone import api
 from Products.CMFCore.permissions import ModifyPortalContent
-from Products.CMFCore.permissions import ReviewPortalContent
 from Products.CMFCore.utils import _checkPermission
 from Products.MeetingCharleroi.config import CC_ARRET_OJ_CAT_ID
 from Products.MeetingCharleroi.config import COMMUNICATION_CAT_ID
@@ -67,7 +66,7 @@ adaptations.WAITING_ADVICES_FROM_STATES = {
          'remove_modify_access': True,
          'new_state_id': None},
         {'from_states': ('prevalidated',),
-         'back_states': ('proposed_to_refadmin', 'prevalidated', 'validated'),
+         'back_states': ('proposed', 'prevalidated', 'validated'),
          'perm_cloned_states': ('prevalidated',),
          'remove_modify_access': True,
          'new_state_id': None},),
@@ -823,10 +822,6 @@ class CustomCharleroiMeetingConfig(CustomMeetingConfig):
     def __init__(self, item):
         self.context = item
 
-    def extraItemEvents(self):
-        '''See doc in interfaces.py.'''
-        return ['sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice']
-
     def extraInsertingMethods(self):
         '''See doc in interfaces.py.'''
         return OrderedDict((
@@ -858,16 +853,11 @@ class MeetingItemCharleroiCollegeWorkflowActions(MeetingItemCommunesWorkflowActi
     implements(IMeetingItemCharleroiCollegeWorkflowActions)
     security = ClassSecurityInfo()
 
-    security.declarePrivate('doProposeToRefAdmin')
-
-    def doProposeToRefAdmin(self, stateChange):
-        pass
-
     def _doWaitAdvices(self):
         '''When an item is proposed to finances again, make sure the item
            completeness si no more in ('completeness_complete', 'completeness_evaluation_not_required')
            so advice is not addable/editable when item come back again to the finance.'''
-        # if we found an event 'wait_advices_from_proposed_to_refadmin' or 'wait_advices_from_prevalidated'
+        # if we found an event 'wait_advices_from_prevalidated'
         # in workflow_history, it means that item is proposed again to the finances and we need to
         # ask completeness evaluation again current transition 'proposeToFinance' is already in workflow_history...
         wfTool = api.portal.get_tool('portal_workflow')
@@ -883,16 +873,11 @@ class MeetingItemCharleroiCollegeWorkflowActions(MeetingItemCommunesWorkflowActi
                 # change completeness even if current user is not able to set it to
                 # 'completeness_evaluation_asked_again', here it is the application that set
                 # it automatically
-                changeCompleteness._changeCompleteness('completeness_evaluation_asked_again',
-                                                       bypassSecurityCheck=True,
-                                                       comment=comment)
+                changeCompleteness._changeCompleteness(
+                    'completeness_evaluation_asked_again',
+                    bypassSecurityCheck=True,
+                    comment=comment)
                 break
-
-    security.declarePrivate('doWait_advices_from_proposed_to_refadmin')
-
-    def doWait_advices_from_proposed_to_refadmin(self, stateChange):
-        """ """
-        self._doWaitAdvices()
 
     security.declarePrivate('doWait_advices_from_prevalidated')
 
@@ -913,20 +898,6 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
         self.tool = api.portal.get_tool('portal_plonemeeting')
         self.cfg = self.tool.getMeetingConfig(self.context)
         self.review_state = self.context.query_state()
-
-    security.declarePublic('mayProposeToRefAdmin')
-
-    def mayProposeToRefAdmin(self):
-        res = False
-        if _checkPermission(ReviewPortalContent, self.context):
-            res = True
-        return res
-
-    security.declarePublic('mayWait_advices_from_proposed_to_refadmin')
-
-    def mayWait_advices_from_proposed_to_refadmin(self):
-        """ """
-        return self.mayWait_advices(self._getWaitingAdvicesStateFrom('proposed_to_refadmin'))
 
     security.declarePublic('mayValidate')
 
@@ -953,17 +924,18 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
                 # in this case, we need the 'mayValidate' to True in the REQUEST
                 if self.context.REQUEST.get('mayValidate', False):
                     res = True
-            elif destinationState == 'proposed_to_refadmin':
-                # item may be sent back to refadmin when completeness is not 'complete' or
-                # when the advice delay is exceeded, it is automatically sent back to refadmin
-                # in this case, we need the 'maybackTo_proposed_to_refadmin_from_waiting_advices'
+            elif destinationState == 'proposed':
+                # item may be sent back to serviceheads when completeness is not 'complete' or
+                # when the advice delay is exceeded, it is automatically sent back to serviceheads
+                # in this case, we need the 'maybackTo_proposed_from_waiting_advices'
                 # to True in the REQUEST
-                if self.context.REQUEST.get('maybackTo_proposed_to_refadmin_from_waiting_advices', False):
+                if self.context.REQUEST.get('maybackTo_proposed_from_waiting_advices', False):
                     res = True
                 elif tool.adapted().isFinancialUser() and \
-                        self.context.getCompleteness() in ('completeness_incomplete',
-                                                           'completeness_not_yet_evaluated',
-                                                           'completeness_evaluation_asked_again'):
+                        self.context.getCompleteness() in (
+                            'completeness_incomplete',
+                            'completeness_not_yet_evaluated',
+                            'completeness_evaluation_asked_again'):
                     res = True
             # only administrators may send back to director from finances
             elif destinationState == 'prevalidated' and tool.isManager(realManagers=True):
@@ -1014,17 +986,6 @@ class MeetingItemCharleroiCouncilWorkflowConditions(MeetingItemCharleroiCollegeW
 
     implements(IMeetingItemCharleroiCouncilWorkflowConditions)
     security = ClassSecurityInfo()
-
-    security.declarePublic('mayProposeToRefAdmin')
-
-    def mayProposeToRefAdmin(self):
-        """
-          Check that the user has the 'Review portal content'
-        """
-        res = False
-        if _checkPermission(ReviewPortalContent, self.context):
-            res = True
-        return res
 
 
 class CustomCharleroiToolPloneMeeting(CustomToolPloneMeeting):

@@ -1,5 +1,5 @@
 files="PloneMeeting plone imio.actionspanel imio.history"
-languages="de en es fr nl"
+languages="en fr"
 
 for file in $files; do
     for language in $languages; do

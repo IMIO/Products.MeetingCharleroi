@@ -51,6 +51,7 @@ msgid "backToProposedFromPrevalidated"
 msgstr ""
 
 #. Default: "Back to admin referent"
+#. Kept for history before removal of item review_state "proposed_to_refadmin"
 msgid "backToProposedToRefAdmin"
 msgstr ""
 

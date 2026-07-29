@@ -543,7 +543,6 @@ collegeMeeting.itemAdviceEditStates = ('itemcreated_waiting_advices', 'proposed_
 collegeMeeting.itemAdviceViewStates = ('itemcreated_waiting_advices',
                                        'proposed_waiting_advices',
                                        'proposed',
-                                       'proposed_to_refadmin',
                                        'prevalidated',
                                        'prevalidated_waiting_advices',
                                        'validated',
@@ -609,7 +608,6 @@ collegeMeeting.workflowAdaptations = ['no_publication',
                                       'return_to_proposing_group',
                                       'postpone_next_meeting', 'mark_not_applicable', 'delayed', 'pre_accepted',
                                       'removed', 'refused', 'accepted_but_modified']
-collegeMeeting.transitionsForPresentingAnItem = ('propose', 'proposeToRefAdmin', 'prevalidate', 'validate', 'present', )
 collegeMeeting.onTransitionFieldTransforms = (
     ({'transition': 'delay',
       'field_name': 'MeetingItem.decision',
@@ -949,7 +947,6 @@ councilMeeting.itemDecidedStates = ['accepted', 'refused', 'delayed',
 councilMeeting.workflowAdaptations = ['no_publication',
                                       'return_to_proposing_group',
                                       'mark_not_applicable', 'refused']
-councilMeeting.transitionsForPresentingAnItem = ('present', )
 councilMeeting.onMeetingTransitionItemActionToExecute = deepcopy(
     collegeMeeting.onMeetingTransitionItemActionToExecute)
 councilMeeting.itemPowerObserversStates = ('itemfrozen',

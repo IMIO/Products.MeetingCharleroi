@@ -25,10 +25,6 @@ msgstr ""
 msgid "reviewer"
 msgstr ""
 
-#. Default: "Proposed to admin referent"
-msgid "icon_help_proposed_to_refadmin"
-msgstr ""
-
 #. Default: "Prevalidated"
 msgid "icon_help_prevalidated"
 msgstr ""
@@ -39,10 +35,6 @@ msgstr ""
 
 #. Default: "Pre-validators"
 msgid "prereviewers"
-msgstr ""
-
-#. Default: "Add referent's admin"
-msgid "wa_charleroi_add_refadmin"
 msgstr ""
 
 #. Default: "Waiting finances advice"
@@ -75,18 +67,6 @@ msgstr ""
 
 #. Default: "The completeness has been asked again by the application when the item has been proposed to the finances."
 msgid "completeness_asked_again_by_app"
-msgstr ""
-
-#. Default: "An item was automatically sent back to the administrative referent because the signed finances advice was not positive (notify 'MeetingReviewers')"
-msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice"
-msgstr ""
-
-#. Default: "An item has been sent back to the administrative referent by the finances"
-msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_subject"
-msgstr ""
-
-#. Default: "The item is entitled '${itemTitle}'. You can access it here: ${objectUrl}."
-msgid "sentBackToRefAdminWhileSigningNotPositiveFinancesAdvice_mail_body"
 msgstr ""
 
 #. Default: "First items of 'Police' then other groups items"

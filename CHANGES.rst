@@ -5,8 +5,8 @@ Products.MeetingCharleroi Changelog
 4.2.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Removed `College` item WF step `proposed_to_refadmin`.
+  [gbastien]
 
 4.2.3 (2026-05-20)
 ------------------
@@ -21,7 +21,8 @@ Products.MeetingCharleroi Changelog
 - Removed no more used `meeting_edit.pt` from `meetingcharleroi_templates`.
   [gbastien]
 - Fixed `MeetingItem.mayAskAdviceAgain` to not be able to ask again a finances
-  advice as `MeetingItemCharleroiCollegeWorkflowConditions.mayCorrect` was overrided.
+  advice as `MeetingItemCharleroiCollegeWorkflowConditions.mayCorrect`
+  was overrided.
   [gbastien]
 - Display `customAdviceMessage` in finances advice popup.
   [gbastien]

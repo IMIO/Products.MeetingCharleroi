@@ -2,14 +2,9 @@
 #
 # File: config.py
 #
-# Copyright (c) 2016 by Imio.be
-# Generator: ArchGenXML Version 2.7
-#            http://plone.org/products/archgenxml
-#
 # GNU General Public License (GPL)
 #
 
-from collections import OrderedDict
 from Products.CMFCore.permissions import setDefaultRoles
 # import at the bottom so monkeypatches are done because PMconfig is imported in MCconfig
 from Products.MeetingCommunes import config as MCconfig
@@ -42,16 +37,6 @@ CHARLEROI_COLLEGE_ITEM_WF_VALIDATION_LEVELS = (
      'back_transition': 'backToProposed',
      'back_transition_title': 'backToProposed',
      'suffix': 'serviceheads',
-     'extra_suffixes': [],
-     'enabled': '1',
-     },
-    {'state': 'proposed_to_refadmin',
-     'state_title': 'proposed_to_refadmin',
-     'leading_transition': 'proposeToRefAdmin',
-     'leading_transition_title': 'proposeToRefAdmin',
-     'back_transition': 'backToProposedToRefAdmin',
-     'back_transition_title': 'backToProposedToRefAdmin',
-     'suffix': 'prereviewers',
      'extra_suffixes': [],
      'enabled': '1',
      },

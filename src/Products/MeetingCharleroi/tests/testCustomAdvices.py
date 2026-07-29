@@ -139,13 +139,13 @@ class testCustomAdvices(MeetingCharleroiTestCase, ):
 
         # if item no more waiting finances advice, finances may not
         # change delay anymore
-        self.do(item, 'backTo_proposed_to_refadmin_from_waiting_advices')
+        self.do(item, 'backTo_proposed_from_waiting_advices')
         self.assertFalse(item.adapted().mayChangeDelayTo(5))
         self.assertFalse(item.adapted().mayChangeDelayTo(10))
         self.assertFalse(item.adapted().mayChangeDelayTo(20))
 
         # if advice delay is set to 20, user have edit rights may not change it anymore
-        self.changeUser('pmRefAdmin1')
+        self.changeUser('pmServiceHead1')
         self.assertFalse(item.adapted().mayChangeDelayTo(5))
         self.assertFalse(item.adapted().mayChangeDelayTo(10))
         self.assertFalse(item.adapted().mayChangeDelayTo(20))
