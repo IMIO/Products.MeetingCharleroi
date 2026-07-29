@@ -31,7 +31,7 @@ class Migrate_To_4202(Migrator):
         review_states = cfg.getItemWFValidationLevels(data='state', only_enabled=True)
         if "proposed_to_refadmin" in review_states:
             item_wf_val_levels = list(cfg.getItemWFValidationLevels())
-            item_wf_val_levels.pop(2)
+            item_wf_val_levels.pop(review_states.index("proposed_to_refadmin"))
             cfg.setItemWFValidationLevels(item_wf_val_levels)
         # transitionsToConfirm
         transitions_to_confirm = list(cfg.getTransitionsToConfirm())
