@@ -2,7 +2,7 @@ Products.MeetingCharleroi Changelog
 ===================================
 
 
-4.2.4 (unreleased)
+4.2.4 (2026-07-31)
 ------------------
 
 - Removed `College` item WF step `proposed_to_refadmin`.
