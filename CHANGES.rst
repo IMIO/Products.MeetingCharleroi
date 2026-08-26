@@ -2,7 +2,7 @@ Products.MeetingCharleroi Changelog
 ===================================
 
 
-4.2.5 (unreleased)
+4.2.5 (2026-08-26)
 ------------------
 
 - Adapted `Migrate_To_4202._removeProposedToRefAdminItemCollegeState`:
