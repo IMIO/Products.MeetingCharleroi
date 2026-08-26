@@ -80,7 +80,7 @@ msgstr "Proposé au directeur"
 
 #. Default: "Waiting finances advice"
 msgid "icon_help_waiting_advices_from_prevalidated"
-msgstr "En attente avis finances"
+msgstr "En attente des avis (Proposé au directeur)"
 
 #. Default: "Waiting advices (Proposed to service head)"
 msgid "icon_help_waiting_advices_from_proposed"
@@ -134,4 +134,4 @@ msgstr "Absents pour la séance à huis clos"
 
 #. Default: "Wait advices"
 msgid "wa_waiting_advices"
-msgstr "Etats supplémentaires pour demander les avis (\"en création\", \"proposé au chef de service\", \"aux finances\")"
+msgstr "Etats supplémentaires pour demander les avis (\"En création\", \"Proposé au chef de service\", \"Proposé au directeur\")"

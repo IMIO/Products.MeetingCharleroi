@@ -23,8 +23,8 @@ class Migrate_To_4202(Migrator):
             item = brain.getObject()
             self.portal.portal_workflow.doActionFor(
                 item,
-                'backToProposed',
-                comment="Automatically set to \"Proposed\" while removing state \"Proposed to refadmin\".")
+                'prevalidate',
+                comment="Automatically set to \"Proposed to director\" while removing state \"Proposed to refadmin\".")
         # clean MeetingConfig College
         cfg = self.tool.get("meeting-config-college")
         # itemWFValidationLevels
@@ -55,8 +55,8 @@ class Migrate_To_4202(Migrator):
         # remove "suffix_proposing_group_prereviewers" and "suffix_profile_prereviewers"
         # from MeetingConfig attrs
         for attr_name in ['adviceAnnexConfidentialVisibleFor',
-                          'adviceAnnexConfidentialVisibleFor',
                           'meetingAnnexConfidentialVisibleFor',
+                          'itemAnnexConfidentialVisibleFor',
                           'itemInternalNotesEditableBy']:
             values = list(getattr(cfg, attr_name))
             if "suffix_proposing_group_prereviewers" in values:

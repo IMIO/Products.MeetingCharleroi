@@ -5,8 +5,12 @@ Products.MeetingCharleroi Changelog
 4.2.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Adapted `Migrate_To_4202._removeProposedToRefAdminItemCollegeState`:
 
+  - Set item `Proposed to refadmin` to `Proposed to director`;
+  - Changed translation for `waiting_advices_prevalidated`.
+
+  [gbastien]
 
 4.2.4 (2026-07-31)
 ------------------
