@@ -9,7 +9,6 @@ from plone import api
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CATEGORY
 from Products.MeetingCharleroi.config import COUNCIL_DEFAULT_CLASSIFIER
 from Products.MeetingCharleroi.utils import finance_group_uid
-from Products.PloneMeeting.utils import sendMailIfRelevant
 
 
 def onAdviceAfterTransition(advice, event):

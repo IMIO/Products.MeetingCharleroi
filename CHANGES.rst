@@ -4,9 +4,15 @@ Products.MeetingCharleroi Changelog
 
 4.2.6 (unreleased)
 ------------------
-
-- Nothing changed yet.
-
+- In `MCHItemDocumentGenerationHelperView.print_observations_and_poll` take into
+  account every `public` values for `privacy`
+  (could use `public`, `public_heading`, ...).
+  [gbastien]
+- Adapted `MeetingItemCharleroiCollegeWorkflowConditions.mayCorrect` to only
+  override when item is in `review_state` `prevalidated_waiting_advices` if
+  `legal finances advice` is actually asked so we can ask other advices in this
+  state using the default behavior.
+  [gbastien]
 
 4.2.5 (2026-08-26)
 ------------------

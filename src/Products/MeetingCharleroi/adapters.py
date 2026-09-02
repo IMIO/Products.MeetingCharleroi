@@ -917,8 +917,9 @@ class MeetingItemCharleroiCollegeWorkflowConditions(MeetingItemCommunesWorkflowC
         '''See docstring in interfaces.py'''
         res = MeetingItemCommunesWorkflowConditions(self.context).mayCorrect(destinationState)
         tool = api.portal.get_tool('portal_plonemeeting')
-        # if item is sent to finances, only finances advisers and MeetingManagers may send it back
-        if self.context.query_state() == 'prevalidated_waiting_advices':
+        # if item is waiting finances advice, only finances advisers and MeetingManagers may send it back
+        if self.context.query_state() == 'prevalidated_waiting_advices' and \
+           finance_group_uid in self.context.adviceIndex:
             res = False
             if destinationState == 'validated':
                 # in this case, we need the 'mayValidate' to True in the REQUEST

@@ -127,7 +127,7 @@ class MCHItemDocumentGenerationHelperView(MCBaseDocumentGenerationHelperView, MC
 
     def print_observations_and_poll(self):
         body = self.print_observations()
-        privacy = u"publique" if self.context.getPrivacy() == "public" else u"à huis-clos"
+        privacy = u"publique" if self.context.getPrivacy().startswith("public") else u"à huis-clos"
         body += u"<p>Après en avoir délibéré en séance {} ;</p>".format(privacy)
         if self.context.get_item_votes(include_unexisting=False):
             body += safe_unicode(self.context.getVotesResult())
