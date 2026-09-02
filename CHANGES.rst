@@ -2,7 +2,7 @@ Products.MeetingCharleroi Changelog
 ===================================
 
 
-4.2.6 (unreleased)
+4.2.6 (2026-09-02)
 ------------------
 - In `MCHItemDocumentGenerationHelperView.print_observations_and_poll` take into
   account every `public` values for `privacy`
