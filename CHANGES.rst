@@ -2,6 +2,12 @@ Products.MeetingCharleroi Changelog
 ===================================
 
 
+4.2.7 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
 4.2.6 (2026-09-02)
 ------------------
 - In `MCHItemDocumentGenerationHelperView.print_observations_and_poll` take into
