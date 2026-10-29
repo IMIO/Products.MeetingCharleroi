@@ -5,7 +5,16 @@ Products.MeetingCharleroi Changelog
 4.2.7 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Re-sync `meetingitem_view.pt` following changes in `Products.PloneMeeting`
+  (fields reordered at end of view, hide meeting related informations
+  when using `no_meeting` workflow adaptation).
+  [gbastien]
+- Fixed tests `test_pm_PreferredMeetingAndMeetingNotShownWhenNotUsingMeetings`
+  (re-synced `meetingitem_view.pt`) and
+  `test_pm_Validate_workflowAdaptations_removed_return_to_proposing_group_with_before_last_validation`
+  (fixed in `Products.PloneMeeting`, `proposed` state is mapped to `prevalidated`
+  as prevalidation is always enabled).
+  [gbastien]
 
 
 4.2.6 (2026-09-02)
